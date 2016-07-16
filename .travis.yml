@@ -19,7 +19,7 @@
 #
 # There are two variables you may want to change:
 #   - ROS_DISTRO (default is indigo). Note that packages must be available for
-#     ubuntu 14.04 trusty.
+#     the chosen ubuntu distro
 #   - ROSINSTALL_FILE (default is dependencies.rosinstall inside the repo
 #     root). This should list all necessary repositories in wstool format (see
 #     the ros wiki). If the file does not exists then nothing happens.
@@ -39,6 +39,8 @@
 #    OPTIONAL deploy
 #    OPTIONAL after_deploy
 
+# NOTE: THIS HAS BEEN MODIFIED TO WORK SPECIFICALLY WITH ROS KINETIC AND 
+#       UBUNTU XENIAL
 ################################################################################
 
 # Use ubuntu xenial (16.04) with sudo privileges.
@@ -64,9 +66,9 @@ env:
 
 # Install system dependencies, namely a very barebones ROS setup.
 before_install:
-  - sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $ROS_CI_DESKTOP main" > /etc/apt/sources.list.d/ros-latest.list'
-  - wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-  - sudo apt-get update -qq
+  - sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" >     /etc/apt/sources.list.d/ros-latest.list'
+  - sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB01FA    116
+  - sudo apt-get update
   - sudo apt-get install -y python-catkin-pkg python-rosdep python-wstool ros-$ROS_DISTRO-catkin
   - source /opt/ros/$ROS_DISTRO/setup.bash
   # Prepare rosdep to install dependencies.
