@@ -49,3 +49,5 @@ sudo ln -s "$(pwd)/bin/clion.sh" "/usr/local/bin/clion"
 # Change the CLion command so that it does not hold up the terminal
 echo 'alias clion="clion & disown"' >> ~/.bashrc
 echo 'alias clion="clion & disown"' >> ~/.zshrc
+
+./install_dependencies.sh
