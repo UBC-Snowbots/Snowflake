@@ -15,8 +15,7 @@ rosdep update
 
 # Source ROS Environment Variables Automatically
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-echo "source /opt/ros/kinetic/setup.bash" >> ~/.zshrc
-echo "source /opt/ros/kinetic/setup.bash" >> ~/.config/fish/config.fish
+echo "source /opt/ros/kinetic/setup.zsh" >> ~/.zshrc
 
 # rosinstall allows downloading of source trees for ROS packages 
 # with a single command
@@ -47,3 +46,6 @@ cd ~/clion*
 echo "Linking CLion"
 sudo ln -s "$(pwd)/bin/clion.sh" "/usr/local/bin/clion"
 
+# Change the CLion command so that it does not hold up the terminal
+echo 'alias clion="clion & disown"' >> ~/.bashrc
+echo 'alias clion="clion & disown"' >> ~/.zshrc
