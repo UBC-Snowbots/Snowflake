@@ -15,7 +15,8 @@ rosdep update
 
 # Source ROS Environment Variables Automatically
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-source ~/.bashrc
+echo "source /opt/ros/kinetic/setup.bash" >> ~/.zshrc
+echo "source /opt/ros/kinetic/setup.bash" >> ~/.config/fish/config.fish
 
 # rosinstall allows downloading of source trees for ROS packages 
 # with a single command
