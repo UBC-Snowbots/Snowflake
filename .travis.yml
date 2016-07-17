@@ -52,10 +52,17 @@ language:
     - generic
 
 install:
-    # Setup a catkin workspace
-    - docker run ros mkdir -p ~/catkin_ws/src
-    - docker run ros cd ~/catkin_ws/src
-    - docker run ros catkin_init_workspace
-    # Create devel/setup.bash (run catkin_make with an empty workspace)
-    # and source it to set path variables
-    - docker run ros cd ~/catkin_ws && catkin_make && source devel/setup.bash 
+    # Run Docker
+    - docker run -t -i ros /bin/bash
+    # Setup a catkin workspace 
+    - mkdir -p ~/catkin_ws/src
+    - cd ~/catkin_ws/src
+    - catkin_init_workspace
+    # Create the devel/setup.bash (run catkin_make with an empty workspace) and
+    # source it to set the path variables.
+    - cd ~/catkin_ws
+    - catkin_make
+    - source devel/setup.bash
+    # Add the package under integration to the workspace using a symlink.
+    - cd ~/catkin_ws/src
+    - ln -s $CI_SOURCE_PATH .
