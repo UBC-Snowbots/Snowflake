@@ -1,5 +1,11 @@
 <launch>      
     
+    <!-- 
+         Opens a give world from "elsa_gazebo/worlds" and 
+         places the robot in it at a given x,y and with
+         a given rotation
+    -->
+    
     <arg name="world"/>
     <arg name="x_start_coordinate"/>
     <arg name="y_start_coordinate"/>

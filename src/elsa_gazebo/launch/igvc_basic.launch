@@ -1,5 +1,7 @@
 <launch>
-    
+
+    <!-- Runs a rough approximation of the IGVC Basic Course in Gazebo -->    
+
     <!-- Start the world -->
     <include file="$(find elsa_gazebo)/launch/open_world.launch">
         <arg name="world" value="igvc_basic.world"/>
