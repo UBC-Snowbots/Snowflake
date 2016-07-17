@@ -62,4 +62,4 @@ install:
     - docker run ros/ros-kinetic-base catkin_init_workspace
     # Create devel/setup.bash (run catkin_make with an empty workspace)
     # and source it to set path variables
-    - docker run ros/ros-kinetic-base cd ~/catkin_ws && catkin_make 
+    - docker run ros/ros-kinetic-base cd ~/catkin_ws && catkin_make && source devel/setup.bash 
