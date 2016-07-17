@@ -1,4 +1,10 @@
-.idea/
+/.catkin_workspace
+/src/CMakeLists.txt
+/build
+/devel
+/install
+*.idea*
 CLion*
 clion*
 .swp
+/build
