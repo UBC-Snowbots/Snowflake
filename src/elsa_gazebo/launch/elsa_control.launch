@@ -1,0 +1,25 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find elsa_gazebo)/config/elsa_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner"
+    pkg="controller_manager"
+    type="spawner" respawn="false"
+    output="screen" ns="/elsa"
+    args="joint_state_controller
+      left_front_wheel_controller
+      left_back_wheel_controller
+      right_front_wheel_controller
+      right_back_wheel_controller"
+  />
+
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find elsa_gazebo)/urdf/elsa.xacro'" />
+    <remap from="/joint_states" to="/elsa/joint_states" />
+  </node>
+
+</launch>

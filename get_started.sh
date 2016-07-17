@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 ###############################
 # Install ROS
 ###############################
@@ -16,6 +19,10 @@ rosdep update
 # Source ROS Environment Variables Automatically
 echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 echo "source /opt/ros/kinetic/setup.zsh" >> ~/.zshrc
+
+# Set the Gazebo Model Path Automaticall
+echo "export GAZEBO_MODEL_PATH=$DIR/src/elsa_gazebo/models:${GAZEBO_MODEL_PATH}" >> ~/.bashrc
+echo "export GAZEBO_MODEL_PATH=$DIR/src/elsa_gazebo/models:${GAZEBO_MODEL_PATH}" >> ~/.zshrc
 
 # rosinstall allows downloading of source trees for ROS packages 
 # with a single command
@@ -50,4 +57,9 @@ sudo ln -s "$(pwd)/bin/clion.sh" "/usr/local/bin/clion"
 echo 'alias clion="clion & disown"' >> ~/.bashrc
 echo 'alias clion="clion & disown"' >> ~/.zshrc
 
+
+###############################
+# Install Other Dependencies
+###############################
+cd $DIR
 ./install_dependencies.sh

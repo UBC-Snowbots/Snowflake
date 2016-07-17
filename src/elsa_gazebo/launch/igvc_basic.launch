@@ -1,0 +1,11 @@
+<launch>
+    
+    <!-- Start the world -->
+    <include file="$(find elsa_gazebo)/launch/open_world.launch">
+        <arg name="world" value="igvc_basic.world"/>
+        <arg name="x_start_coordinate" value="-23"/>
+        <arg name="y_start_coordinate" value="0"/>
+        <arg name="initial_rotation" value="-1.5707"/>
+    </include>
+     
+</launch>

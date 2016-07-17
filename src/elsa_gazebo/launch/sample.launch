@@ -1,0 +1,13 @@
+<launch>
+    
+    <!-- Start the world -->
+    <include file="$(find elsa_gazebo)/launch/open_world.launch">
+
+        <arg name="world" value="MyWorld.world"/>
+        <arg name="x_start_coordinate" value="0"/>
+        <arg name="y_start_coordinate" value="0"/>
+        <arg name="initial_rotation" value="0"/> <!-- In Radians -->
+
+    </include>
+     
+</launch>
