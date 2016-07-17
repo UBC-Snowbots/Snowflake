@@ -1,2 +1,0 @@
-elsa
--DCATKIN_DEVEL_PREFIX=/home/gareth/programming/IGVC-2017/devel -DCMAKE_INSTALL_PREFIX=/home/gareth/programming/IGVC-2017/install -G Unix Makefiles

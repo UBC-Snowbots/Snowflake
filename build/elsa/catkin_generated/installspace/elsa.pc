@@ -1,8 +1,0 @@
-prefix=/home/gareth/programming/IGVC-2017/install
-
-Name: elsa
-Description: Description of elsa
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/gareth/programming/IGVC-2017/install/lib 
-Requires: 
