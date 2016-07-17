@@ -23,7 +23,7 @@
     <!-- urdf xml robot description loaded on the Parameter Server, 
     converting the xacro into a proper urdf file-->
     <param name="robot_description"
-        command="$(find xacro)/xacro.py '$(find elsa_gazebo)/urdf/elsa.xacro'" />
+        command="$(find xacro)/xacro --inorder '$(find elsa_gazebo)/urdf/elsa.xacro'" />
 
     <!-- push robot_description to factory and spawn robot in gazebo -->
     <node name="elsa_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"

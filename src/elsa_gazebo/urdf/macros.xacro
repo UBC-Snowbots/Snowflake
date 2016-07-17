@@ -1,30 +1,30 @@
 <?xml version="1.0"?>
 <robot name="elsa" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<macro name="cylinder_inertia" params="m r h">
+<xacro:macro name="cylinder_inertia" params="m r h">
   <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
     iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
     izz="${m*r*r/2}"
   />
-</macro>
+</xacro:macro>
 
-<macro name="box_inertia" params="m x y z">
+<xacro:macro name="box_inertia" params="m x y z">
   <inertia  ixx="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0"
     iyy="${m*(x*x+z*z)/12}" iyz = "0"
     izz="${m*(x*x+z*z)/12}"
   />
-</macro>
+</xacro:macro>
 
-<macro name="sphere_inertia" params="m r">
+<xacro:macro name="sphere_inertia" params="m r">
   <inertia  ixx="${2*m*r*r/5}" ixy = "0" ixz = "0"
     iyy="${2*m*r*r/5}" iyz = "0"
     izz="${2*m*r*r/5}"
   />
-</macro>
+</xacro:macro>
 
 
 <!-- Macro to generate wheels -->
-<macro name="wheel" params="lr tY wheel_displacement fb">
+<xacro:macro name="wheel" params="lr tY wheel_displacement fb">
 
 <link name="${lr}_${fb}_wheel">
   <collision>
@@ -80,10 +80,10 @@
     <mechanicalReduction>10</mechanicalReduction>
   </actuator>
 </transmission>
-</macro>
+</xacro:macro>
 
 <!-- Macro to generate vertical tower uprights -->
-<macro name="tower_vert" params="lr tY">
+<xacro:macro name="tower_vert" params="lr tY">
 
 <joint name="${lr}_tower_joint" type="fixed">
   <parent link="chassis"/>
@@ -115,6 +115,6 @@
 </inertial>
 
 </link>
-</macro>
+</xacro:macro>
 
 </robot>
