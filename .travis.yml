@@ -1,68 +1,28 @@
-# Generic .travis.yml file for running continuous integration on Travis-CI for
-# any ROS package.
-#
-# Available here:
-#   - http://felixduvallet.github.io/ros-travis-integration
-#   - https://github.com/felixduvallet/ros-travis-integration
-#
-# This installs ROS on a clean Travis-CI virtual machine, creates a ROS
-# workspace, resolves all listed dependencies, and sets environment variables
-# (setup.bash). Then, it compiles the entire ROS workspace (ensuring there are
-# no compilation errors), and runs all the tests. If any of the compilation/test
-# phases fail, the build is marked as a failure.
-#
-# We handle two types of package dependencies:
-#   - packages (ros and otherwise) available through apt-get. These are installed
-#     using rosdep, based on the information in the ROS package.xml.
-#   - dependencies that must be checked out from source. These are handled by
-#     'wstool', and should be listed in a file named dependencies.rosinstall.
-#
-# There are two variables you may want to change:
-#   - ROS_DISTRO (default is indigo). Note that packages must be available for
-#     the chosen ubuntu distro
-#   - ROSINSTALL_FILE (default is dependencies.rosinstall inside the repo
-#     root). This should list all necessary repositories in wstool format (see
-#     the ros wiki). If the file does not exists then nothing happens.
-#
-# See the README.md for more information.
-#
-# Author: Felix Duvallet <felixd@gmail.com>
-
-# NOTE: The build lifecycle on Travis.ci is something like this:
-#    before_install
-#    install
-#    before_script
-#    script
-#    after_success or after_failure
-#    after_script
-#    OPTIONAL before_deploy
-#    OPTIONAL deploy
-#    OPTIONAL after_deploy
-
-# NOTE: THIS HAS BEEN MODIFIED TO WORK SPECIFICALLY WITH ROS KINETIC AND 
-#       UBUNTU XENIAL
-################################################################################
-
-sudo: required
-
+# This config file for Travis CI utilizes ros-industrial/industrial_ci package.
+# For more info for the package, see https://github.com/ros-industrial/industrial_ci/blob/master/README.rst
+sudo: required 
+dist: trusty 
 services:
-    - docker
-
-language:
-    - generic
-
+  - docker
+language: generic 
+compiler:
+  - gcc
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+    recipients:
+        - gareth.ellis0@gmail.com
+env:
+  global:
+    - CATKIN_PARALLEL_TEST_JOBS=-p1
+    - ROS_PARALLEL_TEST_JOBS=-j1
+  matrix:
+    - ROS_DISTRO="kinetic"  ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
+    - ROS_DISTRO="kinetic"  ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
+    - ROS_DISTRO="kinetic"  UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/ros-controls/ros_control/$ROS_DISTRO-devel/ros_control.rosinstall
 install:
-    # Run Docker
-    - docker run -t -i ros /bin/bash
-    # Setup a catkin workspace 
-    - mkdir -p ~/catkin_ws/src
-    - cd ~/catkin_ws/src
-    - catkin_init_workspace
-    # Create the devel/setup.bash (run catkin_make with an empty workspace) and
-    # source it to set the path variables.
-    - cd ~/catkin_ws
-    - catkin_make
-    - source devel/setup.bash
-    # Add the package under integration to the workspace using a symlink.
-    - cd ~/catkin_ws/src
-    - ln -s $CI_SOURCE_PATH .
+  - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
+script:
+    - source .ci_config/travis.sh :q
+
