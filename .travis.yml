@@ -51,15 +51,11 @@ services:
 language:
     - generic
 
-before_install:
-    - docker build ros/kinetic-ros-base
-    - docker run ros/kinetic-ros-base
-
 install:
     # Setup a catkin workspace
-    - docker run ros/ros-kinetic-base mkdir -p ~/catkin_ws/src
-    - docker run ros/ros-kinetic-base cd ~/catkin_ws/src
-    - docker run ros/ros-kinetic-base catkin_init_workspace
+    - docker run ros mkdir -p ~/catkin_ws/src
+    - docker run ros cd ~/catkin_ws/src
+    - docker run ros catkin_init_workspace
     # Create devel/setup.bash (run catkin_make with an empty workspace)
     # and source it to set path variables
-    - docker run ros/ros-kinetic-base cd ~/catkin_ws && catkin_make && source devel/setup.bash 
+    - docker run ros cd ~/catkin_ws && catkin_make && source devel/setup.bash 
