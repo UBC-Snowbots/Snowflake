@@ -53,9 +53,12 @@ cd ~/clion*
 echo "Linking CLion"
 sudo ln -s "$(pwd)/bin/clion.sh" "/usr/local/bin/clion"
 
-# Change the CLion command so that it does not hold up the terminal
-echo 'alias clion="clion & disown"' >> ~/.bashrc
-echo 'alias clion="clion & disown"' >> ~/.zshrc
+# Change several commands you have to run from the terminal
+# so that they auto-close said terminal
+echo 'alias clion="clion & disown && exit"' >> ~/.bashrc
+echo 'alias clion="clion & disown && exit"' >> ~/.zshrc
+echo 'alias rviz="rviz & disown && exit"' >> ~/.bashrc
+echo 'alias rviz="rviz & disown && exit"' >> ~/.zshrc
 
 
 ###############################
