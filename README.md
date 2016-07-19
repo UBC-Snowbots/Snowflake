@@ -11,7 +11,7 @@ UBC Snowbots repo for the 2017 intelligent ground vehicle competition
 - Build the ROS project by running `cd ~/IGVC-2017 && catkin_make`. If everything compiles correctly and you don't get any error's, then you're good to go!
 
 ## Important Notes:
-- To run CLion with ROS, you must first go in to terminal, navigate to your project(cd ~/IGVC-2017), run `source devel/setup.sh` and then **from the same terminal** run `clion`
+- To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/IGVC-2017`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
 - CLion will not support autocompletion in your *.cpp* and *.h* files until you've added them to the CMake file
 
 ## What Should **NOT** Go In This Repo
