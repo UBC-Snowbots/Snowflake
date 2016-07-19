@@ -17,6 +17,16 @@ UBC Snowbots repo for the 2017 intelligent ground vehicle competition
 ## What Should **NOT** Go In This Repo
 - photos or videos (that aren't needed for the system to run)
 
+## Conventions
+- every `.cpp` file should start with 
+```
+/*
+ * Created By: Someone
+ * Created On: December 1st, 2000
+ * Description: A quick description of what this file does/is for
+ */
+```
+
 ## Using Gazebo
 - You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `elsa_gazebo/urdf/elsa.gazebo` and switch around the lidar settings (see comments in said file)
 - All worlds should go in the `elsa_gazebo/worlds` folder
