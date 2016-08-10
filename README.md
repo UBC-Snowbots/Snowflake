@@ -27,7 +27,7 @@ UBC Snowbots repo for the 2017 intelligent ground vehicle competition
  */
 ```
 - classes are **CamelCase**
-- variables are **non_camelcase**
+- variables are **non_camel_case**
 - functions are **camelCase**
 
 ## Creating a new node
@@ -65,6 +65,7 @@ some_ros_package
 </pre>
 
 ## Testing
+- GTest is our primary testing tool at the moment. We strongly recommend you read Google's introduction to it, and write a few example tests before you start using it with ROS.
 - ROS has native support for gtest (c++ unit testing). To run your tests, run `catkin_make run_tests`
 - To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
 
