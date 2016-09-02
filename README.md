@@ -12,8 +12,8 @@ if you're on campus use the `ubcsecure` network for best results.
 2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
 3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students). 
     - _JetBrains will send an initial email to confirm the UBC email you inputted, 
-    once you confirm another email will be sent to activate your new education account. 
-    You will use the activated education account to set up CLion later on._
+    once you confirm another email will be sent to activate your new education account; 
+    you will use this account to set up CLion later on._
 4. Boot into Ubuntu for the remaining steps
 5. Clone this repository by running `git clone https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
 6. To start set-up run `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
