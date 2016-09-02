@@ -1,18 +1,22 @@
 # IGVC-2017
 UBC Snowbots repo for the 2017 intelligent ground vehicle competition
 
-
 ## Setup
-- Install Ubuntu (We recommend you use a minimum of 30GB of space) ([Windows Instructions](http://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/), [Mac Instructions](http://www.howtogeek.com/187410/how-to-install-and-dual-boot-linux-on-a-mac/))
-- Boot into Ubuntu
-- Setup your UBC alumni email account [here](https://id.ubc.ca/) and then get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students). 
-    - _You will get 2 emails from JetBrains, the first one is to confirm your email and the other is to active your account._
-    - _You will use the activated account for CLion later on._
-- Clone this repository by running `git clone https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
-- Install everything you'll need to get started by running `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
-    - _Just choose yes and enter your password when needed throughout_ 
-- Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make`. 
-    - If everything compiles correctly and you don't get any error's, then you're good to go!
+```
+You will be downloading an Ubuntu ISO and multiple ROS packages with their respective dependencies.
+It is highly recommended that you have access to high speed internet while doing this entire setup; if you're on campus use the ubcsecure network.
+```
+1. Install Ubuntu 16.04 (We recommend you use a minimum of 30GB of space) 
+    - For dual-booting: [Windows Instructions](http://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/), [Mac Instructions](http://www.howtogeek.com/187410/how-to-install-and-dual-boot-linux-on-a-mac/)
+2. Boot into Ubuntu for the remaining steps
+3. Setup your UBC alumni email account [here](https://id.ubc.ca/) and then get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students). 
+    - _You will get 2 emails from JetBrains, the first one confirms your email and the other actives your account._
+    - _You will use the activated account to set up CLion later on._
+4. Clone this repository by running `git clone https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
+5. To start set-up run `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
+    - _Just choose yes and enter your password when the terminal prompts you_ 
+6. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make`. 
+    - If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ## Important Notes:
 - To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/IGVC-2017`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
