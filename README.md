@@ -11,7 +11,7 @@ if you're on campus use the `ubcsecure` network for best results.
     - For dual-booting: [Windows Instructions](http://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/), [Mac Instructions](http://www.howtogeek.com/187410/how-to-install-and-dual-boot-linux-on-a-mac/)
 2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
 3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students). 
-    - _You will get 2 emails from JetBrains, the first one confirms your UBC email and the other actives your account._
+    - _You will get 2 emails from JetBrains, the first one is to confirm your UBC email and the second is to activate your new education account._
     - _You will use the activated account to set up CLion later on._
 4. Boot into Ubuntu for the remaining steps
 5. Clone this repository by running `git clone https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
