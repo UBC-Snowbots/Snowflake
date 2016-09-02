@@ -2,10 +2,11 @@
 UBC Snowbots repo for the 2017 intelligent ground vehicle competition
 
 ## Setup
-```
+
 You will be downloading an Ubuntu ISO and multiple ROS packages with their respective dependencies.
-It is highly recommended that you have access to high speed internet while doing this entire setup; if you're on campus use the ubcsecure network.
-```
+It is highly recommended that you have access to high speed internet while doing this entire setup; 
+if you're on campus use the ubcsecure network for best results.
+
 1. Install Ubuntu 16.04 (We recommend you use a minimum of 30GB of space) 
     - For dual-booting: [Windows Instructions](http://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/), [Mac Instructions](http://www.howtogeek.com/187410/how-to-install-and-dual-boot-linux-on-a-mac/)
 2. Boot into Ubuntu for the remaining steps
