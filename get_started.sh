@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "================================================================"
+echo "Starting first time installation and setup, please wait"
+echo "these downloads can take a while if you're on slow internet."
+echo "================================================================"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -60,9 +64,12 @@ echo 'alias clion="clion & disown && exit"' >> ~/.zshrc
 echo 'alias rviz="rviz & disown && exit"' >> ~/.bashrc
 echo 'alias rviz="rviz & disown && exit"' >> ~/.zshrc
 
-
 ###############################
 # Install Other Dependencies
 ###############################
 cd $DIR
 ./install_dependencies.sh
+
+echo "================================================================"
+echo "Finished first time installation and setup; you're good to go!"
+echo "================================================================"
