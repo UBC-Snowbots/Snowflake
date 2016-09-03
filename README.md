@@ -9,6 +9,7 @@ if you're on campus use the `ubcsecure` network for best results.
 
 1. Install Ubuntu 16.04 (We recommend you use a minimum of 30GB of space) 
     - For dual-booting: [Windows Instructions](http://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/), [Mac Instructions](http://www.howtogeek.com/187410/how-to-install-and-dual-boot-linux-on-a-mac/)
+    - _Note_: You should always choose the "install alongside Windows/OSX" during your installation (step 7 in the windows tutorial)
 2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
 3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students)
     - _JetBrains will send an initial email to confirm the UBC email you inputted, 
@@ -82,6 +83,7 @@ some_ros_package
 - To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
 
 ## Using Gazebo
+- You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
 - You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `elsa_gazebo/urdf/elsa.gazebo` and switch around the lidar settings (see comments in said file)
 - All worlds should go in the `elsa_gazebo/worlds` folder
 - To launch a world, simply run the appropriate launch file in `elsa_gazebo/launch`
