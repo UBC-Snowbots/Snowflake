@@ -46,7 +46,7 @@ if you're on campus use the `ubcsecure` network for best results.
 - If your node is at all complicated, then this format should be followed. For simple nodes, please see below
 - Each node should be class based
 - **MyNode.h** should contain your class declaration
-- **MyNode.cpp** should contain your class definition.
+- **MyNode.cpp** should contain your class definition
 - **my_node.cpp** should be relatively small, and should just contain a **main** function to run your node
 - **my-node-test.cpp** should contain all your tests
 - For an example of this, please see `src/sample_package`
@@ -77,7 +77,7 @@ some_ros_package
 </pre>
 
 ## Testing
-- GTest is our primary testing tool at the moment. We strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS.
+- GTest is our primary testing tool at the moment. We strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS
 - Once you've setup your tests in ROS, run `catkin_make run_tests` to run them
 - To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
 
