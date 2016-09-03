@@ -1,6 +1,12 @@
 #!/bin/bash
 
 # Directory this file was executed from
+=======
+echo "================================================================"
+echo "Starting first time installation and setup, please wait"
+echo "these downloads can take a while if you're on slow internet."
+echo "================================================================"
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Shell config files to add aliases to
@@ -40,8 +46,12 @@ sudo apt-get install python-rosinstall
 ###############################
 # Install CLion
 ###############################
+=======
+# install by executing `./install.sh`.
+#!/usr/bin/env bash
+
 # Install dependencies
-sudo apt-get install -y openjdk-7-jdk git
+sudo apt-get install -y openjdk-8-jdk
 
 # Fetch and extract CLion
 echo "Fetching and extracting CLion"
@@ -71,9 +81,12 @@ for file_name in $SHELL_CONFIG_FILES; do
     done
 done
 
-
 ###############################
 # Install Other Dependencies
 ###############################
 cd $DIR
 ./install_dependencies.sh
+
+echo "================================================================"
+echo "Finished first time installation and setup; you're good to go!"
+echo "================================================================"
