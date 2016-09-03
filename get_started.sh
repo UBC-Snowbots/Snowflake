@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Directory this file was executed from
-=======
 echo "================================================================"
 echo "Starting first time installation and setup, please wait"
 echo "these downloads can take a while if you're on slow internet."
@@ -25,6 +24,7 @@ sudo apt-get install ros-kinetic-desktop-full
 sudo rosdep init
 rosdep update
 
+# Source ROS Environment Variables Automatically
 for file_name in $SHELL_CONFIG_FILES; do
     if ! grep -Fxq "source /opt/ros/kinetic/setup.bash" $file_name
     then
@@ -46,7 +46,6 @@ sudo apt-get install python-rosinstall
 ###############################
 # Install CLion
 ###############################
-=======
 # install by executing `./install.sh`.
 #!/usr/bin/env bash
 
