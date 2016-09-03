@@ -1,7 +1,10 @@
 #!/bin/bash
 
-
+# Directory this file was executed from
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Shell config files to add aliases to
+SHELL_CONFIG_FILES=("$HOME/.bashrc" "$HOME/.zshrc")
 
 ###############################
 # Install ROS
@@ -16,13 +19,18 @@ sudo apt-get install ros-kinetic-desktop-full
 sudo rosdep init
 rosdep update
 
-# Source ROS Environment Variables Automatically
-echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-echo "source /opt/ros/kinetic/setup.zsh" >> ~/.zshrc
-
-# Set the Gazebo Model Path Automaticall
-echo "export GAZEBO_MODEL_PATH=$DIR/src/elsa_gazebo/models:${GAZEBO_MODEL_PATH}" >> ~/.bashrc
-echo "export GAZEBO_MODEL_PATH=$DIR/src/elsa_gazebo/models:${GAZEBO_MODEL_PATH}" >> ~/.zshrc
+for file_name in $SHELL_CONFIG_FILES; do
+    if ! grep -Fxq "source /opt/ros/kinetic/setup.bash" $file_name
+    then
+        # Source ROS Environment Variables Automatically
+        echo "source /opt/ros/kinetic/setup.bash" >> $file_name
+    fi
+    if ! grep -Fxq "export GAZEBO_MODEL_PATH=$DIR/src/elsa_gazebo/models:${GAZEBO_MODEL_PATH}" $file_name
+    then
+        # Source ROS Environment Variables Automatically
+        echo "export GAZEBO_MODEL_PATH=$DIR/src/elsa_gazebo/models:${GAZEBO_MODEL_PATH}" >> $file_name
+    fi
+done
 
 # rosinstall allows downloading of source trees for ROS packages 
 # with a single command
@@ -32,10 +40,6 @@ sudo apt-get install python-rosinstall
 ###############################
 # Install CLion
 ###############################
-install by executing `./install.sh`.
-Raw  install_clion.sh
-#!/usr/bin/env bash
-
 # Install dependencies
 sudo apt-get install -y openjdk-7-jdk git
 
@@ -55,10 +59,17 @@ sudo ln -s "$(pwd)/bin/clion.sh" "/usr/local/bin/clion"
 
 # Change several commands you have to run from the terminal
 # so that they auto-close said terminal
-echo 'alias clion="clion & disown && exit"' >> ~/.bashrc
-echo 'alias clion="clion & disown && exit"' >> ~/.zshrc
-echo 'alias rviz="rviz & disown && exit"' >> ~/.bashrc
-echo 'alias rviz="rviz & disown && exit"' >> ~/.zshrc
+aliases=("clion=\"clion & disown && exit\""\
+         "rviz=\"rviz & disown && exit\"")
+# Check to make sure the alias doesn't already exist
+for file_name in $SHELL_CONFIG_FILES; do
+    for alias in $aliases; do
+       if ! grep -Fxq "$alias" $file_name
+       then
+          echo "alias $alias" >> $file_name 
+       fi
+    done
+done
 
 
 ###############################
