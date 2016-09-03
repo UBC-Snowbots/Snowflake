@@ -36,12 +36,12 @@ sudo apt-get install python-rosinstall
 ###############################
 # Install CLion
 ###############################
-install by executing `./install.sh`.
-Raw  install_clion.sh
+# install by executing `./install.sh`.
+# Raw  install_clion.sh
 #!/usr/bin/env bash
 
 # Install dependencies
-sudo apt-get install -y openjdk-7-jdk git
+sudo apt-get install -y openjdk-8-jdk
 
 # Fetch and extract CLion
 echo "Fetching and extracting CLion"
