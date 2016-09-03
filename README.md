@@ -1,7 +1,7 @@
 # IGVC-2017
-UBC Snowbots repo for the 2017 intelligent ground vehicle competition
+UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
 
-## Setup
+## Installation and Setup
 
 You will be downloading an Ubuntu ISO and multiple ROS packages with their respective dependencies.
 It is highly recommended that you have access to high speed internet while doing this entire setup; 
@@ -10,16 +10,16 @@ if you're on campus use the `ubcsecure` network for best results.
 1. Install Ubuntu 16.04 (We recommend you use a minimum of 30GB of space) 
     - For dual-booting: [Windows Instructions](http://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/), [Mac Instructions](http://www.howtogeek.com/187410/how-to-install-and-dual-boot-linux-on-a-mac/)
 2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
-3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students). 
+3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students)
     - _JetBrains will send an initial email to confirm the UBC email you inputted, 
     once you confirm another email will be sent to activate your new education account; 
-    you will use this account to set up CLion later on._
+    you will use this account to set up CLion later on_
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
 6. Clone this repository by running `git clone https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
 7. To start set-up run `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
     - _Just choose yes and enter your password when the terminal prompts you_ 
-8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make`. 
+8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ## Important Notes:
@@ -27,10 +27,10 @@ if you're on campus use the `ubcsecure` network for best results.
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
 
 ## What Should **NOT** Go In This Repo
-- photos or videos (that aren't needed for the system to run)
+- Photos or videos (that aren't needed for the system to run)
 
 ## Conventions
-- every **.cpp** and **.h** file should start with 
+- Every **.cpp** and **.h** file should start with 
 ```
 /*
  * Created By: Someone
@@ -38,9 +38,9 @@ if you're on campus use the `ubcsecure` network for best results.
  * Description: A quick description of what this file does/is for
  */
 ```
-- classes are **CamelCase**
-- variables are **non_camel_case**
-- functions are **camelCase**
+- Classes are **CamelCase**
+- Variables are **non_camel_case**
+- Functions are **camelCase**
 
 ## Creating a new node
 - If your node is at all complicated, then this format should be followed. For simple nodes, please see below
@@ -66,7 +66,7 @@ some_ros_package
 </pre>
 
 ## Creating a new **simple** node
-- you will not be able to write unit tests for this type of node, so it must be extremely simple
+- You will not be able to write unit tests for this type of node, so it must be extremely simple
 - **my_node.cpp** will contain the entire node, and will probably contain a `while(ros::ok()){}` loop
 <pre>
 some_ros_package
