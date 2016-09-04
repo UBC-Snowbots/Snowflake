@@ -27,6 +27,9 @@
 <xacro:property name="lidar_mass" value="0"/>
 <xacro:property name="lidar_angle" value="0"/>
 
+<xacro:property name="gps_size" value="0.05"/>
+<xacro:property name="gps_mass" value="0"/>
+
 <xacro:include filename="$(find elsa_gazebo)/urdf/elsa.gazebo" />
 <xacro:include filename="$(find elsa_gazebo)/urdf/materials.xacro" />
 <xacro:include filename="$(find elsa_gazebo)/urdf/macros.xacro" />
