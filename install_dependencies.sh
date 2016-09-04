@@ -14,7 +14,8 @@ sudo apt-get install -y\
     ros-kinetic-gazebo-ros-control \
     ros-kinetic-ros-controllers \
     ros-kinetic-ros-control \
-    ros-kinetic-effort-controllers
+    ros-kinetic-effort-controllers \
+    ros-kinetic-hector-gazebo
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."
