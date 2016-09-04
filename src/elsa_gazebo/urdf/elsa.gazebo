@@ -23,7 +23,7 @@
         <wheelDiameter>${2 * wheel_radius}</wheelDiameter>
         <torque>10</torque>
         <commandTopic>elsa/cmd_vel</commandTopic>
-        <odometryTopic>elsa/odom_diffdrive</odometryTopic>
+        <odometryTopic>elsa/odom</odometryTopic>
         <odometryFrame>odom</odometryFrame>
         <robotBaseFrame>base_link</robotBaseFrame>
       </plugin>
@@ -53,7 +53,7 @@
       <sensor type="camera" name="camera1">
         <update_rate>30.0</update_rate>
         <camera name="head">
-          <horizontal_fov>1.3962634</horizontal_fov>
+          <horizontal_fov>1.29154</horizontal_fov>
           <image>
             <width>1920</width>
             <height>1080</height>
@@ -61,7 +61,7 @@
           </image>
           <clip>
             <near>0.02</near>
-            <far>300</far>
+            <far>200</far>
           </clip>
         </camera>
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
@@ -82,22 +82,27 @@
     </gazebo>
     
 
-    <!-- Hokuyo (GPU) -->
+    <!--
+        THERE ARE TWO DIFFERENT COMMENTED SECTIONS IN THE LIDAR
+        SECTION BELOW YOU MAY HAVE TO CHANGE TO GET IT WORKING WITH
+        INTEL INTEGRATED GRAPHICS
+    -->
+    <!-- SICK Lidar (GPU) -->
     <gazebo reference="lidar">
     <material>Gazebo/Red</material>
     <!-- Set depending on whether you have a GPU or not -->
-    <sensor type="gpu_ray" name="head_hokuyo_sensor">
-    <!--<sensor type="ray" name="head_hokuyo_sensor">-->
+    <sensor type="gpu_ray" name="lidar">
+    <!--<sensor type="ray" name="lidar">-->
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
-      <update_rate>40</update_rate>
+      <update_rate>75</update_rate>
       <ray>
         <scan>
           <horizontal>
-            <samples>720</samples>
+            <samples>180</samples>
             <resolution>1</resolution>
-            <min_angle>-1.570796</min_angle>
-            <max_angle>1.570796</max_angle>
+            <min_angle>-0.785398</min_angle>
+            <max_angle>0.785398</max_angle>
           </horizontal>
         </scan>
         <range>
@@ -115,7 +120,7 @@
     <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so">
     <!--<plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">-->
         <topicName>/elsa/laser/scan</topicName>
-        <frameName>hokuyo_link</frameName>
+        <frameName>lidar</frameName>
       </plugin>
     </sensor>
     </gazebo>
