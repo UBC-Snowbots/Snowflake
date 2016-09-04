@@ -13,11 +13,6 @@ private:
     ros::Publisher cmd_vel_pub;
 
     turtlesim::Pose::ConstPtr current_pose;
-
-    ros::Time start_time;
-    ros::Time current_time;
-    // The change in time since the node started (in seconds)
-    float delta_time;
 };
 
 // Constructor for the turtle controller
@@ -28,15 +23,11 @@ TurtleController::TurtleController(){
     turtle_pose = nh.subscribe<turtlesim::Pose>("/turtle1/pose", 10, &TurtleController::poseCallBack, this);
 
     ros::Rate loop_rate(10);
-
-    start_time = ros::Time::now();
 }
 
 // This function is called when the turtle publishes a position
 void TurtleController::poseCallBack(const turtlesim::Pose::ConstPtr &msg) {
     current_pose = msg;
-    current_time = ros::Time::now();
-    delta_time = current_time.sec - start_time.sec;
     sendNewCommand();
 }
 
