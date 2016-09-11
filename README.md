@@ -88,6 +88,7 @@ some_ros_package
 - All worlds should go in the `elsa_gazebo/worlds` folder
 - To launch a world, simply run the appropriate launch file in `elsa_gazebo/launch`
 - To create a launch file for your world, create one in `elsa_gazebo/launch`, using `elsa_gazebo/launch/sample.launch` as a guide
+- To manually control the robot, run `rosrun turtlesim turtle_teleop_key /turtle1/cmd_vel:=/elsa/cmd_vel`
 
 ## Github Procedure
 - We follow the "Feature Branch Workflow"
