@@ -1,0 +1,18 @@
+material igvc_qualification_ground_plane/Image
+{
+     technique
+     {
+         pass
+         {
+            ambient 0.5 0.5 0.5 0.500000
+            diffuse 0.8 0.8 0.8 0.800000
+            specular 0.03 0.03 0.03 1.000000
+            emissive 0.900000 0.900000 0.900000 1.000000
+
+             texture_unit
+             {
+                 texture igvc_qualification_ground_plane_texture.png
+             }
+         }
+     } 
+}
