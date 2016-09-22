@@ -130,6 +130,7 @@ include_directories(
 ## Declare a C++ executable
 # add_executable(sample_package_node src/sample_package_node.cpp)
 add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp include/LidarDecision.h)
+add_executable(vision_decision src/vision_decision.cpp src/VisionDecision.cpp include/VisionDecision.h)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -140,6 +141,7 @@ add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp inclu
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(lidar_decision ${catkin_LIBRARIES})
+target_link_libraries(vision_decision ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -187,7 +189,10 @@ target_link_libraries(lidar_decision ${catkin_LIBRARIES})
 # endif()
 if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp)
+    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp)
+
     target_link_libraries(lidar-decision-test ${catkin_LIBRARIES})
+    target_link_libraries(vision-decision-test ${catkin_LIBRARIES})
 endif()
 
 
