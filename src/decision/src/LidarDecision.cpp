@@ -25,10 +25,6 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     uint32_t queue_size = 10;
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
-    // Test twist publishing
-    geometry_msgs::Twist twist;
-    twist.angular.z = 10;
-
 }
 
 // This is called whenever a new message is received
