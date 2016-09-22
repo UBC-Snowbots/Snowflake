@@ -12,10 +12,10 @@ int main(int argc, char **argv){
     // Setup your ROS node
     std::string node_name = "lidar_decision";
 
-    ros::init(argc, argv, node_name);
+    //ros::init(argc, argv, node_name);
 
     // Create an instance of your class
-    LidarDecision lidar_decision();
+    LidarDecision lidar_decision(argc, argv, node_name);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();

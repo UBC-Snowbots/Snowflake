@@ -16,7 +16,7 @@
 
 class LidarDecision {
 public:
-    LidarDecision();
+    LidarDecision(int argc, char **argv, std::string node_name);
 private:
     void scanCallBack(const geometry_msgs::Twist::ConstPtr& raw_scan);
     void publishTwist(geometry_msgs::Twist twist);

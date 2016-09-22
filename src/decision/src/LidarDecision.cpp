@@ -9,7 +9,8 @@
 #include <LidarDecision.h>
 
 // The constructor
-LidarDecision::LidarDecision() {
+LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
+    ros::init(argc, argv, node_name);
     // Setup NodeHandles
     ros::NodeHandle nh;
     ros::NodeHandle public_nh("~");
@@ -17,12 +18,17 @@ LidarDecision::LidarDecision() {
     // Setup Subscriber(s)
     std::string laserscan_topic_name = "/elsa/scan";
     int refresh_rate = 10;
-    scan_subscriber = nh.subscribe(laserscan_topic_name, refresh_rate, &LidarDecision::scanCallBack, this);
+    scan_subscriber = public_nh.subscribe(laserscan_topic_name, refresh_rate, &LidarDecision::scanCallBack, this);
 
     // Setup Publisher(s)
-    std::string twist_topic = public_nh.resolveName("lidar_decision");
+    std::string twist_topic = public_nh.resolveName("lidar_decision_command");
     uint32_t queue_size = 10;
-    twist_publisher = public_nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
+    twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
+
+    // Test twist publishing
+    geometry_msgs::Twist twist;
+    twist.angular.z = 10;
+
 }
 
 // This is called whenever a new message is received
