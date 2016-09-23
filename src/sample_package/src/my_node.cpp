@@ -14,7 +14,7 @@ int main(int argc, char **argv){
     std::string node_name = "my_node";
 
     // Create an instance of your class
-    MyClass my_class;
+    MyClass my_class(argc, argv, node_name);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();
