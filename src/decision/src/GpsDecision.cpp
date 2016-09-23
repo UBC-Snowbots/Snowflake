@@ -16,12 +16,12 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     ros::NodeHandle public_nh("~");
 
     // Setup Subscriber(s)
-    std::string laserscan_topic_name = "/gps_conversion/relative_gps";
+    std::string gps_filtered_topic_name = "/gps_conversion/relative_gps";
     int refresh_rate = 10;
-    scan_subscriber = public_nh.subscribe(laserscan_topic_name, refresh_rate, &GpsDecision::gpsCallBack, this);
+    gps_subscriber = public_nh.subscribe(gps_filtered_topic_name, refresh_rate, &GpsDecision::gpsCallBack, this);
 
     // Setup Publisher(s)
-    std::string twist_topic = public_nh.resolveName("gps_decision_command");
+    std::string twist_topic = public_nh.resolveName("command");
     uint32_t queue_size = 10;
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 

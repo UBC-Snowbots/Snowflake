@@ -22,7 +22,7 @@ private:
     void gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps);
     void publishTwist(geometry_msgs::Twist twist);
 
-    ros::Subscriber scan_subscriber;
+    ros::Subscriber gps_subscriber;
     ros::Publisher twist_publisher;
 };
 #endif //DECISION_GPS_DECISION_H
