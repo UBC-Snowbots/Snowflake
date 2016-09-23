@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
- * Created On: July 16th, 2016
- * Description: Tests for MyNode
+ * Created On: July 22, 2016
+ * Description: Tests for GpsDecision
  */
 
 #include <LidarDecision.h>

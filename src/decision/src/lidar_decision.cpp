@@ -1,8 +1,8 @@
 /*
  * Created By: Gareth Ellis
- * Created On: July 16th, 2016
- * Description: The Lidar decision Node
- *
+ * Created On: September 22, 2016
+ * Description: The Lidar decision node, takes in a raw Lidar scan
+ *              and broadcasts a recommended Twist message
  */
 
 #include <LidarDecision.h>

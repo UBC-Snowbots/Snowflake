@@ -1,9 +1,8 @@
 /*
  * Created By: Gareth Ellis
- * Created On: July 16th, 2016
- * Description: An example node that subscribes to a topic publishing strings,
- *              and re-publishes everything it receives to another topic with
- *              a "!" at the end
+ * Created On: September 22, 2016
+ * Description: The vision decision node, takes in an image from the robot's
+ *              camera and produces a recommended twist message
  */
 
 #include <VisionDecision.h>

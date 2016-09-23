@@ -1,8 +1,9 @@
 /*
- * Created By: Gareth Ellis
- * Created On: July 16th, 2016
- * Description: The Lidar decision Node
- *
+ * Created By: YOUR NAME HERE
+ * Created On: September 22, 2016
+ * Description: The Decision Node for GPS, takes in a point relative to
+ *              the robots location and heading and broadcasts a
+ *              recommended twist message
  */
 
 #include <GpsDecision.h>

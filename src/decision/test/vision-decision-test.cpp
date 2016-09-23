@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
- * Created On: July 16th, 2016
- * Description: Tests for MyNode
+ * Created On: September 22, 2016
+ * Description: Tests for VisionDecision
  */
 
 #include <VisionDecision.h>

@@ -1,9 +1,8 @@
 /*
  * Created By: Gareth Ellis
- * Created On: July 16th, 2016
- * Description: An example node that subscribes to a topic publishing strings,
- *              and re-publishes everything it receives to another topic with
- *              a "!" at the end
+ * Created On: September 22, 2016
+ * Description: The Lidar decision node, takes in a raw Lidar scan
+ *              and broadcasts a recommended Twist message
  */
 
 #ifndef DECISION_LIDAR_DECISION_H
