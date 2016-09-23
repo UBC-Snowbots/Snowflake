@@ -9,8 +9,9 @@
 #include <MyNode.h>
 
 // The constructor for MyClass
-MyClass::MyClass() {
+MyClass::MyClass(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
+    ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
     ros::NodeHandle public_nh("~");
 
