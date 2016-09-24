@@ -1,3 +1,9 @@
+/**
+ * Created by: Valerian Ratu
+ * Created On: March 2016
+ * Desc: Takes two overlapping images from two cameras and merge the images together
+ */
+
 #include <opencv2/core/core.hpp>
 #include <stdio.h>
 #include <opencv2/highgui/highgui.hpp>
