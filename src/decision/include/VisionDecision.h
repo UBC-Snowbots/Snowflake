@@ -21,6 +21,7 @@
 class VisionDecision {
 public:
     VisionDecision(int argc, char **argv, std::string node_name);
+
     static double mapRange(double x, double inMin, double inMax, double outMin, double outMax);
     static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan);
     static int getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan);

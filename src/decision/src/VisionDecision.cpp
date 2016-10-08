@@ -343,7 +343,3 @@ int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax){
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
-
-
-
-
