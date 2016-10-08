@@ -17,10 +17,12 @@
 class VisionDecision {
 public:
     VisionDecision(int argc, char **argv, std::string node_name);
+    static double getImageRatio(const sensor_msgs::Image::ConstPtr& raw_scan);
 private:
     void imageCallBack(const sensor_msgs::Image::ConstPtr& raw_scan);
     void publishTwist(geometry_msgs::Twist twist);
-
+   
+    
     ros::Subscriber image_subscriber;
     ros::Publisher twist_publisher;
 };

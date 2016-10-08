@@ -6,6 +6,7 @@
  */
 
 #include <VisionDecision.h>
+#include <tiff.h>
 
 // The constructor
 VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
@@ -29,8 +30,40 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
 // This is called whenever a new message is received
 void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& raw_scan) {
     // Deal with new messages here
+  
 }
 
 void VisionDecision::publishTwist(geometry_msgs::Twist twist){
     twist_publisher.publish(twist);
+}
+
+/**
+ * Takes in an image reference, then returns the ratio of the white
+ * in the left and right sides.
+ * 
+ * @param raw_scan
+ *           image reference
+ * @returns double
+ *           imageWhiteRatio of left to right.
+ */
+static double VisionDecision::getImageRatio(const sensor_msgs::Image::ConstPtr& raw_scan){
+
+    auto imageData = raw_scan->data;
+
+    uint32 imageHeight = raw_scan->height;
+    uint32 imageWidth = raw_scan->width;
+
+    double rightWhiteCount = 0;
+    double leftWhiteCount = 0;
+
+    for(int rowCount = 0; rowCount < imageHeight; rowCount++){
+        for(int columnCount = 0; columnCount < imageWidth; columnCount++){
+            if(columnCount < imageWidth/2 && imageData[columnCount*rowCount] == 0)
+                leftWhiteCount++;
+            if(columnCount >  imageWidth/2 && imageData[columnCount*rowCount] == 0)
+                rightWhiteCount++;
+        }
+    }
+
+    return leftWhiteCount/rightWhiteCount;
 }
