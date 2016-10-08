@@ -162,6 +162,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
         sumAngles += foundAngle;
     }
 
+<<<<<<< 59da4b3ddd34ccc4dd0c44e3e4f61c55fba82d05
 
     if (validSamples == 0)
         return INVALID;
@@ -342,4 +343,13 @@ int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
  */
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax){
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+=======
+    // returns a special case if rightWhiteCount == 0
+    if(rightWhiteCount != 0)
+        return leftWhiteCount/rightWhiteCount;
+    else if(rightWhiteCount == leftWhiteCount)
+        return 1;
+    else
+        return 999;
+>>>>>>> Added support for edge cases in getImageRatio() and a test case for it.
 }
