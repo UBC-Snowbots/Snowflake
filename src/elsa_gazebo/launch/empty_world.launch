@@ -1,6 +1,6 @@
 <launch>
     
-    <!-- Start the world -->
+    <!-- Starts an empty world with elsa at 0,0 -->
     <include file="$(find elsa_gazebo)/launch/open_world.launch">
 
         <arg name="world" value="empty.world"/>

@@ -15,7 +15,7 @@
 
 class MyClass {
 public:
-    MyClass();
+    MyClass(int argc, char **argv, std::string node_name);
     static std::string addExclamationPoint(std::string input_string);
 private:
     void subscriberCallBack(const std_msgs::String::ConstPtr& msg);
