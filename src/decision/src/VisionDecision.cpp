@@ -65,5 +65,11 @@ static double VisionDecision::getImageRatio(const sensor_msgs::Image::ConstPtr& 
         }
     }
 
-    return leftWhiteCount/rightWhiteCount;
+    // returns a special case if rightWhiteCount == 0
+    if(rightWhiteCount != 0)
+        return leftWhiteCount/rightWhiteCount;
+    else if(rightWhiteCount == leftWhiteCount)
+        return 1;
+    else
+        return 999;
 }
