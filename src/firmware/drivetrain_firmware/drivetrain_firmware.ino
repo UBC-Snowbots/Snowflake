@@ -1,8 +1,16 @@
+#include <HardwareSerial.h>
 #include <SoftwareSerial.h>
 #include <stdlib.h>
 #include <Servo.h>
 
 #define BAUD_RATE 115200
+#define BUFFER_SIZE 3
+#define STOP 128
+#define UPPER_LINEAR_SPEED 100
+#define LOWER_LINEAR_SPEED 80
+#define UPPER_ANGULAR_SPEED 115
+#define LOWER_ANGULAR_SPEED 75
+
 
 Servo LeftM;//5
 Servo RightM;
@@ -10,6 +18,7 @@ int lx,ly,az = 0;
 
 const int left_motor_pin = 9;
 const int right_motor_pin = 10;
+const char buffer_head = 'B';
 
 void setup()  { 
   Serial.begin(BAUD_RATE);
@@ -26,18 +35,26 @@ void loop()  {
 }  
 
 void serial_read(){
-  if (Serial.available()>9){
-    
+    //reading in 3 chars from Serial
+  if (Serial.available()>BUFFER_SIZE){
+
+      /*
     if (Serial.read() == 'B'){
       lx = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
       ly =(Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-      az = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-    } else {
-      lx = ly = az = 128;
-    }
-    
-  } else {  
-      lx = ly = az = 128;
+      az = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');*/
+
+      // B identifies the start of the buffer
+      if (Serial.read() == buffer_head) {
+          lx = Serial.read();
+          ly = Serial.read();
+          az = Serial.read();
+      } else {
+          lx = ly = az = STOP;
+      }
+
+  } else {
+      lx = ly = az = STOP;
     }
     
   //Serial.end();
@@ -48,13 +65,13 @@ void serial_read(){
 }
 
 void convert(){
-  /* [0, 255] for 8 bit values
-  *  [80, 100] for linear motor speed
-  *  [75, 115] for angular speed
+  /* Serial.read() reads values in [0,255]
+   * we map them to lower and upper speeds defined above
+   * for both linear and angular velocity
   */
-  lx = map (lx, 0, 255, 80, 100);
-  ly = map (ly, 0, 255, 80, 100);
-  az = map (az, 0, 255, 75, 115);
+  lx = map (lx, 0, 255, LOWER_LINEAR_SPEED, UPPER_LINEAR_SPEED);
+  ly = map (ly, 0, 255, LOWER_LINEAR_SPEED, UPPER_LINEAR_SPEED);
+  az = map (az, 0, 255, LOWER_ANGULAR_SPEED, UPPER_ANGULAR_SPEED);
 }
 
 
@@ -69,7 +86,7 @@ void drive(){
      RightM.write(90);
    } else{
     LeftM.write(az);
-    RightM.write(az);  
+    RightM.write(az);
    }
   }
   else{
@@ -79,8 +96,8 @@ void drive(){
  }
  else{
    if (lx > 90){
-   LeftM.write(lx);//if 80 //if 100 
-   RightM.write(lx+20);//needs to be 100 //needs to be 80 
+   LeftM.write(lx);//if 80 //if 100
+   RightM.write(lx+20);//needs to be 100 //needs to be 80
    }
    else{LeftM.write(lx);
    RightM.write(lx-20);}
