@@ -162,8 +162,6 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
         sumAngles += foundAngle;
     }
 
-<<<<<<< 59da4b3ddd34ccc4dd0c44e3e4f61c55fba82d05
-
     if (validSamples == 0)
         return INVALID;
     else
@@ -234,6 +232,7 @@ int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const se
 }
 
 /**
+<<<<<<< f94a814e7838a4e637d0236ce273e3e1dd489a35
  * Returns the white pixel right after the black space in between
  * the line and the left side or right side of the screen.
  *
@@ -343,13 +342,4 @@ int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
  */
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax){
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-=======
-    // returns a special case if rightWhiteCount == 0
-    if(rightWhiteCount != 0)
-        return leftWhiteCount/rightWhiteCount;
-    else if(rightWhiteCount == leftWhiteCount)
-        return 1;
-    else
-        return 999;
->>>>>>> Added support for edge cases in getImageRatio() and a test case for it.
 }
