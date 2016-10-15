@@ -29,32 +29,32 @@ TEST(FinalDecision, arbitrator){
     gps3.angular.z = -5;
 
     EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision1, gps1).angular.z);
-//    EXPECT_EQ(lidar1, FinalDecision::arbitrator(lidar1, vision1, gps2));
-//    EXPECT_EQ(lidar1, FinalDecision::arbitrator(lidar1, vision1, gps3));
-//    EXPECT_EQ(lidar1, FinalDecision::arbitrator(lidar1, vision2, gps1));
-//    EXPECT_EQ(lidar1, FinalDecision::arbitrator(lidar1, vision2, gps2));
-//    EXPECT_EQ(lidar1, FinalDecision::arbitrator(lidar1, vision2, gps3));
-//    EXPECT_EQ(lidar1, FinalDecision::arbitrator(lidar1, vision3, gps1));
-//    EXPECT_EQ(lidar1, FinalDecision::arbitrator(lidar1, vision3, gps2));
-//    EXPECT_EQ(lidar1, FinalDecision::arbitrator(lidar1, vision3, gps3));
-//    EXPECT_EQ(vision1, FinalDecision::arbitrator(lidar2, vision1, gps1));
-//    EXPECT_EQ(vision1, FinalDecision::arbitrator(lidar2, vision1, gps2));
-//    EXPECT_EQ(vision1, FinalDecision::arbitrator(lidar2, vision1, gps3));
-//    EXPECT_EQ(gps1, FinalDecision::arbitrator(lidar2, vision2, gps1));
-//    EXPECT_EQ(gps2, FinalDecision::arbitrator(lidar2, vision2, gps2));
-//    EXPECT_EQ(gps3, FinalDecision::arbitrator(lidar2, vision2, gps3));
-//    EXPECT_EQ(vision3, FinalDecision::arbitrator(lidar2, vision3, gps1));
-//    EXPECT_EQ(vision3, FinalDecision::arbitrator(lidar2, vision3, gps2));
-//    EXPECT_EQ(vision3, FinalDecision::arbitrator(lidar2, vision3, gps3));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision1, gps1));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision1, gps2));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision1, gps3));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision2, gps1));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision2, gps2));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision2, gps3));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision3, gps1));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision3, gps2));
-//    EXPECT_EQ(lidar3, FinalDecision::arbitrator(lidar3, vision3, gps3));
+    EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision1, gps2).angular.z);
+    EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision1, gps3).angular.z);
+    EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision2, gps1).angular.z);
+    EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision2, gps2).angular.z);
+    EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision2, gps3).angular.z);
+    EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision3, gps1).angular.z);
+    EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision3, gps2).angular.z);
+    EXPECT_EQ(lidar1.angular.z, FinalDecision::arbitrator(lidar1, vision3, gps3).angular.z);
+    EXPECT_EQ(vision1.angular.z, FinalDecision::arbitrator(lidar2, vision1, gps1).angular.z);
+    EXPECT_EQ(vision1.angular.z, FinalDecision::arbitrator(lidar2, vision1, gps2).angular.z);
+    EXPECT_EQ(vision1.angular.z, FinalDecision::arbitrator(lidar2, vision1, gps3).angular.z);
+    EXPECT_EQ(gps1.angular.z, FinalDecision::arbitrator(lidar2, vision2, gps1).angular.z);
+    EXPECT_EQ(gps2.angular.z, FinalDecision::arbitrator(lidar2, vision2, gps2).angular.z);
+    EXPECT_EQ(gps3.angular.z, FinalDecision::arbitrator(lidar2, vision2, gps3).angular.z);
+    EXPECT_EQ(vision3.angular.z, FinalDecision::arbitrator(lidar2, vision3, gps1).angular.z);
+    EXPECT_EQ(vision3.angular.z, FinalDecision::arbitrator(lidar2, vision3, gps2).angular.z);
+    EXPECT_EQ(vision3.angular.z, FinalDecision::arbitrator(lidar2, vision3, gps3).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision1, gps1).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision1, gps2).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision1, gps3).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision2, gps1).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision2, gps2).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision2, gps3).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision3, gps1).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision3, gps2).angular.z);
+    EXPECT_EQ(lidar3.angular.z, FinalDecision::arbitrator(lidar3, vision3, gps3).angular.z);
 }
 
 int main(int argc, char **argv) {
