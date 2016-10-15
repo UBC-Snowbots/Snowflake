@@ -1,24 +1,57 @@
-#include <HardwareSerial.h>
 #include <SoftwareSerial.h>
 #include <stdlib.h>
+#include <math.h>
 #include <Servo.h>
 
 #define BAUD_RATE 115200
-#define BUFFER_SIZE 3
-#define STOP 128
+
+// we will be reading 2 chars
+// 1 for linear speed, 1 for angular speed
+#define BUFFER_SIZE 2
+
+// assign 128 to be not moving
+// will be used to hold robot in place while
+// reading from the buffer. Robot will be stopped initially.
+#define UNMAPPED_STOP_SPEED 128
+
+
+// buffer values are mapped to [80, 100] to define linear speed
+// define 80 < linear speed < 90 -> move backward
+// define 90 < linear speed < 100 -> move forward
+/*
+ * Need to figure out desired max speed. We have 10 speed levels
+ * in the forward/backward directions. Given max speed,
+ * we will move at x/10 of max speed for x [1, 10]
+ */
 #define UPPER_LINEAR_SPEED 100
 #define LOWER_LINEAR_SPEED 80
-#define UPPER_ANGULAR_SPEED 115
-#define LOWER_ANGULAR_SPEED 75
+
+
+/*
+ * as above, will move at x/20 of max angular speed
+ * for x [1, 20]
+ */
+// define 75 < angular_speed < 95 -> turn left
+#define UPPER_ANGULAR_SPEED 100
+// define 90 < angular_speed < 115 -> turn right
+#define LOWER_ANGULAR_SPEED 80
+
+//stop values
+#define LINEAR_STOP 90
+#define ANGULAR_STOP 90
+
+#define WIDTH 10
 
 
 Servo LeftM;//5
 Servo RightM;
-int lx,ly,az = 0;
+int lx = 0;
+double az = 0.0;
 
 const int left_motor_pin = 9;
 const int right_motor_pin = 10;
 const char buffer_head = 'B';
+const double PI = acos( -1.0 );
 
 void setup()  { 
   Serial.begin(BAUD_RATE);
@@ -35,7 +68,7 @@ void loop()  {
 }  
 
 void serial_read(){
-    //reading in 3 chars from Serial
+    //reading in 2 chars from Serial
   if (Serial.available()>BUFFER_SIZE){
 
       /*
@@ -44,17 +77,16 @@ void serial_read(){
       ly =(Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
       az = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');*/
 
-      // B identifies the start of the buffer
+      // buffer_head identifies the start of the buffer
       if (Serial.read() == buffer_head) {
           lx = Serial.read();
-          ly = Serial.read();
           az = Serial.read();
       } else {
-          lx = ly = az = STOP;
+          lx = az = UNMAPPED_STOP_SPEED;
       }
 
   } else {
-      lx = ly = az = STOP;
+      lx = az = UNMAPPED_STOP_SPEED;
     }
     
   //Serial.end();
@@ -70,36 +102,46 @@ void convert(){
    * for both linear and angular velocity
   */
   lx = map (lx, 0, 255, LOWER_LINEAR_SPEED, UPPER_LINEAR_SPEED);
-  ly = map (ly, 0, 255, LOWER_LINEAR_SPEED, UPPER_LINEAR_SPEED);
-  az = map (az, 0, 255, LOWER_ANGULAR_SPEED, UPPER_ANGULAR_SPEED);
+  az = mapToDouble (az, 0, 255, - PI / 2, PI / 2);
 }
 
 
 void drive(){
-/*
-* This needs to be re-written
-*/
- if(lx == 90){
-  if(ly == 90){
-   if (az == 90){
-     LeftM.write(90);
-     RightM.write(90);
+
+    move(az, lx);
+     /*if(ly == LINEAR_STOP){
+   if (az == ANGULAR_STOP){
+       LeftM.write(LINEAR_STOP);
+       RightM.write(LINEAR_STOP);
    } else{
-    LeftM.write(az);
-    RightM.write(az);
+       LeftM.write(az);
+       RightM.write(az);
    }
   }
   else{
-   LeftM.write(ly);
-   RightM.write(ly);
+      LeftM.write(ly);
+      RightM.write(ly);
    }
  }
  else{
-   if (lx > 90){
-   LeftM.write(lx);//if 80 //if 100
-   RightM.write(lx+20);//needs to be 100 //needs to be 80
-   }
-   else{LeftM.write(lx);
-   RightM.write(lx-20);}
- }
+   if (lx > LINEAR_STOP){
+       LeftM.write(lx);//if 80 //if 100
+       RightM.write(lx+20);//needs to be 100 //needs to be 80
+   } else{
+       LeftM.write(lx);
+       RightM.write(lx-20);}
+   }*/
+}
+
+/*
+ * moves the robot - turning is taken into account.
+ */
+
+void move(double angular_speed, int linear_speed) {
+    LeftM.write(round(linear_speed + (sin(angular_speed) * WIDTH / 2)));
+    RightM.write(round(linear_speed + (sin(angular_speed) * WIDTH / 2)));
+}
+
+double mapToDouble(double val, long in_min, long in_max, double out_min, double out_max) {
+    return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
