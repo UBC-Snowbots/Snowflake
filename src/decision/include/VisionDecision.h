@@ -19,7 +19,9 @@ public:
     VisionDecision(int argc, char **argv, std::string node_name);
     static double getImageRatio(const sensor_msgs::Image::ConstPtr& raw_scan);
 private:
-    void imageCallBack(const sensor_msgs::Image::ConstPtr& raw_scan);
+    static double mapRange(double x, double inMin, double inMax, double outMin, double outMax);
+    static double getDesiredAngle(double imageRatio, double inLowerBound, double inUpperBound);
+    void imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image);
     void publishTwist(geometry_msgs::Twist twist);
    
     

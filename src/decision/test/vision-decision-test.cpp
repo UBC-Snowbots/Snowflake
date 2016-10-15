@@ -7,20 +7,49 @@
 #include <VisionDecision.h>
 #include <gtest/gtest.h>
 
-TEST(imageRatioTest1, selfCreated){
-    sensor_msgs::ImagePtr testImageScan;
+TEST(imageRatioTest, zeroTozero){
 
-    testImageScan -> width = 8;
-    testImageScan -> height = 8;
+    sensor_msgs::Image output_image;
 
-    for(int rowCount = 0; rowCount < testImageScan->height; rowCount++){
-        for(int columnCount = 0; columnCount < testImageScan->width; columnCount++){
-            testImageScan->data[columnCount*rowCount] = 255;
-        }
-    }
+    output_image.height           = 8;
+    output_image.width            = 8;
+    output_image.encoding         = "8UC1";
+    output_image.is_bigendian     = false;
+    output_image.step             = 8;
 
-    EXPECT_EQ(0, VisionDecision::getImageRatio(testImageScan));
+
+   for(int rowCount = 0; rowCount < 8; rowCount++)
+       for (int columnCount = 0; columnCount < 8; columnCount++)
+           output_image.data.push_back(255);
+
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(output_image));
+
+    EXPECT_EQ(0.0, VisionDecision::getImageRatio(testImageScan));
 }
+
+TEST(imageRatioTest, oneToTwo){
+
+    sensor_msgs::Image output_image;
+
+    output_image.height           = 8;
+    output_image.width            = 8;
+    output_image.encoding         = "8UC1";
+    output_image.is_bigendian     = false;
+    output_image.step             = 8;
+
+    for(int rowCount = 0; rowCount < output_image.height; rowCount++)
+        for (int columnCount = 0; columnCount < output_image.width; columnCount++)
+            output_image.data.push_back(0);
+
+    output_image.data[0] = 255;
+    output_image.data[3*8+5] = 255;
+    output_image.data[6*8+7] = 255;
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(output_image));
+
+    EXPECT_EQ(1.0, VisionDecision::getImageRatio(testImageScan));
+ }
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
