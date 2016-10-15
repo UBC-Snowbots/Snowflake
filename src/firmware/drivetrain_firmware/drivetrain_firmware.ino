@@ -51,7 +51,6 @@ double az = 0.0;
 const int left_motor_pin = 9;
 const int right_motor_pin = 10;
 const char buffer_head = 'B';
-const double PI = acos( -1.0 );
 
 void setup()  { 
   Serial.begin(BAUD_RATE);
@@ -102,7 +101,7 @@ void convert(){
    * for both linear and angular velocity
   */
   lx = map (lx, 0, 255, LOWER_LINEAR_SPEED, UPPER_LINEAR_SPEED);
-  az = mapToDouble (az, 0, 255, - PI / 2, PI / 2);
+  az = mapToDouble (az, 0, 255, - M_PI / 2, M_PI / 2);
 }
 
 
@@ -138,8 +137,8 @@ void drive(){
  */
 
 void move(double angular_speed, int linear_speed) {
-    LeftM.write(round(linear_speed + (sin(angular_speed) * WIDTH / 2)));
-    RightM.write(round(linear_speed + (sin(angular_speed) * WIDTH / 2)));
+    LeftM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
+    RightM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
 }
 
 double mapToDouble(double val, long in_min, long in_max, double out_min, double out_max) {
