@@ -23,6 +23,11 @@ IPM::IPM( const cv::Size& _origSize, const cv::Size& _dstSize, const std::vector
 		
 	createMaps();	
 }
+
+IPM::IPM(){
+
+}
+
 void IPM::drawPoints( const std::vector<cv::Point2f>& _points, cv::Mat& _img ) const
 {
 	assert(_points.size() == 4);

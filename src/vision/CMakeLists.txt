@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-project(elsa_vision)
+project(vision)
 
 add_definitions(--std=c++11)
 
@@ -21,20 +21,27 @@ include_directories(
 
   ${OpenCV_INCLUDE_DIRS}
 
-
+  include
+    
 )
 
 
 catkin_package()
 
-add_executable(ros_vision src/ros_vision.cpp src/filter.h src/filter.cpp src/IPM.h src/IPM.cpp)
+add_executable(ros_vision src/ros_vision.cpp include/RosVision.h src/RosVision.cpp include/filter.h src/filter.cpp include/IPM.h src/IPM.cpp)
 
 add_executable(stitcher src/image_stitcher.cpp)
+
+add_executable(camera src/camera_init.cpp)
 
 target_link_libraries(ros_vision ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 target_link_libraries(stitcher ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
+target_link_libraries(camera ${catkin_LIBRARIES} ${OpenCV_LIBS})
+
 add_dependencies(ros_vision OpenCV)
 
 add_dependencies(stitcher OpenCV)
+
+add_dependencies(camera OpenCV)
