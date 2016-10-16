@@ -40,6 +40,9 @@
 #define LINEAR_STOP 90
 #define ANGULAR_STOP 90
 
+// distance between wheels of the robot
+// once accurate distance is measured can move this
+// to const double
 #define WIDTH 10
 
 
@@ -137,8 +140,13 @@ void drive(){
  */
 
 void move(double angular_speed, int linear_speed) {
-    LeftM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
-    RightM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
+    if (angular_speed < ANGULAR_STOP) {
+        LeftM.write(linear_speed - round((sin(angular_speed) * WIDTH / 2)));
+        RightM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
+    } else {
+        LeftM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
+        RightM.write(linear_speed - round(sin(angular_speed) * WIDTH / 2));
+    }
 }
 
 double mapToDouble(double val, long in_min, long in_max, double out_min, double out_max) {
