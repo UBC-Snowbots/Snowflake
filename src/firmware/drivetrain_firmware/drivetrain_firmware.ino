@@ -14,32 +14,6 @@
 // reading from the buffer. Robot will be stopped initially.
 #define UNMAPPED_STOP_SPEED 128
 
-
-// buffer values are mapped to [80, 100] to define linear speed
-// define 80 < linear speed < 90 -> move backward
-// define 90 < linear speed < 100 -> move forward
-/*
- * Need to figure out desired max speed. We have 10 speed levels
- * in the forward/backward directions. Given max speed,
- * we will move at x/10 of max speed for x [1, 10]
- */
-#define UPPER_LINEAR_SPEED 100
-#define LOWER_LINEAR_SPEED 80
-
-
-/*
- * as above, will move at x/20 of max angular speed
- * for x [1, 20]
- */
-// define 75 < angular_speed < 95 -> turn left
-#define UPPER_ANGULAR_SPEED 100
-// define 90 < angular_speed < 115 -> turn right
-#define LOWER_ANGULAR_SPEED 80
-
-//stop values
-#define LINEAR_STOP 90
-#define ANGULAR_STOP 90
-
 // distance between wheels of the robot
 // once accurate distance is measured can move this
 // to const double
@@ -51,9 +25,23 @@ Servo RightM;
 int lx = 0;
 double az = 0.0;
 
+// motor pins
 const int left_motor_pin = 9;
 const int right_motor_pin = 10;
+
+// defines start of buffer
 const char buffer_head = 'B';
+
+// max and min linear speeds and stopping condition
+const int linear_max = 100;
+const int linear_min = 80;
+const int linear_stop = 90;
+
+// max and min angular speeds and stopping condition
+const double angular_max = M_PI / 2;
+const double angular_min = - M_PI / 2;
+const double angular_stop = 0.0;
+
 
 void setup()  { 
   Serial.begin(BAUD_RATE);
@@ -103,8 +91,8 @@ void convert(){
    * we map them to lower and upper speeds defined above
    * for both linear and angular velocity
   */
-  lx = map (lx, 0, 255, LOWER_LINEAR_SPEED, UPPER_LINEAR_SPEED);
-  az = mapToDouble (az, 0, 255, - M_PI / 2, M_PI / 2);
+  lx = map (lx, 0, 255, linear_min, linear_max);
+  az = mapToDouble (az, 0, 255, angular_min, angular_max);
 }
 
 
@@ -140,7 +128,7 @@ void drive(){
  */
 
 void move(double angular_speed, int linear_speed) {
-    if (angular_speed < ANGULAR_STOP) {
+    if (angular_speed < angular_stop) {
         LeftM.write(linear_speed - round((sin(angular_speed) * WIDTH / 2)));
         RightM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
     } else {
