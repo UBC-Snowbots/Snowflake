@@ -39,6 +39,20 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
  * Description: A quick description of what this file does/is for
  */
 ```
+
+- Functions should be commented a la JavaDoc
+```
+/**
+ * Brief description of function
+ * 
+ * @param param_one the first parameter of the function
+ * @param param_two the parameter of the second function whose
+ * 			description goes longer than one line
+ * @return what the function returns if it returns anything
+ * 
+ */
+```
+
 - Classes are **CamelCase**
 - Variables are **non_camel_case**
 - Functions are **camelCase**
