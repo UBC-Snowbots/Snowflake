@@ -9,7 +9,7 @@ compiler:
 notifications:
   email:
     recipients:
-        gareth.ellis0@gmail.com
+
 env:
   matrix:
     - ROS_DISTRO=kinetic  ROS_REPO=ros              UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
