@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>elsa_vision</name>
+  <name>vision</name>
   <version>0.0.0</version>
   <description>Branch dedicated to analyzing images and transforming them into maps</description>
 
