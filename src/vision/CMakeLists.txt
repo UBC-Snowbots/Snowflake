@@ -21,7 +21,6 @@ include_directories(
 
   ${OpenCV_INCLUDE_DIRS}
 
-  include
     
 )
 
