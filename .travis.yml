@@ -1,4 +1,4 @@
-# This config file for Travis CI utilizes https://github.com/ros-planning/moveit_ci/ package.
+# This config file for Travis CI utilizes https://github.com/UBC-Snowbots/moveit_ci/ package.
 sudo: required
 dist: trusty
 services:
@@ -12,8 +12,8 @@ notifications:
         gareth.ellis0@gmail.com
 env:
   matrix:
-    - ROS_DISTRO=kinetic  ROS_REPO=ros              UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/travis_ci_testing/.rosinstall
-    - ROS_DISTRO=kinetic  UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/travis_ci_testing/.rosinstall
+    - ROS_DISTRO=kinetic  ROS_REPO=ros              UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
+    - ROS_DISTRO=kinetic  UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
 matrix:
   allow_failures:
       - env: ROS_DISTRO=kinetic  ROS_REPO=ros              UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/travis_ci_testing/.rosinstall
