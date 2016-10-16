@@ -12,7 +12,7 @@ notifications:
         gareth.ellis0@gmail.com
 env:
   matrix:
-      - ROS_DISTRO=kinetic  ROS_REPO=ros              UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/travis_ci_testing/.rosinstall
+    - ROS_DISTRO=kinetic  ROS_REPO=ros              UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/travis_ci_testing/.rosinstall
     - ROS_DISTRO=kinetic  UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/travis_ci_testing/.rosinstall
 matrix:
   allow_failures:
