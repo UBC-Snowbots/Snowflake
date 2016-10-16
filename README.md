@@ -1,6 +1,8 @@
 # IGVC-2017
 UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
 
+![alt tag](https://travis-ci.org/UBC-Snowbots/IGVC-2017.svg?branch=master)
+
 ## Installation and Setup
 
 You will be downloading an Ubuntu ISO and multiple ROS packages with their respective dependencies.
