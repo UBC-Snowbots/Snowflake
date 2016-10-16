@@ -14,15 +14,25 @@
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Point.h>
 #include <ros/ros.h>
+#include <std_msgs/Float32.h>
 
 class GpsDecision {
 public:
     GpsDecision(int argc, char **argv, std::string node_name);
+    static double distance(const geometry_msgs::Point::ConstPtr& relative_gps);
+    static double desiredAngle(const geometry_msgs::Point::ConstPtr& relative_gps,float current_heading);
+    void  rotate(double desiredAngle,double angular_velocity);
+    static double angle(double x,double y);
+
 private:
     void gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps);
+    void compassCallBack(const std_msgs::Float32::ConstPtr& compass_heading);
     void publishTwist(geometry_msgs::Twist twist);
 
+    ros::Subscriber compass_subcriber;
     ros::Subscriber gps_subscriber;
     ros::Publisher twist_publisher;
+    float current_heading;
+
 };
 #endif //DECISION_GPS_DECISION_H
