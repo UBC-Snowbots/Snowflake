@@ -16,7 +16,7 @@ env:
     - ROS_DISTRO=kinetic  UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
 matrix:
   allow_failures:
-      - env: ROS_DISTRO=kinetic  ROS_REPO=ros              UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/travis_ci_testing/.rosinstall
+      - env: ROS_DISTRO=kinetic  ROS_REPO=ros              UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
 before_script:
     # Below line is not being used, as we are using a forked version
 #    - git clone -q https://github.com/ros-planning/moveit_ci.git .moveit_ci
