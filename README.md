@@ -48,8 +48,8 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
  * Brief description of function
  * 
  * @param param_one the first parameter of the function
- * @param param_two the parameter of the second function whose
- * 			description goes longer than one line
+ * @param param_two the second parameter of the function whose
+ *                  description goes longer than one line
  * @return what the function returns if it returns anything
  * 
  */
