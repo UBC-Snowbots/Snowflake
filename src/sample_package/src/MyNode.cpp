@@ -8,7 +8,6 @@
 
 #include <MyNode.h>
 
-// The constructor for MyClass
 MyClass::MyClass(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
@@ -26,8 +25,6 @@ MyClass::MyClass(int argc, char **argv, std::string node_name) {
     my_publisher = public_nh.advertise<std_msgs::String>(topic, queue_size);
 }
 
-// The callback function for the subscriber (my_subscriber).
-// This is called whenever a new message is received
 void MyClass::subscriberCallBack(const std_msgs::String::ConstPtr& msg) {
     std::string input_string = msg->data.c_str();
     std::string new_msg = addExclamationPoint(input_string);
