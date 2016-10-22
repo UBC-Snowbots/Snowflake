@@ -7,6 +7,9 @@
 
 #include <LidarDecision.h>
 
+#include <algorithm>
+using namespace std;
+
 // The constructor
 LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
@@ -34,3 +37,33 @@ void LidarDecision::scanCallBack(const sensor_msgs::LaserScan::ConstPtr& raw_sca
 void LidarDecision::publishTwist(geometry_msgs::Twist twist){
     twist_publisher.publish(twist);
 }
+
+
+
+
+
+bool LidarDecision::obstacle_in_range(double min_angle, double max_angle, float obstacle_distance,
+                                      const sensor_msgs::LaserScan::ConstPtr& raw_scan){
+    int i;
+    int init_pos_vec, end_pos_vec;
+
+    init_pos_vec = static_cast<int>((min_angle - raw_scan->angle_min)/raw_scan->angle_increment);
+    end_pos_vec = static_cast<int>((max_angle - raw_scan->angle_min)/ raw_scan->angle_increment);
+    /*bool exist_obstacle = false;
+    for (i=init_pos_vec;i<=end_pos_vec;i++){
+        if (raw_scan->ranges[i] < obstacle_distance) exist_obstacle = true;
+    }
+    if (exist_obstacle) return true;
+    else return false;*/
+    return std::any_of(
+            raw_scan->ranges.begin()+init_pos_vec, raw_scan->ranges.begin()+end_pos_vec,
+            [&](auto const& v){
+                return v < obstacle_distance;
+            });
+}
+
+geometry_msgs::Twist LidarDecision::name(const sensor_msgs::LaserScan::ConstPtr& raw_scan){
+
+
+}
+
