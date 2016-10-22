@@ -41,8 +41,8 @@ public:
 private:
 
     /**
-     * Callback executes on subscribed images, each callback will
-     * analyze and output a binary image
+     * Callback executes on subscribed images, each callback will analyze and output a binary image
+     *
      * @param msg the image message subscribed to
      */
     void imageCallback(const sensor_msgs::ImageConstPtr& msg);
