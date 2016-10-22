@@ -17,6 +17,7 @@
 class LidarDecision {
 public:
     LidarDecision(int argc, char **argv, std::string node_name);
+    static bool obstacle_in_range(double min_angle, double max_angle, float obstacle_distance, const sensor_msgs::LaserScan::ConstPtr& raw_scan);
 private:
     void scanCallBack(const sensor_msgs::LaserScan::ConstPtr& raw_scan);
     void publishTwist(geometry_msgs::Twist twist);
