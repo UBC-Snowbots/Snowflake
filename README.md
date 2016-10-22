@@ -45,11 +45,14 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Functions should be commented a la JavaDoc
 ```
 /**
- * Brief description of function
+ * One line description of the function
+ *
+ * A longer and more in depth description of the function
+ * if it is needed.
  * 
  * @param param_one the first parameter of the function
- * @param param_two the parameter of the second function whose
- * 			description goes longer than one line
+ * @param param_two the second parameter of the function whose
+ *                  description goes longer than one line
  * @return what the function returns if it returns anything
  * 
  */
@@ -58,6 +61,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Classes are **CamelCase**
 - Variables are **non_camel_case**
 - Functions are **camelCase**
+- Indentations are 4 spaces
 
 ## Creating a new node
 - If your node is at all complicated, then this format should be followed. For simple nodes, please see below
