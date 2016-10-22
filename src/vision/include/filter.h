@@ -57,12 +57,14 @@ class snowbotsFilter
     /**
      * Opens the calibration window where a region of interest (ROI) rectangle
      * can be drawn
+     *
      * @param input the frame we want to calibrate from
      */
     //void calibrateWindow(const cv::Mat &input);
 
     /**
      * Filters an image according to threshold values
+     *
      * @param input the frame being filtered
      * @param output the output image
      */
@@ -93,6 +95,7 @@ class snowbotsFilter
 
     /**
      * Initializator
+     *
      * @params the appropriate HSV ranges
      */
     void createFilter(int iLowH, int iHighH,
