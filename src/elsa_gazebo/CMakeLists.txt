@@ -127,6 +127,7 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(elsa_gazebo_node src/elsa_gazebo_node.cpp)
+add_executable(compass_sim src/compass_sim.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -136,6 +137,7 @@ include_directories(
 # target_link_libraries(elsa_gazebo_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(compass_sim ${catkin_LIBRARIES})
 
 #############
 ## Install ##
