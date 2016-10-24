@@ -17,10 +17,10 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
 
     // Setup Subscribers
     uint32_t refresh_rate = 10;
-    std::string raw_gps_topic_name = "/gps_driver/raw_gps";
+    std::string raw_gps_topic_name = "/gps_driver/gps";
     raw_gps_subscriber = public_nh.subscribe(raw_gps_topic_name, refresh_rate,
                                              &GpsManager::rawGpsCallBack, this);
-    std::string compass_topic_name = "/gps_driver/raw_gps";
+    std::string compass_topic_name = "/imu/compass";
     compass_subscriber = public_nh.subscribe(compass_topic_name, refresh_rate,
                                                 &GpsManager::compassCallBack, this);
 
@@ -33,12 +33,13 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
 
     // Get Params
     // TODO: Check that this sets the parameters properly
-    if (!nh.getParam("at_goal_tolerance", at_goal_tolerance)){
+    if (!public_nh.getParam("at_goal_tolerance", at_goal_tolerance)){
         ROS_WARN("Could not find \"at_goal_tolerance\" parameter, defaulting to 1");
         at_goal_tolerance = 1;
     }
-    if (!nh.getParam("waypoints", waypoints_raw)){
-        ROS_ERROR("Could not find \"waypoints\" parameter. This node requires waypoints to navigate to!");
+    if (!public_nh.getParam("waypoints", waypoints_raw)){
+        ROS_ERROR("Could not find \"waypoints\" parameter. This node requires waypoints to navigate to!\n"
+                    "Waypoints should be a list in the form [lat, lon, lat, lon, ...]");
     } else {
         waypoint_list = parseWaypoints(waypoints_raw);
         populateWaypointStack();
