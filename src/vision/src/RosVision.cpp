@@ -11,6 +11,8 @@
  */
 
 #include <RosVision.h>
+#include <iostream>
+#include <fstream>
 
 using namespace cv;
 using namespace std;
@@ -68,6 +70,11 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                         ROS_INFO("Beginning manual calibration");
                     } else {
                         ROS_INFO("Ending manual calibration");
+                        ROS_INFO("Saving filter state in %s", mfilter_file.c_str());
+                        fstream filter_file(mfilter_file, ios::trunc | ios::out);
+                        filter_file << filter.getValues();
+                        cout << filter.getValues();
+                        filter_file.close();
                     }
                     isCalibratingManually = !isCalibratingManually;
                     filter.printValues();
@@ -161,8 +168,32 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     dst_points.push_back(Point2f(width, 0));
     dst_points.push_back(Point2f(0, 0));
 
+    //Check for filter initialization file
+    mfilter_file = "/home/valerian/filter_init.txt";
+    fstream filter_file(mfilter_file, ios::in);
+    string line;
+    bool filter_set = false;
+    if (filter_file.is_open()){
+        if (getline(filter_file, line)){
+            istringstream iss(line);
+            int lh, hh, ls, hs, lv, hv;
+            if (iss >> lh >> hh >> ls >> hs >> lv >> hv) {
+                ROS_INFO("Filter file found");
+                ROS_INFO("Filter initializing with: %d %d %d %d %d %d", lh, hh, ls, hs, lv ,hv);
+                filter = snowbotsFilter(lh, hh, ls, hs, lv, hv);
+                filter_set = true;
+            }
+        }
+    }
+    if (!filter_set){
+        ROS_INFO("Filter file not found");
+        ROS_INFO("Filter initialized with default values");
+        filter = snowbotsFilter(0, 155, 0, 155, 150, 255);
+    }
+    filter_file.close();
+
+
     //Creating the binary filter
-    filter = snowbotsFilter(0, 155, 0, 155, 150, 255);
 
     //Creating the IPM transformer
     ipm = IPM(Size(width, height), Size(width, height), orig_points, dst_points);
