@@ -176,7 +176,7 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     //Check for filter initialization file
     //TODO: find a better location for this file, if opened with just filter_init is
     // located at ~/.Clion2016.1/system/cmake/generated/.../debug/devel/lib/vision/filter_init.txt
-    mfilter_file = "/home/filter_init.txt";
+    mfilter_file = "filter_init.txt";
     fstream filter_file(mfilter_file, ios::in);
     string line;
     bool filter_set = false;
