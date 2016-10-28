@@ -135,7 +135,13 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     sub = it.subscribe<RosVision>(image_topic, 1, &RosVision::imageCallback, this);
     pub = it.advertise(output_topic, 1);
 
-    //Obtains parameters of image and filters from the param server
+    //Sets up filter update frequency
+    double frequency;
+    nh_private.param("frequency", frequency, 5.0);
+    publish_interval = ros::Duration(1 / frequency);
+    last_published = ros::Time::now();
+
+    //Obtains parameters of image and IPM points from the param server
     nh_private.param("width", width, 640);
     nh_private.param("height", height, 480);
     nh_private.param("x1", x1, 0);
@@ -147,16 +153,10 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     nh_private.param("y3", y3, 0);
     nh_private.param("y4", y4, 0);
 
-    double frequency;
-    nh_private.param("frequency", frequency, 5.0);
-    publish_interval = ros::Duration(1 / frequency);
-    last_published = ros::Time::now();
-
-
     ROS_INFO("Image Width and Height: %d x %d", width, height);
 
 
-    //Manually Setting up the IPM points
+    //Setting up the IPM points
     orig_points.push_back(Point2f(x1, y1));
     orig_points.push_back(Point2f(x2, y2));
     orig_points.push_back(Point2f(x3, y3));
@@ -167,6 +167,12 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     dst_points.push_back(Point2f(width, 0));
     dst_points.push_back(Point2f(0, 0));
 
+
+    //Creating the IPM transformer
+    ipm = IPM(Size(width, height), Size(width, height), orig_points, dst_points);
+
+
+    //Creating the binary filter
     //Check for filter initialization file
     //TODO: find a better location for this file, if opened with just filter_init is
     // located at ~/.Clion2016.1/system/cmake/generated/.../debug/devel/lib/vision/filter_init.txt
@@ -192,11 +198,5 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
         filter = snowbotsFilter(0, 155, 0, 155, 150, 255);
     }
     filter_file.close();
-
-
-    //Creating the binary filter
-
-    //Creating the IPM transformer
-    ipm = IPM(Size(width, height), Size(width, height), orig_points, dst_points);
 
 }
