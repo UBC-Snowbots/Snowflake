@@ -77,7 +77,6 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                         filter_file.close();
                     }
                     isCalibratingManually = !isCalibratingManually;
-                    filter.printValues();
                 }
                     //Press 's' to show/unshow window
                 else if (a == 115) {
@@ -169,7 +168,9 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     dst_points.push_back(Point2f(0, 0));
 
     //Check for filter initialization file
-    mfilter_file = "/home/valerian/filter_init.txt";
+    //TODO: find a better location for this file, if opened with just filter_init is
+    // located at ~/.Clion2016.1/system/cmake/generated/.../debug/devel/lib/vision/filter_init.txt
+    mfilter_file = "/home/filter_init.txt";
     fstream filter_file(mfilter_file, ios::in);
     string line;
     bool filter_set = false;
