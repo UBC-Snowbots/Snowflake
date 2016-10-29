@@ -1,7 +1,8 @@
 #include <stdio.h>
-#include <usb.h>
+#include <libusb.h>
+
 int main(){
-    struct usb_bus *bus;
+/*    struct usb_bus *bus;
     struct usb_device *dev;
     usb_init();
     usb_find_busses();
@@ -12,5 +13,6 @@ int main(){
             printf("\tID_VENDOR = 0x%04x\n", dev->descriptor.idVendor);
             printf("\tID_PRODUCT = 0x%04x\n", dev->descriptor.idProduct);
         }
-    }
+    }*/
+    return 0;
 }
