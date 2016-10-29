@@ -1,5 +1,5 @@
 /*
- * Created By: YOUR NAME HERE
+ * Created By: Chris
  * Created On: September 22, 2016
  * Description: The Decision Node for GPS, takes in a point relative to
  *              the robots location and heading and broadcasts a
@@ -83,11 +83,18 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point::ConstPtr& relative_
     if(x>=0 && y>=0) { //in the 1st quadrant
         AngleRelativeNorth=90.0-AngleRelativeNorth;
     }
-    else if (x<=0 && y<=0) { //in the 3rd quadrant
+    else if (x<0 && y<0) { //in the 3rd quadrant
         AngleRelativeNorth=-(90+AngleRelativeNorth);
     }
     else if (x>=0 && y<0) { //In the 4th quadrant
         AngleRelativeNorth=90-AngleRelativeNorth;
+    }
+    else if(x<=0 && y==0) {
+        AngleRelativeNorth=-90;
+    }
+
+    else if(x==0 && y<0) {
+        AngleRelativeNorth=180;
     }
 
     //calcute the angle relative to current heading
@@ -100,8 +107,21 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point::ConstPtr& relative_
          }
      }
      else if(current_heading<=AngleRelativeNorth) {
+        /* if(AngleRelativeNorth-current_heading<=180) {
+             desiredAngle = AngleRelativeNorth-current_heading;
+         }
+         else {
+             desiredAngle=-(360+(current_heading-AngleRelativeNorth));
+         }*/
          desiredAngle=AngleRelativeNorth-current_heading;
+         if(desiredAngle>180) {
+             desiredAngle=-(360-desiredAngle);
+         }
      }
+    if(x==0 && y==0 && current_heading==0) {
+        desiredAngle==0;
+    }
+
     return desiredAngle;
 
     //calcute the the angle relative to north(0) in degrees
