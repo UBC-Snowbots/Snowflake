@@ -8,9 +8,10 @@
  *        folder. Please make sure your workspace is set to "src/firmware"
  *        (These instructions are for the IGVC-2017 repository, but should
  *        carry over to future repositiories)
+ *
+ * Format of messages sent to computer (anything in brackets is a variable): GPS\0\0,(lat),(lon),(fix (0 or 1))
  */
 //Data format: D(lat),(long),(fix),(x),(y),(z),(headingDegrees)
-// ^ things within brackets are variables
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
