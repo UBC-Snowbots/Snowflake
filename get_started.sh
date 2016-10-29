@@ -69,7 +69,8 @@ sudo ln -s $DIR/clion*/bin/clion.sh /usr/local/bin/clion
 # Change several commands you have to run from the terminal
 # so that they auto-close said terminal
 aliases=("clion=\"clion & disown && exit\""\
-         "rviz=\"rviz & disown && exit\"")
+         "rviz=\"rviz & disown && exit\""\
+         "rqt=\"rqt & disown && exit\"")
 # Check to make sure the alias doesn't already exist
 for file_name in $SHELL_CONFIG_FILES; do
     for ((i = 0; i < ${#aliases[@]}; i++))
