@@ -21,8 +21,9 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     std::string gps_filtered_topic_name = "/gps_conversion/relative_gps";
     std::string compass_topic_name = "/gps_conversion/compass";
     int refresh_rate = 10;
+    gps_subscriber = public_nh.subscribe(gps_filtered_topic_name, refresh_rate, &GpsDecision::gpsCurrentCallBack, this);
     gps_subscriber = public_nh.subscribe(gps_filtered_topic_name, refresh_rate, &GpsDecision::gpsCallBack, this);
-    compass_subcriber = public_nh.subscribe(compass_topic_name, refresh_rate, &GpsDecision::gpsCallBack, this);
+    compass_subcriber = public_nh.subscribe(compass_topic_name, refresh_rate, &GpsDecision::compassCallBack, this);
     // Setup Publisher(s)
     std::string twist_topic = public_nh.resolveName("command");
     uint32_t queue_size = 10;
@@ -68,13 +69,15 @@ double angle(double x,double y) {
     return angle;
 
 }
-double GpsDecision::desiredAngle(const geometry_msgs::Point::ConstPtr& relative_gps, float current_heading) {
-    double current_y=0.0;
+double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
+                                 float current_heading,geometry_msgs::Point currentPoint) {
 
-    double x=relative_gps->x;
-    double y=relative_gps->y;
+    double next_x=relative_gps->x;
+    double next_y=relative_gps->y;
+    double x=(next_x-currentPoint.x);
+    double y=(next_y-currentPoint.y);
 
-    double dis=distance(relative_gps);
+    //double dis=distance(relative_gps);
     double tan=y/x;
     double angle=(atan(tan));
     double AngleRelativeNorth;
@@ -209,14 +212,26 @@ void  GpsDecision::rotate(double desiredAngle,double angular_velocity) {
     // velocity_publisher.publish(vel_msg);
 }
 
+// This is called whenever a new message is received
+//gps callback for the current point
+void GpsDecision::gpsCurrentCallBack(const geometry_msgs::Point::ConstPtr& relative_gps) {
+    // Deal with new messages here
+    currentPoint = *relative_gps;
+}
+
+//gps callback for the current heading
 void GpsDecision::compassCallBack(const std_msgs::Float32::ConstPtr& compass_heading) {
     // Deal with new messages here
     current_heading=compass_heading->data;
 }
 
 // This is called whenever a new message is received
+//gps callback for the next point
 void GpsDecision::gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps) {
     // Deal with new messages here
+   // my_point = convertGpsPoints(this.current_point, relative_gps);
+    desiredAngle(*relative_gps, current_heading, currentPoint);
+
 }
 
 void GpsDecision::publishTwist(geometry_msgs::Twist twist){
