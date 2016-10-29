@@ -20,26 +20,23 @@ TEST(GpsDecison,distance) {
 
 TEST(GpsDecison,desiredAngle) {
     #define PI acos(-1.0)
-    geometry_msgs::Point mypoint;
+    geometry_msgs::Point nextpoint;
     geometry_msgs::Point currentPoint;
-    mypoint.x = 2;
-    mypoint.y = 2;
-    mypoint.z = 0;
-    mypoint.x = 1;
-    mypoint.y = 1;
-    mypoint.z = 0;
+    nextpoint.x = 2;
+    nextpoint.y = 2;
+    nextpoint.z = 0;
+    currentPoint.x = 3;
+    currentPoint.y = 3;
+    currentPoint.z = 0;
 
-    float my_heading=0;
+    float my_heading=15;
 
-    double expected=45;
+    double expected=-150;
     //geometry_msgs::Point::ConstPtr mypointer(new geometry_msgs::Point(mypoint));
 
-    EXPECT_DOUBLE_EQ(expected, GpsDecision::desiredAngle(mypoint,my_heading,currentPoint));
+    EXPECT_DOUBLE_EQ(expected, GpsDecision::desiredAngle(nextpoint,my_heading,currentPoint));
 
 }
-
-
-
 
 
 int main(int argc, char **argv) {

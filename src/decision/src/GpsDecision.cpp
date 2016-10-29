@@ -72,8 +72,9 @@ double angle(double x,double y) {
 double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
                                  float current_heading,geometry_msgs::Point currentPoint) {
 
-    double next_x=relative_gps->x;
-    double next_y=relative_gps->y;
+    double next_x=relative_gps.x;
+    double next_y=relative_gps.y;
+    //calculate the relative x and y
     double x=(next_x-currentPoint.x);
     double y=(next_y-currentPoint.y);
 
@@ -110,12 +111,7 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
          }
      }
      else if(current_heading<=AngleRelativeNorth) {
-        /* if(AngleRelativeNorth-current_heading<=180) {
-             desiredAngle = AngleRelativeNorth-current_heading;
-         }
-         else {
-             desiredAngle=-(360+(current_heading-AngleRelativeNorth));
-         }*/
+
          desiredAngle=AngleRelativeNorth-current_heading;
          if(desiredAngle>180) {
              desiredAngle=-(360-desiredAngle);
@@ -126,62 +122,6 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
     }
 
     return desiredAngle;
-
-    //calcute the the angle relative to north(0) in degrees
-    if(x>0 && y>=0) { //in the 1st quadrant
-         AngleRelativeNorth=PI/2-angle;
-     }
-     else if(x<0 && y>=0) { //in the 2nd quadrant
-         AngleRelativeNorth=-angle;
-     }
-     else if (x<=0 && y<0) { //in the 3rd quadrant
-         AngleRelativeNorth=PI+angle;
-     }
-     else if (x>=0 && y<0) { //In the 4th quadrant
-         AngleRelativeNorth=PI-angle;
-     }
-     AngleRelativeNorth=AngleRelativeNorth*TO_DEGREES;
-    return desiredAngle;
-     /*calcute the angle relative to current heading
-     if(current_heading>AngleRelativeNorth) {
-         if(current_heading-AngleRelativeNorth<=180) {
-             desiredAngle=-(current_heading-AngleRelativeNorth);
-         }
-         else {
-             desiredAngle=360-(current_heading-AngleRelativeNorth);
-         }
-     }
-     else if(current_heading<=AngleRelativeNorth) {
-         desiredAngle=AngleRelativeNorth-current_heading;
-     }
-
-
-     /*if(x>0 && y>=0) { //in the 1st quadrant
-         AngleRelativeNorth=angle;
-     }
-     else if(x<0 && y>=0) { //in the 2nd quadrant
-         AngleRelativeNorth=2*PI-angle;
-     }
-     else if (x<=0 && y<0) { //in the 3rd quadrant
-         AngleRelativeNorth=PI+angle;
-     }
-     else if (x>=0 && y<0) { //In the 4th quadrant
-         AngleRelativeNorth=PI-angle;
-     }
-
-     AngleRelativeNorth=AngleRelativeNorth*TO_DEGREES;
-     if(current_heading>AngleRelativeNorth) {
-         if(current_heading-AngleRelativeNorth<=180) {
-             desiredAngle=-(current_heading-AngleRelativeNorth);
-         }
-         else {
-             desiredAngle=360-(current_heading-AngleRelativeNorth);
-         }
-     }
-     else if(current_heading<=AngleRelativeNorth) {
-             desiredAngle=AngleRelativeNorth-current_heading;
-     }
-     return desiredAngle;*/
 }
 
 void  GpsDecision::rotate(double desiredAngle,double angular_velocity) {
