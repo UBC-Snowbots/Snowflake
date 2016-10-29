@@ -5,9 +5,10 @@
 
 #define BAUD_RATE 115200
 
-// we will be reading 2 chars
-// 1 for linear speed, 1 for angular speed
-#define BUFFER_SIZE 2
+// we will be reading 6 chars
+// [linear_x,linear_y, linear_z, angular_x, angular_y, angular_z]
+
+#define BUFFER_SIZE 6
 
 // assign 128 to be not moving
 // will be used to hold robot in place while
@@ -19,11 +20,17 @@
 // to const double
 #define WIDTH 10
 
-
-Servo LeftM;//5
+// motors
+Servo LeftM;
 Servo RightM;
-int lx = 0;
-double az = 0.0;
+
+// buffer inputs
+int linear_x = 0;
+int linear_y = 0;
+int linear_z = 0;
+int angular_x = 0;
+int angular_y = 0;
+double angular_z = 0.0;
 
 // motor pins
 const int left_motor_pin = 9;
@@ -54,29 +61,32 @@ void loop()  {
   delay(100);
   serial_read();  
   convert();
-  drive();
+  drive(angular_z, linear_x);
 }  
 
 void serial_read(){
-    //reading in 2 chars from Serial
-  if (Serial.available()>BUFFER_SIZE){
+    //reading in 6 chars from Serial
+  if (Serial.available() > BUFFER_SIZE){
 
-      /*
-    if (Serial.read() == 'B'){
-      lx = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
+      /* if (Serial.read() == 'B'){
+      linear_x = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
       ly =(Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-      az = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');*/
+      angular_z = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');*/
 
       // buffer_head identifies the start of the buffer
       if (Serial.read() == buffer_head) {
-          lx = Serial.read();
-          az = Serial.read();
+          linear_x = Serial.read();
+          linear_y = Serial.read();
+          linear_z = Serial.read();
+          angular_x = Serial.read();
+          angular_y = Serial.read();
+          angular_z = (double) Serial.read();
       } else {
-          lx = az = UNMAPPED_STOP_SPEED;
+          linear_x = angular_z = UNMAPPED_STOP_SPEED;
       }
 
   } else {
-      lx = az = UNMAPPED_STOP_SPEED;
+      linear_x = angular_z = UNMAPPED_STOP_SPEED;
     }
     
   //Serial.end();
@@ -91,21 +101,30 @@ void convert(){
    * we map them to lower and upper speeds defined above
    * for both linear and angular velocity
   */
-  lx = map (lx, 0, 255, linear_min, linear_max);
-  az = mapToDouble (az, 0, 255, angular_min, angular_max);
+  linear_x = map (linear_x, 0, 255, linear_min, linear_max);
+  angular_z = mapToDouble (angular_z, 0, 255, angular_min, angular_max);
 }
 
 
-void drive(){
+/*
+ * moves the robot - turning is taken into account.
+ */
+void drive(double angular_speed, int linear_speed){
 
-    move(az, lx);
+    if (angular_speed < angular_stop) {
+        LeftM.write(linear_speed - round((sin(angular_speed) * WIDTH / 2)));
+        RightM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
+    } else {
+        LeftM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
+        RightM.write(linear_speed - round(sin(angular_speed) * WIDTH / 2));
+    }
      /*if(ly == LINEAR_STOP){
-   if (az == ANGULAR_STOP){
+   if (angular_z == ANGULAR_STOP){
        LeftM.write(LINEAR_STOP);
        RightM.write(LINEAR_STOP);
    } else{
-       LeftM.write(az);
-       RightM.write(az);
+       LeftM.write(angular_z);
+       RightM.write(angular_z);
    }
   }
   else{
@@ -114,29 +133,18 @@ void drive(){
    }
  }
  else{
-   if (lx > LINEAR_STOP){
-       LeftM.write(lx);//if 80 //if 100
-       RightM.write(lx+20);//needs to be 100 //needs to be 80
+   if (linear_x > LINEAR_STOP){
+       LeftM.write(linear_x);//if 80 //if 100
+       RightM.write(linear_x+20);//needs to be 100 //needs to be 80
    } else{
-       LeftM.write(lx);
-       RightM.write(lx-20);}
+       LeftM.write(linear_x);
+       RightM.write(linear_x-20);}
    }*/
 }
 
-/*
- * moves the robot - turning is taken into account.
- */
 
-void move(double angular_speed, int linear_speed) {
-    if (angular_speed < angular_stop) {
-        LeftM.write(linear_speed - round((sin(angular_speed) * WIDTH / 2)));
-        RightM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
-    } else {
-        LeftM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
-        RightM.write(linear_speed - round(sin(angular_speed) * WIDTH / 2));
-    }
-}
 
-double mapToDouble(double val, long in_min, long in_max, double out_min, double out_max) {
+
+double mapToDouble(int val, int in_min, int in_max, double out_min, double out_max) {
     return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
