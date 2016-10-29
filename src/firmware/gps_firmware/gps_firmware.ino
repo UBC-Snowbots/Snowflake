@@ -4,7 +4,7 @@
  * Created On: April 1st, 2016
  * Last Modified: October 29, 2016
  * Description: The firmware for the GPS arduino
- * Notes: This file has requirements which are located in the "libraries"
+ * Notes: - This file has requirements which are located in the "libraries"
  *        folder. Please make sure your workspace is set to "src/firmware"
  *        (These instructions are for the IGVC-2017 repository, but should
  *        carry over to future repositiories)
@@ -16,7 +16,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_GPS.h>
 
-//CHANGE THIS CONSTANT
+//CHANGE THIS CONSTANT DEPENDING ON YOUR CURRENT LOCATION
 const float DECLINATION_ANGLE = 0.2793; //Find declination here: http://www.magnetic-declination.com/
 #define GPSECHO  false
 
@@ -35,17 +35,7 @@ void setup() {
 void loop() {
   gps_check_new_data();
   sensors_event_t event;
-//  Serial.println("reading");
   char input = Serial.read();  
-//  if (input == 'I') {
-//    send_gps(false);
-//  }
-//  else if (input == 'D') {
-//    send_gps(true);
-//  }
-//  else {
-//    Serial.println("-1");
-//  }
   send_gps_over_serial();
   Serial.read();
   Serial.flush();
