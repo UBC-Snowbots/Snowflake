@@ -26,6 +26,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <ros/console.h>
 #include <ros/time.h>
+#include <string>
 
 class RosVision {
 
@@ -80,6 +81,7 @@ private:
 
     //Filters and their variables
     snowbotsFilter filter;
+    std::string mfilter_file;
     IPM ipm;
     int width , height;
     int x1, x2, x3, x4, y1, y2, y3, y4;

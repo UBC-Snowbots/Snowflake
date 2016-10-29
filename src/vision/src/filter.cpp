@@ -74,6 +74,13 @@ void snowbotsFilter::printValues(void){
     std::cout << "iHighS: " << _iHighS << std::endl;
     std::cout << "iLowV: " << _iLowV << std::endl;
     std::cout << "iHighV: " << _iHighV << std::endl;
+}
 
+std::string snowbotsFilter::getValues(void){
+    std::stringstream values;
+    values << _iLowH << " " << _iHighH << " "
+        << _iLowS << " " << _iHighS << " "
+        << _iLowV << " " << _iHighV << "\n";
+    return values.str();
 }
 

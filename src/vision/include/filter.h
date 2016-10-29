@@ -67,6 +67,13 @@ class snowbotsFilter
      */
     void printValues(void);
 
+    /**
+     * Getter for the HSV values in the filter
+     * @return a string of the HSV values in the filter formatted as:
+     *             lh, hh, ls, hs, lv, hv
+     */
+    std::string getValues(void);
+
     private:
 
     /**
