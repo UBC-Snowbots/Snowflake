@@ -1,10 +1,14 @@
 /*
-  Create a new folder named "Adafruit_GPS" in Arduino/Library then clone the library
-  GPS Library at: https://github.com/adafruit/Adafruit_GPS
-  Full guide: https://learn.adafruit.com/adafruit-ultimate-gps/arduino-wiring
-  In Addition, download compass libraries: https://learn.adafruit.com/adafruit-hmc5883l-breakout-triple-axis-magnetometer-compass-sensor/wiring-and-test
-  -Nick Wu
-*/
+ * Created By: Nick Wu
+ * Modified By: Gareth Ellis
+ * Created On: April 1st, 2016
+ * Last Modified: October 29, 2016
+ * Description: The firmware for the GPS arduino
+ * Notes: This file has requirements which are located in the "libraries"
+ *        folder. Please make sure your workspace is set to "src/firmware"
+ *        (These instructions are for the IGVC-2017 repository, but should
+ *        carry over to future repositiories)
+ */
 //Data format: D(lat),(long),(fix),(x),(y),(z),(headingDegrees)
 // ^ things within brackets are variables
 #include <SoftwareSerial.h>
