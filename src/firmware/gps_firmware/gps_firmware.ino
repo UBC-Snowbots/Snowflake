@@ -10,7 +10,6 @@
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_HMC5883_U.h>
 #include <Adafruit_GPS.h>
 
 //CHANGE THIS CONSTANT
@@ -19,7 +18,6 @@ const float DECLINATION_ANGLE = 0.2793; //Find declination here: http://www.magn
 
 SoftwareSerial mySerial(3, 2);
 Adafruit_GPS GPS(&mySerial);
-Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);
 
 boolean usingInterrupt = false; //keeps track of using interrupt, off by default!
 void useInterrupt(boolean);
@@ -27,55 +25,26 @@ void useInterrupt(boolean);
 void setup() {
   Serial.begin(115200);
   gps_setup();
-  //compass_setup();
-  Serial.println("Setup finished");
+  Serial.println("Setup finished, ready to go!");
 }
 
 void loop() {
   gps_check_new_data();
   sensors_event_t event;
-  Serial.println("reading");
-  //mag.getEvent(&event);
-  char input = Serial.read();
-  if (input == 'I') {
-    send_gps(false);
-  }
-  else if (input == 'D') {
-    send_gps(true);
-    send_compass(event);
-  }
-  else {
-    Serial.println("-1");
-  }
+//  Serial.println("reading");
+  char input = Serial.read();  
+//  if (input == 'I') {
+//    send_gps(false);
+//  }
+//  else if (input == 'D') {
+//    send_gps(true);
+//  }
+//  else {
+//    Serial.println("-1");
+//  }
+  send_gps_over_serial();
   Serial.read();
   Serial.flush();
-}
-void compass_setup() {
-  if (!mag.begin())
-  {
-    /* There was a problem detecting the HMC5883 ... check your connections */
-    while (1) {
-      Serial.println("Ooops, no HMC5883 detected ... Check your wiring!");
-      delay(2000);
-    }
-  }
-  sensor_t sensor;
-  mag.getSensor(&sensor);
-}
-void send_compass(sensors_event_t event) {
-  //HEADING INFO
-  float heading = atan2(event.magnetic.y, event.magnetic.x);
-  heading += DECLINATION_ANGLE;
-  if (heading < 0) heading += 2 * PI;
-  if (heading > 2 * PI) heading -= 2 * PI;
-  float headingDegrees = heading * 180 / M_PI;
-  //C(x),(y),(z)
-  //Serial.print(","); Serial.print(event.magnetic.x);
-  //Serial.print(","); Serial.print(event.magnetic.y);
-  //Serial.print(","); Serial.print(event.magnetic.z);
-  Serial.print(","); 
-  Serial.print(headingDegrees);Serial.println(",");
-  //Serial.print(",");
 }
 void gps_setup() {
   GPS.begin(9600);
@@ -92,17 +61,17 @@ void gps_check_new_data() {
       return;  // we can fail to parse a sentence in which case we should just wait for another
   }
 }
-void send_gps(boolean data) {
-  //G(long),(lat),(fix)
-  if (data) {
-    Serial.print("GPS ");
-    Serial.print("D,"); Serial.print(GPS.latitudeDegrees, 6);
-    Serial.print(","); Serial.print(GPS.longitudeDegrees, 6);
-    Serial.print(","); Serial.print((int)GPS.fix);
-  } else {
-    Serial.println("GPS");
-  }
+
+void send_gps_over_serial() {
+  // Send the identifier (must be 5 characters)
+  Serial.print("GPS\0\0");
+  // Send the longitude, latitude, and gps_fix
+  Serial.print(","); Serial.print(GPS.latitudeDegrees, 6);
+  Serial.print(","); Serial.print(GPS.longitudeDegrees, 6);
+  Serial.print(","); Serial.print((int)GPS.fix);
+  Serial.println();
 }
+
 // Interrupt is called once a millisecond, looks for any new GPS data, and stores it
 SIGNAL(TIMER0_COMPA_vect) {
   char c = GPS.read();
@@ -114,6 +83,7 @@ SIGNAL(TIMER0_COMPA_vect) {
   // but only one character can be written at a time.
 #endif
 }
+
 void useInterrupt(boolean v) {
   if (v) {
     // Timer0 is already used for millis() - we'll just interrupt somewhere
