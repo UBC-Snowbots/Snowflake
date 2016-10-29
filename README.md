@@ -43,6 +43,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 ```
 
 - Functions should be commented a la JavaDoc
+- The Javadoc comment (below) should be directly above every function in the header file
 ```
 /**
  * One line description of the function
