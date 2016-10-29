@@ -36,23 +36,42 @@ FinalDecision::FinalDecision(int argc, char **argv, std::string node_name) {
 void FinalDecision::lidarCallBack(const geometry_msgs::Twist::ConstPtr& lidar_decision) {
     // Deal with new messages here
     recent_lidar = *lidar_decision;
+    arbitrator(recent_lidar,recent_vision,recent_gps);
 }
 
 // This is called whenever a new message is received
 void FinalDecision::visionCallBack(const geometry_msgs::Twist::ConstPtr& vision_decision) {
     // Deal with new messages here
     recent_vision = *vision_decision;
+    arbitrator(recent_lidar,recent_vision,recent_gps);
 }
 
 // This is called whenever a new message is received
 void FinalDecision::gpsCallBack(const geometry_msgs::Twist::ConstPtr& gps_decision) {
     // Deal with new messages here
     recent_gps = *gps_decision;
+    arbitrator(recent_lidar,recent_vision,recent_gps);
 }
 
 void FinalDecision::publishTwist(geometry_msgs::Twist twist){
     twist_publisher.publish(twist);
 }
+
+/**
+ * Arbitrates the three messages received from Lidar, Vision, and GPS
+ *
+ * If there is a change in one or more of the messags, the function decides which one has the highest priority and it is published.
+ * The messages are held in the following order of significance:
+ *      -Lidar
+ *      -Vision
+ *      -GPS
+ *
+ * @param recent_lidar  Twist message from Lidar
+ * @param recent_vision Twist message from the camera, telling the robot where lines and boundaries are
+ * @param recent_gps    Twist message from the GPS
+ *
+ * @return              The Twist message with the highest priority.
+ */
 
 geometry_msgs::Twist FinalDecision::arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps){
     if(recent_lidar.angular.z != 0)
