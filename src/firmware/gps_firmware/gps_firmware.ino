@@ -14,7 +14,6 @@
 //Data format: D(lat),(long),(fix),(x),(y),(z),(headingDegrees)
 #include <SoftwareSerial.h>
 #include <Wire.h>
-#include <Adafruit_Sensor.h>
 #include <Adafruit_GPS.h>
 
 //CHANGE THIS CONSTANT DEPENDING ON YOUR CURRENT LOCATION
@@ -35,7 +34,6 @@ void setup() {
 
 void loop() {
   gps_check_new_data();
-  sensors_event_t event;
   char input = Serial.read();  
   send_gps_over_serial();
   Serial.read();
@@ -45,7 +43,6 @@ void gps_setup() {
   GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_5HZ);
-  //GPS.sendCommand(PGCMD_ANTENNA);
   useInterrupt(true);
   delay(1000);
 }
