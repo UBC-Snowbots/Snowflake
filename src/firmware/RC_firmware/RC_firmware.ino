@@ -8,7 +8,7 @@
 #include <SoftwareSerial.h>
 #include <stdlib.h>
 #include <Servo.h>
-#include <math.h>
+
 
 #define TRIM 8
 #define BAUD_RATE 115200
@@ -30,7 +30,7 @@ int linear_y = 0;
 int linear_z = 0;
 int angular_x = 0;
 int angular_y = 0;
-double angular_z = 0.0;
+int angular_z = 0;
 
 // motor pins
 const int left_motor_pin = 9;
@@ -45,9 +45,9 @@ const int linear_min = 80;
 const int linear_stop = 90;
 
 // max and min angular speeds and stopping condition
-const double angular_max = M_PI / 2;
-const double angular_min = - M_PI / 2;
-const double angular_stop = 0;
+const int angular_max = 100;
+const int angular_min = 80;
+const int angular_stop = 90;
 
 Servo LeftM;
 Servo RightM;
@@ -93,7 +93,7 @@ void loop() {
     
     convert();
     drive(linear_x, angular_z);
-    Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
+    //Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
   }
   else if (Mode == 0) { //RC Mode
     //Serial.println(angular_z);
@@ -103,7 +103,7 @@ void loop() {
     
     convert();
     drive(linear_x, angular_z);
-    Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
+    //Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
     Serial.flushRX();
   }
   else { //STOP MODE
@@ -112,7 +112,7 @@ void loop() {
     
     convert();
     drive(linear_x, angular_z);
-    Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
+   // Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
     Serial.flushRX();
   }
   //Serial.print("linear_x: ");Serial.print(linear_x);Serial.print(" linear_x: ");Serial.print(linear_x);Serial.print(" angular_z: ");Serial.println(angular_z);
@@ -208,8 +208,8 @@ void convert() {
   else if (angular_z < 0)
     angular_z = 0;
   
-  linear_x = map (linear_x, 0, 255, linear_min, linear_max);
-  angular_z = mapToDouble(angular_z, 0, 255, angular_min, angular_max);
+  linear_x = map(linear_x, 0, 255, linear_min, linear_max);
+  angular_z = map(angular_z, 0, 255, angular_min, angular_max);
 }
 
 void motor_write(int left, int right) {
@@ -221,18 +221,7 @@ void motor_write(int left, int right) {
 /*
  * moves the robot - turning is taken into account.
  */
-
-void drive(double angular_speed, int linear_speed) {
-   if (angular_speed < angular_stop) {
-        LeftM.write(linear_speed - round((sin(angular_speed) * WIDTH / 2)));
-        RightM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
-    } else {
-        LeftM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
-        RightM.write(linear_speed - round(sin(angular_speed) * WIDTH / 2));
-    }
-}
-
-
-double mapToDouble(int val, int in_min, int in_max, double out_min, double out_max) {
-    return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+void drive(int angular_speed, int linear_speed){
+  LeftM.write(linear_speed + (angular_speed - angular_stop));
+  RightM.write(linear_speed - (angular_speed - angular_stop));
 }
