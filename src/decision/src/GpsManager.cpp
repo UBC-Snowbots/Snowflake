@@ -6,7 +6,24 @@
  *              at the current one)
  */
 
-#include <geometry_msgs/Point.h>
+/*
+ * ~~~~~~~~~~~ CONVENTIONS USED ~~~~~~~~~~~
+              +X
+              ^
+              |
+      -θ  +<----->+ +θ
+          |   |   |
+          V   |   V
++Y <---------------------> -Y
+              |
+              |
+              |
+              V
+              -X
+
+ */
+
+
 #include "GpsManager.h"
 
 GpsManager::GpsManager(int argc, char **argv, std::string node_name){
@@ -30,6 +47,8 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     current_location_publisher = nh.advertise<geometry_msgs::Point>(current_location_topic, queue_size);
     std::string current_waypoint_topic = public_nh.resolveName("current_waypoint");
     current_waypoint_publisher = nh.advertise<geometry_msgs::Point>(current_waypoint_topic, queue_size);
+    std::string current_heading_topic = public_nh.resolveName("current_heading");
+    current_heading_publisher = nh.advertise<std_msgs::Float32>(current_heading_topic, queue_size);
 
     // Get Params
     // TODO: Check that this sets the parameters properly
@@ -63,6 +82,8 @@ void GpsManager::compassCallBack(const std_msgs::Float32::ConstPtr heading){
     }
     // Received heading is now the most recent one
     most_recent_heading = heading->data;
+    // Publish the current heading of the robot, relative to the initial heading being 0 degrees
+    publishTranslatedHeading(heading);
 }
 
 void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_fix) {
@@ -77,6 +98,7 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
     }
     // Make sure we've got origin readings before broadcasting waypoints
     if (origin_heading != -1 && received_initial_navsatfix) {
+        // If we're at the goal, start publishing the next waypoint
         if (distanceToNextWaypoint(*nav_sat_fix) < at_goal_tolerance) {
             // Start going to the next waypoint
             waypoint_stack.pop();
@@ -91,6 +113,13 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
         // and rotation
         publishCurrentLocation(*nav_sat_fix);
     }
+}
+
+void GpsManager::publishTranslatedHeading(std_msgs::Float32::ConstPtr heading){
+    // Subtract the initial heading from the current heading
+    std_msgs::Float32 translated_heading = std_msgs::Float32();
+    translated_heading.data = heading->data - origin_heading;
+    current_heading_publisher.publish(translated_heading);
 }
 
 void GpsManager::publishCurrentLocation(sensor_msgs::NavSatFix curr_location){

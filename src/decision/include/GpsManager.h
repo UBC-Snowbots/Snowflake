@@ -25,9 +25,7 @@ struct Waypoint {
 };
 
 class GpsManager {
-    // TODO: Redo javadoc comments with brief
 public:
-    // TODO: Javadoc style function comment
     GpsManager(int argc, char **argv, std::string node_name);
     /**
      * Parses a raw list of waypoints (in order lat,lon,lat,lon,...) into a vector of pairs
@@ -75,6 +73,7 @@ private:
     ros::Subscriber compass_subscriber;
     ros::Publisher current_location_publisher;
     ros::Publisher current_waypoint_publisher;
+    ros::Publisher current_heading_publisher;
 
     // Params
     float at_goal_tolerance;
@@ -125,10 +124,16 @@ private:
      */
     void publishWaypoint(Waypoint waypoint);
     /**
-  * Publishes the current location as a location relative to the initial location and rotation
-  *
-  * @param curr_location the current location
-  */
+     * Publishes the current heading of the robot, relative to the initial heading being 0
+     *
+     * @param heading the heading to translate to the robot's perspective
+     */
+    void publishTranslatedHeading(std_msgs::Float32::ConstPtr heading);
+    /**
+      * Publishes the current location as a location relative to the initial location and rotation
+      *
+      * @param curr_location the current location
+      */
     void publishCurrentLocation(sensor_msgs::NavSatFix curr_location);
 };
 

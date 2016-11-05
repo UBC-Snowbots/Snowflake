@@ -9,6 +9,7 @@
  * http://www.movable-type.co.uk/scripts/latlong.html
  */
 
+
 #include <GpsManager.h>
 #include <gtest/gtest.h>
 
@@ -235,7 +236,7 @@ TEST(GpsManager, convertToRobotsPrespective_rotated_45_straight_ahead){
 
 TEST(GpsManager, convertToRobotsPrespective_rotated_60_straight_ahead){
     // Waypoint is 1 meter directly ahead
-    // Origin rotation is Pi/2
+    // Origin rotation is 60 degrees
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
     nsfix.latitude = 49.254226;
