@@ -34,11 +34,15 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
  */
 void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image) {
     // Deal with new messages here
-    double imageRatio = getImageRatio(raw_image);
+    double imageRatio = getHorizontalImageRatio(raw_image);
     geometry_msgs::Twist twistMsg;
 
+    // Decide how much to turn
+    double maxBias = (raw_image->width * raw_image->height) / 2;
+    double relativeAngle = getDesiredAngle(imageRatio, -maxBias, maxBias);
+
     // Initialize linear velocities to 0
-    twistMsg.linear.x = 0;
+    twistMsg.linear.x = getDesiredSpeed(relativeAngle);
     twistMsg.linear.y = 0;
     twistMsg.linear.z = 0;
 
@@ -47,10 +51,24 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image
     twistMsg.angular.y = 0;
 
     // Decide how fast to turn
-    twistMsg.angular.z = 1;
+    twistMsg.angular.z = getDesiredAngularSpeed(relativeAngle);
 
-    double
+    // Do the turn
+    double t0 = ros::Time::now().toSec();
+    double current_angle;
+    ros::Rate loop_rate(1000);
+    do{
+        publishTwist(twistMsg);
+        double t1 = ros::Time::now().toSec();
+        current_angle = twistMsg.angular.z * (t1-t0);
+        ros::spinOnce();
+        loop_rate.sleep();
+    }while(current_angle<abs(relativeAngle));
 
+    // Bring back all velocities to 0, showing it's done moving.
+    twistMsg.angular.z = 0;
+    twistMsg.linear.x = 0;
+    publishTwist(twistMsg);
 }
 
 void VisionDecision::publishTwist(geometry_msgs::Twist twist){
@@ -58,16 +76,15 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist){
 }
 
 /**
- * Takes in an image reference, then returns the difference of the white
+ * Takes in an image reference, then returns the difference of the black
  * in the left and right sides.
  * 
  * @param raw_scan
  *           image reference
  * @returns double
- *           imageWhiteRatio of left to right.
+ *           imageBlackRatio of left to right.
  */
-double VisionDecision::getImageRatio(const sensor_msgs::Image::ConstPtr& raw_scan){
-
+double VisionDecision::getHorizontalImageRatio(const sensor_msgs::Image::ConstPtr& raw_scan){
 
     uint32 imageHeight = raw_scan->height;
     uint32 imageWidth = raw_scan->width;
@@ -76,7 +93,7 @@ double VisionDecision::getImageRatio(const sensor_msgs::Image::ConstPtr& raw_sca
     double leftWhiteCount = 0;
     int currentData;
 
-    // printf("imageHeight: %d, imageWidth: %d \n", imageHeight, imageWidth);
+    printf("imageHeight: %d, imageWidth: %d \n", imageHeight, imageWidth);
 
     for(int rowCount = 0; rowCount < imageHeight; rowCount++){
         for(int columnCount = 0; columnCount < imageWidth; columnCount++){
@@ -98,6 +115,41 @@ double VisionDecision::getImageRatio(const sensor_msgs::Image::ConstPtr& raw_sca
 }
 
 /**
+ * Takes in an image reference, then returns the number of black pixels
+ * at the top of the image
+ *
+ * @param raw_scan
+ *          image reference
+ * @return double
+ *          number of black pixels at the top of the image
+ */
+double VisionDecision::getTopPixels(const sensor_msgs::Image::ConstPtr& image_scan){
+
+    uint32 imageHeight = image_scan->height;
+    uint32 imageWidth = image_scan->width;
+
+    double topWhiteCount = 0;
+    int currentData;
+
+    // printf("imageHeight: %d, imageWidth: %d \n", imageHeig
+    // ht, imageWidth);
+
+    for(int rowCount = imageHeight/2; rowCount < imageHeight; rowCount++){
+        for(int columnCount = 0; columnCount < imageWidth; columnCount++){
+            currentData = image_scan->data[rowCount*8 + columnCount] == 0;
+            //printf("currentData[%d*%d]: %d \n", rowCount, columnCount, currentData);
+            if(currentData == 0)
+                topWhiteCount++;
+        }
+    }
+
+    //printf("LeftWhiteCount: %d, RightWhiteCount: %d \n", leftWhiteCount, rightWhiteCount);
+
+    return topWhiteCount;
+
+}
+
+/**
  * Takes in the image ratio and decides how heavy the angle
  * should be.
  *
@@ -114,10 +166,28 @@ double VisionDecision::getDesiredAngle(double imageRatio, double inLowerBound, d
 }
 
 /**
+ *  Returns a rotation speed based on the imageRatio
  *
+ *  @param imageRatio
+ *      rightBlackPixels - leftBlackPixels
+ *  @returns double
+ *      rotation speed of robot
  */
-double VisionDecision::getDesiredAngularSpeed(double imageRatio){
+double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
+    double speedToMap = abs(desiredAngle);
 
+}
+
+/**
+ *  Returns the desired forward speed
+ *
+ *  @param desiredAngle
+ *      angle robot will turn
+ *  @returns double
+ *      moving speed of robot
+ */
+double VisionDecision::getDesiredSpeed(double desiredAngle){
+    double speedToMap = abs(desiredAngle);
 }
 
 /**

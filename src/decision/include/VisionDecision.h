@@ -17,10 +17,13 @@
 class VisionDecision {
 public:
     VisionDecision(int argc, char **argv, std::string node_name);
-    static double getImageRatio(const sensor_msgs::Image::ConstPtr& raw_scan);
-private:
+    static double getHorizontalImageRatio(const sensor_msgs::Image::ConstPtr& image_scan);
+    static double getTopPixels(const sensor_msgs::Image::ConstPtr& image_scan);
     static double mapRange(double x, double inMin, double inMax, double outMin, double outMax);
     static double getDesiredAngle(double imageRatio, double inLowerBound, double inUpperBound);
+    static double getDesiredAngularSpeed(double desiredAngle);
+    static double getDesiredSpeed(double desiredAngle);
+private:
     void imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image);
     void publishTwist(geometry_msgs::Twist twist);
    
