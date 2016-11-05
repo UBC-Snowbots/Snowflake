@@ -14,7 +14,7 @@ else()
 endif()
 
 add_library(SnowBotSerial SnowBotSerial.cpp)
-target_link_libraries(SnowBotSerial -L/usr/lib/x86_64-linux-gnu -lserial -lpthread)
+target_link_libraries(SnowBotSerial -L/usr/lib/x86_64-linux-gnu/ -lserial -lpthread)
 target_include_directories(SnowBotSerial PUBLIC .)
 
 add_executable(testMain testMain.cpp)

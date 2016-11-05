@@ -95,11 +95,11 @@ void serial_read(){
   Serial.flushRX();
 }
 
-void convert(){
-  /* Serial.read() reads values in [0,255]
+/* Serial.read() reads values in [0,255]
    * we map them to lower and upper speeds defined above
    * for both linear and angular velocity
   */
+void convert(){
   linear_x = map(linear_x, 0, 255, linear_min, linear_max);
   angular_z = map(angular_z, 0, 255, angular_min, angular_max);
 }
