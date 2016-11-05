@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 #include <geometry_msgs/Point.h>
 
-TEST(GpsDecison,distance) {
+TEST(GpsDecision,distance) {
     geometry_msgs::Point mypoint;
     mypoint.x = 6;
     mypoint.y = 3;
@@ -18,7 +18,7 @@ TEST(GpsDecison,distance) {
     EXPECT_DOUBLE_EQ(expected, GpsDecision::distance(mypointer));
 }
 
-TEST(GpsDecison,desiredAngle) {
+TEST(GpsDecision,desiredAngle) {
     #define PI acos(-1.0)
     geometry_msgs::Point nextpoint;
     geometry_msgs::Point currentPoint;
@@ -32,12 +32,10 @@ TEST(GpsDecison,desiredAngle) {
     float my_heading=15;
 
     double expected=-150;
-    //geometry_msgs::Point::ConstPtr mypointer(new geometry_msgs::Point(mypoint));
 
     EXPECT_DOUBLE_EQ(expected, GpsDecision::desiredAngle(nextpoint,my_heading,currentPoint));
 
 }
-
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

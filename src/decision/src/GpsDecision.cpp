@@ -30,8 +30,7 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
 }
-//@ parameter: given the gps locaiton of the next move
-//@ return: the distance between the next location and the current location
+
 double GpsDecision::distance(const geometry_msgs::Point::ConstPtr& relative_gps) {
     //double current_x = relative_gps->x;
     double current_x=0.0;
@@ -47,28 +46,7 @@ double GpsDecision::distance(const geometry_msgs::Point::ConstPtr& relative_gps)
   return distance;
 }
 
-/**
- * @ parameter
- *    relative_gps: given the gps locaiton of the next move
- *    current_heading: the curren heading relative to north in degrees (0 to 360 degrees)
- * @ return:
- *   desiredAngle: the angle(less than PI) in degrees that robot need to turn
- *                 positive value means turning clockwise
- *                 negative value means turing counter-clockwise
- */
-
-#define PI acos(-1.0)
-#define TO_DEGREES 180/PI
-
-class ConstPtr;
-
-double angle(double x,double y) {
-    double dis=sqrt(x*x+y*y);
-    double cosAngle=abs(y/dis);
-    double angle=abs(acos(cosAngle));
-    return angle;
-
-}
+#define TO_DEGREES 180/(M_PI)
 double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
                                  float current_heading,geometry_msgs::Point currentPoint) {
 
@@ -96,7 +74,6 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
     else if(x<=0 && y==0) {
         AngleRelativeNorth=-90;
     }
-
     else if(x==0 && y<0) {
         AngleRelativeNorth=180;
     }
@@ -152,24 +129,16 @@ void  GpsDecision::rotate(double desiredAngle,double angular_velocity) {
     // velocity_publisher.publish(vel_msg);
 }
 
-// This is called whenever a new message is received
-//gps callback for the current point
+
 void GpsDecision::gpsCurrentCallBack(const geometry_msgs::Point::ConstPtr& relative_gps) {
-    // Deal with new messages here
     currentPoint = *relative_gps;
 }
 
-//gps callback for the current heading
 void GpsDecision::compassCallBack(const std_msgs::Float32::ConstPtr& compass_heading) {
-    // Deal with new messages here
     current_heading=compass_heading->data;
 }
 
-// This is called whenever a new message is received
-//gps callback for the next point
 void GpsDecision::gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps) {
-    // Deal with new messages here
-   // my_point = convertGpsPoints(this.current_point, relative_gps);
     desiredAngle(*relative_gps, current_heading, currentPoint);
 
 }
