@@ -22,4 +22,9 @@
     <remap from="/joint_states" to="/elsa/joint_states" />
   </node>
 
+  <!-- start the compass sim to convert magnetic vectors from
+        GazeboRosMagnetic to compass headings -->
+  <node name="compass_sim" pkg="elsa_gazebo" type="compass_sim" output="screen">
+  </node>
+
 </launch>
