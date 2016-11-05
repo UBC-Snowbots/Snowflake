@@ -22,7 +22,7 @@ public:
     /**
      * Arbitrates the three messages received from Lidar, Vision, and GPS
      *
-     * If there is a change in one or more of the messags, the function decides which one has the highest priority and it is published.
+     * If there is a change in one or more of the messages, the function decides which one has the highest priority and it is published.
      * The messages are held in the following order of significance:
      *      -Lidar
      *      -Vision
@@ -34,7 +34,6 @@ public:
      *
      * @return              The Twist message with the highest priority.
      */
-
     static geometry_msgs::Twist arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps);
 
 private:
