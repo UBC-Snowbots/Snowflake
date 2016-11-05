@@ -1,6 +1,5 @@
 #include <SoftwareSerial.h>
 #include <stdlib.h>
-#include <math.h>
 #include <Servo.h>
 
 #define BAUD_RATE 115200
@@ -30,7 +29,7 @@ int linear_y = 0;
 int linear_z = 0;
 int angular_x = 0;
 int angular_y = 0;
-double angular_z = 0.0;
+int angular_z = 0;
 
 // motor pins
 const int left_motor_pin = 9;
@@ -45,9 +44,9 @@ const int linear_min = 80;
 const int linear_stop = 90;
 
 // max and min angular speeds and stopping condition
-const double angular_max = M_PI / 2;
-const double angular_min = - M_PI / 2;
-const double angular_stop = 0.0;
+const int angular_max = 100;
+const int angular_min = 80;
+const int angular_stop = 90;
 
 
 void setup()  { 
@@ -80,7 +79,7 @@ void serial_read(){
           linear_z = Serial.read();
           angular_x = Serial.read();
           angular_y = Serial.read();
-          angular_z = (double) Serial.read();
+          angular_z = Serial.read();
       } else {
           linear_x = angular_z = UNMAPPED_STOP_SPEED;
       }
@@ -101,50 +100,16 @@ void convert(){
    * we map them to lower and upper speeds defined above
    * for both linear and angular velocity
   */
-  linear_x = map (linear_x, 0, 255, linear_min, linear_max);
-  angular_z = mapToDouble (angular_z, 0, 255, angular_min, angular_max);
+  linear_x = map(linear_x, 0, 255, linear_min, linear_max);
+  angular_z = map(angular_z, 0, 255, angular_min, angular_max);
 }
 
 
 /*
  * moves the robot - turning is taken into account.
  */
-void drive(double angular_speed, int linear_speed){
-
-    if (angular_speed < angular_stop) {
-        LeftM.write(linear_speed - round((sin(angular_speed) * WIDTH / 2)));
-        RightM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
-    } else {
-        LeftM.write(linear_speed + round((sin(angular_speed) * WIDTH / 2)));
-        RightM.write(linear_speed - round(sin(angular_speed) * WIDTH / 2));
-    }
-     /*if(ly == LINEAR_STOP){
-   if (angular_z == ANGULAR_STOP){
-       LeftM.write(LINEAR_STOP);
-       RightM.write(LINEAR_STOP);
-   } else{
-       LeftM.write(angular_z);
-       RightM.write(angular_z);
-   }
-  }
-  else{
-      LeftM.write(ly);
-      RightM.write(ly);
-   }
- }
- else{
-   if (linear_x > LINEAR_STOP){
-       LeftM.write(linear_x);//if 80 //if 100
-       RightM.write(linear_x+20);//needs to be 100 //needs to be 80
-   } else{
-       LeftM.write(linear_x);
-       RightM.write(linear_x-20);}
-   }*/
+void drive(int angular_speed, int linear_speed){
+  LeftM.write(linear_speed + (angular_speed - angular_stop));
+  RightM.write(linear_speed - (angular_speed - angular_stop));
 }
 
-
-
-
-double mapToDouble(int val, int in_min, int in_max, double out_min, double out_max) {
-    return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
