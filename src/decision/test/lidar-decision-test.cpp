@@ -6,30 +6,63 @@
 
 #include <LidarDecision.h>
 #include <gtest/gtest.h>
+#include <vector>
 
 TEST(LidarDecision, obstacle_in_range){
-    const sensor_msgs::LaserScan::ConstPtr & test_scan;
-    test_scan->range_max = 3.1415;
-    test_scan->range_min = 0.0000;
-    test_scan->angle_increment = 0.001;
-    int vector_size;
-    vector_size = static_cast<int>((test_scan->range_max - test_scan->range_min)/test_scan.angle_increment);
-    test_scan->ranges = std::vector<float> [vector_size];
+    sensor_msgs::LaserScan test_scan;
+    test_scan.angle_max = 3.1415;
+    test_scan.angle_min = 0.0000;
+    test_scan.angle_increment = 0.01;
+    int vector_size = 300;
+    std::vector<float> vec(300);
+
     for (int i = 0;i < vector_size;i++){
-        test_scan->ranges[i] = 999999999;
+        vec[i] = 999999;
     }
     for (int i=100;i<200;i++)
-    test_scan->ranges[i]=3;
+        vec[i]=3;
+    test_scan.ranges = vec;
+    sensor_msgs::LaserScan::ConstPtr test_scan_ptr(new sensor_msgs::LaserScan(test_scan));
 
-    EXPECT_EQ(true, LidarDecision::obstacle_in_range(0.01, 2.00, 5, test_scan));
-    EXPECT_EQ(true, LidarDecision::obstacle_in_range(0.199, 1.1, 5, test_scan));
-    EXPECT_EQ(true, LidarDecision::obstacle_in_range(0.002, 0.11, 5, test_scan));
-    EXPECT_EQ(false, LidarDecision::obstacle_in_range(0.21, 1.1, 5, test_scan));
-    EXPECT_EQ(false, LidarDecision::obstacle_in_range(0.002, 0.90, 5, test_scan));
+//    vector_size = vec.size();
+            //static_cast<int>((test_scan.range_max - test_scan->range_min)/test_scan->angle_increment);
+
+    EXPECT_EQ(true, LidarDecision::obstacle_in_range(1.95, 2.20, 5, test_scan_ptr));
+    EXPECT_EQ(true, LidarDecision::obstacle_in_range(0.00, 1.1, 5, test_scan_ptr));
+    EXPECT_EQ(false, LidarDecision::obstacle_in_range(0.00, 0.98, 5, test_scan_ptr));
+    EXPECT_EQ(false, LidarDecision::obstacle_in_range(2.11, 2.55, 5, test_scan_ptr));
+    EXPECT_EQ(true, LidarDecision::obstacle_in_range(1.5, 1.7, 5, test_scan_ptr));
 
 }
 
+TEST(LidarDecision, message){
+    sensor_msgs::LaserScan test_scan;
+    test_scan.angle_max = 3.1415;
+    test_scan.angle_min = 0.0000;
+    test_scan.angle_increment = 0.01;
+    int vector_size = 300;
+    std::vector<float> vec(300);
+
+    for (int i = 0;i < vector_size;i++){
+        vec[i] = 999999;
+    }
+    for (int i=100;i<200;i++)
+        vec[i]=3;
+    test_scan.ranges = vec;
+    sensor_msgs::LaserScan::ConstPtr test_scan_ptr(new sensor_msgs::LaserScan(test_scan));
+
+    geometry_msgs::Twist result;
+
+    EXPECT_EQ(5, LidarDecision::manage_twist(5.0, 5.0, 5.0, test_scan_ptr).angular.z);
+
+}
+
+
+
+
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    RUN_ALL_TESTS();
+    return 0;
 }
