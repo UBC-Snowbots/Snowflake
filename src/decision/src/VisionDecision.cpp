@@ -8,6 +8,10 @@
 #include <VisionDecision.h>
 #include <tiff.h>
 
+#define PI 3.14159265
+#define null -1
+#define INVALID 181
+
 // The constructor
 VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
     ros::init(argc, argv, node_name);
@@ -33,13 +37,13 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
  *
  */
 void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image) {
-    // Deal with new messages here
+    /*// Deal with new messages here
     double imageRatio = getHorizontalImageRatio(raw_image);
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
     double maxBias = (raw_image->width * raw_image->height) / 2;
-    double relativeAngle = getDesiredAngle(imageRatio, -maxBias, maxBias);
+    double relativeAngle = getAngleAt(imageRatio, -maxBias, maxBias);
 
     // Initialize linear velocities to 0
     twistMsg.linear.x = getDesiredSpeed(relativeAngle);
@@ -68,101 +72,64 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image
     // Bring back all velocities to 0, showing it's done moving.
     twistMsg.angular.z = 0;
     twistMsg.linear.x = 0;
-    publishTwist(twistMsg);
+    publishTwist(twistMsg);*/
 }
 
 void VisionDecision::publishTwist(geometry_msgs::Twist twist){
     twist_publisher.publish(twist);
 }
 
-/**
- * Takes in an image reference, then returns the difference of the black
- * in the left and right sides.
- * 
- * @param raw_scan
- *           image reference
- * @returns double
- *           imageBlackRatio of left to right.
- */
-double VisionDecision::getHorizontalImageRatio(const sensor_msgs::Image::ConstPtr& raw_scan){
+/* Functions to determine robot movement */
+int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
-    uint32 imageHeight = raw_scan->height;
-    uint32 imageWidth = raw_scan->width;
+    int desiredAngle = getAngleAt(false, numSamples, image_scan);
 
-    double rightWhiteCount = 0;
-    double leftWhiteCount = 0;
-    int currentData;
-
-    printf("imageHeight: %d, imageWidth: %d \n", imageHeight, imageWidth);
-
-    for(int rowCount = 0; rowCount < imageHeight; rowCount++){
-        for(int columnCount = 0; columnCount < imageWidth; columnCount++){
-            currentData = raw_scan->data[rowCount*8 + columnCount] == 0;
-            //printf("currentData[%d*%d]: %d \n", rowCount, columnCount, currentData);
-
-            if((columnCount < imageWidth/2.0) && (currentData == 0)) {
-                leftWhiteCount++;
-            }
-            else if(currentData == 0){
-                rightWhiteCount++;
-            }
-        }
+    if(desiredAngle == INVALID) {
+        printf("LEFT INVALID \n");
+        desiredAngle = getAngleAt(true, numSamples, image_scan);
     }
 
-    //printf("LeftWhiteCount: %d, RightWhiteCount: %d \n", leftWhiteCount, rightWhiteCount);
-
-    return rightWhiteCount - leftWhiteCount;
+    return desiredAngle;
 }
 
-/**
- * Takes in an image reference, then returns the number of black pixels
- * at the top of the image
- *
- * @param raw_scan
- *          image reference
- * @return double
- *          number of black pixels at the top of the image
- */
-double VisionDecision::getTopPixels(const sensor_msgs::Image::ConstPtr& image_scan){
 
-    uint32 imageHeight = image_scan->height;
-    uint32 imageWidth = image_scan->width;
+int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
-    double topWhiteCount = 0;
-    int currentData;
+    double imageHeight = image_scan->height;
 
-    // printf("imageHeight: %d, imageWidth: %d \n", imageHeig
-    // ht, imageWidth);
+    // Each slope will be compared to the bottom point of the white line
+    double x1 = getMiddle(imageHeight - 1, rightSide, image_scan);
 
-    for(int rowCount = imageHeight/2; rowCount < imageHeight; rowCount++){
-        for(int columnCount = 0; columnCount < imageWidth; columnCount++){
-            currentData = image_scan->data[rowCount*8 + columnCount] == 0;
-            //printf("currentData[%d*%d]: %d \n", rowCount, columnCount, currentData);
-            if(currentData == 0)
-                topWhiteCount++;
+    double sumAngles = 0;
+    double initialAngle;
+    double finalAngle;
+
+    int slopeAcceptance = 5;
+
+    for (double division = 0; division < numSamples; division++){
+        double yCompared = division * imageHeight / (2*numSamples);
+        double xCompared = getMiddle(yCompared, rightSide, image_scan);
+
+        double foundAngle;
+        double foundSlope;
+        if(xCompared == x1)
+            foundAngle = 0;
+        else {
+            foundSlope = - (xCompared - x1)/ (yCompared - imageHeight - 1);
+            foundAngle = atan(foundSlope);
         }
+        if(division == 0){
+            initialAngle = foundAngle * 180.0 / PI;
+        } else if(division == (numSamples - 1))
+            finalAngle = foundAngle * 180.0 / PI;
+        sumAngles += foundAngle;
     }
 
-    //printf("LeftWhiteCount: %d, RightWhiteCount: %d \n", leftWhiteCount, rightWhiteCount);
-
-    return topWhiteCount;
-
-}
-
-/**
- * Takes in the image ratio and decides how heavy the angle
- * should be.
- *
- * @param imageRatio
- *      rightBlackPixels - leftBlackPixels
- * @return double
- *      an angle between -180 and 180
- */
-double VisionDecision::getDesiredAngle(double imageRatio, double inLowerBound, double inUpperBound){
-    double outLowerBound = -180;
-    double outUpperBound = 180;
-
-    return mapRange(imageRatio, inLowerBound, inUpperBound, outLowerBound, outUpperBound);
+    int angleDifference = abs(finalAngle - initialAngle);
+    if (angleDifference > slopeAcceptance)
+        return INVALID;
+    else
+        return sumAngles / numSamples * 180.0 / PI;
 }
 
 /**
@@ -190,6 +157,109 @@ double VisionDecision::getDesiredSpeed(double desiredAngle){
     double speedToMap = abs(desiredAngle);
 }
 
+
+/* Helper functions for functions that determine robot movement. */
+
+int VisionDecision::getNumLines(int row, const sensor_msgs::Image::ConstPtr& image_scan){
+
+}
+
+int VisionDecision::getMiddle(int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan){
+
+    int noiseMax = 20;
+    int startingPos;
+    int incrementer;
+    int startPixel, endPixel;
+
+    // Depending on chosen side, determine where to start
+    // and how to iterate.
+    if(rightSide){
+        startingPos = image_scan->width - 1;
+        incrementer = -1;
+    }else{
+        startingPos = 0;
+        incrementer = 1;
+    }
+
+    // Find first pixel of the white line in a certain row.
+    startPixel = VisionDecision::getStartPixel(startingPos, noiseMax, incrementer, row, image_scan);
+
+    // Find last pixel of the white line in a certain row.
+    startingPos = startPixel;
+    endPixel = VisionDecision::getEndPixel(startingPos, noiseMax, incrementer, row, image_scan);
+
+    // Return average of the two pixels.
+    return (startPixel + endPixel) / 2;
+}
+
+int VisionDecision::getStartPixel(int startingPos, int noiseMax, int incrementer, int row,
+                     const sensor_msgs::Image::ConstPtr& image_scan){
+    int column = startingPos;
+    int whiteVerificationCount = 0;
+    int blackVerificationCount = 0;
+    int startPixel = null;
+    int toBeChecked = null;
+
+    // Find starting pixel
+    while(column < image_scan->width && column >= 0){
+        // If white pixel found start verifying if proper start.
+        if(image_scan->data[row*image_scan->width + column] != 0){
+            blackVerificationCount = 0;
+            // This pixel is what we are checking
+            if (toBeChecked == null)
+                toBeChecked = column;
+
+            // Determine whether toBeChecked is noise
+            whiteVerificationCount++;
+            if (whiteVerificationCount == noiseMax && startPixel == null)
+                startPixel = toBeChecked;
+        } else {
+            blackVerificationCount++;
+            if(blackVerificationCount == noiseMax) {
+                whiteVerificationCount = 0; // Reset verification if black pixel.
+                toBeChecked = null;
+            }
+        }
+        // Go to next element
+        column += incrementer;
+    }
+    return startPixel;
+}
+
+int VisionDecision::getEndPixel(int startingPos, int noiseMax, int incrementer, int row,
+                     const sensor_msgs::Image::ConstPtr& image_scan){
+    int column = startingPos;
+    int blackVerificationCount = 0;
+    int whiteVerificationCount = 0;
+    int endPixel = null;
+    int toBeChecked = null;
+
+    while(column < image_scan->width && column >= 0){
+        // If black pixel found start verifying if pixel before
+        // is proper end.
+        if(image_scan->data[row*image_scan->width + column] == 0){
+            whiteVerificationCount = 0;
+            // This pixel is what we are checking
+            if (toBeChecked == null)
+                toBeChecked = column - incrementer; //toBeChecked = lastPixel
+
+            // Determine whether toBeChecked is noise
+            blackVerificationCount++;
+            if (blackVerificationCount == noiseMax && endPixel == null)
+                endPixel = toBeChecked;
+        } else {
+            whiteVerificationCount++;
+            if(whiteVerificationCount == noiseMax) {
+                blackVerificationCount = 0; // Reset verification if white pixel.
+                toBeChecked = null;
+            }
+        }
+        // Go to next element
+        column += incrementer;
+    }
+    return endPixel;
+}
+
 /**
  * Re-maps a number from one range to another
  *
@@ -209,4 +279,7 @@ double VisionDecision::getDesiredSpeed(double desiredAngle){
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax){
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
+
+
+
 

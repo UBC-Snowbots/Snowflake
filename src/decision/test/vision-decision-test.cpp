@@ -15,55 +15,7 @@ using namespace cv;
 
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage);
 
-TEST(imageRatioTest, zeroTozero){
-
-    sensor_msgs::Image output_image;
-
-    output_image.height           = 8;
-    output_image.width            = 8;
-    output_image.encoding         = "8UC1";
-    output_image.is_bigendian     = false;
-    output_image.step             = 8;
-
-   for(int rowCount = 0; rowCount < 8; rowCount++)
-       for (int columnCount = 0; columnCount < 8; columnCount++)
-           output_image.data.push_back(255);
-
-
-    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(output_image));
-
-    EXPECT_EQ(0.0, VisionDecision::getHorizontalImageRatio(testImageScan));
-}
-
-TEST(imageRatioTest, oneToTwo){
-
-    sensor_msgs::Image output_image;
-
-    output_image.height           = 8;
-    output_image.width            = 8;
-    output_image.encoding         = "8UC1";
-    output_image.is_bigendian     = false;
-    output_image.step             = 8;
-
-    for(int rowCount = 0; rowCount < output_image.height; rowCount++)
-        for (int columnCount = 0; columnCount < output_image.width; columnCount++)
-            output_image.data.push_back(0);
-
-    output_image.data[0] = 255;
-    output_image.data[3*8+5] = 255;
-    output_image.data[6*8+7] = 255;
-
-    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(output_image));
-
-    EXPECT_EQ(1.0, VisionDecision::getHorizontalImageRatio(testImageScan));
-}
-
-TEST(desiredAngleTest, twentyBiasFifty){
-    EXPECT_EQ(72, VisionDecision::getDesiredAngle(20, -50, 50));
-}
-
-
-TEST(imageTest, angleThirtySpeedQuick){
+TEST(imageTest, angleStraight){
     String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
@@ -71,11 +23,29 @@ TEST(imageTest, angleThirtySpeedQuick){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    int maxBias = testImageScan->width * testImageScan->height / 4;
+    EXPECT_EQ(0, VisionDecision::getDesiredAngle(300, testImageScan));
+}
 
-    int imageRatio = VisionDecision::getHorizontalImageRatio(testImageScan);
-    
-    EXPECT_EQ(0, VisionDecision::getDesiredAngle(imageRatio, -maxBias, maxBias));
+TEST(imageTest, angleLeft){
+    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testLeftImage.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_EQ(-34, VisionDecision::getDesiredAngle(300, testImageScan));
+}
+
+TEST(imageTest, angleRight){
+    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testNoisyRightImage.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_EQ(40, VisionDecision::getDesiredAngle(300, testImageScan));
 }
 
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage){
@@ -94,6 +64,7 @@ sensor_msgs::Image convertToSensorMsg(Mat cvMatImage){
         else
             img_msg.data.push_back(255);
     }
+
 
     return img_msg;
 }
