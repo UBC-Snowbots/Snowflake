@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jamie/IGVC-2017/src/firmware/tests/cmake_test/testMain.cpp
+SnowBotSerial.hpp
+-
+iostream
+-
+
+SnowBotSerial.hpp
+SerialStream.h
+-
+
