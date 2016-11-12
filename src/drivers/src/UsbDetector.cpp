@@ -1,12 +1,22 @@
 #include <UsbDetector.h>
-#include <libusb.h>
 
-std::vector<struct usb_device> UsbDetector::find_arduinos() {
-    // discover devices
-    libusb_init(NULL);
-    libusb_device **list;
-    ssize_t cnt = libusb_get_device_list(NULL, &list);
-    ssize_t i = 0;
+/* Finds all arduino unos connected to the computer.
+ *
+ * stores all newly found devices in the set of arduinos
+ *
+*/
+
+UsbDetector::UsbDetector() {
+    libusb_init(ctx);
+}
+
+UsbDetector::~UsbDetector() {
+    libusb_free_device_list(list);
+    libusb_exit(ctx);
+}
+
+std::set<struct usb_device> UsbDetector::find_arduinos() {
+    cnt = libusb_get_device_list(ctx, &list);
     int err = 0;
     std::cout << cnt << std::endl;
     if (cnt < 0) {
@@ -16,7 +26,15 @@ std::vector<struct usb_device> UsbDetector::find_arduinos() {
         struct libusb_device_descriptor info;
         libusb_get_device_descriptor(list[i], &info);
         if (info.idVendor == 0x2a03 && info.idProduct == 0x0043) {
-
+            arduinos.insert(list[i]);
         }
     }
+    return arduinos;
 }
+
+void UsbDetector::poll_arduinos() {
+    for (std::set<struct usb_device>::iterator it = arduinos.begin(); it != arduinos.end(); ++it) {
+     
+    }
+}
+
