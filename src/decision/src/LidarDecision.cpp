@@ -98,9 +98,11 @@ int LidarDecision::turn_left(const sensor_msgs::LaserScan::ConstPtr& raw_scan, f
     while ((raw_scan->ranges[left_side_value]>distance_used)||(left_side_value < angle_increment_steps/2)){
         left_side_value++;
     }
+    std::cout << "left_side " << left_side_value << std::endl;
     while((raw_scan->ranges[angle_increment_steps - right_side_value] > distance_used)||(right_side_value < angle_increment_steps/2)){
         right_side_value++;
     }
+    std::cout << "right_side " << right_side_value << std::endl;
     if (left_side_value > right_side_value) return 1;
     else return (-1);
 
@@ -110,16 +112,16 @@ int LidarDecision::turn_left(const sensor_msgs::LaserScan::ConstPtr& raw_scan, f
 geometry_msgs::Twist LidarDecision::manage_twist_2(const sensor_msgs::LaserScan::ConstPtr& raw_scan) {
 
     geometry_msgs::Twist vel_msg;
-    float dis_near= 0;
-    float dis_mid = 1;
-    float dis_far = 2;
+    float dis_near= 5;
+    float dis_mid = 10;
+    float dis_far = 20;
     int angle_increment_steps;
     angle_increment_steps = static_cast<int>((raw_scan->angle_max - raw_scan->angle_min) / raw_scan->angle_increment);
     int angle_value_exact_front;
     angle_value_exact_front = angle_increment_steps / 2;
-    int angle_side_near; //the area that would not be obstacle to motion
-    int angle_side_mid;
-    int angle_side_far;
+    int angle_side_near = 1; //the area that would not be obstacle to motion
+    int angle_side_mid = 1;
+    int angle_side_far = 1;
 
     //step 1 obstacle in near, mid or far range (inside impact region);
     bool in_near = obstacle_in_range(raw_scan->angle_min + angle_side_near, raw_scan->angle_max - angle_side_near,
@@ -132,8 +134,8 @@ geometry_msgs::Twist LidarDecision::manage_twist_2(const sensor_msgs::LaserScan:
     //step 2 determine turn
     //scan from side to see either left or right has more space, for certain distance
     float distance_used;
-    float linear_speed = 1;
-    float angular_speed = 1;
+    float linear_speed = 13;
+    float angular_speed = 13;
     //determine distance, velocity for different case
     if (in_far) {
         //certain linear;
