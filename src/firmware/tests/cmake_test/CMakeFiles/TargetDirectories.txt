@@ -1,0 +1,4 @@
+/home/jamie/IGVC-2017/src/firmware/tests/cmake_test/CMakeFiles/rebuild_cache.dir
+/home/jamie/IGVC-2017/src/firmware/tests/cmake_test/CMakeFiles/testMain.dir
+/home/jamie/IGVC-2017/src/firmware/tests/cmake_test/CMakeFiles/edit_cache.dir
+/home/jamie/IGVC-2017/src/firmware/tests/cmake_test/CMakeFiles/SnowBotSerial.dir
