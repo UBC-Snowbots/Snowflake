@@ -22,8 +22,14 @@ public:
     static bool obstacle_in_range(double min_angle, double max_angle, float obstacle_distance,
                                   const sensor_msgs::LaserScan::ConstPtr& raw_scan);
 
-    static geometry_msgs::Twist manage_twist(float obstacle_distance, float forward_speed,  float angular_speed,
+    static geometry_msgs::Twist manage_twist_1(float obstacle_distance, float forward_speed,  float angular_speed,
                                                      const sensor_msgs::LaserScan::ConstPtr& raw_scan);
+
+    static int turn_left(const sensor_msgs::LaserScan::ConstPtr& raw_scan, float distance_used);
+
+    static geometry_msgs::Twist manage_twist_2(const sensor_msgs::LaserScan::ConstPtr& raw_scan);
+
+
 private:
     void scanCallBack(const sensor_msgs::LaserScan::ConstPtr& raw_scan);
     void publishTwist(geometry_msgs::Twist twist);
