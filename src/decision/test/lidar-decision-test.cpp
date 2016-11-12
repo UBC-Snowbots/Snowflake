@@ -35,25 +35,27 @@ TEST(LidarDecision, obstacle_in_range){
 
 }
 
-TEST(LidarDecision, message){
+TEST(LidarDecision, manage_twist_2){
     sensor_msgs::LaserScan test_scan;
-    test_scan.angle_max = 3.1415;
+    test_scan.angle_max = 3.0000;
     test_scan.angle_min = 0.0000;
     test_scan.angle_increment = 0.01;
     int vector_size = 300;
     std::vector<float> vec(300);
-
     for (int i = 0;i < vector_size;i++){
         vec[i] = 999999;
     }
-    for (int i=100;i<200;i++)
+    for (int i=100;i<160;i++)
         vec[i]=3;
     test_scan.ranges = vec;
     sensor_msgs::LaserScan::ConstPtr test_scan_ptr(new sensor_msgs::LaserScan(test_scan));
 
     geometry_msgs::Twist result;
 
-   // EXPECT_EQ(5, LidarDecision::manage_twist_v1(5.0, 5.0, 5.0, test_scan_ptr).angular.z);
+    //test LidarDecision::manage_twist_2
+    EXPECT_EQ(13, LidarDecision::manage_twist_2(test_scan_ptr).linear.x);
+    EXPECT_EQ(-13, LidarDecision::manage_twist_2(test_scan_ptr).angular.z);
+
 
 }
 
