@@ -80,6 +80,9 @@ some_ros_package
 |   | <b>MyNode.cpp</b> 
 |   | <b>my_node.cpp</b>
 |
+└───launch
+|   | <b>my_node.launch</b>
+|
 └───include
 |   | <b>MyNode.h</b>
 | 
