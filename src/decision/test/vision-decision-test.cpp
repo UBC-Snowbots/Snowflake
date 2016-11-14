@@ -136,6 +136,28 @@ TEST(imageTest, noisyLeft){
     EXPECT_EQ(-30, VisionDecision::getDesiredAngle(300, testImageScan));
 }
 
+TEST(imageTest, noisyStraight){
+    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testVeryNoisyStraightImage.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_EQ(0, VisionDecision::getDesiredAngle(300, testImageScan));
+}
+
+TEST(imageTest, noisyLeft){
+    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testVeryNoisyLeftImage.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_EQ(-30, VisionDecision::getDesiredAngle(300, testImageScan));
+}
+
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage){
     sensor_msgs::Image img_msg; // >> message to be sent
     MatIterator_<uchar> it, end;
