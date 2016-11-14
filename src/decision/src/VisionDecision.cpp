@@ -33,17 +33,12 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
 }
 
 // This is called whenever a new message is received
-/**
- *
- */
-void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image) {
-    /*// Deal with new messages here
-    double imageRatio = getHorizontalImageRatio(raw_image);
+void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& image_scan) {
+    // Deal with new messages here
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
-    double maxBias = (raw_image->width * raw_image->height) / 2;
-    double relativeAngle = getAngleAt(imageRatio, -maxBias, maxBias);
+    int relativeAngle = getDesiredAngle(image_scan->height/2.0, image_scan);
 
     // Initialize linear velocities to 0
     twistMsg.linear.x = getDesiredSpeed(relativeAngle);
@@ -72,7 +67,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image
     // Bring back all velocities to 0, showing it's done moving.
     twistMsg.angular.z = 0;
     twistMsg.linear.x = 0;
-    publishTwist(twistMsg);*/
+    publishTwist(twistMsg);
 }
 
 void VisionDecision::publishTwist(geometry_msgs::Twist twist){
@@ -80,6 +75,14 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist){
 }
 
 /* Functions to determine robot movement */
+/**
+ * Returns the angle of a valid line
+ *
+ * @param numSamples the number of slopes to sample the angle
+ * @param image_scan the image to parse
+ *
+ * @return the angle of the line to the positive y-axis.
+ */
 int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
     int desiredAngle = getAngleAt(false, numSamples, image_scan);
@@ -92,7 +95,16 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     return desiredAngle;
 }
 
-
+/**
+ * Determines the angle of the line parsed from the left or right side.
+ * Returns INVALID if an invalid output is found.
+ *
+ * @param rightSide determines whether to parse from the left or from the right side.
+ * @param numSamples how many slopes to sample the angle.
+ * @param image_scan the image to parse.
+ *
+ * @returns the angle of the line, or INVALID if line is invalid.
+ */
 int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
     double imageHeight = image_scan->height;
@@ -142,6 +154,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
  */
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
     double speedToMap = abs(desiredAngle);
+    return mapRange(speedToMap, 0, 180, 0, 100);
 
 }
 
@@ -155,15 +168,19 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
  */
 double VisionDecision::getDesiredSpeed(double desiredAngle){
     double speedToMap = abs(desiredAngle);
+    return 100 - mapRange(speedToMap, 0, 180, 0, 100);
 }
 
 
 /* Helper functions for functions that determine robot movement. */
 
-int VisionDecision::getNumLines(int row, const sensor_msgs::Image::ConstPtr& image_scan){
-
-}
-
+/**
+ * Determines the middle of the white line given a row
+ *
+ * @param row the row to parse
+ * @param rightSide determines whether to parse from the right or the left
+ * @param image_scan the image to parse
+ */
 int VisionDecision::getMiddle(int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan){
 
     int noiseMax = 20;
@@ -192,6 +209,18 @@ int VisionDecision::getMiddle(int row, bool rightSide, const sensor_msgs::Image:
     return (startPixel + endPixel) / 2;
 }
 
+/**
+ * Returns the white pixel right after the black space in between
+ * the line and the left side or right side of the screen.
+ *
+ * @param startingPos column to start parsing
+ * @param noiseMax how large noise can be
+ * @param incrementer decides whether to parse from the left or from the right
+ * @param row determines the row to parse
+ * @param image_scan the image to parse
+ *
+ * @returns the white pixel's column position
+ */
 int VisionDecision::getStartPixel(int startingPos, int noiseMax, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
     int column = startingPos;
@@ -226,6 +255,18 @@ int VisionDecision::getStartPixel(int startingPos, int noiseMax, int incrementer
     return startPixel;
 }
 
+/**
+ * Returns the white pixel right before the black space in between
+ * the lines
+ *
+ * @param startingPos column to start parsing
+ * @param noiseMax how large noise can be
+ * @param incrementer decides whether to parse from the left or from the right
+ * @param row determines the row to parse
+ * @param image_scan the image to parse
+ *
+ * @returns the white pixel's column position
+ */
 int VisionDecision::getEndPixel(int startingPos, int noiseMax, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
     int column = startingPos;

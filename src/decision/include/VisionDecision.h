@@ -24,12 +24,11 @@ public:
     static double getDesiredSpeed(double desiredAngle);
     static int getMiddle(int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan);
 private:
-    static int getNumLines(int row, const sensor_msgs::Image::ConstPtr& image_scan);
     static int getEndPixel(int startingPos, int noiseMax, int incrementer, int row,
                            const sensor_msgs::Image::ConstPtr& image_scan);
     static int getStartPixel(int startingPos, int noiseMax, int incrementer, int row,
                              const sensor_msgs::Image::ConstPtr& image_scan);
-    void imageCallBack(const sensor_msgs::Image::ConstPtr& raw_image);
+    void imageCallBack(const sensor_msgs::Image::ConstPtr& image_scan);
     void publishTwist(geometry_msgs::Twist twist);
    
     
