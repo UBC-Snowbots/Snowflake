@@ -70,7 +70,6 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist){
 }
 
 /* Functions to determine robot movement */
-
 /**
  * Returns the angle of a valid line
  *
@@ -232,7 +231,6 @@ int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const se
 }
 
 /**
-<<<<<<< f94a814e7838a4e637d0236ce273e3e1dd489a35
  * Returns the white pixel right after the black space in between
  * the line and the left side or right side of the screen.
  *
@@ -314,109 +312,6 @@ int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
         } else {
             whiteVerificationCount++;
             if(whiteVerificationCount == NOISEMAX) {
-                blackVerificationCount = 0; // Reset verification if white pixel.
-                toBeChecked = null;
-            }
-        }
-        // Go to next element
-        column += incrementer;
-    }
-    return endPixel;
-}
-
-
-/* Helper functions for functions that determine robot movement. */
-
-int VisionDecision::getNumLines(int row, const sensor_msgs::Image::ConstPtr& image_scan){
-
-}
-
-int VisionDecision::getMiddle(int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan){
-
-    int noiseMax = 20;
-    int startingPos;
-    int incrementer;
-    int startPixel, endPixel;
-
-    // Depending on chosen side, determine where to start
-    // and how to iterate.
-    if(rightSide){
-        startingPos = image_scan->width - 1;
-        incrementer = -1;
-    }else{
-        startingPos = 0;
-        incrementer = 1;
-    }
-
-    // Find first pixel of the white line in a certain row.
-    startPixel = VisionDecision::getStartPixel(startingPos, noiseMax, incrementer, row, image_scan);
-
-    // Find last pixel of the white line in a certain row.
-    startingPos = startPixel;
-    endPixel = VisionDecision::getEndPixel(startingPos, noiseMax, incrementer, row, image_scan);
-
-    // Return average of the two pixels.
-    return (startPixel + endPixel) / 2;
-}
-
-int VisionDecision::getStartPixel(int startingPos, int noiseMax, int incrementer, int row,
-                     const sensor_msgs::Image::ConstPtr& image_scan){
-    int column = startingPos;
-    int whiteVerificationCount = 0;
-    int blackVerificationCount = 0;
-    int startPixel = null;
-    int toBeChecked = null;
-
-    // Find starting pixel
-    while(column < image_scan->width && column >= 0){
-        // If white pixel found start verifying if proper start.
-        if(image_scan->data[row*image_scan->width + column] != 0){
-            blackVerificationCount = 0;
-            // This pixel is what we are checking
-            if (toBeChecked == null)
-                toBeChecked = column;
-
-            // Determine whether toBeChecked is noise
-            whiteVerificationCount++;
-            if (whiteVerificationCount == noiseMax && startPixel == null)
-                startPixel = toBeChecked;
-        } else {
-            blackVerificationCount++;
-            if(blackVerificationCount == noiseMax) {
-                whiteVerificationCount = 0; // Reset verification if black pixel.
-                toBeChecked = null;
-            }
-        }
-        // Go to next element
-        column += incrementer;
-    }
-    return startPixel;
-}
-
-int VisionDecision::getEndPixel(int startingPos, int noiseMax, int incrementer, int row,
-                     const sensor_msgs::Image::ConstPtr& image_scan){
-    int column = startingPos;
-    int blackVerificationCount = 0;
-    int whiteVerificationCount = 0;
-    int endPixel = null;
-    int toBeChecked = null;
-
-    while(column < image_scan->width && column >= 0){
-        // If black pixel found start verifying if pixel before
-        // is proper end.
-        if(image_scan->data[row*image_scan->width + column] == 0){
-            whiteVerificationCount = 0;
-            // This pixel is what we are checking
-            if (toBeChecked == null)
-                toBeChecked = column - incrementer; //toBeChecked = lastPixel
-
-            // Determine whether toBeChecked is noise
-            blackVerificationCount++;
-            if (blackVerificationCount == noiseMax && endPixel == null)
-                endPixel = toBeChecked;
-        } else {
-            whiteVerificationCount++;
-            if(whiteVerificationCount == noiseMax) {
                 blackVerificationCount = 0; // Reset verification if white pixel.
                 toBeChecked = null;
             }
