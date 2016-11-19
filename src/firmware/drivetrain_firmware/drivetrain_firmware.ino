@@ -67,11 +67,6 @@ void serial_read(){
   //reading in 6 chars from Serial
   if (Serial.available() > BUFFER_SIZE){
 
-      /* if (Serial.read() == 'B'){
-      linear_x = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-      ly =(Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-      angular_z = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');*/
-
       // buffer_head identifies the start of the buffer
       if (Serial.read() == buffer_head) {
           linear_x = Serial.read();
@@ -110,13 +105,22 @@ void convert(){
  */
 void drive(int angular_speed, int linear_speed){
   
-  LeftM.write(linear_speed + (angular_speed - angular_stop));
-  RightM.write(linear_speed - (angular_speed - angular_stop));
+  // mapping should map to a percentage of max and min duty cycle
+  // for our motors
+  // we are using the Talon SRX - looks like duty cycle is between 2.9 - 100ms
+  // seen here https://www.ctr-electronics.com/Talon%20SRX%20User's%20Guide.pdf
+  int left_throttle = linear_speed + (angular_speed - angular_stop);
+  int right_throttle = linear_speed - (angular_speed - angular_stop);
+  
+  servo_write(LeftM, left_throttle);
+  servo_write(RightM, right_throttle);
 }
 
 // this writes to motor using duty cycle rather than servo arm angle
 void servo_write(Servo motor, int throttle) {
-  throttle = map(throttle, 180, 0, 1000, 2000); // check that the microseconds is correct here for the ESC - we are using Talon SRX
+  // throttle can be as high as 110 and as low as 70 after calculation
+  // PWM input pulse high time can be between 1 and 2 ms. So 1000-2000 microseconds
+  throttle = map(throttle, 70, 110, 1000, 2000); 
   motor.writeMicroseconds(throttle);
 }
 
