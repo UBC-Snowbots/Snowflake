@@ -13,11 +13,6 @@
 // reading from the buffer. Robot will be stopped initially.
 #define UNMAPPED_STOP_SPEED 128
 
-// distance between wheels of the robot
-// once accurate distance is measured can move this
-// to const double
-#define WIDTH 10
-
 // motors
 Servo LeftM;
 Servo RightM;
@@ -57,8 +52,9 @@ void setup(){
   }
   
   Serial.println("ready");
-  LeftM.attach(left_motor_pin);
-  RightM.attach(right_motor_pin);
+  mySerial.begin(9600);
+  //LeftM.attach(left_motor_pin);
+  //RightM.attach(right_motor_pin);
 }
 
 void loop()  { 
@@ -80,19 +76,14 @@ void serial_read() {
  //reading in 6 chars from Serial
   if (Serial.available() >= BUFFER_SIZE){
 
-      /* if (Serial.read() == 'B'){
-      linear_x = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-      ly =(Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-      angular_z = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');*/
-
       // buffer_head identifies the start of the buffer
       if (Serial.read() == buffer_head) {
-          linear_x = Serial.read();
-          linear_y = Serial.read();
-          linear_z = Serial.read();
-          angular_x = Serial.read();
-          angular_y = Serial.read();
-          angular_z = Serial.read();
+          linear_x = mySerial.write(Serial.read());
+          linear_y = mySerial.write(Serial.read());
+          linear_z = mySerial.write(Serial.read());
+          angular_x = mySerial.write(Serial.read());
+          angular_y = mySerial.write(Serial.read());
+          angular_z = mySerial.write(Serial.read());
           
           serial_write();
       } else {
@@ -111,32 +102,15 @@ void serial_read() {
 }
 
 void serial_write() {
- int addx = linear_x + 1;
- int addy = linear_y + 1;
- int addz = linear_z + 1;
- int angx = angular_x + 1;
- int angy = angular_y + 1;
- int angz = angular_z + 1;
+  if (mySerial.available()) {
+     Serial.write(mySerial.read());
+  }
  
- int bufferhead_sent = Serial.write(buffer_head);
- int linx_sent = Serial.write(addx);
- int liny_sent = Serial.write(addy);
- int linz_sent = Serial.write(addz);
- int angx_sent = Serial.write(angx);
- int angy_sent = Serial.write(angy);
- int angz_sent = Serial.write(angz);
 }
 
 void drive(int angular_speed, int linear_speed){
-
   LeftM.write(linear_speed + (angular_speed - angular_stop));
   RightM.write(linear_speed - (angular_speed - angular_stop));
-   /* if (angular_speed < angular_stop) {
-      
-    } else {
-      LeftM.write(linear_speed - (angular_speed - angular_stop));
-      RightM.write(linear_speed + (angular_speed - angular_stop));
-    } */
 }
 
 void convert() {

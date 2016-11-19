@@ -12,7 +12,6 @@
 
 #define TRIM 8
 #define BAUD_RATE 115200
-#define WIDTH 10
 #define BUFFER_SIZE 6
 // assign 128 to be not moving
 // will be used to hold robot in place while
@@ -23,6 +22,7 @@
 // modify FR, FL, BR, BL to change speeds: (+) correpsonds to faster speed, (-) for going reverse
 // F:FRONT, B:BACK, R:RIGHT, L:LEFT e.g. FR = FRONT RIGHT WHEEL.
 const int OFFSET = 1;
+const int joystick_margin = 150;
 
 // buffer inputs
 int linear_x = 0;
@@ -97,7 +97,6 @@ void loop() {
   }
   else if (Mode == 0) { //RC Mode
     //Serial.println(angular_z);
-    
     linear_x = R1; 
     angular_z = R2;
     
@@ -120,14 +119,17 @@ void loop() {
 }
 
 void set_off() {
-  int linear_x_mid = 1550; //RX standard
-  int angular_z_mid = 1550; //RY standard
+  int linear_x_mid = 1550; //RX standard - radio signal midpoint
+  int angular_z_mid = 1550; //RY standard - radio signal midpoint
   
-  linear_x_h = linear_x_mid + 150; 
-  linear_x_l = linear_x_mid - 150;
+  // joystick_margin is an error margin for joystick control
+  // e.g. if the joystick is moved just a little bit, it is assumed that no movement 
+  // is desired.
+  linear_x_h = linear_x_mid + joystick_margin; 
+  linear_x_l = linear_x_mid - joystick_margin;
   
-  angular_z_h = angular_z_mid + 150; 
-  angular_z_l = angular_z_mid - 150;
+  angular_z_h = angular_z_mid + joystick_margin; 
+  angular_z_l = angular_z_mid - joystick_margin;
 }
 
 
@@ -135,7 +137,7 @@ void sig_read() {
   R1 = pulseIn(2, HIGH); // 1140 - 1965 RX LEFT-RIGHT -> turn on spot
   R2 = pulseIn(3, HIGH); // 1965 - 1140 RY UP-DOWN -> Steer left/right y axis (turn while moving)
   R3 = pulseIn(4, HIGH); // 1970 - 1115 linear_x UP-DOWN -> forward/backward
-  R4 = pulseIn(5,HIGH); //1970 - 1115 mode
+  R4 = pulseIn(5, HIGH); //1970 - 1115 mode
   
   //Serial.print("R1: "); Serial.print(R1);Serial.print(" R2: "); Serial.print(R2);Serial.print(" R3: "); Serial.println(R3);Serial.println("Mode: ");Serial.println(Mode);
   if (R1 < linear_x_h && R1 > linear_x_l) 
@@ -150,16 +152,14 @@ void sig_read() {
   
   //Serial.print("R3: ");Serial.println(R3);
   if (1100 < R3 && R3 < 1400) 
-    Mode = 1;
+    Mode = 1; // STOP mode?
   else if (1400 < R3 && R3 < 1700) 
-    Mode = 0;
+    Mode = 0; // auto mode
   else if (1700 < R3 && R3 < 2000) 
-    Mode = -1;
+    Mode = -1; // RC mode
   else 
-    Mode = -2;
-  //Serial.print("R1: "); Serial.println(R1);
-  //Serial.print("R2: "); Serial.println(R2);
-  if (abs(R1 - 90) < TRIM) 
+    Mode = -2; // STOP mode
+  if (abs(R1 - 90) < TRIM) // error control
     R1 = linear_stop;
   if (abs(R2 - 90) < TRIM) 
     R2 = angular_stop;
@@ -167,12 +167,7 @@ void sig_read() {
 
 void serial_read(){
     //reading in 6 chars from Serial
-  if (Serial.available() > BUFFER_SIZE){
-
-      /* if (Serial.read() == 'B'){
-      linear_x = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-      ly =(Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');
-      angular_z = (Serial.read()-'0')*100 + (Serial.read()-'0')*10 + (Serial.read()-'0');*/
+  if (Serial.available() > BUFFER_SIZE) {
 
       // buffer_head identifies the start of the buffer
       if (Serial.read() == buffer_head) {
@@ -181,7 +176,7 @@ void serial_read(){
           linear_z = Serial.read();
           angular_x = Serial.read();
           angular_y = Serial.read();
-          angular_z = (double) Serial.read();
+          angular_z = Serial.read();
       } else {
           linear_x = angular_z = UNMAPPED_STOP_SPEED;
       }
@@ -208,13 +203,10 @@ void convert() {
   else if (angular_z < 0)
     angular_z = 0;
   
+  // mapping should map to a percentage of max and min duty cycle
+  // for our motors
   linear_x = map(linear_x, 0, 255, linear_min, linear_max);
   angular_z = map(angular_z, 0, 255, angular_min, angular_max);
-}
-
-void motor_write(int left, int right) {
-  LeftM.write(90 + OFFSET - left);
-  RightM.write(90 + OFFSET - right);
 }
 
 
@@ -222,6 +214,22 @@ void motor_write(int left, int right) {
  * moves the robot - turning is taken into account.
  */
 void drive(int angular_speed, int linear_speed){
-  LeftM.write(linear_speed + (angular_speed - angular_stop));
-  RightM.write(linear_speed - (angular_speed - angular_stop));
+  
+  // mapping should map to a percentage of max and min duty cycle
+  // for our motors
+  // we are using the Talon SRX - looks like duty cycle is between 2.9 - 100ms
+  // seen here https://www.ctr-electronics.com/Talon%20SRX%20User's%20Guide.pdf
+  int left_throttle = linear_speed + (angular_speed - angular_stop);
+  int right_throttle = linear_speed - (angular_speed - angular_stop);
+  
+  servo_write(LeftM, left_throttle);
+  servo_write(RightM, right_throttle);
+}
+
+// this writes to motor using duty cycle rather than servo arm angle
+void servo_write(Servo motor, int throttle) {
+  // throttle can be as high as 110 and as low as 70 after calculation
+  // PWM input pulse high time can be between 1 and 2 ms. So 1000-2000 microseconds
+  throttle = map(throttle, 70, 110, 1000, 2000); 
+  motor.writeMicroseconds(throttle);
 }
