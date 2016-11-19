@@ -34,7 +34,7 @@ TEST(imageTest, angleLeft){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_EQ(-34, VisionDecision::getDesiredAngle(300, testImageScan));
+    EXPECT_EQ(-37, VisionDecision::getDesiredAngle(300, testImageScan));
 }
 
 TEST(imageTest, angleRight){
@@ -45,7 +45,7 @@ TEST(imageTest, angleRight){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_EQ(40, VisionDecision::getDesiredAngle(300, testImageScan));
+    EXPECT_EQ(33, VisionDecision::getDesiredAngle(300, testImageScan));
 }
 
 TEST(imageTest, noisyStraight){
@@ -56,7 +56,7 @@ TEST(imageTest, noisyStraight){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_EQ(0, VisionDecision::getDesiredAngle(300, testImageScan));
+    EXPECT_EQ(-5, VisionDecision::getDesiredAngle(300, testImageScan));
 }
 
 TEST(imageTest, noisyLeft){
@@ -67,7 +67,51 @@ TEST(imageTest, noisyLeft){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_EQ(-30, VisionDecision::getDesiredAngle(300, testImageScan));
+    EXPECT_EQ(-37, VisionDecision::getDesiredAngle(300, testImageScan));
+}
+
+TEST(imageTest, splitLines){
+    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testSplitLines.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_EQ(-59, VisionDecision::getDesiredAngle(300, testImageScan));
+}
+
+TEST(imageTest, splitLinesRight){
+    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testSplitLinesRight.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_EQ(59, VisionDecision::getDesiredAngle(300, testImageScan));
+}
+
+TEST(imageTest, smallRight){
+    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testSmallRight.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_EQ(48, VisionDecision::getDesiredAngle(300, testImageScan));
+}
+
+TEST(imageTest, perpendicular){
+    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testPerpendicular.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_EQ(91, VisionDecision::getDesiredAngle(300, testImageScan));
 }
 
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage){

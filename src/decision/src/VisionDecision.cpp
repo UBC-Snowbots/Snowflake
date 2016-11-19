@@ -10,7 +10,8 @@
 
 #define PI 3.14159265
 #define null -1
-#define INVALID 181
+#define INVALID 91
+#define NOISEMAX 30
 
 // The constructor
 VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
@@ -75,6 +76,7 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist){
 }
 
 /* Functions to determine robot movement */
+
 /**
  * Returns the angle of a valid line
  *
@@ -107,41 +109,70 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
  */
 int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
+    // initialization of local variables.
     double imageHeight = image_scan->height;
+    int toParseFrom;
+    int incrementer;
+    int startingPos;
+    int topRow = null;
+    int validSamples = 0;
 
-    // Each slope will be compared to the bottom point of the white line
-    double x1 = getMiddle(imageHeight - 1, rightSide, image_scan);
+    // Decides how to parse depending on if rightSide is true or false.
+    if(rightSide){
+        // starts at right side then increments to the left
+        startingPos = image_scan->width - 1;
+        incrementer = -1;
+    }else{
+        // starts at left side then increments to th right
+        startingPos = 0;
+        incrementer = 1;
+    }
+
+    // starts parsing from the right and finds where the highest white line
+    // begins.
+    for(int i = 0; i < imageHeight - 1; i++){
+        int startPixel = getStartPixel(startingPos, incrementer, i, image_scan);
+        if(startPixel != null && topRow == null) {
+            // Once found makes note of the highest point of the white line
+            // and the column it starts at.
+            topRow = i;
+            toParseFrom = startPixel - 1;
+        }
+    }
+
+    // Each slope will be compared to the top point of the highest white line
+    double x1 = getMiddle(toParseFrom, topRow, rightSide, image_scan);
 
     double sumAngles = 0;
-    double initialAngle;
-    double finalAngle;
 
-    int slopeAcceptance = 5;
-
-    for (double division = 0; division < numSamples; division++){
-        double yCompared = division * imageHeight / (2*numSamples);
-        double xCompared = getMiddle(yCompared, rightSide, image_scan);
+    // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
+    // also counts how many of them are valid.
+    for (double division = 0; division < numSamples && (numSamples + topRow) < imageHeight; division++){
+        double yCompared = numSamples + topRow;
+        double xCompared = getMiddle(toParseFrom, yCompared, rightSide, image_scan);
 
         double foundAngle;
         double foundSlope;
-        if(xCompared == x1)
+
+        if(xCompared == null)
+            // slope is invalid so nothing is added to sum of all angles.
             foundAngle = 0;
         else {
-            foundSlope = - (xCompared - x1)/ (yCompared - imageHeight - 1);
+            // slope is valid, find the angle compared the the positive y-axis.
+            foundSlope =  - (xCompared - x1)/ (yCompared - topRow);
             foundAngle = atan(foundSlope);
+            // increment amount of valid samples
+            validSamples++;
         }
-        if(division == 0){
-            initialAngle = foundAngle * 180.0 / PI;
-        } else if(division == (numSamples - 1))
-            finalAngle = foundAngle * 180.0 / PI;
+
         sumAngles += foundAngle;
     }
 
-    int angleDifference = abs(finalAngle - initialAngle);
-    if (angleDifference > slopeAcceptance)
+
+    if (validSamples == 0)
         return INVALID;
     else
-        return sumAngles / numSamples * 180.0 / PI;
+        return sumAngles / validSamples * 180.0 / PI; // returns the angle in degrees
 }
 
 /**
@@ -154,7 +185,8 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
  */
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
     double speedToMap = abs(desiredAngle);
-    return mapRange(speedToMap, 0, 180, 0, 100);
+    // the higher the desired angle, the higher the angular speed
+    return mapRange(speedToMap, 0, 90, 0, 100);
 
 }
 
@@ -164,11 +196,12 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
  *  @param desiredAngle
  *      angle robot will turn
  *  @returns double
- *      moving speed of robot
+ *      moving speed percentage of robot
  */
 double VisionDecision::getDesiredSpeed(double desiredAngle){
     double speedToMap = abs(desiredAngle);
-    return 100 - mapRange(speedToMap, 0, 180, 0, 100);
+    // the higher the desired angle the lower the linear speed.
+    return 100 - mapRange(speedToMap, 0, 90, 0, 100);
 }
 
 
@@ -177,33 +210,29 @@ double VisionDecision::getDesiredSpeed(double desiredAngle){
 /**
  * Determines the middle of the white line given a row
  *
+ * @param startingPos which column to start parsing in
  * @param row the row to parse
  * @param rightSide determines whether to parse from the right or the left
  * @param image_scan the image to parse
  */
-int VisionDecision::getMiddle(int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan){
+int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan){
 
-    int noiseMax = 20;
-    int startingPos;
     int incrementer;
     int startPixel, endPixel;
 
     // Depending on chosen side, determine where to start
     // and how to iterate.
     if(rightSide){
-        startingPos = image_scan->width - 1;
         incrementer = -1;
     }else{
-        startingPos = 0;
         incrementer = 1;
     }
 
     // Find first pixel of the white line in a certain row.
-    startPixel = VisionDecision::getStartPixel(startingPos, noiseMax, incrementer, row, image_scan);
+    startPixel = VisionDecision::getStartPixel(startingPos, incrementer, row, image_scan);
 
     // Find last pixel of the white line in a certain row.
-    startingPos = startPixel;
-    endPixel = VisionDecision::getEndPixel(startingPos, noiseMax, incrementer, row, image_scan);
+    endPixel = VisionDecision::getEndPixel(startPixel, incrementer, row, image_scan);
 
     // Return average of the two pixels.
     return (startPixel + endPixel) / 2;
@@ -214,14 +243,14 @@ int VisionDecision::getMiddle(int row, bool rightSide, const sensor_msgs::Image:
  * the line and the left side or right side of the screen.
  *
  * @param startingPos column to start parsing
- * @param noiseMax how large noise can be
+ * @param NOISEMAX how large noise can be
  * @param incrementer decides whether to parse from the left or from the right
  * @param row determines the row to parse
  * @param image_scan the image to parse
  *
- * @returns the white pixel's column position
+ * @returns the white pixel's column position, null if none found
  */
-int VisionDecision::getStartPixel(int startingPos, int noiseMax, int incrementer, int row,
+int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
     int column = startingPos;
     int whiteVerificationCount = 0;
@@ -240,11 +269,11 @@ int VisionDecision::getStartPixel(int startingPos, int noiseMax, int incrementer
 
             // Determine whether toBeChecked is noise
             whiteVerificationCount++;
-            if (whiteVerificationCount == noiseMax && startPixel == null)
+            if (whiteVerificationCount == NOISEMAX && startPixel == null)
                 startPixel = toBeChecked;
         } else {
             blackVerificationCount++;
-            if(blackVerificationCount == noiseMax) {
+            if(blackVerificationCount == NOISEMAX) {
                 whiteVerificationCount = 0; // Reset verification if black pixel.
                 toBeChecked = null;
             }
@@ -260,14 +289,14 @@ int VisionDecision::getStartPixel(int startingPos, int noiseMax, int incrementer
  * the lines
  *
  * @param startingPos column to start parsing
- * @param noiseMax how large noise can be
+ * @param NOISEMAX how large noise can be
  * @param incrementer decides whether to parse from the left or from the right
  * @param row determines the row to parse
  * @param image_scan the image to parse
  *
- * @returns the white pixel's column position
+ * @returns the white pixel's column position, null if none found
  */
-int VisionDecision::getEndPixel(int startingPos, int noiseMax, int incrementer, int row,
+int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
     int column = startingPos;
     int blackVerificationCount = 0;
@@ -286,11 +315,11 @@ int VisionDecision::getEndPixel(int startingPos, int noiseMax, int incrementer, 
 
             // Determine whether toBeChecked is noise
             blackVerificationCount++;
-            if (blackVerificationCount == noiseMax && endPixel == null)
+            if (blackVerificationCount == NOISEMAX && endPixel == null)
                 endPixel = toBeChecked;
         } else {
             whiteVerificationCount++;
-            if(whiteVerificationCount == noiseMax) {
+            if(whiteVerificationCount == NOISEMAX) {
                 blackVerificationCount = 0; // Reset verification if white pixel.
                 toBeChecked = null;
             }
