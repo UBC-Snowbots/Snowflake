@@ -70,6 +70,7 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist){
 }
 
 /* Functions to determine robot movement */
+
 /**
  * Returns the angle of a valid line
  *
