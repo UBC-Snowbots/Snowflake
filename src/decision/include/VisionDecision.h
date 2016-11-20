@@ -22,11 +22,11 @@ public:
     static int getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan);
     static double getDesiredAngularSpeed(double desiredAngle);
     static double getDesiredSpeed(double desiredAngle);
-    static int getMiddle(int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan);
+    static int getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan);
 private:
-    static int getEndPixel(int startingPos, int noiseMax, int incrementer, int row,
+    static int getEndPixel(int startingPos, int incrementer, int row,
                            const sensor_msgs::Image::ConstPtr& image_scan);
-    static int getStartPixel(int startingPos, int noiseMax, int incrementer, int row,
+    static int getStartPixel(int startingPos, int incrementer, int row,
                              const sensor_msgs::Image::ConstPtr& image_scan);
     void imageCallBack(const sensor_msgs::Image::ConstPtr& image_scan);
     void publishTwist(geometry_msgs::Twist twist);
