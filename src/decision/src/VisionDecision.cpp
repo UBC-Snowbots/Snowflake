@@ -4,14 +4,8 @@
  * Description: The vision decision node, takes in an image from the robot's
  *              camera and produces a recommended twist message
  */
-
 #include <VisionDecision.h>
 #include <tiff.h>
-
-#define PI 3.14159265
-#define null -1
-#define INVALID 91
-#define NOISEMAX 30
 
 // The constructor
 VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
@@ -111,7 +105,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
 
     // initialization of local variables.
     double imageHeight = image_scan->height;
-    int toParseFrom;
+    int toParseFrom = null;
     int incrementer;
     int startingPos;
     int topRow = null;
@@ -149,7 +143,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
     // also counts how many of them are valid.
     for (double division = 0; division < numSamples && (numSamples + topRow) < imageHeight; division++){
         double yCompared = numSamples + topRow;
-        double xCompared = getMiddle(toParseFrom, yCompared, rightSide, image_scan);
+        double xCompared = getMiddle(toParseFrom, (int) yCompared, rightSide, image_scan);
 
         double foundAngle;
         double foundSlope;
@@ -172,7 +166,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
     if (validSamples == 0)
         return INVALID;
     else
-        return sumAngles / validSamples * 180.0 / PI; // returns the angle in degrees
+        return (int) (sumAngles / validSamples * 180.0 / PI); // returns the angle in degrees
 }
 
 /**
@@ -184,7 +178,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
  *      rotation speed of robot
  */
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
-    double speedToMap = abs(desiredAngle);
+    double speedToMap = abs((int) desiredAngle);
     // the higher the desired angle, the higher the angular speed
     return mapRange(speedToMap, 0, 90, 0, 100);
 
@@ -199,7 +193,7 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
  *      moving speed percentage of robot
  */
 double VisionDecision::getDesiredSpeed(double desiredAngle){
-    double speedToMap = abs(desiredAngle);
+    double speedToMap = abs((int)desiredAngle);
     // the higher the desired angle the lower the linear speed.
     return 100 - mapRange(speedToMap, 0, 90, 0, 100);
 }
