@@ -1,11 +1,11 @@
 /*
- * Created By: Gareth Ellis
+ * Created By: Robyn Castro
  * Created On: September 22, 2016
  * Description: The vision decision node, takes in an image from the robot's
  *              camera and produces a recommended twist message
  */
 #include <VisionDecision.h>
-#include <tiff.h>
+#include <tiff.h>   
 
 // The constructor
 VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
@@ -83,10 +83,10 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
 
     int desiredAngle = getAngleAt(false, numSamples, image_scan);
 
-    if(desiredAngle == INVALID) {
-        printf("LEFT INVALID \n");
+    if(desiredAngle == INVALID)
         desiredAngle = getAngleAt(true, numSamples, image_scan);
-    }
+
+    // If both cases are invalid it will do a turn 91 degrees.
 
     return desiredAngle;
 }
