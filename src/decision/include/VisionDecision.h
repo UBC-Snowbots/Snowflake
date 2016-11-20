@@ -7,10 +7,7 @@
 
 #ifndef DECISION_VISION_DECISION_H
 #define DECISION_VISION_DECISION_H
-#define PI 3.14159265
-#define null -1
-#define INVALID 91
-#define NOISEMAX 30
+
 
 #include <iostream>
 #include <std_msgs/String.h>

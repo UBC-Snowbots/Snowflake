@@ -114,6 +114,19 @@ TEST(imageTest, perpendicular){
     EXPECT_EQ(91, VisionDecision::getDesiredAngle(300, testImageScan));
 }
 
+TEST(speedTest, angular){
+    EXPECT_EQ(0, VisionDecision::getDesiredAngularSpeed(0));
+    EXPECT_EQ(100, VisionDecision::getDesiredAngularSpeed(90));
+    EXPECT_EQ(100, VisionDecision::getDesiredAngularSpeed(-90));
+    EXPECT_EQ(50, VisionDecision::getDesiredAngularSpeed(45));
+}
+
+TEST(speedTest, linear){
+    EXPECT_EQ(100, VisionDecision::getDesiredSpeed(0));
+    EXPECT_EQ(0, VisionDecision::getDesiredSpeed(90));
+    EXPECT_EQ(0, VisionDecision::getDesiredSpeed(-90));
+    EXPECT_EQ(50, VisionDecision::getDesiredSpeed(45));
+}
 
 TEST(imageTest, noisyStraight){
     String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testVeryNoisyStraightImage.jpg";

@@ -5,7 +5,12 @@
  *              camera and produces a recommended twist message
  */
 #include <VisionDecision.h>
-#include <tiff.h>   
+#include <tiff.h>
+
+#define PI 3.14159265
+#define null -1
+#define INVALID 91
+#define NOISEMAX 30
 
 // The constructor
 VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
