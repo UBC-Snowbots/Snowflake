@@ -140,7 +140,7 @@ find_library(LIBUSB_1_LIBRARY
 # add_executable(drivers_node src/drivers_node.cpp)
 add_executable(steering_driver src/steering_driver.cpp src/SteeringDriver.cpp include/SteeringDriver.h)
 
-add_executable(usb_detection src/usb_detection.cpp src/UsbDetector.cpp include/UsbDetector.h)
+add_library(UsbDetector include/UsbDetector.h src/UsbDetector.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -151,8 +151,8 @@ add_executable(usb_detection src/usb_detection.cpp src/UsbDetector.cpp include/U
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(steering_driver ${catkin_LIBRARIES})
-target_include_directories(usb_detection PUBLIC ${LIBUSB_INCLUDE_DIR})
-target_link_libraries(usb_detection ${LIBUSB_1_LIBRARY})
+target_include_directories(UsbDetector PUBLIC ${LIBUSB_INCLUDE_DIR})
+target_link_libraries(UsbDetector ${LIBUSB_1_LIBRARY})
 
 #############
 ## Install ##
