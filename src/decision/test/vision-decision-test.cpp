@@ -14,7 +14,7 @@
 using namespace cv;
 
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage);
-/*
+
 TEST(imageTest, angleStraight){
     String filename = "./src/decision/test/imageTests/testStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
@@ -113,7 +113,7 @@ TEST(imageTest, perpendicular){
 
     EXPECT_EQ(91, VisionDecision::getDesiredAngle(300, testImageScan));
 }
-*/
+
 TEST(speedTest, angular){
     EXPECT_EQ(0, VisionDecision::getDesiredAngularSpeed(0));
     EXPECT_EQ(100, VisionDecision::getDesiredAngularSpeed(90));
