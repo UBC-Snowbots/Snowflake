@@ -15,6 +15,7 @@
 // The constructor
 VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
     ros::init(argc, argv, node_name);
+
     // Setup NodeHandles
     ros::NodeHandle nh;
     ros::NodeHandle public_nh("~");
