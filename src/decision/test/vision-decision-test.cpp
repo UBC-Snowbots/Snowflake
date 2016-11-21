@@ -16,7 +16,7 @@ using namespace cv;
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage);
 
 TEST(imageTest, angleStraight){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testStraightImage.jpg";
+    String filename = "./src/decision/test/imageTests/testStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -27,7 +27,7 @@ TEST(imageTest, angleStraight){
 }
 
 TEST(imageTest, angleLeft){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testLeftImage.jpg";
+    String filename = "./src/decision/test/imageTests/testLeftImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -38,7 +38,7 @@ TEST(imageTest, angleLeft){
 }
 
 TEST(imageTest, angleRight){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testNoisyRightImage.jpg";
+    String filename = "./src/decision/test/imageTests/testNoisyRightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -49,7 +49,7 @@ TEST(imageTest, angleRight){
 }
 
 TEST(imageTest, noisyStraight){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testVeryNoisyStraightImage.jpg";
+    String filename = "./src/decision/test/imageTests/testVeryNoisyStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -60,7 +60,7 @@ TEST(imageTest, noisyStraight){
 }
 
 TEST(imageTest, noisyLeft){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testVeryNoisyLeftImage.jpg";
+    String filename = "./src/decision/test/imageTests/testVeryNoisyLeftImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -71,7 +71,7 @@ TEST(imageTest, noisyLeft){
 }
 
 TEST(imageTest, splitLines){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testSplitLines.jpg";
+    String filename = "./src/decision/test/imageTests/testSplitLines.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -82,7 +82,7 @@ TEST(imageTest, splitLines){
 }
 
 TEST(imageTest, splitLinesRight){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testSplitLinesRight.jpg";
+    String filename = "./src/decision/test/imageTests/testSplitLinesRight.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -93,7 +93,7 @@ TEST(imageTest, splitLinesRight){
 }
 
 TEST(imageTest, smallRight){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testSmallRight.jpg";
+    String filename = "./src/decision/test/imageTests/testSmallRight.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -104,7 +104,7 @@ TEST(imageTest, smallRight){
 }
 
 TEST(imageTest, perpendicular){
-    String filename = "/home/robyncastro/IGVC-2017/src/decision/imageTests/testPerpendicular.jpg";
+    String filename = "./src/decision/test/imageTests/testPerpendicular.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
