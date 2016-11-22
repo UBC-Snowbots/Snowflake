@@ -204,7 +204,6 @@ target_link_libraries(gps_manager ${catkin_LIBRARIES})
 # endif()
 if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp)
-    MESSAGE(STATUS "Working Directory: " ${PROJECT_SOURCE_DIR})
     catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp 
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
     catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp)
