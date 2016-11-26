@@ -134,7 +134,7 @@
             <alwaysOn>1</alwaysOn>
             <updateRate>10</updateRate>
             <bodyName>chassis</bodyName>
-            <topicName>/elsa/gps</topicName>
+            <topicName>/gps_driver/gps</topicName>
             <velocityTopicName>/elsa/gps_vel</velocityTopicName>
             <drift>5.0 5.0 5.0</drift>
             <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
@@ -142,12 +142,29 @@
             <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
 
             <!-- Set these parameters depending on where you want to gps reference to be -->
+            <!-- NOTE: THESE SHOULD MATCH THE COMPASS_SIM PLUGIN -->
             <!-- EDC (Very Roughly) -->
             <referenceLongitude>49.262479</referenceLongitude>
             <referenceLatitude>-123.248600</referenceLatitude>
             <referenceAltitude>50.00</referenceAltitude>
             <referenceHeading>0.00</referenceHeading>
+        </plugin>
+        <plugin name="compass_sim" filename="libhector_gazebo_ros_magnetic.so">
+            <topicName>/elsa/magnetic_vector</topicName>
+            <bodyName>chassis</bodyName>
+            <drift>0 0 0</drift>
+            <gaussianNoise>0 0 0</gaussianNoise>
+            <velocityDrift>0 0 0</velocityDrift>
+            <velocityGaussianNoise>0 0 0</velocityGaussianNoise>
+            <inclination>0.00</inclination>
 
+            <!-- Set these parameters depending on where you want to gps reference to be -->
+            <!-- NOTE: THESE SHOULD MATCH THE GPS_SIM PLUGIN -->
+            <!-- EDC (Very Roughly) -->
+            <referenceLongitude>49.262479</referenceLongitude>
+            <referenceLatitude>-123.248600</referenceLatitude>
+            <referenceAltitude>50.00</referenceAltitude>
+            <referenceHeading>0.00</referenceHeading>
         </plugin>
     </gazebo>
 
