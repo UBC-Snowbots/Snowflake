@@ -1,2 +1,0 @@
-/usr/bin/ar qc libSnowBotSerial.a  CMakeFiles/SnowBotSerial.dir/SnowBotSerial.cpp.o
-/usr/bin/ranlib libSnowBotSerial.a
