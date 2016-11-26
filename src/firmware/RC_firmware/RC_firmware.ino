@@ -10,7 +10,8 @@
 #include <Servo.h>
 
 
-#define TRIM 8
+#define TRIM 8 // error margin for joysticks
+
 #define BAUD_RATE 115200
 #define BUFFER_SIZE 6
 // assign 128 to be not moving
@@ -53,10 +54,10 @@ Servo LeftM;
 Servo RightM;
 
 
-// ??
-int R1 = 0, R2 = 0, R3 = 0, R4 = 0, B2 = 0, B4 = 0, Mode = 0;
+// these variables will store the joystick ranges - used to figure out direction, turn etc
+int range1 = 0, range2 = 0, range3 = 0, range4 = 0, B2 = 0, B4 = 0, Mode = 0;
 
-int linear_x_h = 0, linear_x_l = 0, angular_z_h = 0, angular_z_l = 0;
+int linearXHigh = 0, linearXLow = 0, angularZHigh = 0, angularZLow = 0;
 
 void setup() {
   Serial.begin(BAUD_RATE);
@@ -69,6 +70,7 @@ void setup() {
   LeftM.attach(left_motor_pin);
   RightM.attach(right_motor_pin);
   
+  // calculate offset
   set_off();
 }
 
@@ -79,13 +81,6 @@ void loop() {
   //responding to queries from usb
   sig_read();
   
-  /*Serial.println("Mode: ");Serial.println(Mode);Serial.println("R1: ");Serial.println(R1);
-  Serial.println("R2: ");
-  Serial.println(R2);
-  Serial.println("R3: ");
-  Serial.println(R3);*/
-  //Serial.println("linear_x_h: ");Serial.println(linear_x_h);Serial.println("linear_x_l: ");Serial.println(linear_x_l);Serial.println("angular_z_h: ");Serial.println(angular_z_h);
-  
   
   //serial_read();
   if (Mode == -1) { //Auto Mode
@@ -93,16 +88,16 @@ void loop() {
     
     convert();
     drive(linear_x, angular_z);
-    //Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
+    //Serial.print("angularZLow: ");Serial.print(angularZLow);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
   }
   else if (Mode == 0) { //RC Mode
     //Serial.println(angular_z);
-    linear_x = R1; 
-    angular_z = R2;
+    linear_x = range1; 
+    angular_z = range2;
     
     convert();
     drive(linear_x, angular_z);
-    //Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
+    //Serial.print("angularZLow: ");Serial.print(angularZLow);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
     Serial.flushRX();
   }
   else { //STOP MODE
@@ -111,13 +106,16 @@ void loop() {
     
     convert();
     drive(linear_x, angular_z);
-   // Serial.print("angular_z_l: ");Serial.print(angular_z_l);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
+    // Serial.print("angularZLow: ");Serial.print(angularZLow);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
     Serial.flushRX();
   }
   //Serial.print("linear_x: ");Serial.print(linear_x);Serial.print(" linear_x: ");Serial.print(linear_x);Serial.print(" angular_z: ");Serial.println(angular_z);
 
 }
 
+/*
+* 
+*/
 void set_off() {
   int linear_x_mid = 1550; //RX standard - radio signal midpoint
   int angular_z_mid = 1550; //RY standard - radio signal midpoint
@@ -125,44 +123,46 @@ void set_off() {
   // joystick_margin is an error margin for joystick control
   // e.g. if the joystick is moved just a little bit, it is assumed that no movement 
   // is desired.
-  linear_x_h = linear_x_mid + joystick_margin; 
-  linear_x_l = linear_x_mid - joystick_margin;
+  linearXHigh = linear_x_mid + joystick_margin; 
+  linearXLow = linear_x_mid - joystick_margin;
   
-  angular_z_h = angular_z_mid + joystick_margin; 
-  angular_z_l = angular_z_mid - joystick_margin;
+  angularZHigh = angular_z_mid + joystick_margin; 
+  angularZLow = angular_z_mid - joystick_margin;
 }
 
-
+/*
+* Read in from RC controller. Mode and speed are determined here.
+*/
 void sig_read() {
-  R1 = pulseIn(2, HIGH); // 1140 - 1965 RX LEFT-RIGHT -> turn on spot
-  R2 = pulseIn(3, HIGH); // 1965 - 1140 RY UP-DOWN -> Steer left/right y axis (turn while moving)
-  R3 = pulseIn(4, HIGH); // 1970 - 1115 linear_x UP-DOWN -> forward/backward
-  R4 = pulseIn(5, HIGH); //1970 - 1115 mode
+  range1 = pulseIn(2, HIGH); // 1140 - 1965 RX LEFT-RIGHT -> turn on spot
+  range2 = pulseIn(3, HIGH); // 1965 - 1140 RY UP-DOWN -> Steer left/right y axis (turn while moving)
+  range3 = pulseIn(4, HIGH); // 1970 - 1115 linear_x UP-DOWN -> forward/backward
+  range4 = pulseIn(5, HIGH); //1970 - 1115 mode
   
-  //Serial.print("R1: "); Serial.print(R1);Serial.print(" R2: "); Serial.print(R2);Serial.print(" R3: "); Serial.println(R3);Serial.println("Mode: ");Serial.println(Mode);
-  if (R1 < linear_x_h && R1 > linear_x_l) 
-    R1 = linear_stop;
+  //Serial.print("range1: "); Serial.print(range1);Serial.print(" range2: "); Serial.print(range2);Serial.print(" range3: "); Serial.println(range3);Serial.println("Mode: ");Serial.println(Mode);
+  if (range1 < linearXHigh && range1 > linearXLow) 
+    range1 = linear_stop;
   else 
-    R1 = map (R1, 1140, 1965, 0, 255);
+    range1 = map (range1, 1140, 1965, 0, 255);
 
-  if (R2 < angular_z_h && R2 > angular_z_l) 
-    R2 = angular_stop;
+  if (range2 < angularZHigh && range2 > angularZLow) 
+    range2 = angular_stop;
   else 
-    R2 = map (R2, 1140, 1965, 0, 255);
+    range2 = map (range2, 1140, 1965, 0, 255);
   
-  //Serial.print("R3: ");Serial.println(R3);
-  if (1100 < R3 && R3 < 1400) 
+  //Serial.print("range3: ");Serial.println(range3);
+  if (1100 < range3 && range3 < 1400) 
     Mode = 1; // STOP mode?
-  else if (1400 < R3 && R3 < 1700) 
+  else if (1400 < range3 && range3 < 1700) 
     Mode = 0; // auto mode
-  else if (1700 < R3 && R3 < 2000) 
+  else if (1700 < range3 && range3 < 2000) 
     Mode = -1; // RC mode
   else 
     Mode = -2; // STOP mode
-  if (abs(R1 - 90) < TRIM) // error control
-    R1 = linear_stop;
-  if (abs(R2 - 90) < TRIM) 
-    R2 = angular_stop;
+  if (abs(range1 - 90) < TRIM) // error control
+    range1 = linear_stop;
+  if (abs(range2 - 90) < TRIM) 
+    range2 = angular_stop;
 }
 
 void serial_read(){
