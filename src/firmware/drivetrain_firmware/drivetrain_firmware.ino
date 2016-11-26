@@ -105,10 +105,6 @@ void convert(){
  */
 void drive(int angular_speed, int linear_speed){
   
-  // mapping should map to a percentage of max and min duty cycle
-  // for our motors
-  // we are using the Talon SRX - looks like duty cycle is between 2.9 - 100ms
-  // seen here https://www.ctr-electronics.com/Talon%20SRX%20User's%20Guide.pdf
   int left_throttle = linear_speed + (angular_speed - angular_stop);
   int right_throttle = linear_speed - (angular_speed - angular_stop);
   
@@ -118,8 +114,11 @@ void drive(int angular_speed, int linear_speed){
 
 // this writes to motor using duty cycle rather than servo arm angle
 void servo_write(Servo motor, int throttle) {
+  // we are using the Talon SRX - looks like duty cycle is between 1 - 12ms
+  // seen here https://www.ctr-electronics.com/Talon%20SRX%20User's%20Guide.pdf
   // throttle can be as high as 110 and as low as 70 after calculation
   // PWM input pulse high time can be between 1 and 2 ms. So 1000-2000 microseconds
+  
   throttle = map(throttle, 70, 110, 1000, 2000); 
   motor.writeMicroseconds(throttle);
 }
