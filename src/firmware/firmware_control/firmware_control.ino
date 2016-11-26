@@ -153,7 +153,9 @@ void rc_read() {
     Mode = -1; // RC mode
   else 
     Mode = -2; // STOP mode
-  if (abs(range1 - 90) < TRIM) // error control
+    
+  // if joystick movement is not outside of the error range, assume no movement is desired
+  if (abs(range1 - 90) < TRIM)
     range1 = LINEAR_STOP;
   if (abs(range2 - 90) < TRIM) 
     range2 = ANGULAR_STOP;
@@ -203,6 +205,18 @@ void convert() {
 // moves the robot. Turning is taken into account
 void drive(int angular_speed, int linear_speed){
   
+  // the convention being used is that, after mapping serial/RC inputs
+  // to the range between linear_min - linear_max or angular_min - angular_max, we will have:
+  // 
+  // an angular_speed value between 70 - 90 will be "turn left"
+  // an angular_speed value between 90 - 110 will be "turn right"
+  // 
+  // a linear_speed value between 70 - 90 will be "go backward"
+  // a linear_speed value between 90 - 110 will be "go forward"
+  // 
+  // if angular speed == ANGULAR_STOP, this resolves to only move in the linear direction.
+  // if linear_speed == LINEAR_STOP, this resolves to turning on the spot, using the above definitions for
+  // angular turning
   int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP);
   int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP);
   
@@ -210,7 +224,7 @@ void drive(int angular_speed, int linear_speed){
   servo_write(RightM, right_throttle);
 }
 
-// this writes to motor using duty cycle rather than servo arm angle
+// this writes to motor using the duty cycle of our Talon motors
 void servo_write(Servo motor, int throttle) {
   // we are using the Talon SRX - looks like duty cycle is between 1 - 2ms
   // seen here https://www.ctr-electronics.com/Talon%20SRX%20User's%20Guide.pdf
