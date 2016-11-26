@@ -88,19 +88,19 @@ void loop() {
     
     convert();
     drive(linear_x, angular_z);
-    //Serial.print("angularZLow: ");Serial.print(angularZLow);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
+    // Serial.print("angularZLow: ");Serial.print(angularZLow);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
   }
   else if (Mode == 0) { //RC Mode
-    //Serial.println(angular_z);
+    // Serial.println(angular_z);
     linear_x = range1; 
     angular_z = range2;
     
     convert();
     drive(linear_x, angular_z);
-    //Serial.print("angularZLow: ");Serial.print(angularZLow);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
+    // Serial.print("angularZLow: ");Serial.print(angularZLow);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
     Serial.flushRX();
   }
-  else { //STOP MODE
+  else { // STOP MODE
     linear_x = linear_stop; 
     angular_z = angular_stop;
     
@@ -109,12 +109,12 @@ void loop() {
     // Serial.print("angularZLow: ");Serial.print(angularZLow);Serial.print("linear_x: ");Serial.print(linear_x);Serial.print("angular_z: ");Serial.println(angular_z);
     Serial.flushRX();
   }
-  //Serial.print("linear_x: ");Serial.print(linear_x);Serial.print(" linear_x: ");Serial.print(linear_x);Serial.print(" angular_z: ");Serial.println(angular_z);
+  // Serial.print("linear_x: ");Serial.print(linear_x);Serial.print(" linear_x: ");Serial.print(linear_x);Serial.print(" angular_z: ");Serial.println(angular_z);
 
 }
 
 /*
-* 
+* Calculates offset for the joystick controllers. Want to 
 */
 void set_off() {
   int linear_x_mid = 1550; //RX standard - radio signal midpoint
@@ -137,7 +137,7 @@ void sig_read() {
   range1 = pulseIn(2, HIGH); // 1140 - 1965 RX LEFT-RIGHT -> turn on spot
   range2 = pulseIn(3, HIGH); // 1965 - 1140 RY UP-DOWN -> Steer left/right y axis (turn while moving)
   range3 = pulseIn(4, HIGH); // 1970 - 1115 linear_x UP-DOWN -> forward/backward
-  range4 = pulseIn(5, HIGH); //1970 - 1115 mode
+  range4 = pulseIn(5, HIGH); // 1970 - 1115 mode
   
   //Serial.print("range1: "); Serial.print(range1);Serial.print(" range2: "); Serial.print(range2);Serial.print(" range3: "); Serial.println(range3);Serial.println("Mode: ");Serial.println(Mode);
   if (range1 < linearXHigh && range1 > linearXLow) 
@@ -150,9 +150,9 @@ void sig_read() {
   else 
     range2 = map (range2, 1140, 1965, 0, 255);
   
-  //Serial.print("range3: ");Serial.println(range3);
+  // Serial.print("range3: ");Serial.println(range3);
   if (1100 < range3 && range3 < 1400) 
-    Mode = 1; // STOP mode?
+    Mode = 1; // STOP mode
   else if (1400 < range3 && range3 < 1700) 
     Mode = 0; // auto mode
   else if (1700 < range3 && range3 < 2000) 
