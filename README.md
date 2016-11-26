@@ -61,6 +61,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 
 - Classes are **CamelCase**
 - Variables are **non_camel_case**
+- Constants are **ALL_CAPS_WITH_UNDERSCORES**
 - Functions are **camelCase**
 - Indentations are 4 spaces
 
