@@ -119,6 +119,8 @@ void servo_write(Servo motor, int throttle) {
   // throttle can be as high as 110 and as low as 70 after calculation
   // PWM input pulse high time can be between 1 and 2 ms. So 1000-2000 microseconds
   
+  // note if using the Servo library to do PWM produces issues
+  // alternate implementations can be found here: http://www.circuitstoday.com/pwm-generation-and-control-using-arduino 
   throttle = map(throttle, 70, 110, 1000, 2000); 
   motor.writeMicroseconds(throttle);
 }
