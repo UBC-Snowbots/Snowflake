@@ -35,7 +35,7 @@ TEST(LidarDecision, obstacle_in_range){
 
 }
 
-TEST(LidarDecision, manage_twist_2){
+TEST(LidarDecision, manage_twist){
     sensor_msgs::LaserScan test_scan;
     test_scan.angle_max = 3.0000;
     test_scan.angle_min = 0.0000;
@@ -52,9 +52,9 @@ TEST(LidarDecision, manage_twist_2){
 
     geometry_msgs::Twist result;
 
-    //test LidarDecision::manage_twist_2
-    EXPECT_EQ(13, LidarDecision::manage_twist_2(test_scan_ptr).linear.x);
-    EXPECT_EQ(-13, LidarDecision::manage_twist_2(test_scan_ptr).angular.z);
+    //test LidarDecision::manage_twist
+    EXPECT_EQ(13, LidarDecision::manage_twist(test_scan_ptr).linear.x);
+    EXPECT_EQ(-13, LidarDecision::manage_twist(test_scan_ptr).angular.z);
 
 
 }
