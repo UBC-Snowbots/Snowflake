@@ -15,7 +15,7 @@ using namespace cv;
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage);
 
 TEST(imageTest, angleStraight){
-    String filename = "./src/decision/test/imageTests/testStraightImage.jpg";
+    String filename = "imageTests/testStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -26,7 +26,7 @@ TEST(imageTest, angleStraight){
 }
 
 TEST(imageTest, angleLeft){
-    String filename = "./src/decision/test/imageTests/testLeftImage.jpg";
+    String filename = "imageTests/testLeftImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -37,7 +37,7 @@ TEST(imageTest, angleLeft){
 }
 
 TEST(imageTest, angleRight){
-    String filename = "./src/decision/test/imageTests/testNoisyRightImage.jpg";
+    String filename = "imageTests/testNoisyRightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -48,7 +48,7 @@ TEST(imageTest, angleRight){
 }
 
 TEST(imageTest, noisyStraight){
-    String filename = "./src/decision/test/imageTests/testVeryNoisyStraightImage.jpg";
+    String filename = "imageTests/testVeryNoisyStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -59,7 +59,7 @@ TEST(imageTest, noisyStraight){
 }
 
 TEST(imageTest, noisyLeft){
-    String filename = "./src/decision/test/imageTests/testVeryNoisyLeftImage.jpg";
+    String filename = "imageTests/testVeryNoisyLeftImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -76,7 +76,7 @@ TEST(imageTest, noisyLeft){
  * Should turn LEFT.
  */
 TEST(imageTest, splitLines){
-    String filename = "./src/decision/test/imageTests/testSplitLines.jpg";
+    String filename = "imageTests/testSplitLines.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -93,7 +93,7 @@ TEST(imageTest, splitLines){
  * Should turn RIGHT.
  */
 TEST(imageTest, splitLinesRight){
-    String filename = "./src/decision/test/imageTests/testSplitLinesRight.jpg";
+    String filename = "imageTests/testSplitLinesRight.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -104,7 +104,7 @@ TEST(imageTest, splitLinesRight){
 }
 
 TEST(imageTest, smallRight){
-    String filename = "./src/decision/test/imageTests/testSmallRight.jpg";
+    String filename = "imageTests/testSmallRight.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -115,7 +115,7 @@ TEST(imageTest, smallRight){
 }
 
 TEST(imageTest, perpendicular){
-    String filename = "./src/decision/test/imageTests/testPerpendicular.jpg";
+    String filename = "imageTests/testPerpendicular.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -163,7 +163,7 @@ sensor_msgs::Image convertToSensorMsg(Mat cvMatImage){
     return img_msg;
     }
 
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
+int main(int aimageTests, char **argv) {
+    testing::InitGoogleTest(&aimageTests, argv);
     return RUN_ALL_TESTS();
 }
