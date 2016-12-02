@@ -15,6 +15,7 @@
 #include <sensor_msgs/Image.h>
 #include <ros/ros.h>
 #include <math.h>
+#include <tiff.h>
 
 const int NOISEMAX = 30;
 
