@@ -16,8 +16,6 @@
 #include <ros/ros.h>
 #include <math.h>
 
-const int null = -1;
-const int INVALID  = 91;
 const int NOISEMAX = 30;
 
 class VisionDecision {
@@ -26,9 +24,9 @@ public:
 
     static double mapRange(double x, double inMin, double inMax, double outMin, double outMax);
     static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image);
-    static int getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image);
+    static int getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image);
     static double getDesiredAngularSpeed(double desiredAngle);
-    static double getDesiredSpeed(double desiredAngle);
+    static double getDesiredLinearSpeed(double desiredAngle);
     static int getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image);
 private:
     static int getEndPixel(int startingPos, int incrementer, int row,

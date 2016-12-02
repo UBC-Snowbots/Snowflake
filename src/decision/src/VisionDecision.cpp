@@ -43,8 +43,8 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& image_sca
     twistMsg.angular.x = 0;
     twistMsg.angular.y = 0;
 
-    // Decide how fast to go
-    twistMsg.linear.x = getDesiredSpeed(relativeAngle);
+    // Decide how fast to move
+    twistMsg.linear.x = getDesiredLinearSpeed(relativeAngle);
 
     // Decide how fast to turn
     twistMsg.angular.z = getDesiredAngularSpeed(relativeAngle);
@@ -69,14 +69,17 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist){
  */
 int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
-    int desiredAngle = getAngleAt(false, numSamples, image_scan);
+    int desiredAngle = getAngleOfLine(false, numSamples, image_scan);
 
-    if(desiredAngle == INVALID)
-        desiredAngle = getAngleAt(true, numSamples, image_scan);
+    // If angle coming from the left is invalid try going from the right.
+    if(!(desiredAngle < 90 && desiredAngle > -90))
+        desiredAngle = getAngleOfLine(true, numSamples, image_scan);
 
-    // If both cases are invalid it will do a turn 91 degrees.
-
-    return desiredAngle;
+    // If both cases are invalid it will do a turn 90 degrees (Turns sharp right).
+    if(!(desiredAngle < 90 && desiredAngle > -90))
+        return 90;
+    else
+        return desiredAngle;
 }
 
 /**
@@ -89,15 +92,17 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
  *
  * @returns the angle of the line, or INVALID if line is invalid.
  */
-int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
+int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
     // initialization of local variables.
     double imageHeight = image_scan->height;
-    int toParseFrom = null;
     int incrementer;
     int startingPos;
-    int topRow = null;
     int validSamples = 0;
+    
+    // Assign garbage values
+    int toParseFrom = -1;
+    int topRow = -1;
 
     // Decides how to parse depending on if rightSide is true or false.
     if(rightSide){
@@ -114,7 +119,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
     // begins.
     for(int i = 0; i < imageHeight - 1; i++){
         int startPixel = getStartPixel(startingPos, incrementer, i, image_scan);
-        if(startPixel != null && topRow == null) {
+        if(startPixel != -1 && topRow == -1) {
             // Once found makes note of the highest point of the white line
             // and the column it starts at.
             topRow = i;
@@ -136,7 +141,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
         double foundAngle;
         double foundSlope;
 
-        if(xCompared == null)
+        if(xCompared == -1)
             // slope is invalid so nothing is added to sum of all angles.
             foundAngle = 0;
         else {
@@ -149,11 +154,8 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
 
         sumAngles += foundAngle;
     }
-
-    if (validSamples == 0)
-        return INVALID;
-    else
-        return (int) (sumAngles / validSamples * 180.0 /M_PI); // returns the angle in degrees
+    
+    return (int) (sumAngles / validSamples * 180.0 /M_PI); // returns the angle in degrees
 }
 
 /**
@@ -179,7 +181,7 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
  *  @returns double
  *      moving speed percentage of robot
  */
-double VisionDecision::getDesiredSpeed(double desiredAngle){
+double VisionDecision::getDesiredLinearSpeed(double desiredAngle){
     double speedToMap = abs((int)desiredAngle);
     // the higher the desired angle the lower the linear speed.
     return 100 - mapRange(speedToMap, 0, 90, 0, 100);
@@ -209,18 +211,18 @@ int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const se
         incrementer = 1;
     }
 
-    // Find firstM_PIxel of the white line in a certain row.
+    // Find first pixel of the white line in a certain row.
     startPixel = VisionDecision::getStartPixel(startingPos, incrementer, row, image_scan);
 
-    // Find lastM_PIxel of the white line in a certain row.
+    // Find last pixel of the white line in a certain row.
     endPixel = VisionDecision::getEndPixel(startPixel, incrementer, row, image_scan);
 
-    // Return average of the twoM_PIxels.
+    // Return average of the two pixels.
     return (startPixel + endPixel) / 2;
 }
 
 /**
- * Returns the whiteM_PIxel right after the black space in between
+ * Returns the white pixel right after the black space in between
  * the line and the left side or right side of the screen.
  *
  * @param startingPos column to start parsing
@@ -229,34 +231,37 @@ int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const se
  * @param row determines the row to parse
  * @param image_scan the image to parse
  *
- * @returns the whiteM_PIxel's column position, null if none found
+ * @returns the white pixel's column position, -1 if none found
  */
 int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
+    // Initialization of local variables
     int column = startingPos;
     int whiteVerificationCount = 0;
     int blackVerificationCount = 0;
-    int startPixel = null;
-    int toBeChecked = null;
 
-    // Find startingM_PIxel
+    // Initialize these to be garbage values
+    int startPixel = -1;
+    int toBeChecked = -1;
+
+    // Find starting pixel
     while(column < image_scan->width && column >= 0){
-        // If whiteM_PIxel found start verifying if proper start.
+        // If white pixel found start verifying if proper start.
         if(image_scan->data[row*image_scan->width + column] != 0){
             blackVerificationCount = 0;
-            // ThisM_PIxel is what we are checking
-            if (toBeChecked == null)
+            // This pixel is what we are checking
+            if (toBeChecked == -1)
                 toBeChecked = column;
 
             // Determine whether toBeChecked is noise
             whiteVerificationCount++;
-            if (whiteVerificationCount == NOISEMAX && startPixel == null)
+            if (whiteVerificationCount == NOISEMAX && startPixel == -1)
                 startPixel = toBeChecked;
         } else {
             blackVerificationCount++;
             if(blackVerificationCount == NOISEMAX) {
-                whiteVerificationCount = 0; // Reset verification if blackM_PIxel.
-                toBeChecked = null;
+                whiteVerificationCount = 0; // Reset verification if black pixel.
+                toBeChecked = -1;
             }
         }
         // Go to next element
@@ -266,7 +271,7 @@ int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
 }
 
 /**
- * Returns the whiteM_PIxel right before the black space in between
+ * Returns the white pixel right before the black space in between
  * the lines
  *
  * @param startingPos column to start parsing
@@ -275,34 +280,34 @@ int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
  * @param row determines the row to parse
  * @param image_scan the image to parse
  *
- * @returns the whiteM_PIxel's column position, null if none found
+ * @returns the white pixel's column position, -1 if none found
  */
 int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
     int column = startingPos;
     int blackVerificationCount = 0;
     int whiteVerificationCount = 0;
-    int endPixel = null;
-    int toBeChecked = null;
+    int endPixel = -1;
+    int toBeChecked = -1;
 
     while(column < image_scan->width && column >= 0){
-        // If blackM_PIxel found start verifying ifM_PIxel before
+        // If black pixel found start verifying if pixel before
         // is proper end.
         if(image_scan->data[row*image_scan->width + column] == 0){
             whiteVerificationCount = 0;
-            // ThisM_PIxel is what we are checking
-            if (toBeChecked == null)
+            // This pixel is what we are checking
+            if (toBeChecked == -1)
                 toBeChecked = column - incrementer; //toBeChecked = lastPixel
 
             // Determine whether toBeChecked is noise
             blackVerificationCount++;
-            if (blackVerificationCount == NOISEMAX && endPixel == null)
+            if (blackVerificationCount == NOISEMAX && endPixel == -1)
                 endPixel = toBeChecked;
         } else {
             whiteVerificationCount++;
             if(whiteVerificationCount == NOISEMAX) {
-                blackVerificationCount = 0; // Reset verification if whiteM_PIxel.
-                toBeChecked = null;
+                blackVerificationCount = 0; // Reset verification if white pixel.
+                toBeChecked = -1;
             }
         }
         // Go to next element
