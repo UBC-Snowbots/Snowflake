@@ -5,12 +5,6 @@
  *              camera and produces a recommended twist message
  */
 #include <VisionDecision.h>
-#include <tiff.h>
-
-#define PI 3.14159265
-#define null -1
-#define INVALID 91
-#define NOISEMAX 30
 
 // The constructor
 VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
@@ -171,7 +165,7 @@ int VisionDecision::getAngleAt(bool rightSide, double numSamples, const sensor_m
     if (validSamples == 0)
         return INVALID;
     else
-        return (int) (sumAngles / validSamples * 180.0 / PI); // returns the angle in degrees
+        return (int) (sumAngles / validSamples * 180.0 /M_PI); // returns the angle in degrees
 }
 
 /**
@@ -227,18 +221,18 @@ int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const se
         incrementer = 1;
     }
 
-    // Find first pixel of the white line in a certain row.
+    // Find firstM_PIxel of the white line in a certain row.
     startPixel = VisionDecision::getStartPixel(startingPos, incrementer, row, image_scan);
 
-    // Find last pixel of the white line in a certain row.
+    // Find lastM_PIxel of the white line in a certain row.
     endPixel = VisionDecision::getEndPixel(startPixel, incrementer, row, image_scan);
 
-    // Return average of the two pixels.
+    // Return average of the twoM_PIxels.
     return (startPixel + endPixel) / 2;
 }
 
 /**
- * Returns the white pixel right after the black space in between
+ * Returns the whiteM_PIxel right after the black space in between
  * the line and the left side or right side of the screen.
  *
  * @param startingPos column to start parsing
@@ -247,7 +241,7 @@ int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const se
  * @param row determines the row to parse
  * @param image_scan the image to parse
  *
- * @returns the white pixel's column position, null if none found
+ * @returns the whiteM_PIxel's column position, null if none found
  */
 int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
@@ -257,12 +251,12 @@ int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
     int startPixel = null;
     int toBeChecked = null;
 
-    // Find starting pixel
+    // Find startingM_PIxel
     while(column < image_scan->width && column >= 0){
-        // If white pixel found start verifying if proper start.
+        // If whiteM_PIxel found start verifying if proper start.
         if(image_scan->data[row*image_scan->width + column] != 0){
             blackVerificationCount = 0;
-            // This pixel is what we are checking
+            // ThisM_PIxel is what we are checking
             if (toBeChecked == null)
                 toBeChecked = column;
 
@@ -273,7 +267,7 @@ int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
         } else {
             blackVerificationCount++;
             if(blackVerificationCount == NOISEMAX) {
-                whiteVerificationCount = 0; // Reset verification if black pixel.
+                whiteVerificationCount = 0; // Reset verification if blackM_PIxel.
                 toBeChecked = null;
             }
         }
@@ -284,7 +278,7 @@ int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
 }
 
 /**
- * Returns the white pixel right before the black space in between
+ * Returns the whiteM_PIxel right before the black space in between
  * the lines
  *
  * @param startingPos column to start parsing
@@ -293,7 +287,7 @@ int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
  * @param row determines the row to parse
  * @param image_scan the image to parse
  *
- * @returns the white pixel's column position, null if none found
+ * @returns the whiteM_PIxel's column position, null if none found
  */
 int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
@@ -304,11 +298,11 @@ int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
     int toBeChecked = null;
 
     while(column < image_scan->width && column >= 0){
-        // If black pixel found start verifying if pixel before
+        // If blackM_PIxel found start verifying ifM_PIxel before
         // is proper end.
         if(image_scan->data[row*image_scan->width + column] == 0){
             whiteVerificationCount = 0;
-            // This pixel is what we are checking
+            // ThisM_PIxel is what we are checking
             if (toBeChecked == null)
                 toBeChecked = column - incrementer; //toBeChecked = lastPixel
 
@@ -319,7 +313,7 @@ int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
         } else {
             whiteVerificationCount++;
             if(whiteVerificationCount == NOISEMAX) {
-                blackVerificationCount = 0; // Reset verification if white pixel.
+                blackVerificationCount = 0; // Reset verification if whiteM_PIxel.
                 toBeChecked = null;
             }
         }

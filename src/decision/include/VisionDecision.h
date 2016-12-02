@@ -14,6 +14,11 @@
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Image.h>
 #include <ros/ros.h>
+#include <math.h>
+
+const int null = -1;
+const int INVALID  = 91;
+const int NOISEMAX = 30;
 
 class VisionDecision {
 public:
