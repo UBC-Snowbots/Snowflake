@@ -1,5 +1,5 @@
 /*
- * Created By: Gareth Ellis
+ * Created By: Robyn Castro
  * Created On: September 22, 2016
  * Description: Tests for VisionDecision
  */
@@ -9,7 +9,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <cv_bridge/cv_bridge.h>
-#include <tiff.h>
 
 using namespace cv;
 

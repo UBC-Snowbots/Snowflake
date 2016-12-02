@@ -36,7 +36,6 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& image_sca
     int relativeAngle = getDesiredAngle(image_scan->height/2.0, image_scan);
 
     // Initialize linear velocities to 0
-    twistMsg.linear.x = getDesiredSpeed(relativeAngle);
     twistMsg.linear.y = 0;
     twistMsg.linear.z = 0;
 
@@ -44,24 +43,13 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr& image_sca
     twistMsg.angular.x = 0;
     twistMsg.angular.y = 0;
 
+    // Decide how fast to go
+    twistMsg.linear.x = getDesiredSpeed(relativeAngle);
+
     // Decide how fast to turn
     twistMsg.angular.z = getDesiredAngularSpeed(relativeAngle);
 
-    // Do the turn
-    double t0 = ros::Time::now().toSec();
-    double current_angle;
-    ros::Rate loop_rate(1000);
-    do{
-        publishTwist(twistMsg);
-        double t1 = ros::Time::now().toSec();
-        current_angle = twistMsg.angular.z * (t1-t0);
-        ros::spinOnce();
-        loop_rate.sleep();
-    }while(current_angle<abs(relativeAngle));
-
-    // Bring back all velocities to 0, showing it's done moving.
-    twistMsg.angular.z = 0;
-    twistMsg.linear.x = 0;
+    // Publish the twist message
     publishTwist(twistMsg);
 }
 

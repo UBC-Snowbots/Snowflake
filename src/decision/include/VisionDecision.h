@@ -1,5 +1,5 @@
 /*
- * Created By: Gareth Ellis
+ * Created By: Robyn Castro
  * Created On: September 22, 2016
  * Description: The vision decision node, takes in an image from the robot's
  *              camera and produces a recommended twist message
@@ -25,17 +25,17 @@ public:
     VisionDecision(int argc, char **argv, std::string node_name);
 
     static double mapRange(double x, double inMin, double inMax, double outMin, double outMax);
-    static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan);
-    static int getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan);
+    static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image);
+    static int getAngleAt(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image);
     static double getDesiredAngularSpeed(double desiredAngle);
     static double getDesiredSpeed(double desiredAngle);
-    static int getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan);
+    static int getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image);
 private:
     static int getEndPixel(int startingPos, int incrementer, int row,
-                           const sensor_msgs::Image::ConstPtr& image_scan);
+                           const sensor_msgs::Image::ConstPtr& image);
     static int getStartPixel(int startingPos, int incrementer, int row,
-                             const sensor_msgs::Image::ConstPtr& image_scan);
-    void imageCallBack(const sensor_msgs::Image::ConstPtr& image_scan);
+                             const sensor_msgs::Image::ConstPtr& image);
+    void imageCallBack(const sensor_msgs::Image::ConstPtr& image);
     void publishTwist(geometry_msgs::Twist twist);
    
     
