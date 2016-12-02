@@ -59,14 +59,6 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist){
 
 /* Functions to determine robot movement */
 
-/**
- * Returns the angle of a valid line
- *
- * @param numSamples the number of slopes to sample the angle
- * @param image_scan the image to parse
- *
- * @return the angle of the line to the positive y-axis.
- */
 int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
     int desiredAngle = getAngleOfLine(false, numSamples, image_scan);
@@ -82,16 +74,6 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
         return desiredAngle;
 }
 
-/**
- * Determines the angle of the line parsed from the left or right side.
- * Returns INVALID if an invalid output is found.
- *
- * @param rightSide determines whether to parse from the left or from the right side.
- * @param numSamples how many slopes to sample the angle.
- * @param image_scan the image to parse.
- *
- * @returns the angle of the line, or INVALID if line is invalid.
- */
 int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan){
 
     // initialization of local variables.
@@ -158,14 +140,6 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     return (int) (sumAngles / validSamples * 180.0 /M_PI); // returns the angle in degrees
 }
 
-/**
- *  Returns a rotation speed based on the imageRatio
- *
- *  @param imageRatio
- *      rightBlackPixels - leftBlackPixels
- *  @returns double
- *      rotation speed of robot
- */
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
     double speedToMap = abs((int) desiredAngle);
     // the higher the desired angle, the higher the angular speed
@@ -173,14 +147,6 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle){
 
 }
 
-/**
- *  Returns the desired forward speed
- *
- *  @param desiredAngle
- *      angle robot will turn
- *  @returns double
- *      moving speed percentage of robot
- */
 double VisionDecision::getDesiredLinearSpeed(double desiredAngle){
     double speedToMap = abs((int)desiredAngle);
     // the higher the desired angle the lower the linear speed.
@@ -190,14 +156,6 @@ double VisionDecision::getDesiredLinearSpeed(double desiredAngle){
 
 /* Helper functions for functions that determine robot movement. */
 
-/**
- * Determines the middle of the white line given a row
- *
- * @param startingPos which column to start parsing in
- * @param row the row to parse
- * @param rightSide determines whether to parse from the right or the left
- * @param image_scan the image to parse
- */
 int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image_scan){
 
     int incrementer;
@@ -221,18 +179,7 @@ int VisionDecision::getMiddle(int startingPos, int row, bool rightSide, const se
     return (startPixel + endPixel) / 2;
 }
 
-/**
- * Returns the white pixel right after the black space in between
- * the line and the left side or right side of the screen.
- *
- * @param startingPos column to start parsing
- * @param NOISEMAX how large noise can be
- * @param incrementer decides whether to parse from the left or from the right
- * @param row determines the row to parse
- * @param image_scan the image to parse
- *
- * @returns the white pixel's column position, -1 if none found
- */
+
 int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
     // Initialization of local variables
@@ -270,18 +217,7 @@ int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
     return startPixel;
 }
 
-/**
- * Returns the white pixel right before the black space in between
- * the lines
- *
- * @param startingPos column to start parsing
- * @param NOISEMAX how large noise can be
- * @param incrementer decides whether to parse from the left or from the right
- * @param row determines the row to parse
- * @param image_scan the image to parse
- *
- * @returns the white pixel's column position, -1 if none found
- */
+
 int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
                      const sensor_msgs::Image::ConstPtr& image_scan){
     int column = startingPos;
@@ -316,22 +252,6 @@ int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
     return endPixel;
 }
 
-/**
- * Re-maps a number from one range to another
- *
- * @param x
- *      the number to map
- * @param inMin
- *      lower bound of value's current range
- * @param inMax
- *      upper bound of value's current range
- * @param outMin
- *      lower bound of value's target range
- * @param outMax
- *      upper bound of value's target range
- * @return double
- *      the mapped number
- */
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax) {
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
