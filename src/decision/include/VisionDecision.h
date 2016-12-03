@@ -17,7 +17,7 @@
 #include <math.h>
 #include <tiff.h>
 
-const int NOISEMAX = 30;
+const int NOISE_MAX = 30;
 
 class VisionDecision {
 public:

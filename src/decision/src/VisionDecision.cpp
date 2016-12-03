@@ -202,11 +202,11 @@ int VisionDecision::getStartPixel(int startingPos, int incrementer, int row,
 
             // Determine whether toBeChecked is noise
             whiteVerificationCount++;
-            if (whiteVerificationCount == NOISEMAX && startPixel == -1)
+            if (whiteVerificationCount == NOISE_MAX && startPixel == -1)
                 startPixel = toBeChecked;
         } else {
             blackVerificationCount++;
-            if(blackVerificationCount == NOISEMAX) {
+            if(blackVerificationCount == NOISE_MAX) {
                 whiteVerificationCount = 0; // Reset verification if black pixel.
                 toBeChecked = -1;
             }
@@ -237,11 +237,11 @@ int VisionDecision::getEndPixel(int startingPos, int incrementer, int row,
 
             // Determine whether toBeChecked is noise
             blackVerificationCount++;
-            if (blackVerificationCount == NOISEMAX && endPixel == -1)
+            if (blackVerificationCount == NOISE_MAX && endPixel == -1)
                 endPixel = toBeChecked;
         } else {
             whiteVerificationCount++;
-            if(whiteVerificationCount == NOISEMAX) {
+            if(whiteVerificationCount == NOISE_MAX) {
                 blackVerificationCount = 0; // Reset verification if white pixel.
                 toBeChecked = -1;
             }
