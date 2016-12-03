@@ -12,7 +12,7 @@
 
 #define TRIM 8 // error margin for joysticks
 
-#define BAUD_RATE 115200
+#define BAUD_RATE 9600
 
 // size of character buffer being passed over serial connection
 #define BUFFER_SIZE 6
@@ -21,14 +21,14 @@
 // as a result, this assigns 128 as stop. Then:
 // 0 < speed < 128 is reverse
 // 128 < speed <= 255 is forward
-// 255 is then full speed forward, 0 is full speed backward
+// 255 is then full sMpeed forward, 0 is full speed backward
 #define UNMAPPED_STOP_SPEED 128
 
 // DRIVING MODIFICATIONS
 // modify FR, FL, BR, BL to change speeds: (+) correpsonds to faster speed, (-) for going reverse
 // F:FRONT, B:BACK, R:RIGHT, L:LEFT e.g. FR = FRONT RIGHT WHEEL.
 const int OFFSET = 1;
-const int JOYSTICK_MARGIN = 150;
+const int JOYSTICK_MARGIN = 50;
 
 // buffer inputs
 int linear_x = 0;
@@ -39,8 +39,8 @@ int angular_y = 0;
 int angular_z = 0;
 
 // motor pins
-const int LEFT_MOTOR_PIN = 9;
 const int RIGHT_MOTOR_PIN = 10;
+const int LEFT_MOTOR_PIN = 11;
 // defines start of buffer
 const char BUFFER_HEAD = 'B';
 
@@ -60,7 +60,7 @@ Servo RightM;
 
 
 // these variables will store the joystick ranges - used to figure out direction, turn etc
-int range1 = 0, range2 = 0, range3 = 0, range4 = 0, B2 = 0, B4 = 0, Mode = 0;
+int range1 = 0, range2 = 0, range3 = 0, B2 = 0, B4 = 0, Mode = 0;
 
 int linearXHigh = 0, linearXLow = 0, angularZHigh = 0, angularZLow = 0;
 
@@ -85,7 +85,7 @@ void loop() {
   rc_read();
   
   
-  if (Mode == -1) { //Auto Mode
+  if (Mode == 1) { // Auto Mode
     serial_read(); 
     
     convert();
@@ -100,8 +100,8 @@ void loop() {
     Serial.flushRX();
   }
   else { // STOP MODE
-    linear_x = LINEAR_STOP; 
-    angular_z = ANGULAR_STOP;
+    linear_x = UNMAPPED_STOP_SPEED; 
+    angular_z = UNMAPPED_STOP_SPEED;
     
     convert();
     drive(linear_x, angular_z);
@@ -113,8 +113,8 @@ void loop() {
 * Calculates OFFSET for the joystick controllers. 
 */
 void set_offset() {
-  int linear_x_mid = 1550; //RX standard - radio signal midpoint
-  int angular_z_mid = 1550; //RY standard - radio signal midpoint
+  int linear_x_mid = 1325; //RX standard - radio signal midpoint
+  int angular_z_mid = 1325; //RY standard - radio signal midpoint
   
   // JOYSTICK_MARGIN is an error margin for joystick control
   // e.g. if the joystick is moved just a little bit, it is assumed that no movement 
@@ -133,32 +133,33 @@ void rc_read() {
   range1 = pulseIn(2, HIGH); // 1140 - 1965 RX LEFT-RIGHT -> turn on spot
   range2 = pulseIn(3, HIGH); // 1965 - 1140 RY UP-DOWN -> Steer left/right y axis (turn while moving)
   range3 = pulseIn(4, HIGH); // 1970 - 1115 linear_x UP-DOWN -> forward/backward
-  range4 = pulseIn(5, HIGH); // 1970 - 1115 mode
   
   if (range1 < linearXHigh && range1 > linearXLow) 
-    range1 = LINEAR_STOP;
+    range1 = UNMAPPED_STOP_SPEED;
   else 
-    range1 = map (range1, 1140, 1965, 0, 255);
+    range1 = map (range1, 949, 1700, 0, 255);
 
   if (range2 < angularZHigh && range2 > angularZLow) 
-    range2 = ANGULAR_STOP;
+    range2 = UNMAPPED_STOP_SPEED;
   else 
-    range2 = map (range2, 1140, 1965, 0, 255);
+    range2 = map (range2, 949, 1700, 0, 255);
   
-  if (1100 < range3 && range3 < 1400) 
-    Mode = 1; // STOP mode
-  else if (1400 < range3 && range3 < 1700) 
-    Mode = 0; // auto mode
-  else if (1700 < range3 && range3 < 2000) 
-    Mode = -1; // RC mode
+  
+  if (range3 < 1200) 
+    Mode = -1; // STOP mode
+  else if (1200 <= range3 && range3 < 1600) 
+    Mode = 0; // RC mode
+  else if (1600 <= range3 && range3 < 2000) 
+    Mode = 1; //auto mode 
   else 
     Mode = -2; // STOP mode
     
   // if joystick movement is not outside of the error range, assume no movement is desired
   if (abs(range1 - 90) < TRIM)
-    range1 = LINEAR_STOP;
+    range1 = UNMAPPED_STOP_SPEED;
   if (abs(range2 - 90) < TRIM) 
-    range2 = ANGULAR_STOP;
+    range2 = UNMAPPED_STOP_SPEED;
+    
 }
 
 void serial_read(){
@@ -186,6 +187,7 @@ void serial_read(){
 }
 
 void convert() {
+ 
   if (linear_x > 255)
     linear_x = 255; 
   else if (linear_x < 0)
@@ -197,13 +199,14 @@ void convert() {
     angular_z = 0;
   
   // map to our pre-defined max and mins
+  
   linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);
   angular_z = map(angular_z, 0, 255, ANGULAR_MIN, ANGULAR_MAX);
 }
 
 
 // moves the robot. Turning is taken into account
-void drive(int angular_speed, int linear_speed){
+void drive(int linear_speed, int angular_speed){
   
   // the convention being used is that, after mapping serial/RC inputs
   // to the range between linear_min - linear_max or angular_min - angular_max, we will have:
@@ -217,6 +220,7 @@ void drive(int angular_speed, int linear_speed){
   // if angular speed == ANGULAR_STOP, this resolves to only move in the linear direction.
   // if linear_speed == LINEAR_STOP, this resolves to turning on the spot, using the above definitions for
   // angular turning
+  
   int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP);
   int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP);
   
