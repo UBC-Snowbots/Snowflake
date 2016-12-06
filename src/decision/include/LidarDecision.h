@@ -69,7 +69,7 @@ public:
  *          (-1) if there is more space on right
  *
  */
-    static int angular_speed_sign(const sensor_msgs::LaserScan::ConstPtr& raw_scan, float distance_used);
+    static int angular_speed_sign(int start, int end, const sensor_msgs::LaserScan::ConstPtr& raw_scan, float distance_used);
 
 /**
  * modify the twist message to be sent out
@@ -96,7 +96,6 @@ public:
 
 private:
     void scanCallBack(const sensor_msgs::LaserScan::ConstPtr& raw_scan);
-    void publishTwist(geometry_msgs::Twist twist);
 
     ros::Subscriber scan_subscriber;
     ros::Publisher twist_publisher;
