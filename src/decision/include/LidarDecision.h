@@ -49,27 +49,45 @@ public:
 /**
  * determine whether to turn left (positive angular velocity in z direction) or right (negative)
  *
- * The function the opening on left and right according to distance_used
- * (distance_used is the distance, for any distance smaller than that will be considered as an obstacle)
- * It will start from the most left (angle_min in LaserScan message) untill it finds an obstacle (the
- * distance value from the LaserScan message is smaller than the distance_used), and records how many
- * angle of opening is on the left. It will do same for the right. Then compare the two and decide
- * whether to turn left or right, if more space is at left than sign = 1
- * (positive angular speed for z dircetion= turn left), else if more space is at right than sign = -1
+ * The function is a very simple function that translate the calculation done in manage_twist
+ * using obstacle_in_range to ceate bool value on_right, which will be true if the obstacle is
+ * at the right and false if not
  *
- *
- * @param distance_used in meters
- * @param sensor_msgs is the full set of messages sent in from the lidar scan
- *          angle_min (the starting angle of the full scan messages),
- *          angle_increment (the angle differece between two consecutive data),
- *          and ranges (vector data storing the distance measured for every angle)
- *          are used.
- *
- * @return (+1) if there is more space on left
- *          (-1) if there is more space on right
+ * @return (+1) if the obstacle is on the right
+ *          (-1) if the obstacle is on the left
  *
  */
-    static int angular_speed_sign(int start, int end, const sensor_msgs::LaserScan::ConstPtr& raw_scan, float distance_used);
+    static int angular_speed_sign(bool on_right);
+/**
+ * determine the linear speed
+ *
+ * The function is a very simple function that translate the calculation done in manage_twist
+ * using obstacle_in_range to ceate bool value in_near and in_mid. Both in_near and in_mid will be true
+ * if the obstacle is in near range. in_mid will be true if obstacle is in midium range. Both in_near
+ * and in_mid will be false if the obstacle is in far range
+ *
+ * @return 0 if obstacle is in near range
+ *         10 if obstacle is in midium range
+ *         20 if obstacle is in far range
+ *         NOTE THAT 10 AND 20 ARE TEMPORARY VALUE
+ */
+    static int linear_speed(bool in_near, bool in_mid);
+/**
+ * determine the linear speed
+ *
+ * The function is a very simple function that translate the calculation done in manage_twist
+ * using obstacle_in_range to ceate bool value in_near and in_mid. Both in_near and in_mid will be true
+ * if the obstacle is in near range. in_mid will be true if obstacle is in midium range. in_far will be
+ * true if the obstacle is in far range. All three will be false if there is no obstacle.
+ *
+ * @return 20 if obstacle is in near range
+ *         10 if obstacle is in midium range
+ *         5  if obstacle is in far range
+ *         0  if there is no obstacle
+ *         NOTE THAT 5, 10 AND 20 ARE TEMPORARY VALUE
+ */
+
+    static int angular_speed(bool in_near, bool in_mid, bool in_far);
 
 /**
  * modify the twist message to be sent out

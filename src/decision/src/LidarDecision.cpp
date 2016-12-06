@@ -49,71 +49,51 @@ bool LidarDecision::obstacle_in_range(double min_angle, double max_angle, float 
 }
 
 
-int LidarDecision::angular_speed_sign(int start, int end, const sensor_msgs::LaserScan::ConstPtr& raw_scan, float distance_used){
-    int left_side_value = 0;
-    int right_side_value = 0;
-    int angle_increment_steps;
-    angle_increment_steps = static_cast<int>(raw_scan->ranges.size());
-    
-    int i;
-    for (i=0;i++;i<(end-start)/2){
-        if (raw_scan->ranges[i]>distance_used)  left_side_value ++;
-    }
-    for (i=end;i--;i>(end-start)/2){
-        if (raw_scan->ranges[i]>distance_used)  left_side_value ++;
-    }
-    if (left_side_value > right_side_value) return 1;
-    else return (-1);
-
+int LidarDecision::angular_speed_sign(bool on_right){
+    if (on_right) return 1;
+    else return -1;
+}
+int LidarDecision::linear_speed(bool in_near, bool in_mid){
+    if (in_near) return 0;
+    else if (in_mid) return 10;
+    else return 20;
+}
+int LidarDecision::angular_speed(bool in_near, bool in_mid, bool in_far){
+    if (in_near) return 20;
+    else if (in_mid) return 10;
+    else if (in_far) return 5;
+    else return 0;
 }
 
 geometry_msgs::Twist LidarDecision::manage_twist(const sensor_msgs::LaserScan::ConstPtr& raw_scan) {
 
     geometry_msgs::Twist vel_msg;
+
+    //the scan is from right to left
+    //the following corresponds to distance value readings in vector ranges
     float dis_near= 5;
     float dis_mid = 10;
     float dis_far = 20;
-    int angle_increment_steps;
-    angle_increment_steps = static_cast<int>((raw_scan->angle_max - raw_scan->angle_min) / raw_scan->angle_increment);
-    int angle_value_exact_front;
-    angle_value_exact_front = angle_increment_steps / 2;
-    int angle_side_near = 0; //the area that would not be obstacle to motion
-    int angle_side_mid = 0;
-    int angle_side_far = 0;
+    //the following corresponds to the element sequence inside the vector ranges
+    int angle_side_near = 20;
+    int angle_side_mid = 10;
+    int angle_side_far = 5;
 
     //step 1 obstacle in near, mid or far range (inside impact region);
-    bool in_near = obstacle_in_range(raw_scan->angle_min + angle_side_near, raw_scan->angle_max - angle_side_near, dis_near, raw_scan);
-    bool in_mid = obstacle_in_range(raw_scan->angle_min + angle_side_mid, raw_scan->angle_max - angle_side_mid, dis_mid, raw_scan);
-    bool in_far = obstacle_in_range(raw_scan->angle_min + angle_side_far, raw_scan->angle_max - angle_side_far, dis_far, raw_scan);
+    bool in_near = obstacle_in_range(raw_scan->angle_min + angle_side_near*raw_scan->angle_increment,
+                                     raw_scan->angle_max - angle_side_near*raw_scan->angle_increment, dis_near, raw_scan);
+    bool in_mid = obstacle_in_range(raw_scan->angle_min + angle_side_mid*raw_scan->angle_increment,
+                                    raw_scan->angle_max - angle_side_mid*raw_scan->angle_increment, dis_mid, raw_scan);
+    bool in_far = obstacle_in_range(raw_scan->angle_min + angle_side_far*raw_scan->angle_increment,
+                                    raw_scan->angle_max - angle_side_far*raw_scan->angle_increment, dis_far, raw_scan);
+    double half_angle = (raw_scan->angle_max+raw_scan->angle_min)/2;
+
+    bool on_right = obstacle_in_range(raw_scan->angle_min, half_angle, dis_far, raw_scan);
 
     //step 2 determine turn
-    //scan from side to see either left or right has more space, for certain distance
 
-    //determine distance, velocity for different case
-    if (in_near) {
-        //certain linear;
-        vel_msg.linear.x = 33331;
-        int start = static_cast<int>(angle_side_near/raw_scan->angle_increment);
-        int end = static_cast<int>(raw_scan->ranges.size() - start);
-        vel_msg.angular.z = angular_speed_sign(start, end, raw_scan, dis_far) * 33332;
-    } else if (in_mid) {
-        //certain linear;
-        vel_msg.linear.x = 44441;
-        int start = static_cast<int>(angle_side_mid/raw_scan->angle_increment);
-        int end = static_cast<int>(raw_scan->ranges.size() - start);
-        vel_msg.angular.z = angular_speed_sign(start, end,raw_scan, dis_mid)*44442;
-    } else if (in_far) {
-        //certain linear;
-        vel_msg.linear.x = 55551;
-        int start = static_cast<int>(angle_side_far/raw_scan->angle_increment);
-        int end = static_cast<int>(raw_scan->ranges.size() - start);
-        vel_msg.angular.z = angular_speed_sign(start, end, raw_scan, dis_near)*55552;
-    } else {
-        // no obstacle;
-        //certain linear;
-        vel_msg.linear.x = 100;
-        vel_msg.angular.z = 0;
-    }
+    vel_msg.linear.x = linear_speed(in_near, in_mid);
+    vel_msg.angular.z = angular_speed_sign(on_right)*angular_speed(in_near,in_mid,in_far);
     vel_msg.linear.y = 0;
     vel_msg.linear.z = 0;
     vel_msg.angular.x = 0;
