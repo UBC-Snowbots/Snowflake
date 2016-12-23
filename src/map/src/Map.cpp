@@ -7,26 +7,32 @@
 #include <Map.h>
 
 Map::Map(int argc, char **argv, std::string node_name){
-    std::vector<std::string> layers("vision", "lidar", "footprint");
-    map(layers);
+
+    ros::init(argc, argv, node_name);
+    ros::NodeHandle nh;
+
+    map.add("vision");
+    map.add("lidar");
+    map.add("footprint");
+
     pos(0,0);
 }
 
 grid_map::Matrix Map::getVisionLayer(){
-    return NULL;
+    return map.get("vision");
 }
 
 grid_map::Matrix Map::getLidarLayer(){
-    return NULL;
+    return map.get("lidar");
 }
 
 grid_map::Matrix Map::getFootprintLayer(){
-    return NULL;
+    return map.get("footprint");
 }
 
 std::pair<int, int> Map::getCurrentLocation(){
-    return NULL;
-};
+    return std::pair<int, int>(10,10);
+}
 
 
 
