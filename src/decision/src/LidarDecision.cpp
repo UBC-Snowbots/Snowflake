@@ -33,7 +33,7 @@ void LidarDecision::scanCallBack(const sensor_msgs::LaserScan::ConstPtr& raw_sca
     twist_publisher.publish(manage_twist(raw_scan));
 }
 
-bool LidarDecision::obstacle_in_range(double min_angle, double max_angle, float obstacle_distance,
+bool LidarDecision::obstacle_in_range(double min_angle, double max_angle, float max_obstacle_distance,
                                       const sensor_msgs::LaserScan::ConstPtr& raw_scan) {
     int init_pos_vec, end_pos_vec;
 
@@ -43,21 +43,17 @@ bool LidarDecision::obstacle_in_range(double min_angle, double max_angle, float 
     return std::any_of(
              raw_scan->ranges.begin()+init_pos_vec, raw_scan->ranges.begin()+end_pos_vec,
              [&](auto const& v){
-                 return v < obstacle_distance;
+                 return v < max_obstacle_distance;
              });
 
 }
 
-
-int LidarDecision::angular_speed_sign(bool on_right){
-    if (on_right) return 1;
-    else return -1;
-}
 int LidarDecision::linear_speed(bool in_near, bool in_mid){
     if (in_near) return 0;
     else if (in_mid) return 10;
     else return 20;
 }
+
 int LidarDecision::angular_speed(bool in_near, bool in_mid, bool in_far){
     if (in_near) return 20;
     else if (in_mid) return 10;
@@ -93,7 +89,7 @@ geometry_msgs::Twist LidarDecision::manage_twist(const sensor_msgs::LaserScan::C
     //step 2 determine turn
 
     vel_msg.linear.x = linear_speed(in_near, in_mid);
-    vel_msg.angular.z = angular_speed_sign(on_right)*angular_speed(in_near,in_mid,in_far);
+    vel_msg.angular.z = (on_right ? 1 : -1) * angular_speed(in_near,in_mid,in_far);
     vel_msg.linear.y = 0;
     vel_msg.linear.z = 0;
     vel_msg.angular.x = 0;
