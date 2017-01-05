@@ -40,7 +40,7 @@ namespace USBDetection {
 
         size_t sz = arduinos.size();
         std::vector<dhandle_t> handles(sz);
-        
+
         int i = 0;
         for (usbdev_t const &it : arduinos) {
             libusb_device_handle *devhandle;
@@ -52,12 +52,14 @@ namespace USBDetection {
         }
 
         for (dhandle_t &it : handles) {
-            
             libusb_device_handle *current_handle = it.get();
 
             int numBytes;
             unsigned char data[512];
 
+            // takes 512 bytes from the libusb bulk transfer from the current handle
+            // LIBUSB_ENDPOINT_IN is a constant defined in libusb.
+            // It is used to specify that the computer is receiving data from the USB device, not transmitting.
             int transfer = libusb_bulk_transfer(current_handle, LIBUSB_ENDPOINT_IN, data, sizeof(data), &numBytes, 0);
 
             std::string dataStr((char *)data, 0, 10);
@@ -67,12 +69,6 @@ namespace USBDetection {
         }
         return ArduinoConnection();
     }
-
-    ArduinoConnection UsbDetector::open_arduino_with_prefix(char *prefix) {
-        std::string prefixStr(prefix);
-        return open_arduino_with_prefix(prefixStr);
-    }
-
 
     ArduinoConnection::ArduinoConnection(dhandle_t handle) {
         arduino = std::move(handle); 
@@ -86,11 +82,15 @@ namespace USBDetection {
         int transfer = libusb_bulk_transfer(arduino, LIBUSB_ENDPOINT_OUT, data, data_sz, &numBytes, 0);
     }*/
 
-    std::string ArduinoConnection::read() {
+    std::vector<unsigned char> ArduinoConnection::read() {
         unsigned char data[512];
         int numBytes;
+
+        // takes 512 bytes from the libusb bulk transfer from the current handle
+        // LIBUSB_ENDPOINT_IN is a constant defined in libusb.
+        // It is used to specify that the computer is receiving data from the USB device, not transmitting.
         int transfer = libusb_bulk_transfer(arduino.get(), LIBUSB_ENDPOINT_IN, data, sizeof(data), &numBytes, 0);
 
-        return std::string(data, data+numBytes);
+        return std::vector<unsigned char>(data, data+numBytes);
     }
 }

@@ -21,10 +21,10 @@ namespace USBDetection {
         public:
             ArduinoConnection() = default;
             ArduinoConnection(dhandle_t);
-            std::string read();
+            std::vector<unsigned char> read();
             template <typename deserializable> void write(const deserializable &obj) {
                 auto msg = obj.serialize();
-                
+
                 int numBytes;
                 int transfer = libusb_bulk_transfer(arduino.get(), LIBUSB_ENDPOINT_OUT, msg.data(), msg.size(), &numBytes, 0);
             }
@@ -40,7 +40,6 @@ namespace USBDetection {
 
         public:
             std::set<usbdev_t> find_arduinos();
-            ArduinoConnection open_arduino_with_prefix(char *);
             ArduinoConnection open_arduino_with_prefix(std::string);
             UsbDetector();
     };
