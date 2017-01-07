@@ -10,6 +10,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
 )
+
+find_package(PCL REQUIRED)
+
+
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES map
@@ -20,9 +24,14 @@ catkin_package(
 include_directories(
   ./include
   ${catkin_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
 )
+link_directories(${PCL_LIBRARY_DIRS})
+
+add_definitions(${PCL_DEFINITIONS})
+
 
 add_executable(map src/Map.cpp src/map.cpp include/Map.h)
-target_link_libraries(map ${catkin_LIBRARIES})
+target_link_libraries(map ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 
 
