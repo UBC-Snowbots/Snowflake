@@ -109,11 +109,10 @@ some_ros_package
 
 ## Using Gazebo
 - You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
-- You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `elsa_gazebo/urdf/elsa.gazebo` and switch around the lidar settings (see comments in said file)
-- All worlds should go in the `elsa_gazebo/worlds` folder
-- To launch a world, simply run the appropriate launch file in `elsa_gazebo/launch`
-- To create a launch file for your world, create one in `elsa_gazebo/launch`, using `elsa_gazebo/launch/sample.launch` as a guide
-- To manually control the robot, run `rosrun turtlesim turtle_teleop_key /turtle1/cmd_vel:=/elsa/cmd_vel`
+- You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `sb_gazebo/urdf/**ROBOT_NAME**.gazebo` and switch around the lidar settings (see comments in said file)
+- All worlds should go in the `sb_gazebo/worlds` folder
+- To launch a world, simply run the appropriate launch file in `sb_gazebo/launch`
+- To manually control the robot, run `rosrun turtlesim turtle_teleop_key /turtle1/cmd_vel:=/robot/cmd_vel`
 
 ## Github Procedure
 - We follow the "Feature Branch Workflow"
