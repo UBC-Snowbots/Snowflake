@@ -1,0 +1,21 @@
+<!--
+    Launch stuff general to all robots
+-->
+
+<launch>
+
+    <arg name="robot"/>
+ 
+    <!-- convert joint states to TF transforms for rviz, etc -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+        <param name="robot_description" 
+        command="$(find xacro)/xacro --inorder '$(find sb_gazebo)/urdf/$(arg robot).xacro'" />
+        <remap from="/joint_states" to="/robot/joint_states" />
+    </node>
+
+    <!-- start the compass sim to convert magnetic vectors from
+            GazeboRosMagnetic to compass headings -->
+        <node name="compass_sim" pkg="sb_gazebo" type="compass_sim" output="screen">
+    </node>
+
+</launch>

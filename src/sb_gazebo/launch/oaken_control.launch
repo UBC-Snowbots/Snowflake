@@ -1,0 +1,21 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find sb_gazebo)/config/oaken_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner"
+    pkg="controller_manager"
+    type="spawner" respawn="false"
+    output="screen" ns="/robot"
+    args="joint_state_controller
+      left_front_wheel_controller
+      right_front_wheel_controller"
+  />
+
+
+  <include file="$(find sb_gazebo)/launch/general_robot_control.launch">
+    <arg name="robot" value="oaken"/>
+  </include> 
+
+</launch>

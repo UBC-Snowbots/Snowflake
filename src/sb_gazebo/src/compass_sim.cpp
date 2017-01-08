@@ -50,9 +50,9 @@ int main(int argc, char **argv){
     ros::init(argc, argv, "compass_sim");
     ros::NodeHandle nh;
     // Publisher for compass message
-    compass_pub = nh.advertise<std_msgs::Float32>("/imu/compass", 1000);
+    compass_pub = nh.advertise<std_msgs::Float32>("/robot/imu/compass", 1000);
     // Subscriber for odom message
-    ros::Subscriber odom_sub = nh.subscribe("/elsa/magnetic_vector", 1000, odomCallBack);
+    ros::Subscriber odom_sub = nh.subscribe("/robot/magnetic_vector", 1000, odomCallBack);
 
     ros::spin();
 
