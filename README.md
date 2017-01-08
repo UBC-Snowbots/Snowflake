@@ -65,6 +65,12 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Functions are **camelCase**
 - Indentations are 4 spaces
 
+## Coordinate Systems
+- We try to follow ROS standards, which can be found [here](http://www.ros.org/reps/rep-0103.html)
+- x : forward
+- y : left
+- z : up
+
 ## Creating a new node
 - If your node is at all complicated, then this format should be followed. For simple nodes, please see below
 - Each node should be class based
