@@ -17,6 +17,10 @@
 #include <math.h>
 #include <tiff.h>
 
+// This constant is used when verifying if a pixel is noise.
+// It determines the maximum consecutive number of pixels that will still
+// be considered noise. The lower the number, the smaller the expected noise
+// size.
 const int NOISE_MAX = 30;
 
 class VisionDecision {
@@ -24,9 +28,11 @@ public:
     VisionDecision(int argc, char **argv, std::string node_name);
 
     /**
-     * Returns the angle of a valid line
+     * Determines the turning angle in relation to the orientation of
+     * the white line in the image.
      *
-     * @param numSamples the number of slopes to sample the angle
+     * @param numSamples determines the number of samples to average when determining
+     *                   the angle.
      * @param image_scan the image to parse
      *
      * @return the angle of the line to the positive y-axis.
