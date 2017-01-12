@@ -75,34 +75,21 @@ private:
      */
     static int getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image);
 
-    /**
-     * Returns the white pixel right before the black space in between
-     * the lines
+    /*
+     * Returns the edge pixel of the line. Which side depends on parameter
+     * isStartPixel.
      *
      * @param startingPos column to start parsing
-     * @param NOISEMAX how large noise can be
+     * @param NOISE+MAX how large noise can be
      * @param incrementer decides whether to parse from the left or from the right
      * @param row determines the row to parse
      * @param image_scan the image to parse
+     * @param isStartPixel determines which edge pixel of the white line to return.
      *
      * @returns the white pixel's column position, -1 if none found
      */
-    static int getEndPixel(int startingPos, int incrementer, int row,
-                           const sensor_msgs::Image::ConstPtr& image);
-    /**
-     * Returns the white pixel right after the black space in between
-     * the line and the left side or right side of the screen.
-     *
-     * @param startingPos column to start parsing
-     * @param NOISEMAX how large noise can be
-     * @param incrementer decides whether to parse from the left or from the right
-     * @param row determines the row to parse
-     * @param image_scan the image to parse
-     *
-     * @returns the white pixel's column position, -1 if none found
-     */
-    static int getStartPixel(int startingPos, int incrementer, int row,
-                             const sensor_msgs::Image::ConstPtr& image);
+    static int getEdgePixel(int startingPos, int incrementer, int row,
+                             const sensor_msgs::Image::ConstPtr& image, bool isStartPixel);
 
     /**
      * Re-maps a number from one range to another
