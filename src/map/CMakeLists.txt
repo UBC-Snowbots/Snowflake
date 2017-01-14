@@ -32,6 +32,7 @@ add_definitions(${PCL_DEFINITIONS})
 
 
 add_executable(map src/Map.cpp src/map.cpp include/Map.h)
+add_executable(map_test_pub test/test_map_publishers.cpp)
 target_link_libraries(map ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
-
+target_link_libraries(map_test_pub ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 

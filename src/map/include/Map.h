@@ -28,8 +28,8 @@ public:
 
 
 private:
-    void visionCallback(const sensor_msgs::PointCloud2ConstPtr msg);
-    void lidarCallback(const sensor_msgs::PointCloud2ConstPtr msg);
+    void visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg);
+    void lidarCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg);
     void positionCallback(const geometry_msgs::Pose2DConstPtr msg);
 
     ros::Subscriber vision_sub;
