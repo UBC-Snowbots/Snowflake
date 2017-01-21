@@ -1,6 +1,8 @@
 # IGVC-2017
 UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
 
+![alt tag](https://travis-ci.org/UBC-Snowbots/IGVC-2017.svg?branch=master)
+
 ## Installation and Setup
 
 You will be downloading an Ubuntu ISO and multiple ROS packages with their respective dependencies.
@@ -39,9 +41,28 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
  * Description: A quick description of what this file does/is for
  */
 ```
+
+- Functions should be commented a la JavaDoc
+- The Javadoc comment (below) should be directly above every function in the header file
+```
+/**
+ * One line description of the function
+ *
+ * A longer and more in depth description of the function
+ * if it is needed.
+ * 
+ * @param param_one the first parameter of the function
+ * @param param_two the second parameter of the function whose
+ *                  description goes longer than one line
+ * @return what the function returns if it returns anything
+ * 
+ */
+```
+
 - Classes are **CamelCase**
 - Variables are **non_camel_case**
 - Functions are **camelCase**
+- Indentations are 4 spaces
 
 ## Creating a new node
 - If your node is at all complicated, then this format should be followed. For simple nodes, please see below
@@ -78,7 +99,7 @@ some_ros_package
 </pre>
 
 ## Testing
-- GTest is our primary testing tool at the moment. We strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS
+- GTest is our primary testing tool at the moment. The ROS wiki has a quick intro to it [here](http://wiki.ros.org/gtest), and we also strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS.
 - Once you've setup your tests in ROS, run `catkin_make run_tests` to run them
 - To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
 
@@ -93,3 +114,7 @@ some_ros_package
 ## Github Procedure
 - We follow the "Feature Branch Workflow"
 - A good tutorial can be found [here](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+
+## Arduino Development
+- When developing the firmware/Arduino parts of the software, we've made a complete arduino workspace in `src/firmware`. This way you don't need to worry about downloading the libraries yourself!
+- In order to use this, go to your Arduino IDE's Preferences dialog box and use `/your/path/to/IGVC-2017/src/firmware` as your sketchbook directory. Open arduino sketches in the workspace and they will work!

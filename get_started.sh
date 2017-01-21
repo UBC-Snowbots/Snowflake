@@ -55,27 +55,29 @@ sudo apt-get install -y openjdk-8-jdk
 # Fetch and extract CLion
 echo "Fetching and extracting CLion"
 wget https://download.jetbrains.com/cpp/CLion-2016.1.3.tar.gz
-tar xzf CLion*.tar.gz -C ~
+tar xzf CLion*.tar.gz -C $DIR
 rm CLion*.tar.gz
 
 # Run CLion Setup
-cd ~/clion*
+cd $DIR/clion*
 ./bin/clion.sh
 
 # Make CLion globally accessible
 echo "Linking CLion"
-sudo ln -s "$(pwd)/bin/clion.sh" "/usr/local/bin/clion"
+sudo ln -s $DIR/clion*/bin/clion.sh /usr/local/bin/clion
 
 # Change several commands you have to run from the terminal
 # so that they auto-close said terminal
 aliases=("clion=\"clion & disown && exit\""\
-         "rviz=\"rviz & disown && exit\"")
+         "rviz=\"rviz & disown && exit\""\
+         "rqt=\"rqt & disown && exit\"")
 # Check to make sure the alias doesn't already exist
 for file_name in $SHELL_CONFIG_FILES; do
-    for alias in $aliases; do
-       if ! grep -Fxq "$alias" $file_name
+    for ((i = 0; i < ${#aliases[@]}; i++))
+    do
+       if ! grep -F ${aliases[$i]} $file_name
        then
-          echo "alias $alias" >> $file_name 
+          echo "alias ${aliases[$i]}" >> $file_name 
        fi
     done
 done

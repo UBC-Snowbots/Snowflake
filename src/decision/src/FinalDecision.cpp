@@ -8,7 +8,7 @@
 
 #include <FinalDecision.h>
 
-// The constructor
+
 FinalDecision::FinalDecision(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
@@ -32,21 +32,41 @@ FinalDecision::FinalDecision(int argc, char **argv, std::string node_name) {
 
 }
 
-// This is called whenever a new message is received
+
 void FinalDecision::lidarCallBack(const geometry_msgs::Twist::ConstPtr& lidar_decision) {
     // Deal with new messages here
+    recent_lidar = *lidar_decision;
+    arbitrator(recent_lidar,recent_vision,recent_gps);
 }
 
-// This is called whenever a new message is received
+
 void FinalDecision::visionCallBack(const geometry_msgs::Twist::ConstPtr& vision_decision) {
     // Deal with new messages here
+    recent_vision = *vision_decision;
+    arbitrator(recent_lidar,recent_vision,recent_gps);
 }
 
-// This is called whenever a new message is received
+
 void FinalDecision::gpsCallBack(const geometry_msgs::Twist::ConstPtr& gps_decision) {
     // Deal with new messages here
+    recent_gps = *gps_decision;
+    arbitrator(recent_lidar,recent_vision,recent_gps);
 }
 
 void FinalDecision::publishTwist(geometry_msgs::Twist twist){
     twist_publisher.publish(twist);
+}
+
+
+geometry_msgs::Twist FinalDecision::arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps){
+    if(recent_lidar.angular.z != 0)
+        return recent_lidar;
+    else if(recent_vision.angular.z != 0)
+        return recent_vision;
+    else
+        return recent_gps;
+}
+
+bool FinalDecision::turning(geometry_msgs::Twist twist){
+    return (twist.angular.z != 0);
 }
