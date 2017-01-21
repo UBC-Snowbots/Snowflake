@@ -31,7 +31,7 @@ TEST(GpsDecision,desiredAngle) {
 
     float my_heading=15;
 
-    double expected=-150;
+    double expected=(-150*M_PI/180);
 
     EXPECT_DOUBLE_EQ(expected, GpsDecision::desiredAngle(nextpoint,my_heading,currentPoint));
 

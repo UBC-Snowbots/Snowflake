@@ -1,5 +1,5 @@
 /*
- * Created By: Chris
+ * Created By: Yu Chen(Chris)
  * Created On: September 22, 2016
  * Description: The Decision Node for GPS, takes in a point relative to
  *              the robots location and heading and broadcasts a
@@ -46,9 +46,10 @@ double GpsDecision::distance(const geometry_msgs::Point::ConstPtr& relative_gps)
   return distance;
 }
 
-#define TO_DEGREES 180/(M_PI)
 double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
                                  float current_heading,geometry_msgs::Point currentPoint) {
+    const float TO_DEGREES=180/(M_PI);
+    const float TO_RADIANS=(M_PI)/180;
 
     double next_x=relative_gps.x;
     double next_y=relative_gps.y;
@@ -97,9 +98,12 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
     if(x==0 && y==0 && current_heading==0) {
         desiredAngle==0;
     }
-
+    desiredAngle=desiredAngle*TO_RADIANS;
     return desiredAngle;
 }
+
+
+/**this function is used for rotatation */
 
 void  GpsDecision::rotate(double desiredAngle,double angular_velocity) {
     geometry_msgs::Twist vel_msg;
@@ -139,6 +143,7 @@ void GpsDecision::compassCallBack(const std_msgs::Float32::ConstPtr& compass_hea
 }
 
 void GpsDecision::gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps) {
+
     desiredAngle(*relative_gps, current_heading, currentPoint);
 
 }
