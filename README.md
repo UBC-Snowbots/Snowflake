@@ -118,6 +118,7 @@ some_ros_package
 - You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `sb_gazebo/urdf/**ROBOT_NAME**.gazebo` and switch around the lidar settings (see comments in said file)
 - All worlds should go in the `sb_gazebo/worlds` folder
 - To launch a world, simply run the appropriate launch file in `sb_gazebo/launch`
+- Once the world has launched, it is common for the robot to be initially unable to move. Just lift it up a bit in gazebo and drop it for this to be fixed
 - To manually control the robot, run `rosrun turtlesim turtle_teleop_key /turtle1/cmd_vel:=/robot/cmd_vel`
 
 ## Github Procedure
