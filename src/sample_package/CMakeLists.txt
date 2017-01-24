@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
+
 add_definitions(-std=c++14)
 
 ## System dependencies are found with CMake's conventions
@@ -133,6 +134,7 @@ include_directories(
 # add_executable(sample_package_node src/sample_package_node.cpp)
 add_executable(my_node src/my_node.cpp src/MyNode.cpp include/MyNode.h)
 
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(sample_package_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -183,11 +185,12 @@ target_link_libraries(my_node ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_sample_package.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 if (CATKIN_ENABLE_TESTING)
+    find_package(rostest REQUIRED)
+    #add_rostest_gtest(my-node-test test/sample_package_test.test test/my-node-test.cpp)
     catkin_add_gtest(my-node-test test/my-node-test.cpp src/MyNode.cpp)
     target_link_libraries(my-node-test ${catkin_LIBRARIES})
 endif()
