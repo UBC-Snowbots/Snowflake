@@ -189,10 +189,15 @@ target_link_libraries(my_node ${catkin_LIBRARIES})
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 if (CATKIN_ENABLE_TESTING)
-    find_package(rostest REQUIRED)
     catkin_add_gtest(my_node_test test/my_node_test.cpp src/MyNode.cpp)
     target_link_libraries(my_node_test ${catkin_LIBRARIES})
+
+    find_package(rostest REQUIRED)
+    add_rostest_gtest(my_node_rostest test/sample_package_test.test test/my_node_rostest.cpp)
+    target_link_libraries(my_node_rostest ${catkin_LIBRARIES})
 endif()
+
+
 
 
 ## Add folders to be run by python nosetests
