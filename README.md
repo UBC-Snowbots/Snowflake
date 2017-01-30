@@ -77,7 +77,8 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - **MyNode.h** should contain your class declaration
 - **MyNode.cpp** should contain your class definition
 - **my_node.cpp** should be relatively small, and should just contain a **main** function to run your node
-- **my-node-test.cpp** should contain all your tests
+- **my-node-test.cpp** should contain all your gtest (unit test)
+- **my_node_rostest.cpp** should contain your rostest (integrated test)
 - For an example of this, please see `src/sample_package`
 <pre>
 some_ros_package
