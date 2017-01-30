@@ -190,8 +190,8 @@ target_link_libraries(my_node ${catkin_LIBRARIES})
 if (CATKIN_ENABLE_TESTING)
 
     # Adding gtests to the package
-    catkin_add_gtest(my_node_test test/my_node_test.cpp src/MyNode.cpp)
-    target_link_libraries(my_node_test ${catkin_LIBRARIES})
+    catkin_add_gtest(my-node-test test/my-node-test.cpp src/MyNode.cpp)
+    target_link_libraries(my-node-test ${catkin_LIBRARIES})
 
     # Adding rostest to the package
     find_package(rostest REQUIRED)
