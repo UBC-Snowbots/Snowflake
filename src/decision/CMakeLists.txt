@@ -131,7 +131,7 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(sample_package_node src/sample_package_node.cpp)
-add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp include/LidarDecision.h)
+add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp include/LidarDecision.h src/LidarObstacle.cpp)
 add_executable(vision_decision src/vision_decision.cpp src/VisionDecision.cpp include/VisionDecision.h)
 add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp include/GpsDecision.h)
 add_executable(final_decision src/final_decision.cpp src/FinalDecision.cpp include/FinalDecision.h)
@@ -194,7 +194,7 @@ target_link_libraries(final_decision ${catkin_LIBRARIES})
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 if (CATKIN_ENABLE_TESTING)
-    catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp)
+    catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp src/LidarObstacle.cpp)
     catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp)
     catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp)
     catkin_add_gtest(final-decision-test test/final-decision-test.cpp src/FinalDecision.cpp)

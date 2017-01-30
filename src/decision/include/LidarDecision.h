@@ -1,104 +1,197 @@
 /*
  * Created By: Gareth Ellis
- * Created On: September 22, 2016
- * Description: The LIDAR decision node, takes in a raw LIDAR scan
+ * Created On: January 26, 2016
+ * Description: The Lidar decision node, takes in a raw Lidar scan
  *              and broadcasts a recommended Twist message
  */
-
-
 
 #ifndef DECISION_LIDAR_DECISION_H
 #define DECISION_LIDAR_DECISION_H
 
 #include <iostream>
+#include <cmath>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/LaserScan.h>
 #include <ros/ros.h>
+
+using distance_t = float;
+using angle_t = float;
+using reading = std::pair<angle_t, distance_t>;
+
 using namespace std;
+
+class LidarObstacle {
+public:
+    /**
+     * Creates a LidarObstacle with no readings
+     */
+    LidarObstacle();
+
+    /**
+     * Creates a LidarObstacle with a given distance and angle
+     *
+     * @param distance The distance to the obstacle
+     * @param angle The angle to the obstacle
+     */
+    LidarObstacle(angle_t angle, distance_t distance);
+
+    /**
+     * Creates a LidarObstacle from a given set of readings (pair<angle, distance>)
+     *
+     * @param readings a vector of pairs of the form pair<angle, distance>
+     */
+    LidarObstacle(std::vector<reading> readings);
+
+    /**
+     * Gets the average distance of the Obstacle from the robot
+     *
+     * The distance from the robot is the average of all scan distances
+     *
+     * @return the distance of the Obstacle from the robot
+     */
+    float getAvgDistance();
+
+    /**
+     * Gets the angle of the Obstacle from the robot
+     *
+     * The angle from the robot is the average of all scan angles
+     *
+     * @return the angle of the Obstacle from the robot
+     */
+    float getAvgAngle();
+
+    /**
+     * Gets the minimum angle from of an object from the robot
+     *
+     * @ return the minimum angle of the obstacle from the robot
+     */
+    float getMinAngle();
+
+    /**
+     * Gets the maximum angle from of an object from the robot
+     *
+     * @ return the maximum angle of the obstacle from the robot
+     */
+    float getMaxAngle();
+
+    /**
+     * Calculates a danger score for the obstacle
+     *
+     * ie. how dangerous the obsacle is to the robot
+     *
+     * @return danger_score how dangerous the obstacle is to the robot
+     */
+    float dangerScore();
+
+    /**
+     * Gets all laser readings comprising the obstacle
+     *
+     * @return readings A list of pairs of all laser readings
+     */
+    const std::vector<std::pair<angle_t, distance_t>>& getAllLaserReadings();
+
+    /**
+     * Merges the given LidarObstacle in to this LidarObstacle
+     *
+     * Adds the given LidarObstacle's scan distances and scan angles to
+     * this LidarObstacles scan distances and scan angles respectively
+     *
+     * @param obstacle The LidarObstacle to be merged in
+     */
+    void mergeInLidarObstacle(LidarObstacle obstacle);
+
+private:
+    /**
+     * Merges a given set of readings into the obstacle
+     *
+     * @param readings the readings to be merged in
+     */
+    void mergeInReadings(std::vector<reading>& readings);
+
+    // The distances and angles of all the laser scan hits that comprise the object.
+    // pairs are stored in sorted order, from min to max angle.
+    std::vector<std::pair<angle_t, distance_t>> readings;
+};
+
 
 class LidarDecision {
 public:
     LidarDecision(int argc, char **argv, std::string node_name);
 
-/**
- * Determine whether there is obstacle in a certain range
- *
- * The range parameter include starting angle to ending angle (min_angle, max_angle)
- * so the detection area will be from (min_angle to max angle and from 0 to max_obstacle_distance)
- * The sensor messages gives a distance value for each angle,
- * if any of the distance value for the angles from min_angle to max_angle is smaller than max_obstacle_distance,
- * then the function decides that there is an obstacle.
- * The angles (including those from sensor messages) are in radians
- * the distances are in meters
- *
- * @param min_angle The minimum angle in the LIDAR scan to check for obstacles
- * @param max_angle The maximum angle in the LIDAR scan to check for obstacles
- * @param max_obstacle_distance The maximum distance an object in the scan can be at and still considered an obstacle
- * @param raw_scan A reference to a sensor_msgs/LaserScan message
- *                  (http://docs.ros.org/api/sensor_msgs/html/msg/LaserScan.html)
- *
- * @return true if there is an obstacle
- *         false if there isn't an obstacle
- *
- */
-    static bool obstacle_in_range(double min_angle, double max_angle, float max_obstacle_distance,
-                                  const sensor_msgs::LaserScan::ConstPtr& raw_scan);
+    /**
+     * Creates a twist command from a given lidar scan that will best avoid obstacles in the scan
+     *
+     * @return A twist command from a given lidar scan that will best avoid obstacles in the scan
+     */
+    geometry_msgs::Twist generate_twist_message(const sensor_msgs::LaserScan::ConstPtr &raw_scan);
 
-/**
- * Determines linear speed
- *
- * Both in_near and in_mid will be true if the obstacle is in near range.
- * Only in_mid will be true if obstacle is in medium range.
- * Both in_near and in_mid will be false if the obstacle is in far range
- *
- * @return 0 if obstacle is in near range
- *         10 if obstacle is in medium range
- *         20 if obstacle is in far range
- */
-    static int linear_speed(bool in_near, bool in_mid);
+    /**
+     * Finds all obstacles in a given scan
+     *
+     * @param sensor_msgs\LaserScan a laser scan in which to find obstacles
+     * @param max_obstacle_angle_diff the maximum possible angular difference between two lidar hits
+     *          for them to be considered the same obstacle
+     *
+     * @return a vector of all obstacles
+     */
+    static std::vector<LidarObstacle> findObstacles(const sensor_msgs::LaserScan& scan,
+                                                        float max_obstacle_angle_diff);
 
-/**
- * Determines Angular Speed
- *
- * Both in_near and in_mid will be true if the obstacle is in near range.
- * in_mid will be true if obstacle is in medium range.
- * in_far will be true if the obstacle is in far range.
- * All three will be false if there is no obstacle.
- *
- * @return 20 if obstacle is in near range
- *         10 if obstacle is in medium range
- *         5  if obstacle is in far range
- *         0  if there is no obstacle
- */
+    /**
+     * Finds the obstacle most dangerous to the robot
+     *
+     * @param obstacles all obstacles to be considered
+     *
+     * @return the most dangerous obstacle out of those given
+     */
+    static LidarObstacle mostDangerousObstacle(const std::vector<LidarObstacle> obstacles);
 
-    static int angular_speed(bool in_near, bool in_mid, bool in_far);
+    /**
+     * Merges obstacles that are separated by less then max_angle_diff together
+     *
+     * The merge occurs in place
+     *
+     * @param obstacles the list of obstacles to be merged (if similar)
+     * @param max_angle_diff the max difference that two obstacles may differ by and still be considered
+     *                      part of the same obstacle
+     */
+    static void mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles, float max_angle_diff);
 
-/**
- * modify the twist message to be sent out
- *
- * Consider three distance to correspond to obstacle in near, medium, and far distances.
- * Only modifying linear speed in x direction and angular speed in z direction, other directions remain 0
- * if no obstacle are found, remain straight.
- * if there is obstacle, turn left or right using function angular_speed_sign to determine.
- * the speed values need to be adjusted by further experiments
- *
- * @param raw_scan A reference to a sensor_msgs/LaserScan message
- *                  (http://docs.ros.org/api/sensor_msgs/html/msg/LaserScan.html)
- *
- * @return vel_msg A geometry_msgs/Twist message (http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html)
- *         vel_msg.linear.x = linear_speed (some constant)
- *         vel_msg.angular.z = angular_speed_sign*angular_speed = (the sign determined from the function) * (some constant)
- *
- */
-    static geometry_msgs::Twist manage_twist(const sensor_msgs::LaserScan::ConstPtr& raw_scan);
-
+    /**
+     * Creates a twist message from a given obstacle
+     *
+     * - If obstacle is not within danger distance, ignore
+     * - If obstacle is to left, turn right
+     * - If obstacle is to right, turn left
+     * - If obstacle is exactly in front, turn left (arbitrary decision)
+     *
+     * @param max_obstacle_danger_distance distance which the obstacle must be within to be considered
+     * @param obstacle the obstacle to be considered
+     *
+     * @return a twist message
+     */
+    static geometry_msgs::Twist twist_message_from_obstacle(LidarObstacle obstacle,
+                                                            distance_t danger_distance,
+                                                            angle_t danger_angle,
+                                                            float linear_vel_multiplier,
+                                                            float angular_vel_multiplier);
 
 private:
     void scanCallBack(const sensor_msgs::LaserScan::ConstPtr& raw_scan);
 
+    // The maximum angle which two scans can be different by to be considered the same obstacle
+    float max_obstacle_angle_diff;
+    // The distance at which an obstacle can be and be considered a danger
+    float max_obstacle_danger_distance;
+    // The multiplier for angular velocity that that robot uses to create twist messages
+    float twist_turn_rate;
+    // The multiplier for linear velocity that that robot uses to create twist messages
+    float twist_velocity;
     ros::Subscriber scan_subscriber;
     ros::Publisher twist_publisher;
 };
+
+
 #endif //DECISION_LIDAR_DECISION_H
 

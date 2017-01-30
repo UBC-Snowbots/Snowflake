@@ -1,6 +1,6 @@
 /*
- * Created By: Jimmy Yeh
- * Created On: November 26, 2016
+ * Created By: Gareth Ellis
+ * Created On: January 26, 2016
  * Description: The Lidar decision node, takes in a raw Lidar scan
  *              and broadcasts a recommended Twist message
  */
@@ -16,85 +16,113 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     ros::NodeHandle public_nh("~");
 
     // Setup Subscriber(s)
-    std::string laserscan_topic_name = "/elsa/scan";
-    int refresh_rate = 10;
-    scan_subscriber = public_nh.subscribe(laserscan_topic_name, refresh_rate, &LidarDecision::scanCallBack, this);
+    std::string laserscan_topic_name = "/robot/scan";
+    uint32_t refresh_rate = 10;
+    scan_subscriber = public_nh.subscribe(laserscan_topic_name, refresh_rate,
+                                          &LidarDecision::scanCallBack, this);
 
     // Setup Publisher(s)
     std::string twist_topic = public_nh.resolveName("command");
     uint32_t queue_size = 10;
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
+    // Get Param(s)
+    if (!public_nh.param<float>("max_obstacle_angle_diff", max_obstacle_angle_diff, (float)M_PI/30))
+        ROS_WARN("max_obstacle_angle_diff not set, defaulting to ", max_obstacle_angle_diff);
+    if (!public_nh.param<distance_t>("max_obstacle_danger_distance", max_obstacle_danger_distance, 10))
+        ROS_WARN("max_obstacle_danger_distance not set, defaulting to ", max_obstacle_angle_diff);
+    if (!public_nh.param<float>("twist_turn_rate", twist_turn_rate, 10))
+        ROS_WARN("twist_turn_rate not set, defaulting to ", twist_turn_rate);
+    if (!public_nh.param<float>("twist_velocity", twist_velocity, 10))
+        ROS_WARN("twist_velocity not set, defaulting to ", twist_velocity);
 }
 
 // This is called whenever a new message is received
 void LidarDecision::scanCallBack(const sensor_msgs::LaserScan::ConstPtr& raw_scan) {
     // Deal with new messages here
-    twist_publisher.publish(manage_twist(raw_scan));
+    twist_publisher.publish(generate_twist_message(raw_scan));
 }
 
-bool LidarDecision::obstacle_in_range(double min_angle, double max_angle, float max_obstacle_distance,
-                                      const sensor_msgs::LaserScan::ConstPtr& raw_scan) {
-    int init_pos_vec, end_pos_vec;
+geometry_msgs::Twist LidarDecision::generate_twist_message(const sensor_msgs::LaserScan::ConstPtr &raw_scan) {
 
-    init_pos_vec = static_cast<int>((min_angle - raw_scan->angle_min) / raw_scan->angle_increment);
-    end_pos_vec = static_cast<int>((max_angle - raw_scan->angle_min) / raw_scan->angle_increment);
+    // Find all the obstacles
+    std::vector<LidarObstacle> obstacles = findObstacles(*raw_scan, max_obstacle_angle_diff);
 
-    return std::any_of(
-             raw_scan->ranges.begin()+init_pos_vec, raw_scan->ranges.begin()+end_pos_vec,
-             [&](auto const& v){
-                 return v < max_obstacle_distance;
-             });
+    // Choose the most dangerous obstacle
+    LidarObstacle most_dangerous_obstacle = mostDangerousObstacle(obstacles);
 
+    // Create and return a twist message based on the most dangerous obstacle
+    return twist_message_from_obstacle(most_dangerous_obstacle, max_obstacle_danger_distance,
+                                       0, twist_velocity, twist_turn_rate);
 }
 
-int LidarDecision::linear_speed(bool in_near, bool in_mid){
-    if (in_near) return 0;
-    else if (in_mid) return 10;
-    else return 20;
+std::vector<LidarObstacle> LidarDecision::findObstacles(const sensor_msgs::LaserScan &scan,
+                                                        float max_obstacle_angle_diff) {
+    // Get the raw scan data
+    std::vector<float> scan_data = scan.ranges;
+
+    // Find all ranges (lidar hits) that could be obstacles (initially each laser hit is an obstacle)
+    std::vector<LidarObstacle> obstacles;
+    for (int i = 0; i < scan_data.size(); i++) {
+        // Check that obstacle is within valid range
+        if (scan_data[i] < scan.range_max && scan_data[i] > scan.range_min) {
+            // If so, add it to the obstacles
+            obstacles.emplace_back(LidarObstacle(scan.angle_increment * i + scan.angle_min,
+                                                 scan_data[i]));
+        }
+    }
+
+    // Merge together obstacles that could be the same obstacle
+    mergeSimilarObstacles(obstacles, max_obstacle_angle_diff);
+
+    return obstacles;
 }
 
-int LidarDecision::angular_speed(bool in_near, bool in_mid, bool in_far){
-    if (in_near) return 20;
-    else if (in_mid) return 10;
-    else if (in_far) return 5;
-    else return 0;
+LidarObstacle LidarDecision::mostDangerousObstacle(const std::vector<LidarObstacle> obstacles) {
+    // Return obstacle with the greatest danger score
+    return *std::max_element(obstacles.begin(), obstacles.end(),
+                              [&] (LidarObstacle obs1, LidarObstacle obs2){
+                                  return obs1.dangerScore() < obs2.dangerScore();
+                              });
 }
 
-geometry_msgs::Twist LidarDecision::manage_twist(const sensor_msgs::LaserScan::ConstPtr& raw_scan) {
+void LidarDecision::mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles, float max_angle_diff) {
+    // Ensure the list of obstacles is sorted in order of ascending angle
+    std::sort(obstacles.begin(), obstacles.end(),
+        [&] (LidarObstacle l1, LidarObstacle l2){
+            return l1.getAvgAngle() < l2.getAvgAngle();
+        });
 
-    geometry_msgs::Twist vel_msg;
-
-    //the scan is from right to left
-    //the following corresponds to distance value readings in vector ranges
-    float dis_near= 5;
-    float dis_mid = 10;
-    float dis_far = 20;
-    //the following corresponds to the element sequence inside the vector ranges
-    int angle_side_near = 20;
-    int angle_side_mid = 10;
-    int angle_side_far = 5;
-
-    //step 1 obstacle in near, mid or far range (inside impact region);
-    bool in_near = obstacle_in_range(raw_scan->angle_min + angle_side_near*raw_scan->angle_increment,
-                                     raw_scan->angle_max - angle_side_near*raw_scan->angle_increment, dis_near, raw_scan);
-    bool in_mid = obstacle_in_range(raw_scan->angle_min + angle_side_mid*raw_scan->angle_increment,
-                                    raw_scan->angle_max - angle_side_mid*raw_scan->angle_increment, dis_mid, raw_scan);
-    bool in_far = obstacle_in_range(raw_scan->angle_min + angle_side_far*raw_scan->angle_increment,
-                                    raw_scan->angle_max - angle_side_far*raw_scan->angle_increment, dis_far, raw_scan);
-    double half_angle = (raw_scan->angle_max+raw_scan->angle_min)/2;
-
-    bool on_right = obstacle_in_range(raw_scan->angle_min, half_angle, dis_far, raw_scan);
-
-    //step 2 determine turn
-
-    vel_msg.linear.x = linear_speed(in_near, in_mid);
-    vel_msg.angular.z = (on_right ? 1 : -1) * angular_speed(in_near,in_mid,in_far);
-    vel_msg.linear.y = 0;
-    vel_msg.linear.z = 0;
-    vel_msg.angular.x = 0;
-    vel_msg.angular.y = 0;
-
-    return vel_msg;
+    // Merge similar obstacles
+    int i = 0;
+    while(i < obstacles.size() - 1){
+        // Check if angle difference between two consecutive scans is less then max_angle_diff
+        if (abs(obstacles[i+1].getMaxAngle() - obstacles[i].getAvgAngle()) < max_angle_diff){
+            // Merge next obstacle into current one
+            obstacles[i].mergeInLidarObstacle(obstacles[i+1]);
+            obstacles.erase(obstacles.begin()+i+1);
+        } else {
+            i++;
+        }
+    }
 }
 
+geometry_msgs::Twist LidarDecision::twist_message_from_obstacle(LidarObstacle obstacle,
+                                                               distance_t danger_distance,
+                                                               angle_t danger_angle,
+                                                               float linear_vel_multiplier,
+                                                               float angular_vel_multiplier) {
+    geometry_msgs::Twist twist;
+    twist.linear.x = 0;
+    twist.linear.y = 0;
+    twist.linear.z = 0;
+    twist.angular.x = 0;
+    twist.angular.y = 0;
+    twist.angular.z = 0;
+    if (obstacle.getAvgDistance() < danger_distance && abs(obstacle.getAvgAngle()) < danger_angle) {
+        // TODO: Improve the algorithm here to at least use some sort of scale  (linear or otherwise) dependent on obstacle distance and angle
+        twist.linear.x = linear_vel_multiplier;
+        twist.angular.z = angular_vel_multiplier;
+    }
+    return twist;
+}
