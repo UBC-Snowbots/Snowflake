@@ -1,0 +1,13 @@
+<launch>
+
+	<node name="ros_vision" pkg="vision" type="ros_vision" output="screen">
+		<param name="y1" value="360"/>
+		<param name="y2" value="360"/>
+		<remap from="/elsa/camera/image_raw" to="/robot/camera1/image_raw"/>
+	</node>
+
+	<node name="vision_decision" pkg="decision" type="vision_decision" output="screen">
+		<remap from="/vision_processing/filtered_image" to="/vision/filtered_image"/>
+	</node>
+     
+</launch>
