@@ -57,13 +57,22 @@ TEST_F(LidarObstacleTest, mergeInReadingsTest){
 class LidarDecisionTest : public testing::Test {
 protected:
     virtual void SetUp(){
-        sensor_msgs::LaserScan scan1;
+        int num_rays = 300;
         scan1.angle_min = 0;
         scan1.angle_max = (float)M_PI;
-        scan1.angle_increment = (scan1.angle_max - scan1.angle_min)/300;
-        // TODO: YOU ARE HERE, NEED TO FINISH WRITING THE TESTS FOR LIDARDECISION CLASS
+        scan1.angle_increment = (scan1.angle_max - scan1.angle_min)/num_rays;
+        std::vector<int> ranges(num_rays, 0);
+        scan1.ranges = ranges;
+        scan1.range_min = 20;
+        scan1.range_max = 40;
     }
+
+    sensor_msgs::LaserScan scan1;
 };
+
+TEST_F(LidarDecisionTest, findObstaclesTest){
+
+}
 
 
 int main(int argc, char **argv) {
