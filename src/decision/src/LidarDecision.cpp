@@ -28,13 +28,13 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
 
     // Get Param(s)
     if (!public_nh.param<float>("max_obstacle_angle_diff", max_obstacle_angle_diff, (float)M_PI/30))
-        ROS_WARN("max_obstacle_angle_diff not set, defaulting to ", max_obstacle_angle_diff);
+        ROS_WARN("max_obstacle_angle_diff not set, defaulting to %f", max_obstacle_angle_diff);
     if (!public_nh.param<distance_t>("max_obstacle_danger_distance", max_obstacle_danger_distance, 10))
-        ROS_WARN("max_obstacle_danger_distance not set, defaulting to ", max_obstacle_angle_diff);
+        ROS_WARN("max_obstacle_danger_distance not set, defaulting to %f", max_obstacle_angle_diff);
     if (!public_nh.param<float>("twist_turn_rate", twist_turn_rate, 10))
-        ROS_WARN("twist_turn_rate not set, defaulting to ", twist_turn_rate);
+        ROS_WARN("twist_turn_rate not set, defaulting to %f", twist_turn_rate);
     if (!public_nh.param<float>("twist_velocity", twist_velocity, 10))
-        ROS_WARN("twist_velocity not set, defaulting to ", twist_velocity);
+        ROS_WARN("twist_velocity not set, defaulting to %f", twist_velocity);
 }
 
 // This is called whenever a new message is received
