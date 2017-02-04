@@ -1,8 +1,0 @@
-prefix=/home/gareth/programming/IGVC-2017/src/cmake-build-debug/devel
-
-Name: vision
-Description: Description of vision
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/gareth/programming/IGVC-2017/src/cmake-build-debug/devel/lib 
-Requires: 
