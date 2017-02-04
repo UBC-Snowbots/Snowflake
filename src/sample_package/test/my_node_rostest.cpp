@@ -12,17 +12,17 @@
 
 /**
  * This is the helper class which will publish and subscribe messages which will test the node being instantiated
- * It contains on the minimum:
+ * It contains at the minimum:
  *      publisher - publishes the input to the node
  *      subscriber - publishes the output of the node
  *      callback function - the callback function which corresponds to the subscriber
  *      getter function - to provide a way for gtest to check for equality of the message recieved
  */
-class MyClassTest : public testing::Test{
+class MyNodeTest : public testing::Test{
 protected:
     virtual void SetUp(){
         testPublisher = nh_.advertise<std_msgs::String>("subscribe_topic", 1);
-        testSubscriber = nh_.subscribe("/my_node/publish_topic", 1, &MyClassTest::callback, this);
+        testSubscriber = nh_.subscribe("/my_node/publish_topic", 1, &MyNodeTest::callback, this);
 
         // Let the publishers and subscribers set itself up timely
         ros::Rate loop_rate(1);
@@ -45,7 +45,7 @@ public:
     }
 };
 
-TEST_F(MyClassTest, MyNodeTest){
+TEST_F(MyNodeTest, ExclamationMarkAppend){
 
     // publishes "Hello" to the test node
     std_msgs::String msg;
@@ -57,8 +57,7 @@ TEST_F(MyClassTest, MyNodeTest){
     loop_rate.sleep();
 
     // spinOnce allows ros to actually process your callbacks
-    // for the curious:
-    //      http://answers.ros.org/question/11887/significance-of-rosspinonce/
+    // for the curious: http://answers.ros.org/question/11887/significance-of-rosspinonce/
     ros::spinOnce();
 
     EXPECT_EQ("Hello!", getMessage());

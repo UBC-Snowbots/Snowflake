@@ -95,7 +95,8 @@ some_ros_package
 |   | <b>MyNode.h</b>
 | 
 └───test
-|   | <b>my_node_test.cpp</b>
+|   | <b>my-node-test.cpp</b>
+|   | <b>my_node_rostest.cpp</b>
 |   | <b>sample_package_test.test</b>
 </pre>
 
@@ -120,7 +121,7 @@ some_ros_package
 - To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
 
 ### Rostest
-- For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is  an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
+- For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
 - Similar to launch files, the command is: `rostest package_name package_test_file.test`.
 
 ## Using Gazebo
