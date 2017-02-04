@@ -1,0 +1,8 @@
+prefix=/home/gareth/programming/IGVC-2017/src/cmake-build-debug/devel
+
+Name: decision
+Description: Description of decision
+Version: 0.0.0
+Cflags: -I/home/gareth/programming/IGVC-2017/src/decision/include
+Libs: -L/home/gareth/programming/IGVC-2017/src/cmake-build-debug/devel/lib 
+Requires: 

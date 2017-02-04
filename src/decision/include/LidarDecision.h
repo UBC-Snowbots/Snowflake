@@ -17,9 +17,13 @@
 
 using distance_t = float;
 using angle_t = float;
-using reading = std::pair<angle_t, distance_t>;
 
 using namespace std;
+
+struct Reading {
+    angle_t angle;
+    distance_t range;
+};
 
 class LidarObstacle {
 public:
@@ -41,7 +45,7 @@ public:
      *
      * @param readings a vector of pairs of the form pair<angle, distance>
      */
-    LidarObstacle(std::vector<reading> readings);
+    LidarObstacle(std::vector<Reading> readings);
 
     /**
      * Gets the average distance of the Obstacle from the robot
@@ -89,7 +93,7 @@ public:
      *
      * @return readings A list of pairs of all laser readings
      */
-    const std::vector<std::pair<angle_t, distance_t>>& getAllLaserReadings();
+    const std::vector<Reading>& getAllLaserReadings();
 
     /**
      * Merges the given LidarObstacle in to this LidarObstacle
@@ -107,11 +111,11 @@ private:
      *
      * @param readings the readings to be merged in
      */
-    void mergeInReadings(std::vector<reading>& readings);
+    void mergeInReadings(std::vector<Reading> &new_readings);
 
     // The distances and angles of all the laser scan hits that comprise the object.
     // pairs are stored in sorted order, from min to max angle.
-    std::vector<std::pair<angle_t, distance_t>> readings;
+    std::vector<Reading> readings;
 };
 
 

@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: drivers
+Description: Description of drivers
+Version: 0.0.0
+Cflags: 
+Libs: -L/usr/local/lib 
+Requires: 

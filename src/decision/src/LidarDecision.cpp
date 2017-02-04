@@ -97,7 +97,7 @@ void LidarDecision::mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
     int i = 0;
     while(i < obstacles.size() - 1){
         // Check if angle difference between two consecutive scans is less then max_angle_diff
-        if (abs(obstacles[i+1].getMaxAngle() - obstacles[i].getAvgAngle()) < max_angle_diff){
+        if (abs(obstacles[i+1].getMinAngle() - obstacles[i].getMaxAngle()) < max_angle_diff){
             // Merge next obstacle into current one
             obstacles[i].mergeInLidarObstacle(obstacles[i+1]);
             obstacles.erase(obstacles.begin()+i+1);

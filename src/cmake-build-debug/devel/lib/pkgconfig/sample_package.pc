@@ -1,0 +1,8 @@
+prefix=/home/gareth/programming/IGVC-2017/src/cmake-build-debug/devel
+
+Name: sample_package
+Description: Description of sample_package
+Version: 0.0.0
+Cflags: -I/home/gareth/programming/IGVC-2017/src/sample_package/include
+Libs: -L/home/gareth/programming/IGVC-2017/src/cmake-build-debug/devel/lib 
+Requires: 
