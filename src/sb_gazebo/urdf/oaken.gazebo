@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<robot name="elsa" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!-- 
+     The Controllers for Elsa, a 4-wheel drive, skid-steering robot
+-->
+<robot name="oaken" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <gazebo reference="chassis">
       <material>Gazebo/Blue</material>
@@ -7,47 +10,49 @@
 
     <gazebo>
         <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-            <robotNamespace>/elsa</robotNamespace>
+            <robotNamespace>/robot</robotNamespace>
         </plugin>
     </gazebo>
 
     <!-- STEERING CONTROLLER -->
-    <gazebo>
-      <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>100.0</updateRate>
-        <leftFrontJoint>left_front_wheel_hinge</leftFrontJoint>
-        <rightFrontJoint>right_front_wheel_hinge</rightFrontJoint>
-        <leftRearJoint>left_back_wheel_hinge</leftRearJoint>
-        <rightRearJoint>right_back_wheel_hinge</rightRearJoint>
-        <wheelSeparation>${chassis_width + wheel_width}</wheelSeparation>
-        <wheelDiameter>${2 * wheel_radius}</wheelDiameter>
-        <torque>10</torque>
-        <commandTopic>elsa/cmd_vel</commandTopic>
-        <odometryTopic>elsa/odom</odometryTopic>
-        <odometryFrame>odom</odometryFrame>
-        <robotBaseFrame>base_link</robotBaseFrame>
-      </plugin>
-    </gazebo>
+        <!-- SKID STEERING -->
+        <!--
+        <gazebo>
+          <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+            <alwaysOn>true</alwaysOn>
+            <updateRate>100.0</updateRate>
+            <leftFrontJoint>left_front_wheel_hinge</leftFrontJoint>
+            <rightFrontJoint>right_front_wheel_hinge</rightFrontJoint>
+            <leftRearJoint>left_back_wheel_hinge</leftRearJoint>
+            <rightRearJoint>right_back_wheel_hinge</rightRearJoint>
+            <wheelSeparation>${chassis_width + wheel_width}</wheelSeparation>
+            <wheelDiameter>${2 * wheel_radius}</wheelDiameter>
+            <torque>10</torque>
+            <commandTopic>robot/cmd_vel</commandTopic>
+            <odometryTopic>robot/odom</odometryTopic>
+            <odometryFrame>odom</odometryFrame>
+            <robotBaseFrame>base_link</robotBaseFrame>
+          </plugin>
+        </gazebo>
+        -->
 
-    <!--
-    <gazebo>
-      <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>100</updateRate>
-        <leftJoint>left_front_wheel_hinge</leftJoint>
-        <rightJoint>right_front_wheel_hinge</rightJoint>
-        <wheelSeparation>${chassis_width+wheel_width}</wheelSeparation>
-        <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-        <torque>20</torque>
-        <commandTopic>elsa/cmd_vel</commandTopic>
-        <odometryTopic>elsa/odom_diffdrive</odometryTopic>
-        <odometryFrame>odom</odometryFrame>
-        <robotBaseFrame>base_link</robotBaseFrame>
-        <legacyMode>False</legacyMode>
-      </plugin>
-    </gazebo>
-    -->
+        <!-- DIFFERENTIAL DRIVE -->
+        <gazebo>
+          <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+            <alwaysOn>true</alwaysOn>
+            <updateRate>100</updateRate>
+            <leftJoint>left_front_wheel_hinge</leftJoint>
+            <rightJoint>right_front_wheel_hinge</rightJoint>
+            <wheelSeparation>${chassis_width+wheel_width}</wheelSeparation>
+            <wheelDiameter>${2*wheel_radius}</wheelDiameter>
+            <torque>20</torque>
+            <commandTopic>robot/cmd_vel</commandTopic>
+            <odometryTopic>robot/odom_diffdrive</odometryTopic>
+            <odometryFrame>odom</odometryFrame>
+            <robotBaseFrame>base_link</robotBaseFrame>
+            <legacyMode>False</legacyMode>
+          </plugin>
+        </gazebo>
 
     <!-- CAMERA -->
     <gazebo reference="camera">
@@ -69,7 +74,7 @@
         <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
           <alwaysOn>true</alwaysOn>
           <updateRate>0.0</updateRate>
-          <cameraName>elsa/camera1</cameraName>
+          <cameraName>robot/camera1</cameraName>
           <imageTopicName>image_raw</imageTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <frameName>camera_link</frameName>
@@ -121,7 +126,7 @@
     <!-- Set depending on whether you have a GPU or not -->
     <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so">
     <!--<plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">-->
-        <topicName>/elsa/laser/scan</topicName>
+        <topicName>/robot/laser/scan</topicName>
         <frameName>lidar</frameName>
       </plugin>
     </sensor>
@@ -134,20 +139,37 @@
             <alwaysOn>1</alwaysOn>
             <updateRate>10</updateRate>
             <bodyName>chassis</bodyName>
-            <topicName>/elsa/gps</topicName>
-            <velocityTopicName>/elsa/gps_vel</velocityTopicName>
+            <topicName>/gps_driver/gps</topicName>
+            <velocityTopicName>/robot/gps_vel</velocityTopicName>
             <drift>5.0 5.0 5.0</drift>
             <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
             <velocityDrift>0 0 0</velocityDrift>
             <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
 
             <!-- Set these parameters depending on where you want to gps reference to be -->
+            <!-- NOTE: THESE SHOULD MATCH THE COMPASS_SIM PLUGIN - SEE BELOW-->
             <!-- EDC (Very Roughly) -->
             <referenceLongitude>49.262479</referenceLongitude>
             <referenceLatitude>-123.248600</referenceLatitude>
             <referenceAltitude>50.00</referenceAltitude>
             <referenceHeading>0.00</referenceHeading>
+        </plugin>
+        <plugin name="compass_sim" filename="libhector_gazebo_ros_magnetic.so">
+            <topicName>/robot/magnetic_vector</topicName>
+            <bodyName>chassis</bodyName>
+            <drift>0 0 0</drift>
+            <gaussianNoise>0 0 0</gaussianNoise>
+            <velocityDrift>0 0 0</velocityDrift>
+            <velocityGaussianNoise>0 0 0</velocityGaussianNoise>
+            <inclination>0.00</inclination>
 
+            <!-- Set these parameters depending on where you want to gps reference to be -->
+            <!-- NOTE: THESE SHOULD MATCH THE GPS_SIM PLUGIN - SEE ABOVE -->
+            <!-- EDC (Very Roughly) -->
+            <referenceLongitude>49.262479</referenceLongitude>
+            <referenceLatitude>-123.248600</referenceLatitude>
+            <referenceAltitude>50.00</referenceAltitude>
+            <referenceHeading>0.00</referenceHeading>
         </plugin>
     </gazebo>
 

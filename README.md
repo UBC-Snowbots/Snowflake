@@ -61,8 +61,15 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 
 - Classes are **CamelCase**
 - Variables are **non_camel_case**
+- Constants are **ALL_CAPS_WITH_UNDERSCORES**
 - Functions are **camelCase**
 - Indentations are 4 spaces
+
+## Coordinate Systems
+- We try to follow ROS standards, which can be found [here](http://www.ros.org/reps/rep-0103.html)
+- x : forward
+- y : left
+- z : up
 
 ## Creating a new node
 - If your node is at all complicated, then this format should be followed. For simple nodes, please see below
@@ -79,6 +86,9 @@ some_ros_package
 └───src
 |   | <b>MyNode.cpp</b> 
 |   | <b>my_node.cpp</b>
+|
+└───launch
+|   | <b>my_node.launch</b>
 |
 └───include
 |   | <b>MyNode.h</b>
@@ -105,11 +115,11 @@ some_ros_package
 
 ## Using Gazebo
 - You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
-- You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `elsa_gazebo/urdf/elsa.gazebo` and switch around the lidar settings (see comments in said file)
-- All worlds should go in the `elsa_gazebo/worlds` folder
-- To launch a world, simply run the appropriate launch file in `elsa_gazebo/launch`
-- To create a launch file for your world, create one in `elsa_gazebo/launch`, using `elsa_gazebo/launch/sample.launch` as a guide
-- To manually control the robot, run `rosrun turtlesim turtle_teleop_key /turtle1/cmd_vel:=/elsa/cmd_vel`
+- You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `sb_gazebo/urdf/**ROBOT_NAME**.gazebo` and switch around the lidar settings (see comments in said file)
+- All worlds should go in the `sb_gazebo/worlds` folder
+- To launch a world, simply run the appropriate launch file in `sb_gazebo/launch`
+- Once the world has launched, it is common for the robot to be initially unable to move. Just lift it up a bit in gazebo and drop it for this to be fixed
+- To manually control the robot, run `rosrun turtlesim turtle_teleop_key /turtle1/cmd_vel:=/robot/cmd_vel`
 
 ## Github Procedure
 - We follow the "Feature Branch Workflow"

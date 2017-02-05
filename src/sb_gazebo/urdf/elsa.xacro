@@ -1,4 +1,7 @@
 <?xml version="1.0"?>
+<!-- 
+     The Model for Elsa, a 4-wheel drive, skid-steering robot
+-->
 <robot name="elsa" xmlns:xacro="http://www.ros.org/wiki/xacro">
 <xacro:property name="PI" value="3.1415926535897931"/>
 
@@ -30,9 +33,9 @@
 <xacro:property name="gps_size" value="0.05"/>
 <xacro:property name="gps_mass" value="0"/>
 
-<xacro:include filename="$(find elsa_gazebo)/urdf/elsa.gazebo" />
-<xacro:include filename="$(find elsa_gazebo)/urdf/materials.xacro" />
-<xacro:include filename="$(find elsa_gazebo)/urdf/macros.xacro" />
+<xacro:include filename="$(find sb_gazebo)/urdf/elsa.gazebo" />
+<xacro:include filename="$(find sb_gazebo)/urdf/materials.xacro" />
+<xacro:include filename="$(find sb_gazebo)/urdf/macros.xacro" />
 
 
 <!-- Footprint of the robot (because gazebo's base_link can't have interia) -->
