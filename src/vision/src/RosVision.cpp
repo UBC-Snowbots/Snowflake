@@ -143,7 +143,6 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
 
     //Obtains parameters of image and IPM points from the param server
     SB_getParam(nh_private, "width", width, 640);
-    SB_getParam(nh_private, "width", width, 640);
     SB_getParam(nh_private, "height", height, 480);
     SB_getParam(nh_private, "x1", x1, 0);
     SB_getParam(nh_private, "x2", x2, width);
