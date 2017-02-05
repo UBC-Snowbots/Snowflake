@@ -209,7 +209,8 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp src/LidarObstacle.cpp)
     target_link_libraries(lidar-decision-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp)
+    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
     target_link_libraries(vision-decision-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp)
