@@ -27,10 +27,12 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
     // Get Param(s)
-    if (!public_nh.param<float>("max_obstacle_angle_diff", max_obstacle_angle_diff, (float)M_PI/30))
+    if (!public_nh.param<float>("max_obstacle_angle_diff", max_obstacle_angle_diff, (float)M_PI/36))
         ROS_WARN("max_obstacle_angle_diff not set, defaulting to %f", max_obstacle_angle_diff);
     if (!public_nh.param<distance_t>("max_obstacle_danger_distance", max_obstacle_danger_distance, 10))
-        ROS_WARN("max_obstacle_danger_distance not set, defaulting to %f", max_obstacle_angle_diff);
+        ROS_WARN("max_obstacle_danger_distance not set, defaulting to %f", max_obstacle_danger_distance);
+    if (!public_nh.param<distance_t>("obstacle_danger_angle", obstacle_danger_angle, (float)M_PI/4));
+        ROS_WARN("obstacle_danger_angle not set, defaulting to %f", obstacle_danger_angle);
     if (!public_nh.param<float>("twist_turn_rate", twist_turn_rate, 10))
         ROS_WARN("twist_turn_rate not set, defaulting to %f", twist_turn_rate);
     if (!public_nh.param<float>("twist_velocity", twist_velocity, 10))
@@ -53,7 +55,7 @@ geometry_msgs::Twist LidarDecision::generate_twist_message(const sensor_msgs::La
 
     // Create and return a twist message based on the most dangerous obstacle
     return twist_message_from_obstacle(most_dangerous_obstacle, max_obstacle_danger_distance,
-                                       0, twist_velocity, twist_turn_rate);
+                                       obstacle_danger_angle, twist_velocity, twist_turn_rate);
 }
 
 std::vector<LidarObstacle> LidarDecision::findObstacles(const sensor_msgs::LaserScan &scan,
@@ -119,9 +121,9 @@ geometry_msgs::Twist LidarDecision::twist_message_from_obstacle(LidarObstacle ob
     twist.angular.x = 0;
     twist.angular.y = 0;
     twist.angular.z = 0;
-    if (obstacle.getAvgDistance() < danger_distance && abs(obstacle.getAvgAngle()) < danger_angle) {
+
+    if (obstacle.getAvgDistance() < danger_distance && abs(obstacle.getAvgAngle() - M_PI/2) < danger_angle) {
         // TODO: Improve the algorithm here to at least use some sort of scale  (linear or otherwise) dependent on obstacle distance and angle
-        twist.linear.x = linear_vel_multiplier;
         twist.angular.z = angular_vel_multiplier;
     }
     return twist;

@@ -188,6 +188,9 @@ private:
     float max_obstacle_angle_diff;
     // The distance at which an obstacle can be and be considered a danger
     float max_obstacle_danger_distance;
+    // The angle, measured from 0 being directly in front of the robot, at which an obstacle
+    // is considered a danger to the robot
+    float obstacle_danger_angle;
     // The multiplier for angular velocity that that robot uses to create twist messages
     float twist_turn_rate;
     // The multiplier for linear velocity that that robot uses to create twist messages

@@ -194,15 +194,26 @@ target_link_libraries(final_decision ${catkin_LIBRARIES})
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 if (CATKIN_ENABLE_TESTING)
+    # gTest
     catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp src/LidarObstacle.cpp)
-    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp)
-    catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp)
-    catkin_add_gtest(final-decision-test test/final-decision-test.cpp src/FinalDecision.cpp)
-
     target_link_libraries(lidar-decision-test ${catkin_LIBRARIES})
+
+    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp)
     target_link_libraries(vision-decision-test ${catkin_LIBRARIES})
+
+    catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp)
     target_link_libraries(gps-decision-test ${catkin_LIBRARIES})
+
+    catkin_add_gtest(final-decision-test test/final-decision-test.cpp src/FinalDecision.cpp)
     target_link_libraries(final-decision-test ${catkin_LIBRARIES})
+
+
+    # rostest
+    find_package(rostest REQUIRED)
+
+    add_rostest_gtest(lidar_decision_rostest test/lidar_decision_rostest.test test/lidar_decision_rostest.cpp)
+    target_link_libraries(lidar_decision_rostest ${catkin_LIBRARIES})
+
 endif()
 
 
