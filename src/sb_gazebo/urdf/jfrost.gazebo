@@ -2,7 +2,7 @@
 <!-- 
      The Controllers for Elsa, a 4-wheel drive, skid-steering robot
 -->
-<robot name="oaken" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="jfrost" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <gazebo reference="chassis">
       <material>Gazebo/Blue</material>

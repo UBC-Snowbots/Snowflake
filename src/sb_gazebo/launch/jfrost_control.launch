@@ -1,7 +1,7 @@
 <launch>
 
   <!-- Load joint controller configurations from YAML file to parameter server -->
-  <rosparam file="$(find sb_gazebo)/config/oaken_control.yaml" command="load"/>
+  <rosparam file="$(find sb_gazebo)/config/jfrost_control.yaml" command="load"/>
 
   <!-- load the controllers -->
   <node name="controller_spawner"
@@ -15,7 +15,7 @@
 
 
   <include file="$(find sb_gazebo)/launch/general_robot_control.launch">
-    <arg name="robot" value="oaken"/>
+    <arg name="robot" value="jfrost"/>
   </include> 
 
 </launch>
