@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
 )
+find_package(sb_utils REQUIRED)
 
 add_definitions(-std=c++14)
 
@@ -101,7 +102,7 @@ add_definitions(-std=c++14)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+    INCLUDE_DIRS include
 #  LIBRARIES sample_package
 #  CATKIN_DEPENDS roscpp std_msgs
 #  DEPENDS system_lib
@@ -115,8 +116,9 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS}
-  ./include
+    ${catkin_INCLUDE_DIRS}
+    ${sb_utils_INCLUDE_DIRS}
+    ./include
 )
 
 ## Declare a C++ library
@@ -141,7 +143,7 @@ add_executable(my_node src/my_node.cpp src/MyNode.cpp include/MyNode.h)
 # target_link_libraries(sample_package_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(my_node ${catkin_LIBRARIES})
+target_link_libraries(my_node ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 #############
 ## Install ##
