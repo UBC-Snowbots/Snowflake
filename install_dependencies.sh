@@ -21,7 +21,8 @@ sudo apt-get install -y\
     ros-kinetic-ros-controllers \
     ros-kinetic-ros-control \
     ros-kinetic-effort-controllers \
-    ros-kinetic-hector-gazebo
+    ros-kinetic-hector-gazebo \
+    ros-kinetic-turtlebot-teleop
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."

@@ -119,7 +119,7 @@ some_ros_package
 - All worlds should go in the `sb_gazebo/worlds` folder
 - To launch a world, simply run the appropriate launch file in `sb_gazebo/launch`
 - Once the world has launched, it is common for the robot to be initially unable to move. Just lift it up a bit in gazebo and drop it for this to be fixed
-- To manually control the robot, run `rosrun turtlesim turtle_teleop_key /turtle1/cmd_vel:=/robot/cmd_vel`
+- You can manually control the robot with your keyboard, logitech, ps3, or xbox controller. To do so, simply `cd ~/IGVC-2017` and then `source devel/setup.sh`, then run the appriate launchfile from `src/sb_gazebo/launch` by running `roslaunch LAUNCH_FILE.launch` (from within the launch folder). **Note:** At least with PS3 controllers, you have to hold down `L1` while using the joystick for the controller to work
 
 ## Github Procedure
 - We follow the "Feature Branch Workflow"
