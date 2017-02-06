@@ -39,10 +39,6 @@ public:
     void callback(const std_msgs::String::ConstPtr msg){
         messageOutput = msg->data.c_str();
     }
-
-    std::string getMessage(){
-        return messageOutput;
-    }
 };
 
 TEST_F(MyNodeTest, ExclamationMarkAppend){
@@ -60,7 +56,7 @@ TEST_F(MyNodeTest, ExclamationMarkAppend){
     // for the curious: http://answers.ros.org/question/11887/significance-of-rosspinonce/
     ros::spinOnce();
 
-    EXPECT_EQ("Hello!", getMessage());
+    EXPECT_EQ("Hello!", messageOutput);
 }
 
 
