@@ -11,8 +11,18 @@
 class LidarDecisionTest : public testing::Test{
 protected:
     virtual void SetUp(){
-        laserScanPublisher = nh_.advertise<sensor_msgs::LaserScan>("/robot/scan", 1);
-        twistSubscriber = nh_.subscribe("/lidar_decision/command", 1, &LidarDecisionTest::callback, this);
+        laser_scan_publisher = nh_.advertise<sensor_msgs::LaserScan>("/robot/scan", 1);
+        twist_subscriber = nh_.subscribe("/lidar_decision/command", 1, &LidarDecisionTest::callback, this);
+
+        // Create a fake laserscan
+        ulong num_rays = 300;
+        test_scan.angle_min = 0;
+        test_scan.angle_max = (float)M_PI;
+        test_scan.angle_increment = (test_scan.angle_max - test_scan.angle_min)/num_rays;
+        // Set all the ranges to 0 initially
+        test_scan.ranges = std::vector<float>(num_rays, 0);
+        test_scan.range_min = 2;
+        test_scan.range_max = 40;
 
         ros::spinOnce();
         ros::Rate loop_rate(1);
@@ -20,10 +30,12 @@ protected:
     }
 
     ros::NodeHandle nh_;
-    ros::Publisher laserScanPublisher;
-    ros::Subscriber twistSubscriber;
+    ros::Publisher laser_scan_publisher;
+    ros::Subscriber twist_subscriber;
 
     geometry_msgs::Twist command;
+
+    sensor_msgs::LaserScan test_scan;
 
 public:
     void callback(const geometry_msgs::Twist::ConstPtr msg){
@@ -31,21 +43,11 @@ public:
     }
 };
 
-TEST_F(LidarDecisionTest, overallTest){
-    // Create a fake lidar scan to publish
-    sensor_msgs::LaserScan scan;
-    ulong num_rays = 300;
-    scan.angle_min = 0;
-    scan.angle_max = (float)M_PI;
-    scan.angle_increment = (scan.angle_max - scan.angle_min)/num_rays;
-    // Set all the ranges to 0 initially
-    scan.ranges = std::vector<float>(num_rays, 0);
-    scan.range_min = 2;
-    scan.range_max = 40;
+TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
     // Add a large obstacle directly in front
-    std::fill(scan.ranges.begin()+140, scan.ranges.begin()+220, 3);
+    std::fill(test_scan.ranges.begin()+140, test_scan.ranges.begin()+220, 3);
 
-    laserScanPublisher.publish(scan);
+    laser_scan_publisher.publish(test_scan);
 
     ros::Rate loop_rate(1);
     loop_rate.sleep();
@@ -62,6 +64,23 @@ TEST_F(LidarDecisionTest, overallTest){
     EXPECT_EQ(0, command.linear.z);
     EXPECT_EQ(0, command.angular.x);
     EXPECT_EQ(0, command.angular.y);
+}
+
+TEST_F(LidarDecisionTest, noObstaclesTest){
+    laser_scan_publisher.publish(test_scan);
+
+    ros::Rate loop_rate(1);
+    loop_rate.sleep();
+    ros::spinOnce();
+
+    // With the given laserscan, we would expect no command,
+    // as there are no obstacles to base a command off of
+    EXPECT_EQ(0, command.linear.x);
+    EXPECT_EQ(0, command.linear.y);
+    EXPECT_EQ(0, command.linear.z);
+    EXPECT_EQ(0, command.angular.x);
+    EXPECT_EQ(0, command.angular.y);
+    EXPECT_EQ(0, command.angular.z);
 }
 
 int main(int argc, char **argv){
