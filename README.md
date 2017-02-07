@@ -12,17 +12,17 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 1. Install Ubuntu 16.04 (We recommend you use a minimum of 30GB of space) 
     - For dual-booting: [Windows Instructions](http://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/), [Mac Instructions](http://www.howtogeek.com/187410/how-to-install-and-dual-boot-linux-on-a-mac/)
     - _Note_: You should always choose the "install alongside Windows/OSX" during your installation (step 7 in the windows tutorial)
-2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
-3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students)
+- If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
+- Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students)
     - _JetBrains will send an initial email to confirm the UBC email you inputted, 
     once you confirm another email will be sent to activate your new education account; 
     you will use this account to set up CLion later on_
-4. Boot into Ubuntu for the remaining steps
-5. Install git by running `sudo apt-get install git`
-6. Clone this repository by running `git clone https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
-7. To start set-up run `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
+- Boot into Ubuntu for the remaining steps
+- Install git by running `sudo apt-get install git`
+- Clone this repository by running `git clone https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
+- To start set-up run `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
     - _Just choose yes and enter your password when the terminal prompts you_ 
-8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make` 
+- Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ## Important Notes:
@@ -113,6 +113,10 @@ some_ros_package
 - Once you've setup your tests in ROS, run `catkin_make run_tests` to run them
 - To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
 
+## Github Procedure
+- We follow the "Feature Branch Workflow"
+- A good tutorial can be found [here](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+
 ## Using Gazebo
 - You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
 - You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `sb_gazebo/urdf/**ROBOT_NAME**.gazebo` and switch around the lidar settings (see comments in said file)
@@ -121,9 +125,13 @@ some_ros_package
 - Once the world has launched, it is common for the robot to be initially unable to move. Just lift it up a bit in gazebo and drop it for this to be fixed
 - You can manually control the robot with your keyboard, logitech, ps3, or xbox controller. To do so, simply `cd ~/IGVC-2017` and then `source devel/setup.sh`, then run the appriate launchfile from `src/sb_gazebo/launch` by running `roslaunch LAUNCH_FILE.launch` (from within the launch folder). **Note:** At least with PS3 controllers, you have to hold down `L1` while using the joystick for the controller to work
 
-## Github Procedure
-- We follow the "Feature Branch Workflow"
-- A good tutorial can be found [here](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+## Gazebo Testing Procedure
+1. Ask the node creator for a generally specification as to how the node should behave
+- Try and come up with awkward situations which could break the node or cause it to misbehave
+- Test the specification provided by the original node creator, plus any awkward situations you came up with, in Gazebo
+- If the node does not behave as expected (for example, produces the incorrect output) then add unit test(s) to the node (there should already be a testing file present) that mimics the situation(s) that failed in Gazebo (so they should fail if you run the unit tests). **All** Unit Tests should be on a new branch named `NODE-NAME-gazebo-testing`
+- Create an issue with the name `NODE NAME: Failing Gazebo Tests`, and include a brief description of the situation(s) that cause the node to misbehave in Gazebo, and the branch name that you added the tests on (should have been `NODE-NAME-gazebo-testing`)
+- Add the original node creator as an Assignee, and add a comment with `@original_node_creators_name` so they are notified of the issue (both on the issue you created)
 
 ## Arduino Development
 - When developing the firmware/Arduino parts of the software, we've made a complete arduino workspace in `src/firmware`. This way you don't need to worry about downloading the libraries yourself!
