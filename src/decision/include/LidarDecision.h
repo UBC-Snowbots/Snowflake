@@ -82,7 +82,7 @@ public:
     /**
      * Calculates a danger score for the obstacle
      *
-     * ie. how dangerous the obsacle is to the robot
+     * ie. how dangerous the obstacle is to the robot
      *
      * @return danger_score how dangerous the obstacle is to the robot
      */
