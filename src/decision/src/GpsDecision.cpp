@@ -48,8 +48,8 @@ double GpsDecision::distance(const geometry_msgs::Point::ConstPtr& relative_gps)
 
 double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
                                  float current_heading,geometry_msgs::Point currentPoint) {
-    const float TO_DEGREES=180/(M_PI);
-    const float TO_RADIANS=(M_PI)/180;
+    const double TO_DEGREES=180/(M_PI);
+    const double TO_RADIANS=(M_PI)/180;
 
     double next_x=relative_gps.x;
     double next_y=relative_gps.y;

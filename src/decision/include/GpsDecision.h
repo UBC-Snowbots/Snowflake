@@ -53,9 +53,8 @@ public:
     void gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps);
     //gps callback for the current heading
     void compassCallBack(const std_msgs::Float32::ConstPtr& compass_heading);
-    void publishTwistros;
-
-    (geometry_msgs::Twist twist)::Subscriber compass_subcriber;
+    void publishTwist(geometry_msgs::Twist twist);
+    ros::Subscriber compass_subcriber;
     ros::Subscriber gps_subscriber;
     ros::Publisher twist_publisher;
     float current_heading;
