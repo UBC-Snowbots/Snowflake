@@ -16,7 +16,7 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     ros::NodeHandle public_nh("~");
 
     // Setup Subscriber(s)
-    std::string laserscan_topic_name = "/robot/scan";
+    std::string laserscan_topic_name = "/robot/laser/scan";
     uint32_t refresh_rate = 10;
     scan_subscriber = public_nh.subscribe(laserscan_topic_name, refresh_rate,
                                           &LidarDecision::scanCallBack, this);
@@ -122,9 +122,11 @@ geometry_msgs::Twist LidarDecision::twist_message_from_obstacle(LidarObstacle ob
     twist.angular.y = 0;
     twist.angular.z = 0;
 
-    if (obstacle.getAvgDistance() < danger_distance && abs(obstacle.getAvgAngle() - M_PI/2) < danger_angle) {
+    if (obstacle.getAvgDistance() < danger_distance && abs(obstacle.getAvgAngle()) < danger_angle) {
         // TODO: Improve the algorithm here to at least use some sort of scale  (linear or otherwise) dependent on obstacle distance and angle
-        twist.angular.z = angular_vel_multiplier;
+        // Check if we should be turning left or right
+        int left_or_right = (obstacle.getAvgAngle() - M_PI/2 > 0) ? -1 : 1;
+        twist.angular.z = angular_vel_multiplier * left_or_right;
     }
     return twist;
 }

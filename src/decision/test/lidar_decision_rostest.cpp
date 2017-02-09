@@ -11,7 +11,7 @@
 class LidarDecisionTest : public testing::Test{
 protected:
     virtual void SetUp(){
-        laser_scan_publisher = nh_.advertise<sensor_msgs::LaserScan>("/robot/scan", 1);
+        laser_scan_publisher = nh_.advertise<sensor_msgs::LaserScan>("/robot/laser/scan", 1);
         twist_subscriber = nh_.subscribe("/lidar_decision/command", 1, &LidarDecisionTest::callback, this);
 
         // Create a fake laserscan
@@ -53,8 +53,8 @@ TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
     loop_rate.sleep();
     ros::spinOnce();
 
-    // With the given laserscan, we would want to be turning right
-    EXPECT_GE(abs(command.angular.z), 0);
+    // With the given laserscan, we would want to be turning
+    EXPECT_GE(abs(command.angular.z), 0.00001);
 
     // We would also not want to be going forward
     EXPECT_EQ(0, command.linear.x);
@@ -66,7 +66,7 @@ TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
     EXPECT_EQ(0, command.angular.y);
 }
 
-TEST_F(LidarDecisionTest, noObstaclesTest){
+TEST_F(LidarDecisionTest, noObstacles){
     laser_scan_publisher.publish(test_scan);
 
     ros::Rate loop_rate(1);
@@ -81,6 +81,52 @@ TEST_F(LidarDecisionTest, noObstaclesTest){
     EXPECT_EQ(0, command.angular.x);
     EXPECT_EQ(0, command.angular.y);
     EXPECT_EQ(0, command.angular.z);
+}
+
+TEST_F(LidarDecisionTest, obstacleToLeft){
+    // Add a large obstacle to the left of the robot
+    std::fill(test_scan.ranges.begin()+70, test_scan.ranges.begin()+110, 3);
+
+    laser_scan_publisher.publish(test_scan);
+
+    ros::Rate loop_rate(1);
+    loop_rate.sleep();
+    ros::spinOnce();
+
+    // With the given laserscan, we would want to be turning right
+    EXPECT_GE(command.angular.z, 0.0001);
+
+    // We would also not want to be going forward
+    EXPECT_EQ(0, command.linear.x);
+
+    // Everything else should always be 0
+    EXPECT_EQ(0, command.linear.y);
+    EXPECT_EQ(0, command.linear.z);
+    EXPECT_EQ(0, command.angular.x);
+    EXPECT_EQ(0, command.angular.y);
+}
+
+TEST_F(LidarDecisionTest, obstacleToRight){
+    // Add a large obstacle to the right of the robot
+    std::fill(test_scan.ranges.begin()+250, test_scan.ranges.begin()+290, 3);
+
+    laser_scan_publisher.publish(test_scan);
+
+    ros::Rate loop_rate(1);
+    loop_rate.sleep();
+    ros::spinOnce();
+
+    // With the given laserscan, we would want to be turning left
+    EXPECT_LE(command.angular.z, -0.0001);
+
+    // We would also not want to be going forward
+    EXPECT_EQ(0, command.linear.x);
+
+    // Everything else should always be 0
+    EXPECT_EQ(0, command.linear.y);
+    EXPECT_EQ(0, command.linear.z);
+    EXPECT_EQ(0, command.angular.x);
+    EXPECT_EQ(0, command.angular.y);
 }
 
 int main(int argc, char **argv){

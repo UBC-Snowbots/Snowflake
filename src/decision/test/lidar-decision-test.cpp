@@ -11,15 +11,17 @@ class LidarObstacleTest : public testing::Test {
 protected:
     virtual void SetUp(){
         readings1 = {{4,44}, {3,99}, {6,2}};
+        readings2 = {{-1,2}, {10,4}, {-15,6}};
 
         obstacle1 = LidarObstacle(0.1, 10);
         obstacle2 = LidarObstacle(0.2, 20);
         obstacle3 = LidarObstacle(0.15, 15);
         obstacle4 = LidarObstacle(readings1);
+        obstacle5 = LidarObstacle(readings2);
     }
 
-    LidarObstacle obstacle1, obstacle2, obstacle3, obstacle4;
-    std::vector<Reading> readings1;
+    std::vector<Reading> readings1, readings2;
+    LidarObstacle obstacle1, obstacle2, obstacle3, obstacle4, obstacle5;
 };
 
 TEST_F(LidarObstacleTest, ConstructorTest1){
@@ -41,8 +43,9 @@ TEST_F(LidarObstacleTest, ConstructorTest2){
 }
 
 TEST_F(LidarObstacleTest, getAvgAngleTest){
-    EXPECT_NEAR(0.1, obstacle1.getAvgAngle(), 0.000001);
-    EXPECT_NEAR(4.333333333, obstacle4.getAvgAngle(), 0.000001);
+    EXPECT_NEAR(0.1, obstacle1.getAvgAngle(), 0.00001);
+    EXPECT_NEAR(4.333333333, obstacle4.getAvgAngle(), 0.00001);
+    EXPECT_NEAR(-2, obstacle5.getAvgAngle(), 0.00001);
 }
 
 TEST_F(LidarObstacleTest, mergeInReadingsTest){
@@ -101,10 +104,14 @@ protected:
                 LidarObstacle(1.2, 10),
                 LidarObstacle(1.1, 10),
         };
+        // A more realistic set of obstacles
+//        realistic_obstacles = {
+//                LidarObstacle()
+//        };
     }
 
     sensor_msgs::LaserScan scan1;
-    std::vector<LidarObstacle> sorted_obstacles, unsorted_obstacles;
+    std::vector<LidarObstacle> sorted_obstacles, unsorted_obstacles, realistic_obstacles;
 };
 
 TEST_F(LidarDecisionTest, mergeSimilarObstaclesPreSortedTest){
