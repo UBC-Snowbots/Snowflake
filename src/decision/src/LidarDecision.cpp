@@ -50,12 +50,26 @@ geometry_msgs::Twist LidarDecision::generate_twist_message(const sensor_msgs::La
     // Find all the obstacles
     std::vector<LidarObstacle> obstacles = findObstacles(*raw_scan, max_obstacle_angle_diff);
 
-    // Choose the most dangerous obstacle
-    LidarObstacle most_dangerous_obstacle = mostDangerousObstacle(obstacles);
+    // Check that we have at least one obstacle
+    if (obstacles.size() >= 1){
+        // Choose the most dangerous obstacle
+        LidarObstacle most_dangerous_obstacle = mostDangerousObstacle(obstacles);
 
-    // Create and return a twist message based on the most dangerous obstacle
-    return twist_message_from_obstacle(most_dangerous_obstacle, max_obstacle_danger_distance,
-                                       obstacle_danger_angle, twist_velocity, twist_turn_rate);
+        // Create and return a twist message based on the most dangerous obstacle
+        return twist_message_from_obstacle(most_dangerous_obstacle, max_obstacle_danger_distance,
+                                           obstacle_danger_angle, twist_velocity, twist_turn_rate);
+    } else {
+        // We don't have any obstacles, return a all zero twist message
+        geometry_msgs::Twist all_zero;
+        all_zero.linear.x = 0;
+        all_zero.linear.y = 0;
+        all_zero.linear.z = 0;
+        all_zero.angular.x = 0;
+        all_zero.angular.y = 0;
+        all_zero.angular.z = 0;
+        return all_zero;
+    }
+
 }
 
 std::vector<LidarObstacle> LidarDecision::findObstacles(const sensor_msgs::LaserScan &scan,
@@ -64,7 +78,7 @@ std::vector<LidarObstacle> LidarDecision::findObstacles(const sensor_msgs::Laser
     std::vector<float> scan_data = scan.ranges;
 
     // Find all ranges (lidar hits) that could be obstacles (initially each laser hit is an obstacle)
-    std::vector<LidarObstacle> obstacles;
+    std::vector<LidarObstacle> obstacles = {};
     for (int i = 0; i < scan_data.size(); i++) {
         // Check that obstacle is within valid range
         if (scan_data[i] < scan.range_max && scan_data[i] > scan.range_min) {
@@ -97,7 +111,7 @@ void LidarDecision::mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
 
     // Merge similar obstacles
     int i = 0;
-    while(i < obstacles.size() - 1){
+    while(i < (long)obstacles.size() - 1){
         // Check if angle difference between two consecutive scans is less then max_angle_diff
         if (abs(obstacles[i+1].getMinAngle() - obstacles[i].getMaxAngle()) < max_angle_diff){
             // Merge next obstacle into current one
@@ -125,7 +139,7 @@ geometry_msgs::Twist LidarDecision::twist_message_from_obstacle(LidarObstacle ob
     if (obstacle.getAvgDistance() < danger_distance && abs(obstacle.getAvgAngle()) < danger_angle) {
         // TODO: Improve the algorithm here to at least use some sort of scale  (linear or otherwise) dependent on obstacle distance and angle
         // Check if we should be turning left or right
-        int left_or_right = (obstacle.getAvgAngle() - M_PI/2 > 0) ? -1 : 1;
+        int left_or_right = (obstacle.getAvgAngle() > 0) ? -1 : 1;
         twist.angular.z = angular_vel_multiplier * left_or_right;
     }
     return twist;

@@ -49,7 +49,7 @@ TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
 
     laser_scan_publisher.publish(test_scan);
 
-    ros::Rate loop_rate(1);
+    ros::Rate loop_rate(0.5);
     loop_rate.sleep();
     ros::spinOnce();
 
@@ -83,8 +83,8 @@ TEST_F(LidarDecisionTest, noObstacles){
     EXPECT_EQ(0, command.angular.z);
 }
 
-TEST_F(LidarDecisionTest, obstacleToLeft){
-    // Add a large obstacle to the left of the robot
+TEST_F(LidarDecisionTest, obstacleToRight){
+    // Add a large obstacle to the right of the robot
     std::fill(test_scan.ranges.begin()+70, test_scan.ranges.begin()+110, 3);
 
     laser_scan_publisher.publish(test_scan);
@@ -93,7 +93,7 @@ TEST_F(LidarDecisionTest, obstacleToLeft){
     loop_rate.sleep();
     ros::spinOnce();
 
-    // With the given laserscan, we would want to be turning right
+    // With the given laserscan, we would want to be turning left
     EXPECT_GE(command.angular.z, 0.0001);
 
     // We would also not want to be going forward
@@ -106,8 +106,8 @@ TEST_F(LidarDecisionTest, obstacleToLeft){
     EXPECT_EQ(0, command.angular.y);
 }
 
-TEST_F(LidarDecisionTest, obstacleToRight){
-    // Add a large obstacle to the right of the robot
+TEST_F(LidarDecisionTest, obstacleToLeft){
+    // Add a large obstacle to the left of the robot
     std::fill(test_scan.ranges.begin()+250, test_scan.ranges.begin()+290, 3);
 
     laser_scan_publisher.publish(test_scan);
@@ -116,7 +116,7 @@ TEST_F(LidarDecisionTest, obstacleToRight){
     loop_rate.sleep();
     ros::spinOnce();
 
-    // With the given laserscan, we would want to be turning left
+    // With the given laserscan, we would want to be turning right
     EXPECT_LE(command.angular.z, -0.0001);
 
     // We would also not want to be going forward
