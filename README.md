@@ -74,7 +74,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
               +X
               ^
               |
-      -θ  +<----->+ +θ
+      +θ  +<----->+ -θ
           |   |   |
           V   |   V
 +Y <---------------------> -Y
