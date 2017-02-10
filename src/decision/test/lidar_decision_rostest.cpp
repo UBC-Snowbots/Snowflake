@@ -49,7 +49,7 @@ TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
 
     laser_scan_publisher.publish(test_scan);
 
-    ros::Rate loop_rate(0.5);
+    ros::Rate loop_rate(1);
     loop_rate.sleep();
     ros::spinOnce();
 
