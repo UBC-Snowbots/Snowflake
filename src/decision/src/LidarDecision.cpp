@@ -134,7 +134,7 @@ geometry_msgs::Twist LidarDecision::twist_message_from_obstacle(LidarObstacle ob
     twist.linear.z = 0;
     twist.angular.x = 0;
     twist.angular.y = 0;
-    twist.angular.z = 10;
+    twist.angular.z = 0;
 
     if (obstacle.getAvgDistance() < danger_distance && abs(obstacle.getAvgAngle()) < danger_angle) {
         // TODO: Improve the algorithm here to at least use some sort of scale  (linear or otherwise) dependent on obstacle distance and angle
