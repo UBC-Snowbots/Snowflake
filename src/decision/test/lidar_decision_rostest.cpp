@@ -15,9 +15,9 @@ protected:
         twist_subscriber = nh_.subscribe("/lidar_decision/command", 1, &LidarDecisionTest::callback, this);
 
         // Create a fake laserscan
-        ulong num_rays = 300;
-        test_scan.angle_min = 0;
-        test_scan.angle_max = (float)M_PI;
+        ulong num_rays = 360;
+        test_scan.angle_min = (float)(-M_PI/2);
+        test_scan.angle_max = (float)(M_PI/2);
         test_scan.angle_increment = (test_scan.angle_max - test_scan.angle_min)/num_rays;
         // Set all the ranges to 0 initially
         test_scan.ranges = std::vector<float>(num_rays, 0);
@@ -85,7 +85,7 @@ TEST_F(LidarDecisionTest, noObstacles){
 
 TEST_F(LidarDecisionTest, obstacleToRight){
     // Add a large obstacle to the right of the robot
-    std::fill(test_scan.ranges.begin()+70, test_scan.ranges.begin()+110, 3);
+    std::fill(test_scan.ranges.begin()+100, test_scan.ranges.begin()+140, 3);
 
     laser_scan_publisher.publish(test_scan);
 
@@ -108,7 +108,7 @@ TEST_F(LidarDecisionTest, obstacleToRight){
 
 TEST_F(LidarDecisionTest, obstacleToLeft){
     // Add a large obstacle to the left of the robot
-    std::fill(test_scan.ranges.begin()+250, test_scan.ranges.begin()+290, 3);
+    std::fill(test_scan.ranges.begin()+220, test_scan.ranges.begin()+260, 3);
 
     laser_scan_publisher.publish(test_scan);
 
