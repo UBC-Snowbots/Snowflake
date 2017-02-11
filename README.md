@@ -70,6 +70,20 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - x : forward
 - y : left
 - z : up
+```
+              +X
+              ^
+              |
+      +θ  +<----->+ -θ
+          |   |   |
+          V   |   V
++Y <---------------------> -Y
+              |
+              |
+              |
+              V
+              -X
+```
 
 ## Creating a new node
 - If your node is at all complicated, then this format should be followed. For simple nodes, please see below
