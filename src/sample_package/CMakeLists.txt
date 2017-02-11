@@ -8,6 +8,9 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
 )
+find_package(sb_utils REQUIRED)
+
+add_definitions(-std=c++14)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -99,7 +102,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+    INCLUDE_DIRS include
 #  LIBRARIES sample_package
 #  CATKIN_DEPENDS roscpp std_msgs
 #  DEPENDS system_lib
@@ -113,8 +116,9 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS}
-  ./include
+    ${catkin_INCLUDE_DIRS}
+    ${sb_utils_INCLUDE_DIRS}
+    ./include
 )
 
 ## Declare a C++ library
@@ -131,6 +135,7 @@ include_directories(
 # add_executable(sample_package_node src/sample_package_node.cpp)
 add_executable(my_node src/my_node.cpp src/MyNode.cpp include/MyNode.h)
 
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(sample_package_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -139,7 +144,7 @@ add_executable(my_node src/my_node.cpp src/MyNode.cpp include/MyNode.h)
 # target_link_libraries(sample_package_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(my_node ${catkin_LIBRARIES})
+target_link_libraries(my_node ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 #############
 ## Install ##
@@ -181,15 +186,22 @@ target_link_libraries(my_node ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_sample_package.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 if (CATKIN_ENABLE_TESTING)
+
+    # Adding gtests to the package
     catkin_add_gtest(my-node-test test/my-node-test.cpp src/MyNode.cpp)
     target_link_libraries(my-node-test ${catkin_LIBRARIES})
-endif()
 
+    # Adding rostest to the package
+    find_package(rostest REQUIRED)
+    # name the test and link it to the .test file and the .cpp file itself, this will allow
+    # "catkin_make run_tests" to be able to find and run this rostest
+    add_rostest_gtest(my_node_rostest test/sample_package_test.test test/my_node_rostest.cpp)
+    target_link_libraries(my_node_rostest ${catkin_LIBRARIES})
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)

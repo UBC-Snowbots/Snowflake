@@ -61,8 +61,15 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 
 - Classes are **CamelCase**
 - Variables are **non_camel_case**
+- Constants are **ALL_CAPS_WITH_UNDERSCORES**
 - Functions are **camelCase**
 - Indentations are 4 spaces
+
+## Coordinate Systems
+- We try to follow ROS standards, which can be found [here](http://www.ros.org/reps/rep-0103.html)
+- x : forward
+- y : left
+- z : up
 
 ## Creating a new node
 - If your node is at all complicated, then this format should be followed. For simple nodes, please see below
@@ -70,7 +77,8 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - **MyNode.h** should contain your class declaration
 - **MyNode.cpp** should contain your class definition
 - **my_node.cpp** should be relatively small, and should just contain a **main** function to run your node
-- **my-node-test.cpp** should contain all your tests
+- **my-node-test.cpp** should contain all your gtest (unit test)
+- **my_node_rostest.cpp** should contain your rostest (integrated test)
 - For an example of this, please see `src/sample_package`
 <pre>
 some_ros_package
@@ -80,11 +88,16 @@ some_ros_package
 |   | <b>MyNode.cpp</b> 
 |   | <b>my_node.cpp</b>
 |
+└───launch
+|   | <b>my_node.launch</b>
+|
 └───include
 |   | <b>MyNode.h</b>
 | 
 └───test
 |   | <b>my-node-test.cpp</b>
+|   | <b>my_node_rostest.cpp</b>
+|   | <b>sample_package_test.test</b>
 </pre>
 
 ## Creating a new **simple** node
@@ -98,18 +111,26 @@ some_ros_package
 |   | <b>my_node.cpp</b>
 </pre>
 
+## Launch files
+- A launch file (ends in .launch) is an easy way to run multiple nodes with specified parameters with one single command. This is useful if a package has multiple nodes that needs to be run. A launch file can also launch other smaller launch files so it can be used to start every node needed for the robot to run properly. Reference [here](http://wiki.ros.org/roslaunch).  
+- To use the launch file, the command is: `roslaunch package_name package_launch_file.launch`
+
 ## Testing
 - GTest is our primary testing tool at the moment. The ROS wiki has a quick intro to it [here](http://wiki.ros.org/gtest), and we also strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS.
 - Once you've setup your tests in ROS, run `catkin_make run_tests` to run them
 - To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
 
+### Rostest
+- For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
+- Similar to launch files, the command is: `rostest package_name package_test_file.test`.
+
 ## Using Gazebo
 - You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
-- You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `elsa_gazebo/urdf/elsa.gazebo` and switch around the lidar settings (see comments in said file)
-- All worlds should go in the `elsa_gazebo/worlds` folder
-- To launch a world, simply run the appropriate launch file in `elsa_gazebo/launch`
-- To create a launch file for your world, create one in `elsa_gazebo/launch`, using `elsa_gazebo/launch/sample.launch` as a guide
-- To manually control the robot, run `rosrun turtlesim turtle_teleop_key /turtle1/cmd_vel:=/elsa/cmd_vel`
+- You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `sb_gazebo/urdf/**ROBOT_NAME**.gazebo` and switch around the lidar settings (see comments in said file)
+- All worlds should go in the `sb_gazebo/worlds` folder
+- To launch a world, simply run the appropriate launch file in `sb_gazebo/launch`
+- Once the world has launched, it is common for the robot to be initially unable to move. Just lift it up a bit in gazebo and drop it for this to be fixed
+- You can manually control the robot with your keyboard, logitech, ps3, or xbox controller. To do so, simply `cd ~/IGVC-2017` and then `source devel/setup.sh`, then run the appriate launchfile from `src/sb_gazebo/launch` by running `roslaunch LAUNCH_FILE.launch` (from within the launch folder). **Note:** At least with PS3 controllers, you have to hold down `L1` while using the joystick for the controller to work
 
 ## Github Procedure
 - We follow the "Feature Branch Workflow"

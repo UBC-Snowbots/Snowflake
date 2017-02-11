@@ -5,9 +5,14 @@ project(decision)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  std_msgs
-)
+        roscpp
+        std_msgs
+        cv_bridge
+        )
+
+find_package(OpenCV REQUIRED)
+
+add_definitions(-std=c++14)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -114,7 +119,10 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+
+  ${OpenCV_INCLUDE_DIRS}
   ./include
+
 )
 
 ## Declare a C++ library
@@ -133,6 +141,7 @@ add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp inclu
 add_executable(vision_decision src/vision_decision.cpp src/VisionDecision.cpp include/VisionDecision.h)
 add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp include/GpsDecision.h)
 add_executable(final_decision src/final_decision.cpp src/FinalDecision.cpp include/FinalDecision.h)
+add_executable(gps_manager src/gps_manager.cpp src/GpsManager.cpp include/GpsManager.h)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -146,6 +155,8 @@ target_link_libraries(lidar_decision ${catkin_LIBRARIES})
 target_link_libraries(vision_decision ${catkin_LIBRARIES})
 target_link_libraries(gps_decision ${catkin_LIBRARIES})
 target_link_libraries(final_decision ${catkin_LIBRARIES})
+target_link_libraries(gps_manager ${catkin_LIBRARIES})
+
 
 #############
 ## Install ##
@@ -193,14 +204,17 @@ target_link_libraries(final_decision ${catkin_LIBRARIES})
 # endif()
 if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp)
-    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp)
+    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp 
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
     catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp)
     catkin_add_gtest(final-decision-test test/final-decision-test.cpp src/FinalDecision.cpp)
+    catkin_add_gtest(gps-manager-test test/gps-manager-test.cpp src/GpsManager.cpp)
 
     target_link_libraries(lidar-decision-test ${catkin_LIBRARIES})
-    target_link_libraries(vision-decision-test ${catkin_LIBRARIES})
+    target_link_libraries(vision-decision-test ${catkin_LIBRARIES} ${OpenCV_LIBS})
     target_link_libraries(gps-decision-test ${catkin_LIBRARIES})
     target_link_libraries(final-decision-test ${catkin_LIBRARIES})
+    target_link_libraries(gps-manager-test ${catkin_LIBRARIES})
 endif()
 
 

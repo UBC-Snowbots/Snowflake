@@ -1,16 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(drivers)
 
+project(sb_utils)
+
+add_definitions(-std=c++14)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
   roscpp
-  sensor_msgs
 )
-
-add_definitions(-std=c++14)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -69,7 +67,7 @@ add_definitions(-std=c++14)
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   geometry_msgs#   sensor_msgs
+#   std_msgs  # Or other packages containing msgs
 # )
 
 ################################################
@@ -102,10 +100,9 @@ add_definitions(-std=c++14)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES drivers
-#  CATKIN_DEPENDS geometry_msgs roscpp sensor_msgs
-#  DEPENDS system_lib
+    INCLUDE_DIRS include
+    LIBRARIES sb_utils
+    CATKIN_DEPENDS roscpp
 )
 
 ###########
@@ -116,33 +113,33 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS}
-  ./include
+    ${catkin_INCLUDE_DIRS}
+    ./include
 )
 
 ## Declare a C++ library
-# add_library(drivers
-#   src/${PROJECT_NAME}/drivers.cpp
-# )
+add_library(sb_utils
+    include/utils.h src/utils.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(drivers ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(sb_utils ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(drivers_node src/drivers_node.cpp)
-add_executable(steering_driver src/steering_driver.cpp src/SteeringDriver.cpp include/SteeringDriver.h)
+# add_executable(utils_lib_node src/utils_lib_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(drivers_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(utils_lib_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(drivers_node
+# target_link_libraries(utils_lib_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(steering_driver ${catkin_LIBRARIES})
+
+target_link_libraries(sb_utils ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -159,7 +156,7 @@ target_link_libraries(steering_driver ${catkin_LIBRARIES})
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS drivers drivers_node
+# install(TARGETS sb_utils utils_lib_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -184,15 +181,10 @@ target_link_libraries(steering_driver ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_drivers.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_utils_lib.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-if (CATKIN_ENABLE_TESTING)
-    catkin_add_gtest(steering-driver-test test/steering-driver-test.cpp src/SteeringDriver.cpp)
-    target_link_libraries(steering-driver-test ${catkin_LIBRARIES})
-endif()
