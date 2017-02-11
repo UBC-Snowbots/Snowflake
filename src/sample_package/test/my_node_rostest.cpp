@@ -21,8 +21,8 @@
 class MyNodeTest : public testing::Test{
 protected:
     virtual void SetUp(){
-        testPublisher = nh_.advertise<std_msgs::String>("subscribe_topic", 1);
-        testSubscriber = nh_.subscribe("/my_node/publish_topic", 1, &MyNodeTest::callback, this);
+        test_publisher = nh_.advertise<std_msgs::String>("subscribe_topic", 1);
+        test_subscriber = nh_.subscribe("/my_node/publish_topic", 1, &MyNodeTest::callback, this);
 
         // Let the publishers and subscribers set itself up timely
         ros::Rate loop_rate(1);
@@ -30,23 +30,23 @@ protected:
     }
 
     ros::NodeHandle nh_;
-    std::string messageOutput;
-    ros::Publisher testPublisher;
-    ros::Subscriber testSubscriber;
+    std::string message_output;
+    ros::Publisher test_publisher;
+    ros::Subscriber test_subscriber;
 
 public:
 
     void callback(const std_msgs::String::ConstPtr msg){
-        messageOutput = msg->data.c_str();
+        message_output = msg->data.c_str();
     }
 };
 
-TEST_F(MyNodeTest, ExclamationMarkAppend){
+TEST_F(MyNodeTest, exclamationMarkAppend){
 
     // publishes "Hello" to the test node
     std_msgs::String msg;
     msg.data = "Hello";
-    testPublisher.publish(msg);
+    test_publisher.publish(msg);
 
     // Wait for the message to get passed around
     ros::Rate loop_rate(1);
@@ -56,7 +56,7 @@ TEST_F(MyNodeTest, ExclamationMarkAppend){
     // for the curious: http://answers.ros.org/question/11887/significance-of-rosspinonce/
     ros::spinOnce();
 
-    EXPECT_EQ("Hello!", messageOutput);
+    EXPECT_EQ("Hello!", message_output);
 }
 
 
