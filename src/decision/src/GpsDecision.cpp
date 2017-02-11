@@ -23,7 +23,7 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     int refresh_rate = 10;
     gps_subscriber = public_nh.subscribe(gps_filtered_topic_name, refresh_rate, &GpsDecision::gpsCurrentCallBack, this);
     gps_subscriber = public_nh.subscribe(gps_filtered_topic_name, refresh_rate, &GpsDecision::gpsCallBack, this);
-    compass_subcriber = public_nh.subscribe(compass_topic_name, refresh_rate, &GpsDecision::compassCallBack, this);
+    compass_subscriber = public_nh.subscribe(compass_topic_name, refresh_rate, &GpsDecision::compassCallBack, this);
     // Setup Publisher(s)
     std::string twist_topic = public_nh.resolveName("command");
     uint32_t queue_size = 10;

@@ -21,16 +21,16 @@ public:
     GpsDecision(int argc, char **argv, std::string node_name);
 
     /**
-      * caclutes the distance between wayPoint and current point
-      * @ param: given the gps locaiton of the next move
+      * calculates the distance between wayPoint and current point
+      * @ param: given the gps location of the next move
       * @ return: the distance between the next location and the current location
     */
     static double distance(const geometry_msgs::Point::ConstPtr& relative_gps);
 
     /**
      * @ param
-     * relative_gps: given the gps locaiton of the next move
-     * current_heading: the curren heading relative to north in degrees (0 to 360 degrees)
+     * relative_gps: given the gps location of the next move
+     * current_heading: the current heading relative to north in degrees (0 to 360 degrees)
      * @ return:
      *   desiredAngle: the angle(less than PI) in degrees that robot need to turn
      *   positive value means turning clockwise
@@ -47,7 +47,7 @@ public:
      */
     void  rotate(double desiredAngle,double angular_velocity);
 
-    private:
+private:
     //gps callback for the current point
     void gpsCurrentCallBack(const geometry_msgs::Point::ConstPtr& relative_gps);
     //gps callback for the next point
@@ -55,7 +55,7 @@ public:
     //gps callback for the current heading
     void compassCallBack(const std_msgs::Float32::ConstPtr& compass_heading);
     void publishTwist(geometry_msgs::Twist twist);
-    ros::Subscriber compass_subcriber;
+    ros::Subscriber compass_subscriber;
     ros::Subscriber gps_subscriber;
     ros::Publisher twist_publisher;
     float current_heading;
