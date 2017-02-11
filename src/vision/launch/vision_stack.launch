@@ -3,6 +3,8 @@
 	<node name="ros_vision" pkg="vision" type="ros_vision" output="screen">
 		<param name="y1" value="360"/>
 		<param name="y2" value="360"/>
+		<param name="y3" value="120"/>
+		<param name="y4" value="120"/>
 		<remap from="/elsa/camera/image_raw" to="/robot/camera1/image_raw"/>
 	</node>
 

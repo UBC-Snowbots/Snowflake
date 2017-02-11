@@ -33,7 +33,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
-    int relativeAngle = getDesiredAngle(image_scan->height / 2.0, image_scan);
+    int relativeAngle = getDesiredAngle(image_scan->height / 4.0, image_scan);
 
     // Initialize linear velocities to 0
     twistMsg.linear.y = 0;
@@ -69,7 +69,7 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
 
     // If both cases are invalid it will do a turn 90 degrees (Turns sharp right).
     if (!(desiredAngle < 90 && desiredAngle > -90))
-        return 90;
+        return 10;
     else
         return desiredAngle;
 }
@@ -141,16 +141,15 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
 }
 
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
-    double speedToMap = abs((int) desiredAngle);
     // the higher the desired angle, the higher the angular speed
-    return mapRange(speedToMap, 0, 90, 0, 100);
+    return mapRange(desiredAngle, -90, 90, -2, 2);
 
 }
 
 double VisionDecision::getDesiredLinearSpeed(double desiredAngle) {
     double speedToMap = abs((int) desiredAngle);
     // the higher the desired angle the lower the linear speed.
-    return 100 - mapRange(speedToMap, 0, 90, 0, 100);
+    return 2 - mapRange(speedToMap, 0, 90, 0, 2);
 }
 
 
@@ -194,8 +193,8 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
     // Find starting pixel
     while (column < image_scan->width && column >= 0) {
         // If white pixel found start verifying if proper start.
-        if ((image_scan->data[row * image_scan->width + column] != 0 && isStartPixel) ||
-            (image_scan->data[row * image_scan->width + column] == 0 && !isStartPixel)){
+        if ((image_scan->data[row * image_scan->width + column] == 0 && isStartPixel) ||
+            (image_scan->data[row * image_scan->width + column] != 0 && !isStartPixel)){
             blackVerificationCount = 0;
             // This pixel is what we are checking
             if (toBeChecked == -1)
