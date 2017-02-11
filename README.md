@@ -77,7 +77,8 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - **MyNode.h** should contain your class declaration
 - **MyNode.cpp** should contain your class definition
 - **my_node.cpp** should be relatively small, and should just contain a **main** function to run your node
-- **my-node-test.cpp** should contain all your tests
+- **my-node-test.cpp** should contain all your gtest (unit test)
+- **my_node_rostest.cpp** should contain your rostest (integrated test)
 - For an example of this, please see `src/sample_package`
 <pre>
 some_ros_package
@@ -95,6 +96,8 @@ some_ros_package
 | 
 └───test
 |   | <b>my-node-test.cpp</b>
+|   | <b>my_node_rostest.cpp</b>
+|   | <b>sample_package_test.test</b>
 </pre>
 
 ## Creating a new **simple** node
@@ -108,10 +111,18 @@ some_ros_package
 |   | <b>my_node.cpp</b>
 </pre>
 
+## Launch files
+- A launch file (ends in .launch) is an easy way to run multiple nodes with specified parameters with one single command. This is useful if a package has multiple nodes that needs to be run. A launch file can also launch other smaller launch files so it can be used to start every node needed for the robot to run properly. Reference [here](http://wiki.ros.org/roslaunch).  
+- To use the launch file, the command is: `roslaunch package_name package_launch_file.launch`
+
 ## Testing
 - GTest is our primary testing tool at the moment. The ROS wiki has a quick intro to it [here](http://wiki.ros.org/gtest), and we also strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS.
 - Once you've setup your tests in ROS, run `catkin_make run_tests` to run them
 - To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
+
+### Rostest
+- For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
+- Similar to launch files, the command is: `rostest package_name package_test_file.test`.
 
 ## Using Gazebo
 - You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
