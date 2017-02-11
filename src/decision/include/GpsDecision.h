@@ -20,14 +20,15 @@ class GpsDecision {
 public:
     GpsDecision(int argc, char **argv, std::string node_name);
 
-    /**caclutes the distance between wayPoint and current point
-     * @ parameter: given the gps locaiton of the next move
-     * @ return: the distance between the next location and the current location
-     **/
+    /**
+      * caclutes the distance between wayPoint and current point
+      * @ param: given the gps locaiton of the next move
+      * @ return: the distance between the next location and the current location
+    */
     static double distance(const geometry_msgs::Point::ConstPtr& relative_gps);
 
     /**
-     * @ parameter
+     * @ param
      * relative_gps: given the gps locaiton of the next move
      * current_heading: the curren heading relative to north in degrees (0 to 360 degrees)
      * @ return:
@@ -37,7 +38,7 @@ public:
      */
     static double desiredAngle(const geometry_msgs::Point relative_gps,float current_heading,geometry_msgs::Point currentPoint);
     /**
-     * @ parameter
+     * @ param
      *  desiredAngle: the angle(less than PI) in degrees that robot need to turn
      *                 positive value means turning clockwise
      *                 negative value means turing counter-clockwise
