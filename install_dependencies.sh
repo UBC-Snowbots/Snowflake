@@ -15,6 +15,7 @@ echo "Installing other ROS dependencies..."
 echo "================================================================"
 
 sudo apt-get install -y\
+    python-rosinstall \
     ros-kinetic-xacro \
     ros-kinetic-controller-manager \
     ros-kinetic-gazebo-ros-control \

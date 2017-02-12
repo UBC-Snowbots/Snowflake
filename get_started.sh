@@ -68,11 +68,6 @@ sudo apt-get install ros-kinetic-desktop-full
 sudo rosdep init
 rosdep update
 
-# rosinstall allows downloading of source trees for ROS packages 
-# with a single command
-sudo apt-get install python-rosinstall
-
-
 #################
 # Install CLion #
 #################
