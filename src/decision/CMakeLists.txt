@@ -12,6 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV REQUIRED)
 
+find_package(sb_utils REQUIRED)
+
 add_definitions(-std=c++14)
 
 ## System dependencies are found with CMake's conventions
@@ -119,7 +121,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
-
+  ${sb_utils_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ./include
 
