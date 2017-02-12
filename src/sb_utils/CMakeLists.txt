@@ -119,7 +119,7 @@ include_directories(
 
 ## Declare a C++ library
 add_library(sb_utils
-    include/utils.h src/utils.cpp
+    include/sb_utils.h src/sb_utils.cpp
 )
 
 ## Add cmake target dependencies of the library

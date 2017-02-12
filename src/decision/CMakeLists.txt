@@ -153,11 +153,11 @@ add_executable(gps_manager src/gps_manager.cpp src/GpsManager.cpp include/GpsMan
 # target_link_libraries(sample_package_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(lidar_decision ${catkin_LIBRARIES})
-target_link_libraries(vision_decision ${catkin_LIBRARIES})
-target_link_libraries(gps_decision ${catkin_LIBRARIES})
-target_link_libraries(final_decision ${catkin_LIBRARIES})
-target_link_libraries(gps_manager ${catkin_LIBRARIES})
+target_link_libraries(lidar_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(vision_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(gps_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(final_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(gps_manager ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 
 #############
