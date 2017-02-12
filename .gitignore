@@ -8,3 +8,5 @@ CLion*
 clion*
 .swp
 filter_init.txt
+*.swp
+tags

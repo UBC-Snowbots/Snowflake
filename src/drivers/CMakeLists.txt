@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(drivers)
+set( CMAKE_VERBOSE_MAKEFILE on )
+
+add_definitions(--std=c++14)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -130,9 +133,18 @@ include_directories(
 ## either from message generation or dynamic reconfigure
 # add_dependencies(drivers ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+find_path(LIBUSB_INCLUDE_DIR
+  NAMES libusb.h
+  PATH_SUFFIXES "include" "libusb-1.0")
+find_library(LIBUSB_1_LIBRARY
+  usb-1.0 usb
+  PATH_SUFFIXES "lib" "lib32" "lib64")
+
 ## Declare a C++ executable
 # add_executable(drivers_node src/drivers_node.cpp)
 add_executable(steering_driver src/steering_driver.cpp src/SteeringDriver.cpp include/SteeringDriver.h)
+
+add_library(USBDetection include/USBDetection.h src/USBDetection.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -143,6 +155,8 @@ add_executable(steering_driver src/steering_driver.cpp src/SteeringDriver.cpp in
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(steering_driver ${catkin_LIBRARIES})
+target_include_directories(USBDetection PUBLIC ${LIBUSB_INCLUDE_DIR})
+target_link_libraries(USBDetection ${LIBUSB_1_LIBRARY})
 
 #############
 ## Install ##
