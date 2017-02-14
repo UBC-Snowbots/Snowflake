@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(decision)
 
+add_definitions(--std=c++14)
+
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
         roscpp
@@ -31,7 +33,7 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(sample_package_node src/sample_package_node.cpp)
-add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp include/LidarDecision.h)
+add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp include/LidarDecision.h src/LidarObstacle.cpp)
 add_executable(vision_decision src/vision_decision.cpp src/VisionDecision.cpp include/VisionDecision.h)
 add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp include/GpsDecision.h)
 add_executable(final_decision src/final_decision.cpp src/FinalDecision.cpp include/FinalDecision.h)
@@ -54,12 +56,14 @@ target_link_libraries(gps_manager ${catkin_LIBRARIES})
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
-    catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp)
+    # gTest
+    catkin_add_gtest(lidar-decision-test test/lidar-decision-test.cpp src/LidarDecision.cpp src/LidarObstacle.cpp)
     target_link_libraries(lidar-decision-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp 
+    catkin_add_gtest(vision-decision-test test/vision-decision-test.cpp src/VisionDecision.cpp
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
-    target_link_libraries(vision-decision-test ${catkin_LIBRARIES} ${OpenCV_LIBS})
+    target_link_libraries(vision-decision-test ${catkin_LIBRARIES})
+
 
     catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp)
     target_link_libraries(gps-decision-test ${catkin_LIBRARIES})
@@ -69,4 +73,11 @@ if (CATKIN_ENABLE_TESTING)
 
     catkin_add_gtest(gps-manager-test test/gps-manager-test.cpp src/GpsManager.cpp)
     target_link_libraries(gps-manager-test ${catkin_LIBRARIES})
+
+    # rostest
+    find_package(rostest REQUIRED)
+
+    add_rostest_gtest(lidar_decision_rostest test/lidar_decision_rostest.test test/lidar_decision_rostest.cpp)
+    target_link_libraries(lidar_decision_rostest ${catkin_LIBRARIES})
+
 endif()
