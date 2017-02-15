@@ -7,11 +7,13 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_ros
   grid_map_cv
   grid_map_msgs
+  laser_geometry
   roscpp
   rospy
 )
 
 find_package(PCL REQUIRED)
+
 
 
 catkin_package(

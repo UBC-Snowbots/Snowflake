@@ -44,6 +44,8 @@ void Map::positionCallback(const geometry_msgs::Pose2DConstPtr msg){
 }
 
 void Map::visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg) {
+
+
     // Assume we obtain x,y,z + rgb value for each point
     pcl::PointCloud<pcl::PointXYZRGB> cloud = *msg;
 
@@ -59,9 +61,18 @@ void Map::visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg)
 
 }
 
-void Map::lidarCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg) {
+void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
+
+    sensor_msgs::PointCloud2 ros_cloud;
+
+    projector.projectLaser(*msg, ros_cloud);
+
+    pcl::PCLPointCloud2 cloud;
+
+    pcl_conversions::toPCL(ros_cloud, cloud);
+
     // Get data
-    pcl::PointCloud<pcl::PointXYZRGB> cloud = *msg;
+
 
     // Integrate data
 

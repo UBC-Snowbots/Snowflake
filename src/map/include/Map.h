@@ -18,6 +18,8 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <geometry_msgs/Pose2D.h>
+#include <sensor_msgs/LaserScan.h>
+#include <laser_geometry/laser_geometry.h>
 
 class Map {
 public:
@@ -30,7 +32,7 @@ public:
 
 private:
     void visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg);
-    void lidarCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg);
+    void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
     void positionCallback(const geometry_msgs::Pose2DConstPtr msg);
 
     ros::Subscriber vision_sub;
@@ -40,6 +42,8 @@ private:
     ros::Publisher lidar_map_pub;
     ros::Publisher location_map_pub;
     grid_map::GridMap map;
+
+    laser_geometry::LaserProjection projector;
 
     // TODO: Determine better datatype for position (geometry_msgs::Pose2D?),
     // TODO: currently, it's a grid_map::Position = Eigen::Vector2f, a vector of 2 floats ...
