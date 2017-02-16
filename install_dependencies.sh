@@ -21,7 +21,9 @@ sudo apt-get install -y\
     ros-kinetic-ros-controllers \
     ros-kinetic-ros-control \
     ros-kinetic-effort-controllers \
-    ros-kinetic-hector-gazebo
+    ros-kinetic-hector-gazebo \
+    ros-kinetic-laser-geometry \
+    ros-kinetic-grid-map
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."
