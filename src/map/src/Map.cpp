@@ -27,8 +27,8 @@ Map::Map(int argc, char **argv, std::string node_name){
 
     // Initialize subscribers
     vision_sub = nh.subscribe("vision", 1000, &Map::visionCallback, this);
-    lidar_sub = nh.subscribe("lidar", 1000, &Map::lidarCallback, this);
-    position_sub = nh.subscribe("position", 1000, &Map::positionCallback, this);
+    lidar_sub = nh.subscribe("/robot/laser/scan", 1000, &Map::lidarCallback, this);
+    position_sub = nh.subscribe("/robot/odom_diffdrive", 1000, &Map::positionCallback, this);
 
     // Initialize publishers
     vision_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("vision_map", 1, true);
@@ -36,11 +36,13 @@ Map::Map(int argc, char **argv, std::string node_name){
     location_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("position_map", 1, true);
 
     // Initializes position to origin
-    pos(0,0);
+    // TODO: Set initial position and orientation
+    // geometry_msgs::Point
+
 }
 
-void Map::positionCallback(const geometry_msgs::Pose2DConstPtr msg){
-
+void Map::positionCallback(const nav_msgs::Odometry::ConstPtr& msg){
+    //geometry_msgs::Pose = msg->pose.pose;
 }
 
 void Map::visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg) {
@@ -63,16 +65,18 @@ void Map::visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg)
 
 void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
 
+    // Take laserscan and magic it into a PCL pointcloud
+    // Holy pipes batman
     sensor_msgs::PointCloud2 ros_cloud;
-
     projector.projectLaser(*msg, ros_cloud);
+    pcl::PCLPointCloud2 temp;
+    pcl_conversions::toPCL(ros_cloud, temp);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::fromPCLPointCloud2(temp, *cloud);
 
-    pcl::PCLPointCloud2 cloud;
-
-    pcl_conversions::toPCL(ros_cloud, cloud);
 
     // Get data
-
+    ROS_INFO("Cloud width: %i | Could height: %i", cloud->width, cloud->height);
 
     // Integrate data
 
@@ -98,7 +102,7 @@ grid_map::Matrix Map::getFootprintLayer(){
 }
 
 std::pair<double, double> Map::getCurrentLocation(){
-    return std::pair<double, double>(pos(0,0), pos(0,1));
+    return std::pair<double, double>(0, 0);
 }
 
 
