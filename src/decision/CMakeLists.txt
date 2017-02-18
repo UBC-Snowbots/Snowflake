@@ -139,7 +139,7 @@ include_directories(
 # add_executable(sample_package_node src/sample_package_node.cpp)
 add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp include/LidarDecision.h)
 add_executable(vision_decision src/vision_decision.cpp src/VisionDecision.cpp include/VisionDecision.h)
-add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp include/GpsDecision.h)
+add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp include/GpsDecision.h src/gps_decision.cpp)
 add_executable(final_decision src/final_decision.cpp src/FinalDecision.cpp include/FinalDecision.h)
 add_executable(gps_manager src/gps_manager.cpp src/GpsManager.cpp include/GpsManager.h)
 

@@ -80,27 +80,28 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
     }
 
     //calcute the angle relative to current heading
-     if(current_heading>AngleRelativeNorth) {
-         if(current_heading-AngleRelativeNorth<=180) {
-             desiredAngle=-(current_heading-AngleRelativeNorth);
-         }
-         else {
-             desiredAngle=360-(current_heading-AngleRelativeNorth);
-         }
-     }
-     else if(current_heading<=AngleRelativeNorth) {
+    if(current_heading>AngleRelativeNorth) {
+        if(current_heading-AngleRelativeNorth<=180) {
+            desiredAngle=-(current_heading-AngleRelativeNorth);
+        }
+        else {
+            desiredAngle=360-(current_heading-AngleRelativeNorth);
+        }
+    }
+    else if(current_heading<=AngleRelativeNorth) {
 
-         desiredAngle=AngleRelativeNorth-current_heading;
-         if(desiredAngle>180) {
-             desiredAngle=-(360-desiredAngle);
-         }
-     }
+        desiredAngle=AngleRelativeNorth-current_heading;
+        if(desiredAngle>180) {
+            desiredAngle=-(360-desiredAngle);
+        }
+    }
     if(x==0 && y==0 && current_heading==0) {
         desiredAngle==0;
     }
     desiredAngle=desiredAngle*TO_RADIANS;
     return desiredAngle;
 }
+
 
 
 /**this function is used for rotatation */
