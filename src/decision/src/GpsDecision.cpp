@@ -58,8 +58,8 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
     double y=(next_y-currentPoint.y);
 
     //double dis=distance(relative_gps);
-    double tan=y/x;
-    double angle=(atan(tan));
+    double slope=y/x;
+    double angle=(atan(slope));
     double AngleRelativeNorth;
     double desiredAngle;
     AngleRelativeNorth=angle*TO_DEGREES;

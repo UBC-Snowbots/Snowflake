@@ -19,7 +19,6 @@ TEST(GpsDecision,distance) {
 }
 
 TEST(GpsDecision,desiredAngle) {
-    #define PI acos(-1.0)
     geometry_msgs::Point nextpoint;
     geometry_msgs::Point currentPoint;
     nextpoint.x = 2;

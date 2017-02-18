@@ -21,29 +21,26 @@ public:
     GpsDecision(int argc, char **argv, std::string node_name);
 
     /**
-      * calculates the distance between wayPoint and current point
-      * @ param: given the gps location of the next move
-      * @ return: the distance between the next location and the current location
+      * calculates the distance between next Point and current point
+      * @param relative_gps the relative gps location of the next move
+      * @return the distance between the next location and the current location
     */
     static double distance(const geometry_msgs::Point::ConstPtr& relative_gps);
 
     /**
-     * @ param
-     * relative_gps: given the gps location of the next move
-     * current_heading: the current heading relative to north in degrees (0 to 360 degrees)
-     * @ return:
-     *   desiredAngle: the angle(less than PI) in degrees that robot need to turn
-     *   positive value means turning clockwise
-     *   negative value means turing counter-clockwise
+     * @param relative_gps the relative gps location of the next move
+     * @param current_heading the current heading relative to north in degrees (0 to 360 degrees)
+     * @return the angle(less than PI) in degrees that robot need to turn
+     * positive value means turning clockwise
+     * negative value means turing counter-clockwise
      */
     static double desiredAngle(const geometry_msgs::Point relative_gps,float current_heading,geometry_msgs::Point currentPoint);
     /**
-     * @ param
-     *  desiredAngle: the angle(less than PI) in degrees that robot need to turn
-     *                 positive value means turning clockwise
-     *                 negative value means turing counter-clockwise
-     *  angular_velocity: the angular_velocity(rad/s)
-     * @ effects: rotate the robot by giving angles and angular velocity
+     * @param desiredAngle the angle(less than PI) in degrees that robot need to turn
+     * positive value means turning clockwise
+     * negative value means turing counter-clockwise
+     * @param angular_velocity the angular_velocity(rad/s)
+     * @return rotate the robot by giving angles and angular velocity
      */
     void  rotate(double desiredAngle,double angular_velocity);
 
