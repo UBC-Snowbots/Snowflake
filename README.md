@@ -157,3 +157,8 @@ some_ros_package
 
 ## General Debugging Suggestions
 - If something is happening that does not seem to correspond to your code, (ex. if your node is subscribing to the totally wrong topic) try deleting the `build` and `devel` folders (if present) to remove any "cached" information
+
+## Zed Configuration
+- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper)
+- This package already contains `zed-ros-wrapper` as a submodule 
+- Download ZED calibration file from the link it prompts and place it in the folder `/usr/local/zed/settings/`
