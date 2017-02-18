@@ -1,23 +1,20 @@
 #include <iostream>
-#include <sys/epoll.h>
+#include <fstream>
+#include <dirent.h>
+#include <list>
+#include <exception>
+#include <utility>
 
 class SerialDetector {
     private:
-        void setup();
+        std::list<std::string> possibleSerialFilenames;
     public:
-        /*
-        SerialDetector()
-        string read(prefix, num bytes)
-        write()
-        */
+        SerialDetector();
+        std::fstream getSerialWithPrefix(std::string prefix);
 };
 
-class SerialSession {
-    private:
-        SerialSession();
-    public:
-        std::ostream& writeStream;
-        std::istream& readStream;
-};
-
-int main(){}
+class directorynonexistent : public std::exception {
+    virtual const char * what() const throw() {
+        return "Cannot open directory";
+    }
+} direx;

@@ -134,6 +134,8 @@ include_directories(
 # add_executable(drivers_node src/drivers_node.cpp)
 add_executable(steering_driver src/steering_driver.cpp src/SteeringDriver.cpp include/SteeringDriver.h)
 
+add_library(serial_detection src/SerialDetection.cpp include/SerialDetection.h)
+
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(drivers_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
