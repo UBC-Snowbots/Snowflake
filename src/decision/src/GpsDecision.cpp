@@ -66,6 +66,9 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
     if(x>=0 && y>=0) { //in the 1st quadrant
         AngleRelativeNorth=90.0-AngleRelativeNorth;
     }
+    else if(x<0 && y>0) {  //in the 2nd quadrant
+        AngleRelativeNorth=-(AngleRelativeNorth+90);
+    }
     else if (x<0 && y<0) { //in the 3rd quadrant
         AngleRelativeNorth=-(90+AngleRelativeNorth);
     }
