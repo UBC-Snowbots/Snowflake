@@ -5,6 +5,6 @@
 	path = src/sicktoolbox
 	url = https://github.com/ros-drivers/sicktoolbox.git
 [submodule "src/sicktoolbox_wrapper"]
-	path = src/wicktoolbox_wrapper
+	path = src/sicktoolbox_wrapper
 	url = https://github.com/ros-drivers/sicktoolbox_wrapper.git 
 
