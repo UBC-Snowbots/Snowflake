@@ -7,7 +7,7 @@
  */
 
 #include <GpsDecision.h>
-#include <math.h>
+
 
 
 // The constructor
@@ -58,42 +58,42 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
     double y=(next_y-currentPoint.y);
 
     //double dis=distance(relative_gps);
-    double slope=y/x;
+    double slope=x/y;
     double angle=(atan(slope));
-    double AngleRelativeNorth;
+    double AngleRelativeForward;
     double desiredAngle;
-    AngleRelativeNorth=angle*TO_DEGREES;
-    if(x>=0 && y>=0) { //in the 1st quadrant
-        AngleRelativeNorth=90.0-AngleRelativeNorth;
+    double angleRelativePosY=angle*TO_DEGREES;
+    if(x>=0 && y>=0) { //in the 2nd quadrant
+        AngleRelativeForward=(90.0-angleRelativePosY);
     }
-    else if(x<0 && y>0) {  //in the 2nd quadrant
-        AngleRelativeNorth=-(AngleRelativeNorth+90);
+    else if(x<0 && y>0) {  //in the 3rd quadrant
+        AngleRelativeForward=(-angleRelativePosY+90.0);
     }
-    else if (x<0 && y<0) { //in the 3rd quadrant
-        AngleRelativeNorth=-(90+AngleRelativeNorth);
+    else if (x<0 && y<0) { //in the 1st quadrant
+        AngleRelativeForward=-angleRelativePosY-90;
     }
-    else if (x>=0 && y<0) { //In the 4th quadrant
-        AngleRelativeNorth=90-AngleRelativeNorth;
+    else if (x>=0 && y<0) { //In the 1st quadrant
+        AngleRelativeForward=-(90+angleRelativePosY);
     }
-    else if(x<=0 && y==0) {
-        AngleRelativeNorth=-90;
+    else if(x<0 && y==0) {
+        AngleRelativeForward=0;
     }
     else if(x==0 && y<0) {
-        AngleRelativeNorth=180;
+        AngleRelativeForward=90;
     }
 
     //calcute the angle relative to current heading
-    if(current_heading>AngleRelativeNorth) {
-        if(current_heading-AngleRelativeNorth<=180) {
-            desiredAngle=-(current_heading-AngleRelativeNorth);
+    if(current_heading>AngleRelativeForward) {
+        if(current_heading-AngleRelativeForward<=180) {
+            desiredAngle=-(current_heading-AngleRelativeForward);
         }
         else {
-            desiredAngle=360-(current_heading-AngleRelativeNorth);
+            desiredAngle=360-(current_heading-AngleRelativeForward);
         }
     }
-    else if(current_heading<=AngleRelativeNorth) {
+    else if(current_heading<=AngleRelativeForward) {
 
-        desiredAngle=AngleRelativeNorth-current_heading;
+        desiredAngle=AngleRelativeForward-current_heading;
         if(desiredAngle>180) {
             desiredAngle=-(360-desiredAngle);
         }
@@ -134,7 +134,7 @@ void  GpsDecision::rotate(double desiredAngle,double angular_velocity) {
         //loop_rate
     }while(current_angle<desiredAngle);
     vel_msg.angular.z=0;
-    // velocity_publisher.publish(vel_msg);
+//     velocity_publisher.publish(vel_msg);
 }
 
 
@@ -146,9 +146,27 @@ void GpsDecision::compassCallBack(const std_msgs::Float32::ConstPtr& compass_hea
     current_heading=compass_heading->data;
 }
 
+//get nextpoint
 void GpsDecision::gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps) {
+    // Deal with new messages here
+    geometry_msgs::Twist twistMsg;
 
-    desiredAngle(*relative_gps, current_heading, currentPoint);
+    // Get the desiredAngle
+    int relativeAngle = desiredAngle(*relative_gps, current_heading, currentPoint);
+
+    // Initialize linear velocities to 0
+    twistMsg.linear.y = 0;
+    twistMsg.linear.z = 0;
+    // Initialize x and y angular velocities to 0
+    twistMsg.angular.x = 0;
+    twistMsg.angular.y = 0;
+
+    //call rotate function
+    rotate(relativeAngle,1);
+
+    // Publish the twist message
+    publishTwist(twistMsg);
+
 
 }
 
