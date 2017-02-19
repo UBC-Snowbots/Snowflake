@@ -9,7 +9,7 @@
 
 TEST(MyNode, addExclamationPoint){
     EXPECT_EQ("!", MyClass::addExclamationPoint(""));
-    EXPECT_EQ("Hello!", MyClass::addExclamationPoint("Hello"));
+    EXPECT_EQ("AXSDFHello!", MyClass::addExclamationPoint("Hello"));
 }
 
 int main(int argc, char **argv) {
