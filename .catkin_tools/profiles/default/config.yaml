@@ -1,10 +1,9 @@
 blacklist:
 - zed_wrapper
 build_space: build
-catkin_make_args:
-- run_tests
+catkin_make_args: []
 cmake_args: []
-devel_layout: merged
+devel_layout: linked
 devel_space: devel
 extend_path: null
 install: false
