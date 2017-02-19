@@ -1,5 +1,6 @@
 # IGVC-2017
 UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
+test ci
 
 ![alt tag](https://travis-ci.org/UBC-Snowbots/IGVC-2017.svg?branch=master)
 
