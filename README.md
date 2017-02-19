@@ -29,6 +29,16 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/IGVC-2017`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
 
+## Update (18/02/2017)
+- We are migrating from using the `ros-kinetic-catkin` to the `python-catkin-tools` wrapper for the `catkin` command. This is to take advantage of the blacklist feature since some packages (cough) Zed (cough) requires CUDA and ZED SDK related dependencies which won't compile for a lot of people.
+
+Old Command | New Command 
+---|---
+catkin_make | catkin build
+catkin_make run_tests | catkin run_tests
+
+- Re-run the updated `install_dependencies.sh` to get yourself sorted, or do `sudo apt install python-catkin-tools` if you're cool.
+
 ## What Should **NOT** Go In This Repo
 - Photos or videos (that aren't needed for the system to run)
 

@@ -3,6 +3,7 @@
 /build
 /devel
 /install
+/logs
 *.idea*
 CLion*
 clion*
