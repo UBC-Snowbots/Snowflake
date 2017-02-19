@@ -1,0 +1,5 @@
+challenge
+/home/sb/IGVC-2017/devel/.private/challenge/share/challenge/cmake/challengeConfig-version.cmake /home/sb/IGVC-2017/devel/share/challenge/cmake/challengeConfig-version.cmake
+/home/sb/IGVC-2017/devel/.private/challenge/share/challenge/cmake/challengeConfig.cmake /home/sb/IGVC-2017/devel/share/challenge/cmake/challengeConfig.cmake
+/home/sb/IGVC-2017/devel/.private/challenge/lib/pkgconfig/challenge.pc /home/sb/IGVC-2017/devel/lib/pkgconfig/challenge.pc
+/home/sb/IGVC-2017/devel/.private/challenge/lib/challenge/solution /home/sb/IGVC-2017/devel/lib/challenge/solution
