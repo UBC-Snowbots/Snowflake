@@ -4,4 +4,6 @@
 [submodule "src/sicktoolbox_wrapper"]
 	path = src/sicktoolbox_wrapper
 	url = https://github.com/ros-drivers/sicktoolbox_wrapper.git 
-
+[submodule "src/zed-ros-wrapper"]
+	path = src/zed-ros-wrapper
+	url = https://github.com/UBC-Snowbots/zed-ros-wrapper.git
