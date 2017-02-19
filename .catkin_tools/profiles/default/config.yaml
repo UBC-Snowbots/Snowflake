@@ -1,5 +1,5 @@
 blacklist:
-- zed-ros-wrapper
+- zed_wrapper
 build_space: build
 catkin_make_args:
 - run_tests
