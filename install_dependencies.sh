@@ -24,7 +24,9 @@ sudo apt-get install -y\
     ros-kinetic-effort-controllers \
     ros-kinetic-hector-gazebo \
     ros-kinetic-turtlebot-teleop \
-    python-catkin-tools
+    python-catkin-tools \
+    python-visual \
+    python-wxtools 
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."
