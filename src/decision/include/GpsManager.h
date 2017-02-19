@@ -16,6 +16,7 @@
 #include <vector>
 #include <algorithm>
 #include <stack>
+#include <sb_utils.h>
 
 // A struct to hold lat/lon coordinates (a waypoint)
 // lat/lon should be in degrees
