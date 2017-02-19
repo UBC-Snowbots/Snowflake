@@ -1,6 +1,0 @@
-vision
-/home/sb/IGVC-2017/devel/.private/vision/share/vision/cmake/visionConfig-version.cmake /home/sb/IGVC-2017/devel/share/vision/cmake/visionConfig-version.cmake
-/home/sb/IGVC-2017/devel/.private/vision/share/vision/cmake/visionConfig.cmake /home/sb/IGVC-2017/devel/share/vision/cmake/visionConfig.cmake
-/home/sb/IGVC-2017/devel/.private/vision/lib/pkgconfig/vision.pc /home/sb/IGVC-2017/devel/lib/pkgconfig/vision.pc
-/home/sb/IGVC-2017/devel/.private/vision/lib/vision/ros_vision /home/sb/IGVC-2017/devel/lib/vision/ros_vision
-/home/sb/IGVC-2017/devel/.private/vision/lib/vision/camera /home/sb/IGVC-2017/devel/lib/vision/camera
