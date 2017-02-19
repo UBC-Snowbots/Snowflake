@@ -1,9 +1,0 @@
-decision
-/home/sb/IGVC-2017/devel/.private/decision/share/decision/cmake/decisionConfig-version.cmake /home/sb/IGVC-2017/devel/share/decision/cmake/decisionConfig-version.cmake
-/home/sb/IGVC-2017/devel/.private/decision/share/decision/cmake/decisionConfig.cmake /home/sb/IGVC-2017/devel/share/decision/cmake/decisionConfig.cmake
-/home/sb/IGVC-2017/devel/.private/decision/lib/pkgconfig/decision.pc /home/sb/IGVC-2017/devel/lib/pkgconfig/decision.pc
-/home/sb/IGVC-2017/devel/.private/decision/lib/decision/lidar_decision /home/sb/IGVC-2017/devel/lib/decision/lidar_decision
-/home/sb/IGVC-2017/devel/.private/decision/lib/decision/gps_manager /home/sb/IGVC-2017/devel/lib/decision/gps_manager
-/home/sb/IGVC-2017/devel/.private/decision/lib/decision/vision_decision /home/sb/IGVC-2017/devel/lib/decision/vision_decision
-/home/sb/IGVC-2017/devel/.private/decision/lib/decision/final_decision /home/sb/IGVC-2017/devel/lib/decision/final_decision
-/home/sb/IGVC-2017/devel/.private/decision/lib/decision/gps_decision /home/sb/IGVC-2017/devel/lib/decision/gps_decision

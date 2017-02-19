@@ -1,5 +1,0 @@
-sample_package
-/home/sb/IGVC-2017/devel/.private/sample_package/share/sample_package/cmake/sample_packageConfig.cmake /home/sb/IGVC-2017/devel/share/sample_package/cmake/sample_packageConfig.cmake
-/home/sb/IGVC-2017/devel/.private/sample_package/share/sample_package/cmake/sample_packageConfig-version.cmake /home/sb/IGVC-2017/devel/share/sample_package/cmake/sample_packageConfig-version.cmake
-/home/sb/IGVC-2017/devel/.private/sample_package/lib/pkgconfig/sample_package.pc /home/sb/IGVC-2017/devel/lib/pkgconfig/sample_package.pc
-/home/sb/IGVC-2017/devel/.private/sample_package/lib/sample_package/my_node /home/sb/IGVC-2017/devel/lib/sample_package/my_node

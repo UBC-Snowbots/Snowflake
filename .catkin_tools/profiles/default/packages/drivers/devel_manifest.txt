@@ -1,5 +1,0 @@
-drivers
-/home/sb/IGVC-2017/devel/.private/drivers/share/drivers/cmake/driversConfig.cmake /home/sb/IGVC-2017/devel/share/drivers/cmake/driversConfig.cmake
-/home/sb/IGVC-2017/devel/.private/drivers/share/drivers/cmake/driversConfig-version.cmake /home/sb/IGVC-2017/devel/share/drivers/cmake/driversConfig-version.cmake
-/home/sb/IGVC-2017/devel/.private/drivers/lib/pkgconfig/drivers.pc /home/sb/IGVC-2017/devel/lib/pkgconfig/drivers.pc
-/home/sb/IGVC-2017/devel/.private/drivers/lib/drivers/steering_driver /home/sb/IGVC-2017/devel/lib/drivers/steering_driver
