@@ -1,3 +1,9 @@
+[submodule "src/sicktoolbox"]
+        path = src/sicktoolbox
+            url = https://github.com/ros-drivers/sicktoolbox.git
+[submodule "src/sicktoolbox_wrapper"]
+        path = src/sicktoolbox_wrapper
+            url = https://github.com/ros-drivers/sicktoolbox_wrapper.git 
 [submodule "src/razor_imu_9dof"]
-	path = src/razor_imu_9dof
-	url = https://github.com/KristofRobot/razor_imu_9dof
+    path = src/razor_imu_9dof
+    url = https://github.com/KristofRobot/razor_imu_9dof
