@@ -64,16 +64,16 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
     double desiredAngle;
     double angleRelativePosY=angle*TO_DEGREES;
     if(x>=0 && y>=0) { //in the 2nd quadrant
-        AngleRelativeForward=(90.0-angleRelativePosY);
+        AngleRelativeForward=-(90.0-angleRelativePosY);
     }
     else if(x<0 && y>0) {  //in the 3rd quadrant
-        AngleRelativeForward=(-angleRelativePosY+90.0);
+        AngleRelativeForward=-(-angleRelativePosY+90.0);
     }
     else if (x<0 && y<0) { //in the 1st quadrant
-        AngleRelativeForward=-angleRelativePosY-90;
+        AngleRelativeForward=-(-angleRelativePosY-90);
     }
     else if (x>=0 && y<0) { //In the 1st quadrant
-        AngleRelativeForward=-(90+angleRelativePosY);
+        AngleRelativeForward=-(-(90+angleRelativePosY));
     }
     else if(x<0 && y==0) {
         AngleRelativeForward=0;
