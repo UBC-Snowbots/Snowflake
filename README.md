@@ -25,6 +25,10 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
+## Zed Configuration
+- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
+- Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
+
 ## Important Notes:
 - To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/IGVC-2017`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
@@ -168,7 +172,3 @@ some_ros_package
 ## General Debugging Suggestions
 - If something is happening that does not seem to correspond to your code, (ex. if your node is subscribing to the totally wrong topic) try deleting the `build` and `devel` folders (if present) to remove any "cached" information
 
-## Zed Configuration
-- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper)
-- This package already contains `zed-ros-wrapper` as a submodule 
-- Download ZED calibration file from the link it prompts and place it in the folder `/usr/local/zed/settings/`
