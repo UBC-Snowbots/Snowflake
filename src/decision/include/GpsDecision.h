@@ -42,7 +42,7 @@ public:
      * @param angular_velocity the angular_velocity(rad/s)
      * @return rotate the robot by giving angles and angular velocity
      */
-    void  rotate(double desiredAngle,double angular_velocity);
+    void  rotate(const geometry_msgs::Point::ConstPtr& relative_gps);
 
 private:
     //gps callback for the current point
@@ -51,7 +51,14 @@ private:
     void gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps);
     //gps callback for the current heading
     void compassCallBack(const std_msgs::Float32::ConstPtr& compass_heading);
+    //publish twist mesg during gps callback ofr the next point
     void publishTwist(geometry_msgs::Twist twist);
+    //get desired angular speed given the angle to turn
+    double getDesiredAngularSpeed(double desiredAngle);
+    //get desired linear speed given the distance to move
+    double getDesiredLinearSpeed(double distance);
+    //map function
+    double mapRange(double x, double inMin, double inMax, double outMin, double outMax);
     ros::Subscriber compass_subscriber;
     ros::Subscriber gps_subscriber;
     ros::Publisher twist_publisher;

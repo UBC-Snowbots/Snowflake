@@ -109,11 +109,18 @@ double GpsDecision::desiredAngle(const geometry_msgs::Point relative_gps,
 
 /**this function is used for rotatation */
 
-void  GpsDecision::rotate(double desiredAngle,double angular_velocity) {
+void  GpsDecision::rotate(const geometry_msgs::Point::ConstPtr& relative_gps) {
     geometry_msgs::Twist vel_msg;
-
-    vel_msg.angular.x=0;
-    vel_msg.angular.y=0;
+    // Get the desired Angle
+    double desiredAngle = GpsDecision::desiredAngle(*relative_gps, current_heading, currentPoint);
+    // Get the desired Distance
+    double distance=GpsDecision::distance(relative_gps);
+    // Initialize linear velocities to 0
+    vel_msg.linear.y = 0;
+    vel_msg.linear.z = 0;
+    // Initialize x and y angular velocities to 0
+    vel_msg.angular.x = 0;
+    vel_msg.angular.y = 0;
 
     if(desiredAngle>0){  //need to turn clockwise
         vel_msg.angular.z=-abs(desiredAngle);
@@ -122,20 +129,17 @@ void  GpsDecision::rotate(double desiredAngle,double angular_velocity) {
         vel_msg.angular.z=abs(desiredAngle);
     }
 
-    double current_angle;
-    double t0=ros::Time::now().toSec();
-    ros::Rate loop_rate(1000);
-    do{
-        //velocity_publisher.publish(vel_msg);
-        double t1=ros::Time::now().toSec();
-        current_angle=angular_velocity*(t1-t0);
-        ros::spinOnce();
-        loop_rate.sleep();
-        //loop_rate
-    }while(current_angle<desiredAngle);
-    vel_msg.angular.z=0;
-//     velocity_publisher.publish(vel_msg);
+    // Decide how fast to move
+    vel_msg.linear.x = getDesiredLinearSpeed(distance);
+
+    // Decide how fast to turn
+    vel_msg.angular.z = getDesiredAngularSpeed(desiredAngle);
+
+    // Publish the twist message
+    publishTwist(vel_msg);
+
 }
+
 
 
 void GpsDecision::gpsCurrentCallBack(const geometry_msgs::Point::ConstPtr& relative_gps) {
@@ -148,28 +152,31 @@ void GpsDecision::compassCallBack(const std_msgs::Float32::ConstPtr& compass_hea
 
 //get nextpoint
 void GpsDecision::gpsCallBack(const geometry_msgs::Point::ConstPtr& relative_gps) {
-    // Deal with new messages here
-    geometry_msgs::Twist twistMsg;
-
-    // Get the desiredAngle
-    int relativeAngle = desiredAngle(*relative_gps, current_heading, currentPoint);
-
-    // Initialize linear velocities to 0
-    twistMsg.linear.y = 0;
-    twistMsg.linear.z = 0;
-    // Initialize x and y angular velocities to 0
-    twistMsg.angular.x = 0;
-    twistMsg.angular.y = 0;
-
     //call rotate function
-    rotate(relativeAngle,1);
-
-    // Publish the twist message
-    publishTwist(twistMsg);
-
-
+    rotate(relative_gps);
 }
 
 void GpsDecision::publishTwist(geometry_msgs::Twist twist){
     twist_publisher.publish(twist);
 }
+
+double GpsDecision::getDesiredAngularSpeed(double desiredAngle) {
+    // the higher the desired angle, the higher the angular speed
+    if(desiredAngle<0){
+        desiredAngle=-desiredAngle;
+    }
+    return mapRange(desiredAngle, 0, 180, 0, 100);
+}
+
+double GpsDecision::getDesiredLinearSpeed(double distance) {
+    // the longer the distance the lower the linear speed.
+    return 100 - mapRange(distance, 0, 90, 0, 100);
+}
+
+double GpsDecision::mapRange(double in, double inMin, double inMax, double outMin, double outMax) {
+    double scale =(outMax - outMin)/(inMax - inMin);
+    double offset = outMin - scale * inMin;
+    return scale*in+offset;
+}
+
+
