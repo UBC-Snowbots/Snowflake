@@ -10,6 +10,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_definitions(-std=c++14)
 
+catkin_package(
+#  INCLUDE_DIRS include
+)
 
 ###########
 ## Build ##
