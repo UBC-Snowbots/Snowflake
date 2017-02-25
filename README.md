@@ -11,7 +11,7 @@ UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
 - [Github](#github)
 - [Conventions](#conventions)
   - [Coding Conventions](#coding-conventions)
-  - [Coordinate System](#coordinate-system)
+  - [Coordinate Systems](#coordinate-systems)
 - [Creating a New Node](#creating-a-new-node)
 - [Creating a New Simple Node](#creating-a-new-simple-node)
 - [Launch Files](#launch-files)
@@ -176,7 +176,7 @@ some_ros_package
 - For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
 - Similar to launch files, the command is: `rostest package_name package_test_file.test`.
 
-## Using Gazebo
+## Gazebo
 - You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
 - You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `sb_gazebo/urdf/**ROBOT_NAME**.gazebo` and switch around the lidar settings (see comments in said file)
 - All worlds should go in the `sb_gazebo/worlds` folder
