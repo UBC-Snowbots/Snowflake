@@ -18,7 +18,7 @@ LidarObstacle::LidarObstacle(std::vector<Reading> readings) {
 
 distance_t LidarObstacle::getAvgDistance() {
     float total_distance = std::accumulate(readings.begin(), readings.end(), 0,
-                                           [] (int accumulator, auto reading){
+                                           [] (float accumulator, auto reading){
                                                 return accumulator + reading.range;
                                             });
     return total_distance / readings.size();
