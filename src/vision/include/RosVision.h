@@ -15,6 +15,7 @@
 #define PROJECT_ROSVISION_H_H
 
 #include <ros/ros.h>
+#include <ros/package.h>
 #include <opencv2/core/core.hpp>
 #include <stdio.h>
 #include <opencv2/highgui/highgui.hpp>
@@ -54,11 +55,6 @@ private:
      */
     void createWindow();
 
-    /**
-     * Destroys windows
-     */
-    void deleteWindow();
-
     //Publisher and subscribers
     image_transport::Subscriber sub;
     image_transport::Publisher pub;
@@ -75,10 +71,9 @@ private:
     cv::Mat ipmOutput;
     cv::Mat filterOutput;
 
-    //Display window string names
-    std::string inputWindow;
-    std::string ipmOutputWindow;
-    std::string filterOutputWindow;
+    // The name and size of the display window
+    std::string displayWindowName;
+    int displayWindowWidth, displayWindowHeight;
 
     //Filters and their variables
     snowbotsFilter filter;
@@ -88,6 +83,9 @@ private:
     int x1, x2, x3, x4, y1, y2, y3, y4;
     std::vector<cv::Point2f> orig_points;
     std::vector<cv::Point2f> dst_points;
+
+    // Whether or not we've received the first image
+    bool receivedFirstImage;
 
     //Debug and calibration variables
     bool showWindow;
