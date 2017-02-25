@@ -102,7 +102,7 @@ catkin_make run_tests | catkin run_tests
 - Functions are **camelCase**
 - Indentations are 4 spaces
 
-## Coordinate Systems
+### Coordinate Systems
 - We try to follow ROS standards, which can be found [here](http://www.ros.org/reps/rep-0103.html)
 - x : forward
 - y : left
@@ -123,7 +123,7 @@ catkin_make run_tests | catkin run_tests
 ```
 
 ## Creating a new node
-- If your node is at all complicated, then this format should be followed. For simple nodes, please see below
+- If your node is at all complicated, then this format should be followed. For simple nodes, please [see below](#creating-a-new-simple-node)
 - Each node should be class based
 - **MyNode.h** should contain your class declaration
 - **MyNode.cpp** should contain your class definition
