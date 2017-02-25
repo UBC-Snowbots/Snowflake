@@ -27,9 +27,9 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         SB_getParam(nh_private, "width", width, (int)msg->width);
         SB_getParam(nh_private, "height", height, (int)msg->height);
         SB_getParam(nh_private, "ipm_base_width", ipm_base_width, (float)1);
-        SB_getParam(nh_private, "ipm_top_width", ipm_top_width, 0.5);
-        SB_getParam(nh_private, "ipm_base_displacement", ipm_base_displacement, 0);
-        SB_getParam(nh_private, "ipm_top_displacement", ipm_top_displacement, 0.25);
+        SB_getParam(nh_private, "ipm_top_width", ipm_top_width, (float)0.5);
+        SB_getParam(nh_private, "ipm_base_displacement", ipm_base_displacement, (float)0);
+        SB_getParam(nh_private, "ipm_top_displacement", ipm_top_displacement, (float)0.25);
         x1 = width/2 - ipm_base_width/2 * width;
         y1 = (1 - ipm_base_displacement) * height;
         x2 = width/2 + ipm_base_width/2 * width;
