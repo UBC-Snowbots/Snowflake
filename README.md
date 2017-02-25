@@ -3,13 +3,13 @@ UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
 
 ![alt tag](https://travis-ci.org/UBC-Snowbots/IGVC-2017.svg?branch=master)
 
-# Table of Contents
+## Table of Contents
 - [Installation and Setup](#installation-and-setup)
   - [Important Notes](#important-notes)
   - [Zed Configuration](#zed-configuration)
   - [Catkin Migration](#catkin-migration)
-- [Github](#github)
 - [Conventions](#conventions)
+  - [Github](#github)
   - [Coding Conventions](#coding-conventions)
   - [Coordinate Systems](#coordinate-systems)
 - [Creating a New Node](#creating-a-new-node)
@@ -18,10 +18,9 @@ UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
 - [Testing](#testing)
   - [GTest](#gtest)
   - [Rostest](#rostest)
-- [Gazebo](#gazebo)
+- [Simulating with Gazebo](#simulating-with-gazebo)
 - [Arduino Development](#arduino-development)
 - [Debugging Tips](#debugging-tips)
-
 
 ## Installation and Setup
 
@@ -35,7 +34,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
 3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students)
     - _JetBrains will send an initial email to confirm the UBC email you inputted, 
-    once you confirm another email will be sent to activate your new education account; 
+    once you've confirmed another email will be sent to activate your new education account; 
     you will use this account to set up CLion later on_
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
@@ -53,7 +52,6 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
 
-
 ### Catkin Migration
 - We are migrating from using the `ros-kinetic-catkin` to the `python-catkin-tools` wrapper for the `catkin` command. This is to take advantage of the blacklist feature since some packages (cough) Zed (cough) requires CUDA and ZED SDK related dependencies which won't compile for a lot of people.
 
@@ -62,13 +60,14 @@ Old Command | New Command
 catkin_make | catkin build
 catkin_make run_tests | catkin run_tests
 
-- Re-run the updated `install_dependencies.sh` to get yourself sorted, or do `sudo apt install python-catkin-tools` if you're cool.
+- If you've installed this repo *before* Feb 18 2017: re-run the updated `install_dependencies.sh` to get yourself sorted, or do `sudo apt install python-catkin-tools` if you're cool.
 
-## Github
+## Conventions
+
+### Github Conventions
 - We follow the ["Feature Branch Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
 - Photos or videos (that aren't needed for the system to run)
 
-## Conventions
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
 ```
@@ -176,7 +175,7 @@ some_ros_package
 - For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
 - Similar to launch files, the command is: `rostest package_name package_test_file.test`.
 
-## Gazebo
+## Simulating with Gazebo
 - You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
 - You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `sb_gazebo/urdf/**ROBOT_NAME**.gazebo` and switch around the lidar settings (see comments in said file)
 - All worlds should go in the `sb_gazebo/worlds` folder
