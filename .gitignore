@@ -16,6 +16,7 @@ cmake-build-debug
 *_BASE_*.txt
 *_LOCAL_*.txt
 *_REMOTE_*.txt
+*.orig
 
 # We want to ignore the catkin settings, except for some specific files
 /.catkin_tools
