@@ -8,12 +8,13 @@
 #ifndef DECISION_LIDAR_DECISION_H
 #define DECISION_LIDAR_DECISION_H
 
+#include <ros/ros.h>
+#include <sb_utils.h>
 #include <iostream>
 #include <cmath>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/LaserScan.h>
-#include <ros/ros.h>
 
 using distance_t = float;
 using angle_t = float;
