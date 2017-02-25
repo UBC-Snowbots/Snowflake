@@ -3,6 +3,26 @@ UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
 
 ![alt tag](https://travis-ci.org/UBC-Snowbots/IGVC-2017.svg?branch=master)
 
+# Table of Contents
+- [Installation and Setup](#installation-and-setup)
+  - [Important Notes](#important-notes)
+  - [Zed Configuration](#zed-configuration)
+  - [Catkin Migration](#catkin-migration)
+- [Github](#github)
+- [Conventions](#conventions)
+  - [Coding Conventions](#coding-conventions)
+  - [Coordinate System](#coordinate-system)
+- [Creating a New Node](#creating-a-new-node)
+- [Creating a New Simple Node](#creating-a-new-simple-node)
+- [Launch Files](#launch-files)
+- [Testing](#testing)
+  - [GTest](#gtest)
+  - [Rostest](#rostest)
+- [Gazebo](#gazebo)
+- [Arduino Development](#arduino-development)
+- [Debugging Tips](#debugging-tips)
+
+
 ## Installation and Setup
 
 You will be downloading an Ubuntu ISO and multiple ROS packages with their respective dependencies.
@@ -25,15 +45,16 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
-## Zed Configuration
-- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
-- Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
-
-## Important Notes:
+### Important Notes:
 - To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/IGVC-2017`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
 
-## Update (18/02/2017)
+### Zed Configuration
+- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
+- Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
+
+
+### Catkin Migration
 - We are migrating from using the `ros-kinetic-catkin` to the `python-catkin-tools` wrapper for the `catkin` command. This is to take advantage of the blacklist feature since some packages (cough) Zed (cough) requires CUDA and ZED SDK related dependencies which won't compile for a lot of people.
 
 Old Command | New Command 
@@ -43,10 +64,12 @@ catkin_make run_tests | catkin run_tests
 
 - Re-run the updated `install_dependencies.sh` to get yourself sorted, or do `sudo apt install python-catkin-tools` if you're cool.
 
-## What Should **NOT** Go In This Repo
+## Github
+- We follow the ["Feature Branch Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
 - Photos or videos (that aren't needed for the system to run)
 
 ## Conventions
+### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
 ```
 /*
@@ -161,14 +184,10 @@ some_ros_package
 - Once the world has launched, it is common for the robot to be initially unable to move. Just lift it up a bit in gazebo and drop it for this to be fixed
 - You can manually control the robot with your keyboard, logitech, ps3, or xbox controller. To do so, simply `cd ~/IGVC-2017` and then `source devel/setup.sh`, then run the appriate launchfile from `src/sb_gazebo/launch` by running `roslaunch LAUNCH_FILE.launch` (from within the launch folder). **Note:** At least with PS3 controllers, you have to hold down `L1` while using the joystick for the controller to work
 
-## Github Procedure
-- We follow the "Feature Branch Workflow"
-- A good tutorial can be found [here](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
-
 ## Arduino Development
 - When developing the firmware/Arduino parts of the software, we've made a complete arduino workspace in `src/firmware`. This way you don't need to worry about downloading the libraries yourself!
 - In order to use this, go to your Arduino IDE's Preferences dialog box and use `/your/path/to/IGVC-2017/src/firmware` as your sketchbook directory. Open arduino sketches in the workspace and they will work!
 
-## General Debugging Suggestions
+## Debugging Tips
 - If something is happening that does not seem to correspond to your code, (ex. if your node is subscribing to the totally wrong topic) try deleting the `build` and `devel` folders (if present) to remove any "cached" information
 
