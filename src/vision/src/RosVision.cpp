@@ -22,17 +22,22 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         ROS_INFO("First image received!");
         receivedFirstImage = true;
         ros::NodeHandle nh_private("~");
+        float ipm_base_width, ipm_top_width, ipm_base_displacement, ipm_top_displacement;
         //Obtains parameters of image and IPM points from the param server
         SB_getParam(nh_private, "width", width, (int)msg->width);
         SB_getParam(nh_private, "height", height, (int)msg->height);
-        SB_getParam(nh_private, "x1", x1, 0);
-        SB_getParam(nh_private, "y1", y1, height);
-        SB_getParam(nh_private, "x2", x2, width);
-        SB_getParam(nh_private, "y2", y2, height);
-        SB_getParam(nh_private, "x3", x3, width / 2 + width/4);
-        SB_getParam(nh_private, "y3", y3, height/4);
-        SB_getParam(nh_private, "x4", x4, width / 2 - width/4);
-        SB_getParam(nh_private, "y4", y4, height/4);
+        SB_getParam(nh_private, "ipm_base_width", ipm_base_width, (float)1);
+        SB_getParam(nh_private, "ipm_top_width", ipm_top_width, 0.5);
+        SB_getParam(nh_private, "ipm_base_displacement", ipm_base_displacement, 0);
+        SB_getParam(nh_private, "ipm_top_displacement", ipm_top_displacement, 0.25);
+        x1 = width/2 - ipm_base_width/2 * width;
+        y1 = (1 - ipm_base_displacement) * height;
+        x2 = width/2 + ipm_base_width/2 * width;
+        y2 = (1 - ipm_base_displacement) * height;
+        x3 = width/2 - ipm_top_width/2 * width;
+        y3 = height * ipm_top_displacement;
+        x4 = width/2 - ipm_top_width/2 * width;
+        y4 = height * ipm_top_displacement;
 
         ROS_INFO("Image Width and Height: %d x %d", width, height);
 
