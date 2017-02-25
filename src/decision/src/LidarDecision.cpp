@@ -28,10 +28,10 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
 
     // Get Param(s)
     SB_getParam(public_nh, "max_obstacle_angle_diff", max_obstacle_angle_diff, (float)M_PI/36);
-    SB_getParam(public_nh, "max_obstacle_danger_distance", max_obstacle_danger_distance, 10);
+    SB_getParam(public_nh, "max_obstacle_danger_distance", max_obstacle_danger_distance, (float)10);
     SB_getParam(public_nh, "obstacle_danger_angle", obstacle_danger_angle, (float)M_PI/4);
-    SB_getParam(public_nh, "twist_turn_rate", twist_turn_rate, 10);
-    SB_getParam(public_nh, "twist_velocity", twist_velocity, 10);
+    SB_getParam(public_nh, "twist_turn_rate", twist_turn_rate, (float)10);
+    SB_getParam(public_nh, "twist_velocity", twist_velocity, (float)10);
 }
 
 // This is called whenever a new message is received
