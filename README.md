@@ -41,7 +41,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 6. Clone this repository by running `git clone --recursive https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
 7. To start set-up run `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
     - _Just choose yes and enter your password when the terminal prompts you_ 
-8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make` 
+8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin build` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ### Important Notes:
@@ -168,8 +168,8 @@ some_ros_package
 ## Testing
 ### GTest
 - GTest is our primary testing tool at the moment. The ROS wiki has a quick intro to it [here](http://wiki.ros.org/gtest), and we also strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS.
-- Once you've setup your tests in ROS, run `catkin_make run_tests` to run them
-- To run the tests for a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
+- Once you've setup your tests in ROS, run `catkin run_tests` to run them
+- To run the tests for a specific package, run `catkin build run_tests_MY_PACKAGE_NAME`
 
 ### Rostest
 - For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
