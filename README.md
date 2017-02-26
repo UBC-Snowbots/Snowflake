@@ -9,7 +9,7 @@ UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
   - [Zed Configuration](#zed-configuration)
   - [Catkin Migration](#catkin-migration)
 - [Conventions](#conventions)
-  - [Github](#github)
+  - [Github](#github-conventions)
   - [Coding Conventions](#coding-conventions)
   - [Coordinate Systems](#coordinate-systems)
 - [Creating a New Node](#creating-a-new-node)
@@ -66,7 +66,7 @@ catkin_make run_tests | catkin run_tests
 
 ### Github Conventions
 - We follow the ["Feature Branch Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
-- Photos or videos (that aren't needed for the system to run)
+- Only commit files that are essential for the system to run; do not put any photos or videos in here
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
