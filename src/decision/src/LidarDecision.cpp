@@ -27,16 +27,11 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
     // Get Param(s)
-    if (!public_nh.param<float>("max_obstacle_angle_diff", max_obstacle_angle_diff, (float)M_PI/36))
-        ROS_WARN("max_obstacle_angle_diff not set, defaulting to %f", max_obstacle_angle_diff);
-    if (!public_nh.param<distance_t>("max_obstacle_danger_distance", max_obstacle_danger_distance, 10))
-        ROS_WARN("max_obstacle_danger_distance not set, defaulting to %f", max_obstacle_danger_distance);
-    if (!public_nh.param<distance_t>("obstacle_danger_angle", obstacle_danger_angle, (float)M_PI/4));
-        ROS_WARN("obstacle_danger_angle not set, defaulting to %f", obstacle_danger_angle);
-    if (!public_nh.param<float>("twist_turn_rate", twist_turn_rate, 10))
-        ROS_WARN("twist_turn_rate not set, defaulting to %f", twist_turn_rate);
-    if (!public_nh.param<float>("twist_velocity", twist_velocity, 10))
-        ROS_WARN("twist_velocity not set, defaulting to %f", twist_velocity);
+    SB_getParam(public_nh, "max_obstacle_angle_diff", max_obstacle_angle_diff, (float)M_PI/36);
+    SB_getParam(public_nh, "max_obstacle_danger_distance", max_obstacle_danger_distance, (float)10);
+    SB_getParam(public_nh, "obstacle_danger_angle", obstacle_danger_angle, (float)M_PI/4);
+    SB_getParam(public_nh, "twist_turn_rate", twist_turn_rate, (float)10);
+    SB_getParam(public_nh, "twist_velocity", twist_velocity, (float)10);
 }
 
 // This is called whenever a new message is received
