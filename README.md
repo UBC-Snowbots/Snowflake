@@ -169,7 +169,7 @@ some_ros_package
 ### GTest
 - GTest is our primary testing tool at the moment. The ROS wiki has a quick intro to it [here](http://wiki.ros.org/gtest), and we also strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS.
 - Once you've setup your tests in ROS, run `catkin run_tests` to run them
-- To run the tests for a specific package, run `catkin build run_tests_MY_PACKAGE_NAME`
+- To run the tests for a specific package, run `catkin build [package_name] --no-deps --catkin-make-args run_tests`
 
 ### Rostest
 - For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
