@@ -43,7 +43,7 @@ target_link_libraries(steering_driver ${catkin_LIBRARIES})
 target_link_libraries(gps_driver
     ${catkin_LIBRARIES}
     ${sb_utils_LIBRARIES}
-    ${libserial_LIBRARIES}#/usr/lib/x86_64-linux-gnu/libserial.so.0#${libserial_LIBRARIES}
+    ${libserial_LIBRARIES}
     )
 
 
