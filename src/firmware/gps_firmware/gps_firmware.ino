@@ -11,7 +11,6 @@
  *
  * Format of messages sent to computer (anything in brackets is a variable): GPS\0\0,(lat),(lon),(fix (0 or 1))
  */
-//Data format: D(lat),(long),(fix),(x),(y),(z),(headingDegrees)
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <Adafruit_GPS.h>
@@ -23,21 +22,42 @@ const float DECLINATION_ANGLE = 0.2793; //Find declination here: http://www.magn
 SoftwareSerial mySerial(3, 2);
 Adafruit_GPS GPS(&mySerial);
 
+boolean debug_mode = false;
 boolean usingInterrupt = false; //keeps track of using interrupt, off by default!
 void useInterrupt(boolean);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   gps_setup();
   Serial.println("Setup finished, ready to go!");
 }
 
 void loop() {
   gps_check_new_data();
-  char input = Serial.read();  
-  send_gps_over_serial();
-  Serial.read();
-  Serial.flush();
+  if (debug_mode){
+      send_gps_over_serial();
+  }
+}
+
+void serialEvent() {
+   // Listen for commands from the computer
+   while (Serial.available())
+   {
+     char cmd_chr = Serial.read();
+     // Request for a new gps_message
+     if (cmd_chr == 'r'){
+         send_gps_over_serial();
+     } else if (cmd_chr == 'd' && !debug_mode) {
+         // Turn on debug mode
+         debug_mode = true;
+     } else if (cmd_chr == 'd' && debug_mode){
+         // Turn off debug mode
+         debug_mode = false;
+     } else {
+         // Invalid command - Do nothing
+     }
+   } 
+
 }
 void gps_setup() {
   GPS.begin(9600);
@@ -62,6 +82,7 @@ void send_gps_over_serial() {
   Serial.print(","); Serial.print(GPS.longitudeDegrees, 6);
   Serial.print(","); Serial.print((int)GPS.fix);
   Serial.println();
+  Serial.flush();
 }
 
 // Interrupt is called once a millisecond, looks for any new GPS data, and stores it
