@@ -54,6 +54,13 @@ do
 done
 
 
+echo "================================================================"
+echo "Giving user correct permissions"
+echo "================================================================"
+
+# Add the user to the dialout so they can do arduino things
+sudo adduser $USER dialout
+
 ###############
 # Install ROS #
 ###############
