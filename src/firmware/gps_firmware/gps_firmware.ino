@@ -44,8 +44,8 @@ void serialEvent() {
    while (Serial.available())
    {
      char cmd_chr = Serial.read();
-     // Request for a new gps_message
      if (cmd_chr == 'r'){
+         // Request for a new gps_message
          send_gps_over_serial();
      } else if (cmd_chr == 'd' && !debug_mode) {
          // Turn on debug mode
@@ -78,8 +78,8 @@ void send_gps_over_serial() {
   // Send the identifier (must be 5 characters)
   Serial.print("GPS\0\0");
   // Send the longitude, latitude, and gps_fix
-  Serial.print(","); Serial.print(GPS.latitudeDegrees, 6);
-  Serial.print(","); Serial.print(GPS.longitudeDegrees, 6);
+  Serial.print(","); Serial.print(GPS.latitudeDegrees, 9);
+  Serial.print(","); Serial.print(GPS.longitudeDegrees, 9);
   Serial.print(","); Serial.print((int)GPS.fix);
   Serial.println();
   Serial.flush();
