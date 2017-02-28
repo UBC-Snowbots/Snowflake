@@ -37,9 +37,9 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     std::string raw_gps_topic_name = "/gps_driver/gps";
     raw_gps_subscriber = public_nh.subscribe(raw_gps_topic_name, refresh_rate,
                                              &GpsManager::rawGpsCallBack, this);
-    std::string compass_topic_name = "/imu/compass";
-    compass_subscriber = public_nh.subscribe(compass_topic_name, refresh_rate,
-                                                &GpsManager::compassCallBack, this);
+    std::string imu_topic_name = "/imu";
+    imu_subscriber = public_nh.subscribe(imu_topic_name, refresh_rate,
+                                             &GpsManager::imuCallback, this);
 
     // Setup Publishers
     uint32_t queue_size = 10;
@@ -67,19 +67,21 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     ROS_INFO("Hold on a sec, just waiting on initial compass and gps readings");
 }
 
-void GpsManager::compassCallBack(const std_msgs::Float32::ConstPtr heading){
+void GpsManager::imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg){
+    // Get current heading (yaw) from the imu message
+    float curr_heading = (float)tf::getYaw(imu_msg->orientation);
     // If this is the first received compass message, make it origin_heading
     if (origin_heading == -1){
-        origin_heading = heading->data;
+        origin_heading = curr_heading;
         ROS_INFO("Received initial compass reading");
         if (received_initial_navsatfix){
             ROS_INFO("Received initial compass and gps readings, good to go!");
         }
     }
     // Received heading is now the most recent one
-    most_recent_heading = heading->data;
+    most_recent_heading = curr_heading;
     // Publish the current heading of the robot, relative to the initial heading being 0 degrees
-    publishTranslatedHeading(heading);
+    publishTranslatedHeading(curr_heading);
 }
 
 void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_fix) {
@@ -111,10 +113,10 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
     }
 }
 
-void GpsManager::publishTranslatedHeading(std_msgs::Float32::ConstPtr heading){
+void GpsManager::publishTranslatedHeading(float heading){
     // Subtract the initial heading from the current heading
     std_msgs::Float32 translated_heading = std_msgs::Float32();
-    translated_heading.data = heading->data - origin_heading;
+    translated_heading.data = heading - origin_heading;
     current_heading_publisher.publish(translated_heading);
 }
 
