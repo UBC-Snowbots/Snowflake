@@ -61,6 +61,11 @@ TEST_F(LidarObstacleTest, mergeInReadingsTest){
     EXPECT_NEAR(0.2, readings[2].angle, 0.000001);
 }
 
+TEST_F(LidarObstacleTest, dangerScoreTest){
+    EXPECT_NEAR((cos(0.1) + 1.0/10), obstacle1.dangerScore(), 0.000001);
+    EXPECT_NEAR((cos(0.2) + 1.0/20), obstacle2.dangerScore(), 0.000001);
+    EXPECT_NEAR((cos(4.333333333) + 1.0/2), obstacle4.dangerScore(), 0.000001);
+}
 
 class LidarDecisionTest : public testing::Test {
 protected:
@@ -104,7 +109,7 @@ protected:
                 LidarObstacle(1.2, 10),
                 LidarObstacle(1.1, 10),
         };
-        // A more realistic set of obstacles
+//        A more realistic set of obstacles
 //        realistic_obstacles = {
 //                LidarObstacle()
 //        };
