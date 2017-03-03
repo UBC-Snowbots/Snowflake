@@ -33,7 +33,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
-    int relativeAngle = getDesiredAngle(image_scan->height / 2.0, image_scan);
+    int relativeAngle = getDesiredAngle(image_scan->height / 4.0, image_scan);
 
     // Initialize linear velocities to 0
     twistMsg.linear.y = 0;
@@ -63,17 +63,18 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
 
     int desiredAngle = getAngleOfLine(false, numSamples, image_scan);
     int row;
-    int blackCount = 0;
-    for(row = 0; row < image_scan->height; row++) {
-        if(image_scan->data[row * image_scan->width + image_scan->height/2] == 0)
-            blackCount++;
-        if(image_scan->data[row * image_scan->width + image_scan->height/3] == 0)
-            blackCount++;
-        if(image_scan->data[row * image_scan->width + image_scan->height*2/3] == 0)
-            blackCount++;
-    }
+    int whiteCount = 0;
 
-    if(blackCount == 0)
+    // Check if the robot can go in a straight line.
+    for(row = 0; row < image_scan->height; row++) {
+        if(image_scan->data[row * image_scan->width + image_scan->height/2] != 0)
+            whiteCount++;
+        if(image_scan->data[row * image_scan->width + image_scan->height/3] != 0)
+            whiteCount++;
+        if(image_scan->data[row * image_scan->width + image_scan->height*2/3] != 0)
+            whiteCount++;
+    }
+    if(whiteCount < NOISE_MAX)
         return 0;
 
     int first_black = getEdgePixel(0 , 1, image_scan->height - 1, image_scan, 1);
@@ -106,7 +107,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
 
     // Assign garbage values
     int toParseFrom = -1;
-    int topRow = -1;
+    int bottomRow = -1;
 
     // Decides how to parse depending on if rightSide is true or false.
     if (rightSide) {
@@ -119,27 +120,27 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
         incrementer = 1;
     }
 
-    // starts parsing from the right and finds where the highest white line
+    // starts parsing from the right and finds where the lowest white line
     // begins.
-    for (int i = 0; i < imageHeight - 1; i++) {
+    for (int i = imageHeight - 1; i > 0; i--) {
         int startPixel = getEdgePixel(startingPos, incrementer, i, image_scan, 1);
-        if (startPixel != -1 && topRow == -1) {
+        if (startPixel != -1 && bottomRow == -1) {
             // Once found makes note of the highest point of the white line
             // and the column it starts at.
-            topRow = i;
+            bottomRow = i;
             toParseFrom = startPixel - 1;
         }
     }
 
     // Each slope will be compared to the top point of the highest white line
-    double x1 = getMiddle(toParseFrom, topRow, rightSide, image_scan);
+    double x1 = getMiddle(toParseFrom, bottomRow, rightSide, image_scan);
 
     double sumAngles = 0;
-
+    double firstAngle = -1;
     // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
     // also counts how many of them are valid.
-    for (double division = 0; division < numSamples && (numSamples + topRow) < imageHeight; division++) {
-        double yCompared = numSamples + topRow;
+    for (double division = 30; (division < numSamples) && (bottomRow - division > 0); division++) {
+        double yCompared = bottomRow - division;
         double xCompared = getMiddle(toParseFrom, (int) yCompared, rightSide, image_scan);
 
         double foundAngle;
@@ -149,11 +150,14 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             // slope is invalid so nothing is added to sum of all angles.
             foundAngle = 0;
         else {
+
             // slope is valid, find the angle compared the the positive y-axis.
-            foundSlope = -(xCompared - x1) / (yCompared - topRow);
+            foundSlope = -(xCompared - x1) / (yCompared - bottomRow);
             foundAngle = atan(foundSlope);
             // increment amount of valid samples
             validSamples++;
+            if(firstAngle == -1)
+                firstAngle = foundAngle;
         }
 
         sumAngles += foundAngle;
@@ -164,14 +168,14 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
 
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
     // the higher the desired angle, the higher the angular speed
-    return mapRange(desiredAngle, -60, 60, -2, 2);
+    return mapRange(desiredAngle, -90, 90, -2, 2);
 
 }
 
 double VisionDecision::getDesiredLinearSpeed(double desiredAngle) {
     double speedToMap = abs((int) desiredAngle);
     // the higher the desired angle the lower the linear speed.
-    return 2 - mapRange(speedToMap, 0, 60, 0, 2);
+    return 2 - mapRange(speedToMap, 0, 90, 0, 2);
 }
 
 
@@ -208,15 +212,14 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
     int whiteVerificationCount = 0;
     int blackVerificationCount = 0;
 
-    int edgePixel = -1;
     // Initialize these to be garbage values
     int toBeChecked = -1;
 
     // Find starting pixel
     while (column < image_scan->width && column >= 0) {
         // If white pixel found start verifying if proper start.
-        if ((image_scan->data[row * image_scan->width + column] == 0 && isStartPixel) ||
-            (image_scan->data[row * image_scan->width + column] != 0 && !isStartPixel)){
+        if ((image_scan->data[row * image_scan->width + column] != 0 && isStartPixel) ||
+            (image_scan->data[row * image_scan->width + column] == 0 && !isStartPixel)){
             blackVerificationCount = 0;
             // This pixel is what we are checking
             if (toBeChecked == -1)
@@ -225,7 +228,7 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
             // Determine whether toBeChecked is noise
             whiteVerificationCount++;
             if (whiteVerificationCount == NOISE_MAX)
-                edgePixel = toBeChecked;
+                return toBeChecked;
         } else {
             blackVerificationCount++;
             if (blackVerificationCount == NOISE_MAX) {
@@ -236,7 +239,8 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
         // Go to next element
         column += incrementer;
     }
-    return edgePixel;
+
+    return -1;
 }
 
 

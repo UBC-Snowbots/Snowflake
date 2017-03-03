@@ -21,7 +21,7 @@
 // It determines the maximum consecutive number of pixels that will still
 // be considered noise. The lower the number, the smaller the expected noise
 // size.
-const int NOISE_MAX = 20;
+const int NOISE_MAX = 10;
 
 class VisionDecision {
 public:
