@@ -1,0 +1,10 @@
+<launch>
+    
+    <!-- Launch our IPM and HSV Filters -->
+    <node name="ros_vision" pkg="vision" type="ros_vision" output="screen">
+        <param name="config_file" value="$(find vision)/launch/filter_init.txt" />
+        <param name="update_frequency" value="5" />
+        <param name="show_window" value="true" />
+    </node>
+
+</launch>
