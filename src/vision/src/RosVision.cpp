@@ -76,7 +76,6 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
 
                 //Shows and updates images if debugging
                 if (showWindow) createWindow();
-                else destroyAllWindows();
 
                 //Outputs the image
                 sensor_msgs::ImagePtr output_message = cv_bridge::CvImage(std_msgs::Header(), "mono8",
@@ -84,11 +83,8 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                 pub.publish(output_message);
 
                 //Color filter calibration
-                if (isCalibratingManually) {
+                if (isCalibratingManually)
                     filter.manualCalibration();
-                } else {
-                    filter.stopManualCalibration();
-                }
 
                 int a = waitKey(20);
                 //Press 'm' to calibrate manually
@@ -102,12 +98,14 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                         filter_file << filter.getValues();
                         cout << filter.getValues();
                         filter_file.close();
+                        filter.stopManualCalibration();
                     }
                     isCalibratingManually = !isCalibratingManually;
                 }
                     //Press 's' to show/unshow window
                 else if (a == 115) {
                     showWindow = !showWindow;
+                    if (!showWindow) destroyWindow(displayWindowName);
                 }
             }
         }
@@ -135,9 +133,8 @@ void RosVision::createWindow() {
     resize(filterOutputBGR, image3Roi, sub_window_size);
 
     // Display our big Mat
-    std::string windowName("Snowbots - IPM");
-    namedWindow(windowName, CV_WINDOW_NORMAL);
-    imshow(windowName, main_image);
+    namedWindow(displayWindowName, CV_WINDOW_NORMAL);
+    imshow(displayWindowName, main_image);
 }
 
 RosVision::RosVision() {
@@ -164,9 +161,13 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     ROS_INFO("Image (Subscribe) Topic: %s", image_topic.c_str());
     ROS_INFO("Output (Publish) Topic: %s", output_topic.c_str());
 
+    double frequency;
     // Get some params (not all though, we wait until we have an image to get IPM ones)
+    SB_getParam(nh_private, "update_frequency", frequency, 5.0);
     SB_getParam(nh_private, "display_window_width", displayWindowWidth, 1000);
     SB_getParam(nh_private, "display_window_height", displayWindowHeight, 1000);
+    SB_getParam(nh_private, "config_file", mfilter_file, ros::package::getPath("vision") + "/launch/filter_init.txt");
+    SB_getParam(nh_private, "show_window", showWindow, (bool)true);
 
     //Initializes publishers and subscribers
     image_transport::ImageTransport it(nh);
@@ -174,13 +175,10 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     pub = it.advertise(output_topic, 1);
 
     //Sets up filter update frequency
-    double frequency;
-    SB_getParam(nh_private, "frequency", frequency, 5.0);
     publish_interval = ros::Duration(1 / frequency);
     last_published = ros::Time::now();
 
     //Check for filter initialization file
-    mfilter_file = ros::package::getPath("vision") + "/launch/filter_init.txt";
     ROS_INFO("Looking for filter file at: %s", mfilter_file.c_str());
     fstream filter_file(mfilter_file, ios::in);
     string line;
