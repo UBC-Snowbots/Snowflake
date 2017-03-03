@@ -87,7 +87,7 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                     filter.manualCalibration();
 
                 int a = waitKey(20);
-                //Press 'm' to calibrate manually
+                //Press 'm' to calibrate manually, press m again to save
                 if (a == 109) {
                     if (!isCalibratingManually) {
                         ROS_INFO("Beginning manual calibration");
