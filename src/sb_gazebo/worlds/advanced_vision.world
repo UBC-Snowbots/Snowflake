@@ -6,14 +6,6 @@
       <uri>model://grass_plane</uri>
     </include>
 
-    <include>
-      <uri>model://sun</uri>
-    </include>
-
-    <include>
-      <uri>model://construction_cone</uri>
-      <pose>4 1 0 0 0 0</pose>
-    </include>
-
   </world>
 </sdf>
+

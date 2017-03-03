@@ -137,21 +137,21 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
 
     //Sets up filter update frequency
     double frequency;
-    nh_private.param("frequency", frequency, 5.0);
+    SB_getParam(nh_private, "frequency", frequency, 5.0);
     publish_interval = ros::Duration(1 / frequency);
     last_published = ros::Time::now();
 
     //Obtains parameters of image and IPM points from the param server
-    nh_private.param("width", width, 640);
-    nh_private.param("height", height, 480);
-    nh_private.param("x1", x1, 0);
-    nh_private.param("x2", x2, width);
-    nh_private.param("x3", x3, width / 2 + 132);
-    nh_private.param("x4", x4, width / 2 - 132);
-    nh_private.param("y1", y1, height);
-    nh_private.param("y2", y2, height);
-    nh_private.param("y3", y3, 0);
-    nh_private.param("y4", y4, 0);
+    SB_getParam(nh_private, "width", width, 640);
+    SB_getParam(nh_private, "height", height, 480);
+    SB_getParam(nh_private, "x1", x1, 0);
+    SB_getParam(nh_private, "x2", x2, width);
+    SB_getParam(nh_private, "x3", x3, width / 2 + 132);
+    SB_getParam(nh_private, "x4", x4, width / 2 - 132);
+    SB_getParam(nh_private, "y1", y1, height);
+    SB_getParam(nh_private, "y2", y2, height);
+    SB_getParam(nh_private, "y3", y3, 0);
+    SB_getParam(nh_private, "y4", y4, 0);
 
     ROS_INFO("Image Width and Height: %d x %d", width, height);
 

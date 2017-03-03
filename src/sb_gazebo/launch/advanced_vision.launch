@@ -1,14 +1,15 @@
 <launch>
 
-    <!-- Runs a rough approximation of the IGVC Basic Course in Gazebo -->    
+    <!-- Runs a rough approximation of the IGVC Basic Course in Gazebo -->
 
     <!-- Start the world -->
     <include file="$(find sb_gazebo)/launch/open_world.launch">
-        <arg name="world" value="igvc_qualification.world"/>
+        <arg name="world" value="advanced_vision.world"/>
         <arg name="x_start_coordinate" value="0"/>
         <arg name="y_start_coordinate" value="-12"/>
         <arg name="initial_rotation" value="1.5707"/>
-        <arg name="robot" value="jfrost"/>
+        <arg name="robot" value="elsa"/>
     </include>
-     
+
 </launch>
+
