@@ -34,7 +34,7 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         y1 = (1 - ipm_base_displacement) * height;
         x2 = width/2 + ipm_base_width/2 * width;
         y2 = (1 - ipm_base_displacement) * height;
-        x3 = width/2 - ipm_top_width/2 * width;
+        x3 = width/2 + ipm_top_width/2 * width;
         y3 = height * ipm_top_displacement;
         x4 = width/2 - ipm_top_width/2 * width;
         y4 = height * ipm_top_displacement;
