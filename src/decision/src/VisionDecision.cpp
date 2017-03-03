@@ -33,7 +33,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
-    int relativeAngle = getDesiredAngle(image_scan->height / 4.0, image_scan);
+    int relativeAngle = getDesiredAngle(image_scan->height / 2.0, image_scan);
 
     // Initialize linear velocities to 0
     twistMsg.linear.y = 0;
@@ -62,16 +62,38 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist) {
 int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan) {
 
     int desiredAngle = getAngleOfLine(false, numSamples, image_scan);
+    int row;
+    int blackCount = 0;
+    for(row = 0; row < image_scan->height; row++) {
+        if(image_scan->data[row * image_scan->width + image_scan->height/2] == 0)
+            blackCount++;
+        if(image_scan->data[row * image_scan->width + image_scan->height/3] == 0)
+            blackCount++;
+        if(image_scan->data[row * image_scan->width + image_scan->height*2/3] == 0)
+            blackCount++;
+    }
 
+    if(blackCount == 0)
+        return 0;
+
+    int first_black = getEdgePixel(0 , 1, image_scan->height - 1, image_scan, 1);
+    if(first_black != -1)
+        return mapRange(first_black, 0, image_scan->width - 1, 90, -90);
+    
     // If angle coming from the left is invalid try going from the right.
     if (!(desiredAngle < 90 && desiredAngle > -90))
         desiredAngle = getAngleOfLine(true, numSamples, image_scan);
 
+    if(desiredAngle < 20 && desiredAngle > -20) {
+        first_black = getEdgePixel(0 , 1, image_scan->height / 2, image_scan, 1);
+        desiredAngle = mapRange(first_black, 0, image_scan->width - 1, 40, -40);
+    }
+
     // If both cases are invalid it will do a turn 90 degrees (Turns sharp right).
     if (!(desiredAngle < 90 && desiredAngle > -90))
-        return 10;
-    else
-        return desiredAngle;
+        desiredAngle = 90;
+
+    return desiredAngle;
 }
 
 int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan) {
@@ -142,14 +164,14 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
 
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
     // the higher the desired angle, the higher the angular speed
-    return mapRange(desiredAngle, -90, 90, -2, 2);
+    return mapRange(desiredAngle, -60, 60, -2, 2);
 
 }
 
 double VisionDecision::getDesiredLinearSpeed(double desiredAngle) {
     double speedToMap = abs((int) desiredAngle);
     // the higher the desired angle the lower the linear speed.
-    return 2 - mapRange(speedToMap, 0, 90, 0, 2);
+    return 2 - mapRange(speedToMap, 0, 60, 0, 2);
 }
 
 

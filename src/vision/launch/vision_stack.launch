@@ -10,6 +10,7 @@
 
 	<node name="vision_decision" pkg="decision" type="vision_decision" output="screen">
 		<remap from="/vision_processing/filtered_image" to="/vision/filtered_image"/>
+		<remap from="/vision_decision/command" to="robot/cmd_vel"/>
 	</node>
      
 </launch>
