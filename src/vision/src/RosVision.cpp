@@ -146,10 +146,6 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     displayWindowName = "Snowbots - IPM";
     receivedFirstImage = false;
 
-    //Calibration Variables
-    showWindow = true;
-    isCalibratingManually = false;
-
     //ROS
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
@@ -167,7 +163,8 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     SB_getParam(nh_private, "display_window_width", displayWindowWidth, 1000);
     SB_getParam(nh_private, "display_window_height", displayWindowHeight, 1000);
     SB_getParam(nh_private, "config_file", mfilter_file, ros::package::getPath("vision") + "/launch/filter_init.txt");
-    SB_getParam(nh_private, "show_window", showWindow, (bool)true);
+    SB_getParam(nh_private, "show_image_window", showWindow, true);
+    SB_getParam(nh_private, "show_calibration_window", isCalibratingManually, false);
 
     //Initializes publishers and subscribers
     image_transport::ImageTransport it(nh);
