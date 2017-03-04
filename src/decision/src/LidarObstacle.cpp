@@ -42,13 +42,33 @@ angle_t LidarObstacle::getMaxAngle() {
     return readings[readings.size()-1].angle;
 }
 
-float LidarObstacle::dangerScore() {
-    return sin(getAvgAngle()) * (1 / getAvgDistance());
-}
-
 const std::vector<Reading>& LidarObstacle::getAllLaserReadings() {
     return readings;
 };
+
+distance_t LidarObstacle::getMinDistance() {
+    std::vector<Reading> readings = getAllLaserReadings();
+    Reading reading_with_min_distance = *std::min_element(readings.begin(), readings.end(),
+                                                            [&] (auto const& reading1, auto const& reading2){
+                                                                    return reading1.range < reading2.range;
+                                                            });
+    return reading_with_min_distance.range;
+}
+
+distance_t LidarObstacle::getMaxDistance() {
+    std::vector<Reading> readings = getAllLaserReadings();
+    Reading reading_with_max_distance = *std::max_element(readings.begin(), readings.end(),
+                                                          [&] (auto const& reading1, auto const& reading2){
+                                                              return reading1.range > reading2.range;
+                                                          });
+    return reading_with_max_distance.range;
+}
+
+float LidarObstacle::dangerScore() {
+    float angle_score = cos(getAvgAngle());
+    float distance_score = (1 / getMinDistance());
+    return (angle_score + distance_score);
+}
 
 void LidarObstacle::mergeInReadings(std::vector<Reading> &new_readings) {
     this->readings.insert(readings.end(), new_readings.begin(), new_readings.end());

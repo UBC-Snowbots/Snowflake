@@ -81,6 +81,20 @@ public:
     float getMaxAngle();
 
     /**
+    * Gets the minimum distance from of an object from the robot
+    *
+    * @ return the minimum distance of the obstacle from the robot
+    */
+    float getMinDistance();
+
+    /**
+     * Gets the maximum distance from of an object from the robot
+     *
+     * @ return the maximum distance of the obstacle from the robot
+     */
+    float getMaxDistance();
+
+    /**
      * Calculates a danger score for the obstacle
      *
      * ie. how dangerous the obstacle is to the robot
@@ -118,7 +132,6 @@ private:
     // pairs are stored in sorted order, from min to max angle.
     std::vector<Reading> readings;
 };
-
 
 class LidarDecision {
 public:
