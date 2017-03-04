@@ -42,6 +42,31 @@ angle_t LidarObstacle::getMaxAngle() {
     return readings[readings.size()-1].angle;
 }
 
+
+//change
+
+distance_t LidarObstacle::getLastDistance(){
+    return readings[readings.size()-1].range;
+    distance_t MaxDistanceSoFar = 0;
+    for (int i = 0; i < readings.size()-1; i++) {
+        MaxDistanceSoFar = MaxDistanceSoFar > readings[i].range? MaxDistanceSoFar : readings[i].range;
+    }
+    return MaxDistanceSoFar;
+}
+
+distance_t LidarObstacle::getFirstDistance(){
+    return readings[0].range;
+    distance_t MinDistanceSoFar = 0;
+    for (int i = 0; i < readings.size()-1; i++) {
+        MinDistanceSoFar = MinDistanceSoFar < readings[i].range? MinDistanceSoFar : readings[i].range;
+    }
+    return MinDistanceSoFar;
+}
+
+//change
+
+
+
 float LidarObstacle::dangerScore() {
     return sin(getAvgAngle()) * (1 / getAvgDistance());
 }

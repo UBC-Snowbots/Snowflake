@@ -7,6 +7,8 @@
 #include <LidarDecision.h>
 #include <gtest/gtest.h>
 
+#define distance 1.0f
+
 class LidarObstacleTest : public testing::Test {
 protected:
     virtual void SetUp(){
@@ -75,8 +77,10 @@ protected:
         scan1.range_min = 20;
         scan1.range_max = 40;
         // Add the obstacles
-        std::fill(scan1.ranges.begin(), scan1.ranges.begin()+20, 37.123);
-        std::fill(scan1.ranges.begin()+100, scan1.ranges.begin()+110, 25.123);
+        std::fill(scan1.ranges.begin(), scan1.ranges.begin()+10, 36.123);
+        std::fill(scan1.ranges.begin()+10, scan1.ranges.begin()+20, 38.123);
+        std::fill(scan1.ranges.begin()+100, scan1.ranges.begin()+105, 24.123);
+        std::fill(scan1.ranges.begin()+105, scan1.ranges.begin()+110, 26.123);
         std::fill(scan1.ranges.begin()+125, scan1.ranges.begin()+130, 25.123);
         std::fill(scan1.ranges.begin()+200, scan1.ranges.begin()+240, 32);
         // Make some ranges outside the min and max of the scan
@@ -116,26 +120,28 @@ protected:
 
 TEST_F(LidarDecisionTest, mergeSimilarObstaclesPreSortedTest){
 
-    LidarDecision::mergeSimilarObstacles(sorted_obstacles, 0.11);
+    LidarDecision::mergeSimilarObstacles(sorted_obstacles, 0.11, distance);
     EXPECT_EQ(4, sorted_obstacles.size());
 }
 
 TEST_F(LidarDecisionTest, mergeSimilarObstaclesUnSortedTest){
     // Create some test obstacles in random order
     // (in terms of angle)
-    LidarDecision::mergeSimilarObstacles(unsorted_obstacles, 0.11);
+    LidarDecision::mergeSimilarObstacles(unsorted_obstacles, 0.11, distance);
     EXPECT_EQ(4, unsorted_obstacles.size());
 }
 
 TEST_F(LidarDecisionTest, findObstaclesTest){
-    std::vector<LidarObstacle> found_obstacles = LidarDecision::findObstacles(scan1, 0.1);
-    EXPECT_EQ(4, found_obstacles.size());
+    std::vector<LidarObstacle> found_obstacles = LidarDecision::findObstacles(scan1, 0.1, distance);
+    EXPECT_EQ(6, found_obstacles.size());
     // Check that all obstacles are at acceptable ranges
     for (LidarObstacle obstacle : found_obstacles){
         EXPECT_GE(obstacle.getAvgDistance(), 20);
         EXPECT_LE(obstacle.getAvgDistance(), 40);
     }
 }
+
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
