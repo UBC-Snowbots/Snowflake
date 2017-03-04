@@ -3,7 +3,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 22, 2017
- * Description: This class represents a Obstacle, as detected by the lidar
+ * Description: This class represents an Obstacle, as detected by the lidar
  */
 
 LidarObstacle::LidarObstacle(){};
@@ -17,8 +17,8 @@ LidarObstacle::LidarObstacle(std::vector<Reading> readings) {
 }
 
 distance_t LidarObstacle::getAvgDistance() {
-    float total_distance = std::accumulate(readings.begin(), readings.end(), 0,
-                                           [] (float accumulator, auto reading){
+    float total_distance = std::accumulate(readings.begin(), readings.end(), 0.0,
+                                                   [] (int accumulator, auto reading){
                                                 return accumulator + reading.range;
                                             });
     return total_distance / readings.size();
@@ -26,9 +26,9 @@ distance_t LidarObstacle::getAvgDistance() {
 
 angle_t LidarObstacle::getAvgAngle() {
     float total_angle = std::accumulate(readings.begin(), readings.end(), 0.0,
-                                        [] (float accumulator, auto reading){
-                                                return accumulator + reading.angle;
-                                            });
+                                                [] (float accumulator, auto reading){
+                                                        return accumulator + reading.angle;
+                                                    });
     return total_angle / readings.size();
 }
 
@@ -49,9 +49,9 @@ const std::vector<Reading>& LidarObstacle::getAllLaserReadings() {
 distance_t LidarObstacle::getMinDistance() {
     std::vector<Reading> readings = getAllLaserReadings();
     Reading reading_with_min_distance = *std::min_element(readings.begin(), readings.end(),
-                                                            [&] (auto const& reading1, auto const& reading2){
-                                                                    return reading1.range < reading2.range;
-                                                            });
+                                                          [&] (auto const& reading1, auto const& reading2){
+                                                                return reading1.range < reading2.range;
+                                                          });
     return reading_with_min_distance.range;
 }
 
