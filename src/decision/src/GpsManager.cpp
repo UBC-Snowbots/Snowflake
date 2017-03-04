@@ -51,14 +51,9 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     current_heading_publisher = nh.advertise<std_msgs::Float32>(current_heading_topic, queue_size);
 
     // Get Params
-    // TODO: Check that this sets the parameters properly
-    if (!public_nh.getParam("at_goal_tolerance", at_goal_tolerance)){
-        ROS_WARN("Could not find \"at_goal_tolerance\" parameter, defaulting to 1");
-        at_goal_tolerance = 1;
-    }
-    if (!public_nh.getParam("waypoints", waypoints_raw)){
-        ROS_ERROR("Could not find \"waypoints\" parameter. This node requires waypoints to navigate to!\n"
-                    "Waypoints should be a list in the form [lat, lon, lat, lon, ...]");
+    SB_getParam(public_nh, "at_goal_tolerance", at_goal_tolerance, (float)1.0);
+    if (!SB_getParam(public_nh, "waypoints", waypoints_raw)){
+        ROS_ERROR("Waypoints should be a list in the form [lat, lon, lat, lon, ...]");
     } else {
         waypoint_list = parseWaypoints(waypoints_raw);
         populateWaypointStack();

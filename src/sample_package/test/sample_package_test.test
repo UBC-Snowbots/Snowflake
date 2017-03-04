@@ -1,0 +1,6 @@
+<!-- A .test file which launches the node and its corresponding rostest -->
+
+<launch>
+    <node name="my_node" pkg="sample_package" type="my_node" />
+    <test test-name="my_node_rostest" pkg="sample_package" type="my_node_rostest" />
+</launch>

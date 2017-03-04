@@ -25,6 +25,7 @@
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <ros/console.h>
+#include <sb_utils.h>
 #include <ros/time.h>
 #include <string>
 

@@ -22,7 +22,7 @@ SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) {
 
 }
 
-// The callback function for the subscriber (my_subscriber).
+// The callback function for the scan_subscriber (my_subscriber).
 // This is called whenever a new message is received
 void SteeringDriver::commandCallBack(const std_msgs::String::ConstPtr& msg) {
     // Deal with the command here
