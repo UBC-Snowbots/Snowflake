@@ -42,7 +42,9 @@ Map::Map(int argc, char **argv, std::string node_name){
 }
 
 void Map::positionCallback(const nav_msgs::Odometry::ConstPtr& msg){
-    //geometry_msgs::Pose = msg->pose.pose;
+    pos = msg->pose.pose;
+    //ROS_INFO("Position: (%f, %f, %f)", pos.position.x, pos.position.y, pos.position.z);
+    //ROS_INFO("Orientation: (%f, %f, %f, %f)", pos.orientation.x, pos.orientation.w, pos.orientation.y, pos.orientation.z);
 }
 
 void Map::visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg) {
@@ -76,9 +78,16 @@ void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
 
 
     // Get data
-    ROS_INFO("Cloud width: %i | Could height: %i", cloud->width, cloud->height);
+    // ROS_INFO("Cloud width: %i | Could height: %i", cloud->width, cloud->height);
 
     // Integrate data
+    grid_map::Matrix& data = map["lidar"];
+    //std::vector<pcl::PointXYZ, Eigen::aligned_allocator<pcl::PointXYZ>>::const_iterator it;
+    pcl::PointCloud<pcl::PointXYZ>::const_iterator it;
+    for (it = cloud->points.begin(); it != cloud->points.end(); it++)
+    {
+        std::cout << *it;
+    }
 
 
     // Publish data
