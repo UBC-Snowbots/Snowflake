@@ -121,16 +121,22 @@ void RosVision::createWindow() {
     cv::Size sub_window_size(main_window_size.width/2, main_window_size.height/2);
     cv::Mat main_image(main_window_size, CV_8UC3);
 
-    // Copy all our images to the big Mat we just created
+    // Copy all our images to the big Mat we just created (in 4 sub-windows)
+    // Image 1
     cv::Mat image1Roi(main_image, cv::Rect(0, 0, sub_window_size.width, sub_window_size.height));
     resize(workingImage, image1Roi, sub_window_size);
+    // Image 2
     cv::Mat image2Roi(main_image, cv::Rect(sub_window_size.width, 0, sub_window_size.width, sub_window_size.height));
     resize(ipmOutput, image2Roi, sub_window_size);
-    // Our third image is greyscale, so make it "colored" so it can be merged into the colored main mat
+    // Image 3: Our third image is greyscale, so make it "colored" so it can be merged into the colored main mat
     cv::Mat filterOutputBGR;
     cv::cvtColor(filterOutput, filterOutputBGR, CV_GRAY2BGR);
     cv::Mat image3Roi(main_image, cv::Rect(0, sub_window_size.height, sub_window_size.width, sub_window_size.height));
     resize(filterOutputBGR, image3Roi, sub_window_size);
+    // Image 4: We only have 3 images, so just make the last one all black to stop flickering
+    cv::Mat allBlack(sub_window_size, CV_8UC3, 3);
+    cv::Mat image4Roi(main_image, cv::Rect(sub_window_size.width, sub_window_size.height, sub_window_size.width, sub_window_size.height));
+    resize(allBlack, image4Roi, sub_window_size);
 
     // Display our big Mat
     namedWindow(displayWindowName, CV_WINDOW_NORMAL);
