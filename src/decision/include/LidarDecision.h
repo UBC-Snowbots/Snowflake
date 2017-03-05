@@ -69,28 +69,28 @@ public:
     /**
      * Gets the minimum angle from of an object from the robot
      *
-     * @ return the minimum angle of the obstacle from the robot
+     * @return the minimum angle of the obstacle from the robot
      */
     float getMinAngle();
 
     /**
      * Gets the maximum angle from of an object from the robot
      *
-     * @ return the maximum angle of the obstacle from the robot
+     * @return the maximum angle of the obstacle from the robot
      */
     float getMaxAngle();
 
     /**
-    * Gets the minimum distance from of an object from the robot
-    *
-    * @ return the minimum distance of the obstacle from the robot
-    */
+     * Gets the minimum distance from of an object from the robot
+     *
+     * @return the minimum distance of the obstacle from the robot
+     */
     float getMinDistance();
 
     /**
      * Gets the maximum distance from of an object from the robot
      *
-     * @ return the maximum distance of the obstacle from the robot
+     * @return the maximum distance of the obstacle from the robot
      */
     float getMaxDistance();
 
