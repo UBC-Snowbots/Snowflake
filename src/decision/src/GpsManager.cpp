@@ -34,7 +34,7 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
 
     // Setup Subscribers
     uint32_t refresh_rate = 10;
-    std::string raw_gps_topic_name = "/gps_driver/gps";
+    std::string raw_gps_topic_name = "/gps_driver/navsatfix";
     raw_gps_subscriber = public_nh.subscribe(raw_gps_topic_name, refresh_rate,
                                              &GpsManager::rawGpsCallBack, this);
     std::string imu_topic_name = "/imu";
