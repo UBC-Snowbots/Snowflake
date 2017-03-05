@@ -5,7 +5,7 @@
 
 # Nodes
 ## ros_vision
-- This is our IPM (Inverse Prespective Mapping - basically translating things from the camera's po**int** of view to a birds-eye po**int** of view) and HSV (Hue, Saturation, Value - used for filtering out white lines) node.
+- This is our IPM (Inverse Perspective Mapping - basically translating things from the camera's point of view to a birds-eye point of view) and HSV (Hue, Saturation, Value - used for filtering out white lines) node.
 - It contains a fair amount of legacy code (*sigh*) so may be a *little* disorganized
 
 ### Params
