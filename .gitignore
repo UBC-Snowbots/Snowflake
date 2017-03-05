@@ -10,10 +10,7 @@ clion*
 .swp
 filter_init.txt
 cmake-build-debug
-<<<<<<< HEAD
 
 # We want to ignore the catkin settings, except for some specific files
 /.catkin_tools
 !/.catkin_tools/profiles/default/config.yaml
-=======
->>>>>>> 05febcf269ce3cda133c784c333f29b2af39bf51
