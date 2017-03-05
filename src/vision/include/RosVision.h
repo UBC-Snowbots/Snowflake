@@ -73,7 +73,6 @@ private:
 
     // The name and size of the display window
     std::string displayWindowName;
-    int displayWindowWidth, displayWindowHeight;
 
     //Filters and their variables
     snowbotsFilter filter;

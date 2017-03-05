@@ -117,7 +117,7 @@ void RosVision::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
 
 void RosVision::createWindow() {
     // Create one big mat for all our images
-    cv::Size main_window_size(displayWindowWidth, displayWindowHeight);
+    cv::Size main_window_size(width * 2, height * 2);
     cv::Size sub_window_size(main_window_size.width/2, main_window_size.height/2);
     cv::Mat main_image(main_window_size, CV_8UC3);
 
@@ -166,8 +166,6 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     double frequency;
     // Get some params (not all though, we wait until we have an image to get IPM ones)
     SB_getParam(nh_private, "update_frequency", frequency, 5.0);
-    SB_getParam(nh_private, "display_window_width", displayWindowWidth, 1000);
-    SB_getParam(nh_private, "display_window_height", displayWindowHeight, 1000);
     SB_getParam(nh_private, "config_file", mfilter_file, ros::package::getPath("vision") + "/launch/filter_init.txt");
     SB_getParam(nh_private, "show_image_window", showWindow, true);
     SB_getParam(nh_private, "show_calibration_window", isCalibratingManually, false);
