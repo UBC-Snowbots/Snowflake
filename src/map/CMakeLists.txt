@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   laser_geometry
   roscpp
   rospy
+  tf2_ros
 )
 
 find_package(PCL REQUIRED)
@@ -37,4 +38,6 @@ add_executable(map src/Map.cpp src/map.cpp include/Map.h)
 add_executable(map_test_pub test/test_map_publishers.cpp)
 target_link_libraries(map ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 target_link_libraries(map_test_pub ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+add_executable(transform src/transformTest.cpp)
+target_link_libraries(transform ${catkin_LIBRARIES})
 

@@ -13,15 +13,20 @@
 #include <grid_map_msgs/GridMap.h>
 #include <grid_map_core/GridMapMath.hpp>
 #include <ros/ros.h>
+#include <tf2_ros/transform_listener.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl_ros/point_cloud.h>
+#include <pcl_ros/transforms.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <geometry_msgs/Pose2D.h>
 #include <geometry_msgs/Pose.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/Twist.h>
 #include <sensor_msgs/LaserScan.h>
 #include <laser_geometry/laser_geometry.h>
 #include <nav_msgs/Odometry.h>
+#include <tf2/transform_datatypes.h>
 
 class Map {
 public:

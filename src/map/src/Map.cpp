@@ -75,14 +75,29 @@ void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
     pcl_conversions::toPCL(ros_cloud, temp);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromPCLPointCloud2(temp, *cloud);
-
+    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
+    // ROS_INFO("Header: %s", msg->header.frame_id.c_str());
 
     // Get data
     // ROS_INFO("Cloud width: %i | Could height: %i", cloud->width, cloud->height);
+    tf2_ros::Buffer tfBuffer;
+    tf2_ros::TransformListener tfListener(tfBuffer);
+    geometry_msgs::TransformStamped tstamped;
+    bool success;
+    try {
+        // finds the conversion from lidar to odom with 3s waiting time if necessary
+        tstamped = tfBuffer.lookupTransform("odom", "lidar", ros::Time(0), ros::Duration(3.0));
+        tf::Transform tfTransform;
+        tf::transformMsgToTF(tstamped.transform, tfTransform);
+        // Magic.jpg
+        pcl_ros::transformPointCloud(*cloud, *transformedCloud, tfTransform);
+    } catch (tf2::TransformException &ex) {
+        ROS_WARN("%s", ex.what());
+        ros::Duration(1.0).sleep();
+    }
 
     // Integrate data
     grid_map::Matrix& data = map["lidar"];
-    //std::vector<pcl::PointXYZ, Eigen::aligned_allocator<pcl::PointXYZ>>::const_iterator it;
     pcl::PointCloud<pcl::PointXYZ>::const_iterator it;
     for (it = cloud->points.begin(); it != cloud->points.end(); it++)
     {

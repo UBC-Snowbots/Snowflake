@@ -1,3 +1,0 @@
-<launch>
-    <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/valerian/IGVC-2017/src/map/test/rosbags/lidar_and_pose.bag"/>
-</launch>
