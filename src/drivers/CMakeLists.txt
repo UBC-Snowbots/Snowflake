@@ -8,7 +8,6 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 find_package(sb_utils REQUIRED)
-#find_package(libserial0 REQUIRED)
 find_library(libserial_LIBRARIES libserial.so.0)
 add_definitions(-std=c++14)
 
@@ -39,7 +38,9 @@ add_executable(gps_driver src/gps_driver.cpp)
 # target_link_libraries(drivers_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(steering_driver ${catkin_LIBRARIES})
+target_link_libraries(steering_driver
+    ${catkin_LIBRARIES}
+    )
 target_link_libraries(gps_driver
     ${catkin_LIBRARIES}
     ${sb_utils_LIBRARIES}
