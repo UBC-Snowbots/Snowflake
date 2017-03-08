@@ -1,0 +1,4 @@
+drivers:
+    ubuntu:
+        apt:
+            packages: [libserial-dev]
