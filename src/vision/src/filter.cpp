@@ -55,7 +55,6 @@ void snowbotsFilter::filterImage(const cv::Mat &input, cv::Mat &output){
     cv::cvtColor(input, hsvOutput, CV_BGR2HSV, 0);
     cv::inRange(hsvOutput, cv::Scalar(_iLowH, _iLowS, _iLowV), cv::Scalar(_iHighH, _iHighS, _iHighV), rangeOutput);
 
-
     //Morphological Opening (removes small objects from foreground)
     cv::erode(rangeOutput, rangeOutput, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)));
     cv::dilate(rangeOutput, rangeOutput, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)));

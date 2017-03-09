@@ -12,6 +12,7 @@ catkin_package(
     #  INCLUDE_DIRS include
 )
 
+
 ###########
 ## Build ##
 ###########
@@ -33,6 +34,7 @@ add_executable(ros_vision
     include/filter.h src/filter.cpp
     include/IPM.h src/IPM.cpp
     )
+
 add_executable(camera src/camera_init.cpp)
 
 ## Specify libraries to link a library or executable target against
