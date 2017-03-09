@@ -110,4 +110,6 @@ cd $DIR
 
 echo "================================================================"
 echo "Finished first time installation and setup; you're good to go!"
+echo "If you're working with arduino, or any usb devices, please log"
+echo "out and login again for the required changes to take effect"
 echo "================================================================"

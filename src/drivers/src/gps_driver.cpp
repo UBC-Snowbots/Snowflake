@@ -1,6 +1,6 @@
 /*
  * Created By: Gareth Ellis
- * Created On: September 22, 2016
+ * Created On: February 24, 2017
  * Description: This node is responsible for passing twist messages received
  *              over serial to the arduino controlling the robot
  *
@@ -33,6 +33,9 @@ bool validGpsMessage(std::string msg, double& lat, double& lon, bool& has_fix){
 
     int has_fix_int;
     // Check that we have a GPS message
+    // The split string should have 4 components
+    if (split_string.size() != 4)
+        return false;
     // A message should be of the form: "GPS,double,double,1 or 0"
     // Check that the message starts with "GPS"
     if (split_string[0] != "GPS") return false;

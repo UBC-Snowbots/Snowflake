@@ -1,7 +1,5 @@
 # Fimware
 
-## Sensor Control 
-
 ### gps_firmware
 
 - Designed to allow pass lat and lon coordinates from a [Adafruit Ultimate GPS Breakout v3](https://www.adafruit.com/product/746) to a PC over serial
