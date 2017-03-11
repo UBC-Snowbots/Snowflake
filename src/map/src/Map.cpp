@@ -13,6 +13,7 @@ Map::Map(int argc, char **argv, std::string node_name){
     ros::NodeHandle public_nh("~");
 
 
+
     // Creates the relevant layers
     map.add("vision");
     map.add("lidar");
@@ -23,6 +24,11 @@ Map::Map(int argc, char **argv, std::string node_name){
     double const INIT_MAP_HEIGHT = 40;
     double const INIT_MAP_RES = 0.01;
 
+    double const INIT_MAP_X_POSITION = 20;
+    double const INIT_MAP_Y_POSITION = 20;
+
+    // TODO: set this frame to "map" and create transform between "map" and "odom"
+    map.setFrameId("odom");
     map.setGeometry(grid_map::Length(INIT_MAP_WIDTH, INIT_MAP_HEIGHT), INIT_MAP_RES);
 
     // Initialize subscribers
