@@ -26,14 +26,16 @@ Map::Map(int argc, char **argv, std::string node_name){
     map.setGeometry(grid_map::Length(INIT_MAP_WIDTH, INIT_MAP_HEIGHT), INIT_MAP_RES);
 
     // Initialize subscribers
-    vision_sub = nh.subscribe("vision", 1000, &Map::visionCallback, this);
-    lidar_sub = nh.subscribe("/robot/laser/scan", 1000, &Map::lidarCallback, this);
-    position_sub = nh.subscribe("/robot/odom_diffdrive", 1000, &Map::positionCallback, this);
+    // Buffers are bad because we might be processing old data
+    vision_sub = nh.subscribe("vision", 1, &Map::visionCallback, this);
+    lidar_sub = nh.subscribe("/robot/laser/scan", 1, &Map::lidarCallback, this);
+    position_sub = nh.subscribe("/robot/odom_diffdrive", 1, &Map::positionCallback, this);
 
     // Initialize publishers
     vision_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("vision_map", 1, true);
     lidar_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("lidar_map", 1, true);
     location_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("position_map", 1, true);
+    test_pub = nh.advertise<sensor_msgs::PointCloud2>("transformed_pointcloud", 1, true);
 
     // Initializes position to origin
     // TODO: Set initial position and orientation
@@ -67,30 +69,31 @@ void Map::visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg)
 
 void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
 
-    // Take laserscan and magic it into a PCL pointcloud
-    // Holy pipes batman
+    // Take laserscan and magic it into a pointcloud
     sensor_msgs::PointCloud2 ros_cloud;
     projector.projectLaser(*msg, ros_cloud);
-    pcl::PCLPointCloud2 temp;
-    pcl_conversions::toPCL(ros_cloud, temp);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::fromPCLPointCloud2(temp, *cloud);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
-    // ROS_INFO("Header: %s", msg->header.frame_id.c_str());
+    ROS_INFO("Frame of input: %s", msg->header.frame_id.c_str());
+    pcl::PointCloud<pcl::PointXYZ> cloud;
 
-    // Get data
-    // ROS_INFO("Cloud width: %i | Could height: %i", cloud->width, cloud->height);
-    tf2_ros::Buffer tfBuffer;
-    tf2_ros::TransformListener tfListener(tfBuffer);
-    geometry_msgs::TransformStamped tstamped;
-    bool success;
+
     try {
-        // finds the conversion from lidar to odom with 3s waiting time if necessary
+
+        // Get the TF transformation
+        tf2_ros::Buffer tfBuffer;
+        tf2_ros::TransformListener tfListener(tfBuffer);
+        geometry_msgs::TransformStamped tstamped;
         tstamped = tfBuffer.lookupTransform("odom", "lidar", ros::Time(0), ros::Duration(3.0));
-        tf::Transform tfTransform;
-        tf::transformMsgToTF(tstamped.transform, tfTransform);
-        // Magic.jpg
-        pcl_ros::transformPointCloud(*cloud, *transformedCloud, tfTransform);
+        sensor_msgs::PointCloud2 ros_transformed_cloud;
+        tf2::doTransform(ros_cloud, ros_transformed_cloud, tstamped);
+        ROS_INFO("New frame: %s", ros_transformed_cloud.header.frame_id.c_str());
+        test_pub.publish(ros_transformed_cloud);
+
+        // Convert into PCL pointcloud type
+        pcl::PCLPointCloud2 temp;
+        pcl_conversions::toPCL(ros_transformed_cloud, temp);
+        pcl::fromPCLPointCloud2(temp, cloud);
+        // ros_transformed_cloud.header.frame_id = "odom";
+
     } catch (tf2::TransformException &ex) {
         ROS_WARN("%s", ex.what());
         ros::Duration(1.0).sleep();
@@ -99,18 +102,22 @@ void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
     // Integrate data
     grid_map::Matrix& data = map["lidar"];
     pcl::PointCloud<pcl::PointXYZ>::const_iterator it;
-    for (it = cloud->points.begin(); it != cloud->points.end(); it++)
+    for (it = cloud.points.begin(); it != cloud.points.end(); it++)
     {
-        std::cout << *it;
+        grid_map::Position pos(it->x, it->y);
+        if (map.isInside(pos))
+        {
+            ROS_INFO("Inserting [%f] at: (%f, %f)", it->z, it->x, it->y);
+            map.atPosition("lidar", pos) = it->z;
+        }
+
     }
-
-
     // Publish data
     nav_msgs::OccupancyGrid occ_grid;
     float occ_grid_min = 0;
     float occ_grid_max = 100;
     grid_map::GridMapRosConverter::toOccupancyGrid(map, "lidar", occ_grid_min, occ_grid_max, occ_grid);
-    vision_map_pub.publish(occ_grid);
+    lidar_map_pub.publish(occ_grid);
 }
 
 grid_map::Matrix Map::getVisionLayer(){

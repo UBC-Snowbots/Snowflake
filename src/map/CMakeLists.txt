@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   tf2_ros
+  pcl_ros
+  tf2_sensor_msgs
 )
 
 find_package(PCL REQUIRED)

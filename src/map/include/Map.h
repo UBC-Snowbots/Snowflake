@@ -24,6 +24,7 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/LaserScan.h>
+#include <tf2_sensor_msgs/tf2_sensor_msgs.h>
 #include <laser_geometry/laser_geometry.h>
 #include <nav_msgs/Odometry.h>
 #include <tf2/transform_datatypes.h>
@@ -49,6 +50,8 @@ private:
     ros::Publisher lidar_map_pub;
     ros::Publisher location_map_pub;
     grid_map::GridMap map;
+
+    ros::Publisher test_pub;
 
     laser_geometry::LaserProjection projector;
 
