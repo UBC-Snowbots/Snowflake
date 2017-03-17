@@ -7,7 +7,6 @@
 
 #include <LidarDecision.h>
 
-
 // The constructor
 LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
@@ -35,9 +34,9 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
 }
 
 // This is called whenever a new message is received
-    void LidarDecision::scanCallBack(const sensor_msgs::LaserScan::ConstPtr &raw_scan) {
-        // Deal with new messages here
-        twist_publisher.publish(generate_twist_message(raw_scan));
+void LidarDecision::scanCallBack(const sensor_msgs::LaserScan::ConstPtr &raw_scan) {
+    // Deal with new messages here
+    twist_publisher.publish(generate_twist_message(raw_scan));
 }
 
 geometry_msgs::Twist LidarDecision::generate_twist_message(const sensor_msgs::LaserScan::ConstPtr &raw_scan) {
@@ -63,7 +62,6 @@ geometry_msgs::Twist LidarDecision::generate_twist_message(const sensor_msgs::La
         all_zero.angular.y = 0;
         all_zero.angular.z = 0;
         return all_zero;
-
     }
 }
 
