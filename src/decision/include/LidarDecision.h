@@ -48,21 +48,18 @@ public:
     LidarObstacle(std::vector<Reading> readings);
 
     /**
-    * Gets the maximum distance of the Obstacle from the robot
+    * Gets the distance of the first data from a Obstacle group
     *
-    * @return the maximum distance of the Obstacle from the robot
+    * @return the distance of the first data from a Obstacle group
     */
     distance_t getFirstDistance();
 
     /**
-    * Gets the minimum distance of the Obstacle from the robot
+    * Gets the distance of the last data from a Obstacle group
     *
-    * @return the minimum distance of the Obstacle from the robot
+    * @return the distance of the last data from a Obstacle group
     */
     distance_t getLastDistance();
-
-
-
 
     /**
      * Gets the average distance of the Obstacle from the robot
