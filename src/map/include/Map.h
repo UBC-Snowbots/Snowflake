@@ -39,7 +39,7 @@ public:
 
 
 private:
-    void visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg);
+    void visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg);
     void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
     void positionCallback(const nav_msgs::Odometry::ConstPtr&  msg);
 
@@ -58,6 +58,9 @@ private:
     // TODO: Determine better datatype for position (geometry_msgs::Pose2D?),
     // TODO: currently, it's a grid_map::Position = Eigen::Vector2f, a vector of 2 floats ...
     geometry_msgs::Pose pos;
+
+    void transformPointCloud(const sensor_msgs::PointCloud2& input, sensor_msgs::PointCloud2& output, std::string target_frame);
+    void convertPointCloud(const sensor_msgs::PointCloud2& input, pcl::PointCloud<pcl::PointXYZ>& output);
 };
 
 

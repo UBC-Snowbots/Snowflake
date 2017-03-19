@@ -55,14 +55,26 @@ void Map::positionCallback(const nav_msgs::Odometry::ConstPtr& msg){
     //ROS_INFO("Orientation: (%f, %f, %f, %f)", pos.orientation.x, pos.orientation.w, pos.orientation.y, pos.orientation.z);
 }
 
-void Map::visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg) {
+// TODO: Callbacks are super similar, maybe refactor to a generic callback with params.
+void Map::visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
 
+    sensor_msgs::PointCloud2 transformed_ros_cloud;
+    transformPointCloud(*msg, transformed_ros_cloud, "odom");
 
-    // Assume we obtain x,y,z + rgb value for each point
-    pcl::PointCloud<pcl::PointXYZRGB> cloud = *msg;
+    pcl::PointCloud<pcl::PointXYZ> cloud;
+    convertPointCloud(transformed_ros_cloud, cloud);
 
     // Integrate data
-
+    pcl::PointCloud<pcl::PointXYZ>::const_iterator it;
+    for (it = cloud.points.begin(); it != cloud.points.end(); it++)
+    {
+        grid_map::Position pos(it->x, it->y);
+        if (map.isInside(pos))
+        {
+            ROS_INFO("Inserting [%f] at: (%f, %f)", it->z, it->x, it->y);
+            map.atPosition("vision", pos) = it->z;
+        }
+    }
 
     // Publish data
     nav_msgs::OccupancyGrid occ_grid;
@@ -75,38 +87,18 @@ void Map::visionCallback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg)
 
 void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
 
-    // Take laserscan and magic it into a pointcloud
+    // Take laserscan and magic it into a pointcloud with the right transformation
     sensor_msgs::PointCloud2 ros_cloud;
     projector.projectLaser(*msg, ros_cloud);
     ROS_INFO("Frame of input: %s", msg->header.frame_id.c_str());
+
+    sensor_msgs::PointCloud2 transformed_ros_cloud;
+    transformPointCloud(ros_cloud, transformed_ros_cloud, "odom");
+
     pcl::PointCloud<pcl::PointXYZ> cloud;
-
-
-    try {
-
-        // Get the TF transformation
-        tf2_ros::Buffer tfBuffer;
-        tf2_ros::TransformListener tfListener(tfBuffer);
-        geometry_msgs::TransformStamped tstamped;
-        tstamped = tfBuffer.lookupTransform("odom", "lidar", ros::Time(0), ros::Duration(3.0));
-        sensor_msgs::PointCloud2 ros_transformed_cloud;
-        tf2::doTransform(ros_cloud, ros_transformed_cloud, tstamped);
-        ROS_INFO("New frame: %s", ros_transformed_cloud.header.frame_id.c_str());
-        test_pub.publish(ros_transformed_cloud);
-
-        // Convert into PCL pointcloud type
-        pcl::PCLPointCloud2 temp;
-        pcl_conversions::toPCL(ros_transformed_cloud, temp);
-        pcl::fromPCLPointCloud2(temp, cloud);
-        // ros_transformed_cloud.header.frame_id = "odom";
-
-    } catch (tf2::TransformException &ex) {
-        ROS_WARN("%s", ex.what());
-        ros::Duration(1.0).sleep();
-    }
+    convertPointCloud(transformed_ros_cloud, cloud);
 
     // Integrate data
-    grid_map::Matrix& data = map["lidar"];
     pcl::PointCloud<pcl::PointXYZ>::const_iterator it;
     for (it = cloud.points.begin(); it != cloud.points.end(); it++)
     {
@@ -126,6 +118,27 @@ void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
     lidar_map_pub.publish(occ_grid);
 }
 
+void Map::transformPointCloud(const sensor_msgs::PointCloud2& input,
+                              sensor_msgs::PointCloud2& output,
+                              std::string target_frame){
+    try {
+        tf2_ros::Buffer tfBuffer;
+        tf2_ros::TransformListener tfListener(tfBuffer);
+        geometry_msgs::TransformStamped tstamped;
+        tstamped = tfBuffer.lookupTransform(target_frame, input.header.frame_id, ros::Time(0), ros::Duration(1.0));
+        tf2::doTransform(input, output, tstamped);
+    } catch (tf2::TransformException &ex) {
+        ROS_WARN("%s", ex.what());
+        ros::Duration(1.0).sleep();
+    }
+}
+
+void Map::convertPointCloud(const sensor_msgs::PointCloud2& input, pcl::PointCloud<pcl::PointXYZ>& output){
+    pcl::PCLPointCloud2 temp;
+    pcl_conversions::toPCL(input, temp);
+    pcl::fromPCLPointCloud2(temp, output);
+}
+
 grid_map::Matrix Map::getVisionLayer(){
     return map.get("vision");
 }
@@ -141,6 +154,8 @@ grid_map::Matrix Map::getFootprintLayer(){
 std::pair<double, double> Map::getCurrentLocation(){
     return std::pair<double, double>(0, 0);
 }
+
+
 
 
 
