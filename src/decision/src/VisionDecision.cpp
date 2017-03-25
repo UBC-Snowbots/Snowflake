@@ -15,7 +15,7 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
     ros::NodeHandle public_nh("~");
 
     // Setup Subscriber(s)
-    std::string camera_image_topic_name = "/vision_processing/filtered_image";
+    std::string camera_image_topic_name = "/vision/filtered_image";
     int refresh_rate = 10;
     image_subscriber = public_nh.subscribe(camera_image_topic_name, refresh_rate, &VisionDecision::imageCallBack, this);
 
@@ -76,23 +76,16 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     }
     if(whiteCount < NOISE_MAX)
         return 0;
+    if (isPerpendicular(image_scan))
+        return STOP_SIGNAL_ANGLE;
 
-    int first_black = getEdgePixel(0 , 1, image_scan->height - 1, image_scan, 1);
-    if(first_black != -1)
-        return mapRange(first_black, 0, image_scan->width - 1, 90, -90);
-    
     // If angle coming from the left is invalid try going from the right.
     if (!(desiredAngle < 90 && desiredAngle > -90))
         desiredAngle = getAngleOfLine(true, numSamples, image_scan);
 
-    if(desiredAngle < 20 && desiredAngle > -20) {
-        first_black = getEdgePixel(0 , 1, image_scan->height / 2, image_scan, 1);
-        desiredAngle = mapRange(first_black, 0, image_scan->width - 1, 40, -40);
-    }
-
     // If both cases are invalid it will do a turn 90 degrees (Turns sharp right).
     if (!(desiredAngle < 90 && desiredAngle > -90))
-        desiredAngle = 90;
+        desiredAngle = STOP_SIGNAL_ANGLE;
 
     return desiredAngle;
 }
@@ -108,35 +101,24 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     // Assign garbage values
     int toParseFrom = -1;
     int bottomRow = -1;
-
-    // Decides how to parse depending on if rightSide is true or false.
-    if (rightSide) {
-        // starts at right side then increments to the left
-        startingPos = image_scan->width - 1;
-        incrementer = -1;
-    } else {
-        // starts at left side then increments to th right
-        startingPos = 0;
-        incrementer = 1;
-    }
+    
+    // Initialize how and where to parse.
+    incrementer = initializeIncrementerPosition(rightSide, image_scan, &startingPos);
 
     // starts parsing from the right and finds where the lowest white line
     // begins.
     for (int i = imageHeight - 1; i > 0; i--) {
         int startPixel = getEdgePixel(startingPos, incrementer, i, image_scan, 1);
         if (startPixel != -1 && bottomRow == -1) {
-            // Once found makes note of the highest point of the white line
-            // and the column it starts at.
             bottomRow = i;
             toParseFrom = startPixel - 1;
         }
     }
 
-    // Each slope will be compared to the top point of the highest white line
+    // Each slope will be compared to the bottom point of the lowest white line
     double x1 = getMiddle(toParseFrom, bottomRow, rightSide, image_scan);
 
     double sumAngles = 0;
-    double firstAngle = -1;
     // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
     // also counts how many of them are valid.
     for (double division = 30; (division < numSamples) && (bottomRow - division > 0); division++) {
@@ -146,36 +128,42 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
         double foundAngle;
         double foundSlope;
 
-        if (xCompared == -1)
+        if (xCompared == -1 || x1 == -1)
             // slope is invalid so nothing is added to sum of all angles.
             foundAngle = 0;
         else {
-
             // slope is valid, find the angle compared the the positive y-axis.
             foundSlope = -(xCompared - x1) / (yCompared - bottomRow);
             foundAngle = atan(foundSlope);
             // increment amount of valid samples
             validSamples++;
-            if(firstAngle == -1)
-                firstAngle = foundAngle;
         }
 
+        // printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
+        // Add the angle to the average.
         sumAngles += foundAngle;
     }
 
-    return (int) (sumAngles / validSamples * 180.0 / M_PI); // returns the angle in degrees
+    if (validSamples < numSamples / 3 || bottomRow == -1)
+        return STOP_SIGNAL_ANGLE;
+    else
+        return (int) (sumAngles / validSamples * 180.0 / M_PI); // returns the angle in degrees
 }
 
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
     // the higher the desired angle, the higher the angular speed
-    return mapRange(desiredAngle, -90, 90, -2, 2);
+    if (desiredAngle == STOP_SIGNAL_ANGLE)
+        return 0;
+    return mapRange(desiredAngle, -90, 90, -1, 1);
 
 }
 
 double VisionDecision::getDesiredLinearSpeed(double desiredAngle) {
     double speedToMap = abs((int) desiredAngle);
+    if (desiredAngle == STOP_SIGNAL_ANGLE)
+        return 0;
     // the higher the desired angle the lower the linear speed.
-    return 2 - mapRange(speedToMap, 0, 90, 0, 2);
+    return 1 - mapRange(speedToMap, 0, 90, 0, 1);
 }
 
 
@@ -215,15 +203,16 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
     // Initialize these to be garbage values
     int toBeChecked = -1;
 
-    // Find starting pixel
+    // Parse through image horizontally to find a valid pixel
     while (column < image_scan->width && column >= 0) {
         // If white pixel found start verifying if proper start.
-        if ((image_scan->data[row * image_scan->width + column] != 0 && isStartPixel) ||
-            (image_scan->data[row * image_scan->width + column] == 0 && !isStartPixel)){
+        if ((image_scan->data[row * image_scan->width + column] == 0 && isStartPixel) ||
+            (image_scan->data[row * image_scan->width + column] != 0 && !isStartPixel)){
             blackVerificationCount = 0;
             // This pixel is what we are checking
-            if (toBeChecked == -1)
+            if (toBeChecked == -1) {
                 toBeChecked = column;
+            }
 
             // Determine whether toBeChecked is noise
             whiteVerificationCount++;
@@ -240,10 +229,62 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
         column += incrementer;
     }
 
+    // No value found return an error.
     return -1;
 }
 
+int VisionDecision::initializeIncrementerPosition(bool rightSide, const sensor_msgs::Image::ConstPtr &image_scan, int *startingPos)
+{
+    // Decides how to parse depending on if rightSide is true or false.
+    if (rightSide) {
+        // starts at right side then increments to the left
+        *startingPos = image_scan->width - 1;
+        return -1;
+    } else {
+        // starts at left side then increments to th right
+        *startingPos = 0;
+        return 1;
+    }
+}
 
+bool VisionDecision::isPerpendicular(const sensor_msgs::Image::ConstPtr &image_scan)
+{
+    int leftSidePixel = getVerticalEdgePixel(image_scan, image_scan->width/4);
+    int rightSidePixel = getVerticalEdgePixel(image_scan, image_scan->width*3/4);
+    return (abs(rightSidePixel - leftSidePixel) < image_scan->height/10);
+}
+
+int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &image_scan, int column)
+{
+    int row;
+    int whiteVerificationCount = 0;
+    int blackVerificationCount = 0;
+
+    // Initialize these to be garbage values
+    int toBeChecked = -1;
+
+    // Parse vertically to find a valid starting white pixel.
+    for(row = image_scan->height-1; row >= 0; row--) {
+        // If white pixel found start verifying if proper start.
+        if ((image_scan->data[row * image_scan->width + column] != 0)){
+            blackVerificationCount = 0;
+            // This pixel is what we are checking
+            if (toBeChecked == -1)
+                toBeChecked = row;
+
+            // Determine whether toBeChecked is noise
+            whiteVerificationCount++;
+            if (whiteVerificationCount == NOISE_MAX)
+                return toBeChecked;
+        } else {
+            blackVerificationCount++;
+            if (blackVerificationCount == NOISE_MAX) {
+                whiteVerificationCount = 0; // Reset verification if black pixel.
+                toBeChecked = -1;
+            }
+        }
+    }
+}
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax) {
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }

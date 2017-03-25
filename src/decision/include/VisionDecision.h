@@ -21,7 +21,11 @@
 // It determines the maximum consecutive number of pixels that will still
 // be considered noise. The lower the number, the smaller the expected noise
 // size.
-const int NOISE_MAX = 10;
+const int NOISE_MAX = 30;
+
+// Since 90 can never be returned by arctan. 90 will be used as a special angle
+// to signal desired angular speed and desired linear speed functions to return 0.
+const int STOP_SIGNAL_ANGLE = 90;
 
 class VisionDecision {
 public:
@@ -114,6 +118,31 @@ private:
      *      the mapped number
      */
     static double mapRange(double x, double inMin, double inMax, double outMin, double outMax);
+
+    /**
+     * Initializes the incrementer's starting position and how it will parse.
+     *
+     * @param image_scan the image to parse.
+     * @param rightSide determines whether to parse from the left or the right side of the image.
+     * @param startingPos where the parser will start parsing the image.
+     */
+    static int initializeIncrementerPosition(bool rightSide, const sensor_msgs::Image::ConstPtr &image_scan, int *startingPos);
+
+    /**
+     * Checks whether the line is perpendicular to the robot's vision.
+     *
+     * @param image_scan the image to parse.
+     */
+    static bool isPerpendicular(const sensor_msgs::Image::ConstPtr &image_scan);
+
+    /**
+     * Gets the first valid white pixel bottom to top at the specified column.
+     *
+     * @param image_scan the image to parse.
+     * @param column the column to parse at.
+     *
+     */
+    static int getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &image_scan, int column);
 
     void imageCallBack(const sensor_msgs::Image::ConstPtr& image);
     void publishTwist(geometry_msgs::Twist twist);

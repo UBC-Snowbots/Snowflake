@@ -33,7 +33,7 @@ TEST(imageTest, angleLeft){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(-20, VisionDecision::getDesiredAngle(300, testImageScan), 20);
 }
 
 TEST(imageTest, angleRight){
@@ -44,7 +44,7 @@ TEST(imageTest, angleRight){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(20, VisionDecision::getDesiredAngle(300, testImageScan), 20);
 }
 
 TEST(imageTest, noisyStraight){
@@ -65,52 +65,48 @@ TEST(imageTest, noisyLeft){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(300, testImageScan), 20);
 }
 
 /**
- * Tests when one line starts higher and ends higher than the other line.
- * As opposed to both starting or ending at the same height.
- *
- * Should turn LEFT.
+ *  Tests for line that signals to turn left while starting higher than the bottom
+ *  of the image.
  */
-TEST(imageTest, splitLines){
-    String filename = "imageTests/testSplitLines.jpg";
+TEST(imageTest, elevatedLeftLine){
+    String filename = "imageTests/testElevatedLeftLine.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(300, testImageScan), 30);
 }
 
 /**
- * Tests when one line starts higher and ends higher than the other line.
- * As opposed to both starting or ending at the same height.
- *
- * Should turn RIGHT.
+ *  Tests for line that signals to turn right while starting higher than the bottom
+ *  of the image.
  */
-TEST(imageTest, splitLinesRight){
-    String filename = "imageTests/testSplitLinesRight.jpg";
+TEST(imageTest, elevatedRightLine){
+    String filename = "imageTests/testElevatedRightLine.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(300, testImageScan), 25);
 }
 
-TEST(imageTest, smallRight){
-    String filename = "imageTests/testSmallRight.jpg";
+TEST(imageTest, straightButLineNearEdge){
+    String filename = "imageTests/testStraightButLineNearEdge.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(0, VisionDecision::getDesiredAngle(300, testImageScan), 20);
 }
 
 TEST(imageTest, perpendicular){
@@ -121,21 +117,21 @@ TEST(imageTest, perpendicular){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_EQ(90, VisionDecision::getDesiredAngle(300, testImageScan));
+    EXPECT_EQ(STOP_SIGNAL_ANGLE, VisionDecision::getDesiredAngle(300, testImageScan));
 }
 
 TEST(speedTest, angular){
     EXPECT_EQ(0, VisionDecision::getDesiredAngularSpeed(0));
-    EXPECT_EQ(100, VisionDecision::getDesiredAngularSpeed(90));
-    EXPECT_EQ(100, VisionDecision::getDesiredAngularSpeed(-90));
-    EXPECT_EQ(50, VisionDecision::getDesiredAngularSpeed(45));
+    EXPECT_EQ(0, VisionDecision::getDesiredAngularSpeed(90));
+    EXPECT_EQ(-1, VisionDecision::getDesiredAngularSpeed(-90));
+    EXPECT_EQ(0.5, VisionDecision::getDesiredAngularSpeed(45));
 }
 
 TEST(speedTest, linear){
-    EXPECT_EQ(100, VisionDecision::getDesiredLinearSpeed(0));
+    EXPECT_EQ(1, VisionDecision::getDesiredLinearSpeed(0));
     EXPECT_EQ(0, VisionDecision::getDesiredLinearSpeed(90));
     EXPECT_EQ(0, VisionDecision::getDesiredLinearSpeed(-90));
-    EXPECT_EQ(50, VisionDecision::getDesiredLinearSpeed(45));
+    EXPECT_EQ(0.5, VisionDecision::getDesiredLinearSpeed(45));
 }
 
 /**
