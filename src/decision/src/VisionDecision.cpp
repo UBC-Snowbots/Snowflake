@@ -33,7 +33,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
-    int relativeAngle = getDesiredAngle(image_scan->height / 4.0, image_scan);
+    int relativeAngle = getDesiredAngle(image_scan->height / 5.0, image_scan);
 
     // Initialize linear velocities to 0
     twistMsg.linear.y = 0;
@@ -139,7 +139,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             validSamples++;
         }
 
-        // printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
+        printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
         // Add the angle to the average.
         sumAngles += foundAngle;
     }
