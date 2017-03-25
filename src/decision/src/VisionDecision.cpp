@@ -139,7 +139,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             validSamples++;
         }
 
-        printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
+        // printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
         // Add the angle to the average.
         sumAngles += foundAngle;
     }
