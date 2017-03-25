@@ -85,9 +85,9 @@ std::vector<LidarObstacle> LidarDecision::findObstacles(const sensor_msgs::Laser
     for (int i = 0; i < scan_data.size(); i++) {
         // Check that obstacle is within valid range
         if (scan_data[i] < scan.range_max && scan_data[i] > scan.range_min) {
-                // If so, add it to the obstacles
-                obstacles.emplace_back(LidarObstacle(scan.angle_increment * i + scan.angle_min,
-                                                     scan_data[i]));
+            // If so, add it to the obstacles
+            obstacles.emplace_back(LidarObstacle(scan.angle_increment * i + scan.angle_min,
+                                                 scan_data[i]));
         }
     }
 
