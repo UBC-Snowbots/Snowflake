@@ -35,8 +35,8 @@ public:
     /**
      * Creates a LidarObstacle with a given distance and angle
      *
-     * @param distance The distance to the obstacle
-     * @param angle The angle to the obstacle
+     * @ param distance The distance to the obstacle
+     * @ param angle The angle to the obstacle
      */
     LidarObstacle(angle_t angle, distance_t distance);
 
@@ -48,16 +48,16 @@ public:
     LidarObstacle(std::vector<Reading> readings);
 
     /**
-    * Gets the distance of the first data from a Obstacle group
+    * Gets the distance of the first data (at the minimum angle) of a Obstacle group
     *
-    * @return the distance of the first data from a Obstacle group
+    * @ return the distance of the first data from a Obstacle group
     */
     distance_t getFirstDistance();
 
     /**
-    * Gets the distance of the last data from a Obstacle group
+    * Gets the distance of the last data (at the maximum angle) of a Obstacle group
     *
-    * @return the distance of the last data from a Obstacle group
+    * @ return the distance of the last data from a Obstacle group
     */
     distance_t getLastDistance();
 
@@ -66,7 +66,7 @@ public:
      *
      * The distance from the robot is the average of all scan distances
      *
-     * @return the distance of the Obstacle from the robot
+     * @ return the distance of the Obstacle from the robot
      */
     distance_t getAvgDistance();
 
@@ -75,7 +75,7 @@ public:
      *
      * The angle from the robot is the average of all scan angles
      *
-     * @return the angle of the Obstacle from the robot
+     * @ return the angle of the Obstacle from the robot
      */
     angle_t getAvgAngle();
 
@@ -98,14 +98,14 @@ public:
      *
      * ie. how dangerous the obstacle is to the robot
      *
-     * @return danger_score how dangerous the obstacle is to the robot
+     * @ return danger_score how dangerous the obstacle is to the robot
      */
     float dangerScore();
 
     /**
      * Gets all laser readings comprising the obstacle
      *
-     * @return readings A list of pairs of all laser readings
+     * @ return readings A list of pairs of all laser readings
      */
     const std::vector<Reading>& getAllLaserReadings();
 
@@ -115,7 +115,7 @@ public:
      * Adds the given LidarObstacle's scan distances and scan angles to
      * this LidarObstacles scan distances and scan angles respectively
      *
-     * @param obstacle The LidarObstacle to be merged in
+     * @ param obstacle The LidarObstacle to be merged in
      */
     void mergeInLidarObstacle(LidarObstacle obstacle);
 
@@ -123,7 +123,7 @@ private:
     /**
      * Merges a given set of readings into the obstacle
      *
-     * @param readings the readings to be merged in
+     * @ param readings the readings to be merged in
      */
     void mergeInReadings(std::vector<Reading> &new_readings);
 
@@ -140,28 +140,29 @@ public:
     /**
      * Creates a twist command from a given lidar scan that will best avoid obstacles in the scan
      *
-     * @return A twist command from a given lidar scan that will best avoid obstacles in the scan
+     * @ return A twist command from a given lidar scan that will best avoid obstacles in the scan
      */
     geometry_msgs::Twist generate_twist_message(const sensor_msgs::LaserScan::ConstPtr &raw_scan);
 
     /**
      * Finds all obstacles in a given scan
      *
-     * @param sensor_msgs\LaserScan a laser scan in which to find obstacles
-     * @param max_obstacle_angle_diff the maximum possible angular difference between two lidar hits
+     * @ param sensor_msgs\LaserScan a laser scan in which to find obstacles
+     * @ param max_obstacle_angle_diff the maximum possible angular difference between two lidar hits
      *          for them to be considered the same obstacle
      *
-     * @return a vector of all obstacles
+     * @ return a vector of all obstacles
      */
     static std::vector<LidarObstacle> findObstacles(const sensor_msgs::LaserScan& scan,
-                                                        float max_obstacle_angle_diff, float max_obstacle_distance_diff);
+                                                    float max_obstacle_angle_diff,
+                                                    float max_obstacle_distance_diff);
 
     /**
      * Finds the obstacle most dangerous to the robot
      *
-     * @param obstacles all obstacles to be considered
+     * @ param obstacles all obstacles to be considered
      *
-     * @return the most dangerous obstacle out of those given
+     * @ return the most dangerous obstacle out of those given
      */
     static LidarObstacle mostDangerousObstacle(const std::vector<LidarObstacle> obstacles);
 
@@ -170,13 +171,15 @@ public:
      *
      * The merge occurs in place
      *
-     * @param obstacles the list of obstacles to be merged (if similar)
-     * @param max_angle_diff the max difference that two obstacles may differ by and still be considered
+     * @ param obstacles the list of obstacles to be merged (if similar)
+     * @ param max_angle_diff the max difference that two obstacles may differ by and still be considered
      *                      part of the same obstacle
-     * @param max_distance_diff the max difference that two obstacles may differ by and still be considered
+     * @ param max_distance_diff the max difference that two obstacles may differ by and still be considered
      *                      part of the same obstacle
      */
-    static void mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles, float max_angle_diff, float max_distance_diff);
+    static void mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
+                                      float max_angle_diff,
+                                      float max_distance_diff);
 
     /**
      * Creates a twist message from a given obstacle
@@ -186,10 +189,10 @@ public:
      * - If obstacle is to right, turn left
      * - If obstacle is exactly in front, turn left (arbitrary decision)
      *
-     * @param max_obstacle_danger_distance distance which the obstacle must be within to be considered
-     * @param obstacle the obstacle to be considered
+     * @ param max_obstacle_danger_distance distance which the obstacle must be within to be considered
+     * @ param obstacle the obstacle to be considered
      *
-     * @return a twist message
+     * @ return a twist message
      */
     static geometry_msgs::Twist twist_message_from_obstacle(LidarObstacle obstacle,
                                                             distance_t danger_distance,

@@ -29,8 +29,8 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     // Get Param(s)
     if (!public_nh.param<float>("max_obstacle_angle_diff", max_obstacle_angle_diff, (float)M_PI/36))
         ROS_WARN("max_obstacle_angle_diff not set, defaulting to %f", max_obstacle_angle_diff);
-    if (!public_nh.param<float>("max_obstacle_angle_diff", max_obstacle_angle_diff, (float)4))
-        ROS_WARN("max_obstacle_distance_diff not set, defaulting to %f", max_obstacle_angle_diff);
+    if (!public_nh.param<float>("max_obstacle_distance_diff", max_obstacle_distance_diff, (float)4))
+        ROS_WARN("max_obstacle_distance_diff not set, defaulting to %f", max_obstacle_distance_diff);
     if (!public_nh.param<distance_t>("max_obstacle_danger_distance", max_obstacle_danger_distance, 10))
         ROS_WARN("max_obstacle_danger_distance not set, defaulting to %f", max_obstacle_danger_distance);
     if (!public_nh.param<distance_t>("obstacle_danger_angle", obstacle_danger_angle, (float)M_PI/4));
@@ -75,7 +75,8 @@ geometry_msgs::Twist LidarDecision::generate_twist_message(const sensor_msgs::La
 }
 
 std::vector<LidarObstacle> LidarDecision::findObstacles(const sensor_msgs::LaserScan &scan,
-                                                        float max_obstacle_angle_diff, float max_obstacle_distance_diff) {
+                                                        float max_obstacle_angle_diff,
+                                                        float max_obstacle_distance_diff) {
     // Get the raw scan data
     std::vector<float> scan_data = scan.ranges;
 
@@ -84,11 +85,9 @@ std::vector<LidarObstacle> LidarDecision::findObstacles(const sensor_msgs::Laser
     for (int i = 0; i < scan_data.size(); i++) {
         // Check that obstacle is within valid range
         if (scan_data[i] < scan.range_max && scan_data[i] > scan.range_min) {
-            if(i == 0 ||(abs(scan_data[i-1] - scan_data[i]) < max_obstacle_distance_diff)) {
                 // If so, add it to the obstacles
                 obstacles.emplace_back(LidarObstacle(scan.angle_increment * i + scan.angle_min,
                                                      scan_data[i]));
-            }
         }
     }
 
@@ -106,7 +105,9 @@ LidarObstacle LidarDecision::mostDangerousObstacle(const std::vector<LidarObstac
                               });
 }
 
-void LidarDecision::mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles, float max_angle_diff, float max_distance_diff) {
+void LidarDecision::mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
+                                          float max_angle_diff,
+                                          float max_distance_diff) {
     // Ensure the list of obstacles is sorted in order of ascending angle
     std::sort(obstacles.begin(), obstacles.end(),
         [&] (LidarObstacle l1, LidarObstacle l2){
@@ -116,11 +117,12 @@ void LidarDecision::mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
     // Merge similar obstacles
     int i = 0;
     while(i < (long)obstacles.size() - 1){
-        // Check if angle difference between two consecutive scans is less then max_angle_diff
-        if (abs(obstacles[i+1].getMinAngle() - obstacles[i].getMaxAngle()) < max_angle_diff && abs(obstacles[i+1].getFirstDistance() - obstacles[i].getLastDistance()) < max_distance_diff){
+        // Check if angle difference between two consecutive scans is less than max_angle_diff and max_distance_diff
+        if (abs(obstacles[i+1].getMinAngle() - obstacles[i].getMaxAngle()) < max_angle_diff &&
+            abs(obstacles[i+1].getFirstDistance() - obstacles[i].getLastDistance()) < max_distance_diff){
                 // Merge next obstacle into current one
-                obstacles[i].mergeInLidarObstacle(obstacles[i + 1]);
-                obstacles.erase(obstacles.begin() + i + 1);
+                obstacles[i].mergeInLidarObstacle(obstacles[i+1]);
+                obstacles.erase(obstacles.begin()+i+1);
 
         } else {
             i++;
