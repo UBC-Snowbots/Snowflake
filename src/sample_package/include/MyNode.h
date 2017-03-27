@@ -25,7 +25,9 @@ public:
      *
      * @return input_string with an exclamation point added to it
      */
-    static std::string addExclamationPoint(std::string input_string);
+     static std::string addCharacterToString(std::string input_string, std::string suffix);
+     std::string suffix;
+
 private:
     /**
      * Callback function for when a new string is received

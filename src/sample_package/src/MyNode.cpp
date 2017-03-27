@@ -14,6 +14,11 @@ MyClass::MyClass(int argc, char **argv, std::string node_name) {
     ros::NodeHandle nh;
     ros::NodeHandle public_nh("~");
 
+    // Obtains character from the parameter server (or launch file), sets '!' as default
+    std::string parameter_name = "my_node/character";
+    std::string default_character = "!";
+    nh.param(parameter_name, suffix, default_character);
+
     // Setup Subscriber(s)
     std::string topic_to_subscribe_to = "subscribe_topic";
     int refresh_rate = 10;
@@ -28,12 +33,12 @@ MyClass::MyClass(int argc, char **argv, std::string node_name) {
 void MyClass::subscriberCallBack(const std_msgs::String::ConstPtr& msg) {
     ROS_INFO("Received message");
     std::string input_string = msg->data.c_str();
-    std::string new_msg = addExclamationPoint(input_string);
+    std::string new_msg = addCharacterToString(input_string, suffix);
     republishMsg(new_msg);
 }
 
-std::string MyClass::addExclamationPoint(std::string input_string) {
-    return input_string.append("!");
+std::string MyClass::addCharacterToString(std::string input_string, std::string suffix) {
+    return input_string.append(suffix);
 }
 
 void MyClass::republishMsg(std::string msg_to_publish) {
