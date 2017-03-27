@@ -50,10 +50,6 @@ distance_t LidarObstacle::getFirstDistance(){
     return readings[0].range;
 }
 
-float LidarObstacle::dangerScore() {
-    return sin(getAvgAngle()) * (1 / getAvgDistance());
-}
-
 const std::vector<Reading>& LidarObstacle::getAllLaserReadings() {
     return readings;
 };
