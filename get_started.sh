@@ -34,9 +34,7 @@ declare -a new_shell_config_lines=(
     # Aliases to make development easier
     "alias clion=\"clion & disown && exit\""\
     "alias rviz=\"rviz & disown && exit\""\
-    "alias rqt=\"rqt & disown && exit\""\
-    "alias catkin=\"catkin \""\
-    "alias run_tests=\"run_tests && catkin_test_results\""
+    "alias rqt=\"rqt & disown && exit\""
 )
 
 # Add all of our new shell config options to all the shell
