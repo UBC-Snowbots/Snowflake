@@ -12,12 +12,13 @@
 #include <iostream>
 #include <std_msgs/String.h>
 #include <ros/ros.h>
+#include <sb_utils.h>
 
 class MyClass {
 public:
     MyClass(int argc, char **argv, std::string node_name);
     /**
-     * Adds an exclamation point to a given string
+     * Adds a character to a given string
      *
      * Some Longer explanation should go here
      *
@@ -25,7 +26,7 @@ public:
      *
      * @return input_string with an exclamation point added to it
      */
-    static std::string addExclamationPoint(std::string input_string);
+    std::string addCharacterToString(std::string input_string);
 private:
     /**
      * Callback function for when a new string is received
@@ -42,5 +43,6 @@ private:
 
     ros::Subscriber my_subscriber;
     ros::Publisher my_publisher;
+    std::string append_character;
 };
 #endif //SAMPLE_PACKAGE_MYNODE_H

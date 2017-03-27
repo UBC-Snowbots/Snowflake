@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="rosbag" type="play" name="player" args="--clock /home/valerian/IGVC-2017/src/map/test/rosbags/sim.bag"/>
+    <node pkg="map" name="map" type="map" output="screen" />
+</launch>

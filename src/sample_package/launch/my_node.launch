@@ -1,0 +1,5 @@
+<launch>
+    <node name="my_node" pkg="sample_package" type="my_node" output="screen">
+        <param name="character" value="?" />
+    </node>
+</launch>
