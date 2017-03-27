@@ -8,12 +8,13 @@
 #ifndef DECISION_LIDAR_DECISION_H
 #define DECISION_LIDAR_DECISION_H
 
+#include <ros/ros.h>
+#include <sb_utils.h>
 #include <iostream>
 #include <cmath>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/LaserScan.h>
-#include <ros/ros.h>
 
 using distance_t = float;
 using angle_t = float;
@@ -82,16 +83,30 @@ public:
     /**
      * Gets the minimum angle from of an object from the robot
      *
-     * @ return the minimum angle of the obstacle from the robot
+     * @return the minimum angle of the obstacle from the robot
      */
     angle_t getMinAngle();
 
     /**
      * Gets the maximum angle from of an object from the robot
      *
-     * @ return the maximum angle of the obstacle from the robot
+     * @return the maximum angle of the obstacle from the robot
      */
     angle_t getMaxAngle();
+
+    /**
+     * Gets the minimum distance from of an object from the robot
+     *
+     * @return the minimum distance of the obstacle from the robot
+     */
+    float getMinDistance();
+
+    /**
+     * Gets the maximum distance from of an object from the robot
+     *
+     * @return the maximum distance of the obstacle from the robot
+     */
+    float getMaxDistance();
 
     /**
      * Calculates a danger score for the obstacle
@@ -131,7 +146,6 @@ private:
     // pairs are stored in sorted order, from min to max angle.
     std::vector<Reading> readings;
 };
-
 
 class LidarDecision {
 public:
