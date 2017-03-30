@@ -142,6 +142,56 @@ TEST_F(LidarDecisionTest, findObstaclesTest){
     }
 }
 
+TEST_F(LidarDecisionTest, angular_twist_message_from_obstacleTest){
+    // Create some test twist messages with correct twist.angular.z values
+    geometry_msgs::Twist test1;
+    geometry_msgs::Twist test2;
+    geometry_msgs::Twist test3;
+
+    // Check that the correct twist.angular.z values are calculated
+    // based on test obstacle's parameters
+    test1.angular.z = 1.0606602;
+    EXPECT_NEAR(test1.angular.z,
+                LidarDecision::twist_message_from_obstacle(LidarObstacle(-M_PI/4, 3.0),
+                                                           4.0, M_PI/2, 1.5, 1.5).angular.z,
+                0.000001);
+    test2.angular.z = 1.5000000;
+    EXPECT_NEAR(test2.angular.z,
+                LidarDecision::twist_message_from_obstacle(LidarObstacle(0.0, 4.7),
+                                                           5.0, M_PI/2, 1.5, 1.5).angular.z,
+                0.000001);
+    test3.angular.z = -1.5000000;
+    EXPECT_NEAR(test3.angular.z,
+                LidarDecision::twist_message_from_obstacle(LidarObstacle(M_PI/2, 0.9),
+                                                           2.0, M_PI/2, 1.5, 1.5).angular.z,
+                0.000001);
+}
+
+TEST_F(LidarDecisionTest, linear_twist_message_from_obstacleTest){
+    // Create some test twist messages with correct twist.linear.x values
+    geometry_msgs::Twist test1;
+    geometry_msgs::Twist test2;
+    geometry_msgs::Twist test3;
+
+    // Check that the correct twist.linear.x values are calculated
+    // based on test obstacle's parameters
+    test1.linear.x = 1.7320508;
+    EXPECT_NEAR(test1.linear.x,
+                LidarDecision::twist_message_from_obstacle(LidarObstacle(-M_PI/3, 3.0),
+                                                           4.0, M_PI/2, 1.5, 1.5).linear.x,
+                0.000001);
+    test2.linear.x = 0.6324555;
+    EXPECT_NEAR(test2.linear.x,
+                LidarDecision::twist_message_from_obstacle(LidarObstacle(0.0, 0.4),
+                                                           5.0, M_PI/2, 1.5, 1.5).linear.x,
+                0.000001);
+    test3.linear.x = 0.0000000;
+    EXPECT_NEAR(test3.linear.x,
+                LidarDecision::twist_message_from_obstacle(LidarObstacle(3*M_PI/4, 2.1),
+                                                           3.0, M_PI/2, 1.5, 1.5).linear.x,
+                0.000001);
+}
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     ::testing::InitGoogleTest(&argc, argv);
