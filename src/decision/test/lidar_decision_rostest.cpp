@@ -57,7 +57,7 @@ TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
     EXPECT_GE(abs(command.angular.z), 0.00001);
 
     // // We would also want to slow down
-    EXPECT_EQ(1.73205, command.linear.x);
+    EXPECT_NEAR(1.7320508, command.linear.x, 0.000001);
 
     // Everything else should always be 0
     EXPECT_EQ(0, command.linear.y);
@@ -97,7 +97,7 @@ TEST_F(LidarDecisionTest, obstacleToRight){
     EXPECT_GE(command.angular.z, 0.0001);
 
     // // We would also want to slow down
-    EXPECT_EQ(1.73205, command.linear.x);
+    EXPECT_NEAR(1.7320508, command.linear.x, 0.000001);
 
     // Everything else should always be 0
     EXPECT_EQ(0, command.linear.y);
@@ -120,7 +120,7 @@ TEST_F(LidarDecisionTest, obstacleToLeft){
     EXPECT_LE(command.angular.z, -0.0001);
 
     // We would also want to slow down
-    EXPECT_EQ(1.73205, command.linear.x);
+    EXPECT_NEAR(1.7320508, command.linear.x, 0.000001);
 
     // Everything else should always be 0
     EXPECT_EQ(0, command.linear.y);
