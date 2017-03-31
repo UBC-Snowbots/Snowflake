@@ -56,7 +56,7 @@ TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
     // With the given laserscan, we would want to be turning
     EXPECT_GE(abs(command.angular.z), 0.00001);
 
-    // // We would also want to slow down
+    // We would also want to slow down
     EXPECT_NEAR(1.7320508, command.linear.x, 0.000001);
 
     // Everything else should always be 0
@@ -96,7 +96,7 @@ TEST_F(LidarDecisionTest, obstacleToRight){
     // With the given laserscan, we would want to be turning left
     EXPECT_GE(command.angular.z, 0.0001);
 
-    // // We would also want to slow down
+    // We would also want to slow down
     EXPECT_NEAR(1.7320508, command.linear.x, 0.000001);
 
     // Everything else should always be 0
