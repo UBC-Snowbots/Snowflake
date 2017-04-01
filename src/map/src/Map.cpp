@@ -8,54 +8,29 @@
 
 Map::Map(int argc, char **argv, std::string node_name){
 
+    map = new grid_map::GridMap();
+
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
     ros::NodeHandle public_nh("~");
 
-
-
-    // Creates the relevant layers
-    map.add("vision");
-    map.add("lidar");
-    map.add("footprint");
-
     // 40m x 40m map with 1 cell / cm
-    double const INIT_MAP_WIDTH = 40;
-    double const INIT_MAP_HEIGHT = 40;
-    double const INIT_MAP_RES = 0.01;
+    map_width = 40;
+    map_height = 40;
+    map_res = 0.01;
 
-    double const INIT_MAP_X_POSITION = 20;
-    double const INIT_MAP_Y_POSITION = 20;
-
-    // TODO: set this frame to "map" and create transform between "map" and "odom"
-    map.setFrameId("odom");
-    map.setGeometry(grid_map::Length(INIT_MAP_WIDTH, INIT_MAP_HEIGHT), INIT_MAP_RES);
+    setUpMap(map);
 
     // Initialize subscribers
     // Buffers are bad because we might be processing old data
     vision_sub = nh.subscribe("vision", 1, &Map::visionCallback, this);
     lidar_sub = nh.subscribe("/robot/laser/scan", 1, &Map::lidarCallback, this);
-    position_sub = nh.subscribe("/robot/odom_diffdrive", 1, &Map::positionCallback, this);
 
     // Initialize publishers
     vision_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("vision_map", 1, true);
     lidar_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("lidar_map", 1, true);
-    location_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("position_map", 1, true);
-    test_pub = nh.advertise<sensor_msgs::PointCloud2>("transformed_pointcloud", 1, true);
-
-    // Initializes position to origin
-    // TODO: Set initial position and orientation
-    // geometry_msgs::Point
-
 }
 
-void Map::positionCallback(const nav_msgs::Odometry::ConstPtr& msg){
-    pos = msg->pose.pose;
-    //ROS_INFO("Position: (%f, %f, %f)", pos.position.x, pos.position.y, pos.position.z);
-    //ROS_INFO("Orientation: (%f, %f, %f, %f)", pos.orientation.x, pos.orientation.w, pos.orientation.y, pos.orientation.z);
-}
-
-// TODO: Callbacks are super similar, maybe refactor to a generic callback with params.
 void Map::visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
 
     sensor_msgs::PointCloud2 transformed_ros_cloud;
@@ -64,23 +39,13 @@ void Map::visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
     pcl::PointCloud<pcl::PointXYZ> cloud;
     convertPointCloud(transformed_ros_cloud, cloud);
 
-    // Integrate data
-    pcl::PointCloud<pcl::PointXYZ>::const_iterator it;
-    for (it = cloud.points.begin(); it != cloud.points.end(); it++)
-    {
-        grid_map::Position pos(it->x, it->y);
-        if (map.isInside(pos))
-        {
-            ROS_INFO("Inserting [%f] at: (%f, %f)", it->z, it->x, it->y);
-            map.atPosition("vision", pos) = it->z;
-        }
-    }
+    plotPointCloudOnMap(cloud, "vision");
 
     // Publish data
     nav_msgs::OccupancyGrid occ_grid;
     float occ_grid_min = 0;
     float occ_grid_max = 100;
-    grid_map::GridMapRosConverter::toOccupancyGrid(map, "vision", occ_grid_min, occ_grid_max, occ_grid);
+    grid_map::GridMapRosConverter::toOccupancyGrid(*map, "vision", occ_grid_min, occ_grid_max, occ_grid);
     vision_map_pub.publish(occ_grid);
 
 }
@@ -98,24 +63,70 @@ void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
     pcl::PointCloud<pcl::PointXYZ> cloud;
     convertPointCloud(transformed_ros_cloud, cloud);
 
-    // Integrate data
-    pcl::PointCloud<pcl::PointXYZ>::const_iterator it;
-    for (it = cloud.points.begin(); it != cloud.points.end(); it++)
-    {
-        grid_map::Position pos(it->x, it->y);
-        if (map.isInside(pos))
-        {
-            ROS_INFO("Inserting [%f] at: (%f, %f)", it->z, it->x, it->y);
-            map.atPosition("lidar", pos) = it->z;
-        }
+    plotPointCloudOnMap(cloud, "lidar");
 
-    }
     // Publish data
     nav_msgs::OccupancyGrid occ_grid;
     float occ_grid_min = 0;
     float occ_grid_max = 100;
-    grid_map::GridMapRosConverter::toOccupancyGrid(map, "lidar", occ_grid_min, occ_grid_max, occ_grid);
+    grid_map::GridMapRosConverter::toOccupancyGrid(*map, "lidar", occ_grid_min, occ_grid_max, occ_grid);
     lidar_map_pub.publish(occ_grid);
+}
+
+void Map::plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::string layer){
+    pcl::PointCloud<pcl::PointXYZ>::const_iterator it;
+    for (it = cloud.points.begin(); it != cloud.points.end(); it++)
+    {
+        grid_map::Position pos(it->x, it->y);
+        if (map->isInside(pos))
+        {
+            map->atPosition(layer, pos) = it->z;
+        }
+        else
+        {
+            // Resize map and hope everything goes smoothly,
+            // this can be expensive since we assume it won't happen too often
+            // TODO: Use smart pointers for goodness sake
+            grid_map::GridMap* resized_map = new grid_map::GridMap();
+            map_width = 2*map_width;
+            map_height = 2*map_height;
+            setUpMap(resized_map);
+            transferMap(map, resized_map);
+            delete map;
+            map = resized_map;
+
+        }
+
+    }
+}
+
+void Map::setUpMap(grid_map::GridMap* map){
+    map->add("vision");
+    map->add("lidar");
+    map->add("footprint");
+
+    // TODO: set this frame to "map" and create transform between "map" and "odom"
+    map->setFrameId("odom");
+    map->setGeometry(grid_map::Length(map_width, map_height), map_res);
+}
+
+void Map::transferMap(grid_map::GridMap* fromMap, grid_map::GridMap* toMap){
+    // Check for map size
+    double from_map_res = fromMap->getResolution();
+    double to_map_res = fromMap->getResolution();
+
+    if (    from_map_res * fromMap->getSize()[0] > to_map_res * toMap->getSize()[0] ||
+            from_map_res * fromMap->getSize()[1] > to_map_res * toMap->getSize()[1]     )
+    {
+        ROS_WARN("Map being transferred to has smaller size, data might be lost");
+    }
+
+    //TODO: Check for existing layers
+    std::vector<std::string> fromMapLayers = fromMap->getBasicLayers();
+
+    //nuke the existing map
+    toMap->clearAll();
+    toMap->addDataFrom(*fromMap, true, true, true);
 }
 
 void Map::transformPointCloud(const sensor_msgs::PointCloud2& input,
@@ -140,15 +151,15 @@ void Map::convertPointCloud(const sensor_msgs::PointCloud2& input, pcl::PointClo
 }
 
 grid_map::Matrix Map::getVisionLayer(){
-    return map.get("vision");
+    return map->get("vision");
 }
 
 grid_map::Matrix Map::getLidarLayer(){
-    return map.get("lidar");
+    return map->get("lidar");
 }
 
 grid_map::Matrix Map::getFootprintLayer(){
-    return map.get("footprint");
+    return map->get("footprint");
 }
 
 std::pair<double, double> Map::getCurrentLocation(){

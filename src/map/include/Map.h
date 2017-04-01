@@ -36,28 +36,27 @@ public:
     grid_map::Matrix getLidarLayer();
     grid_map::Matrix getFootprintLayer();
     std::pair<double, double> getCurrentLocation();
-
+    double map_width;
+    double map_height;
+    double map_res;
 
 private:
     void visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg);
     void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
-    void positionCallback(const nav_msgs::Odometry::ConstPtr&  msg);
+    void plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::string layer);
+    void transferMap(grid_map::GridMap* fromMap, grid_map::GridMap* toMap);
+    void setUpMap(grid_map::GridMap* map);
 
     ros::Subscriber vision_sub;
     ros::Subscriber lidar_sub;
-    ros::Subscriber position_sub;
     ros::Publisher vision_map_pub;
     ros::Publisher lidar_map_pub;
     ros::Publisher location_map_pub;
-    grid_map::GridMap map;
+    grid_map::GridMap* map;
 
     ros::Publisher test_pub;
 
     laser_geometry::LaserProjection projector;
-
-    // TODO: Determine better datatype for position (geometry_msgs::Pose2D?),
-    // TODO: currently, it's a grid_map::Position = Eigen::Vector2f, a vector of 2 floats ...
-    geometry_msgs::Pose pos;
 
     void transformPointCloud(const sensor_msgs::PointCloud2& input, sensor_msgs::PointCloud2& output, std::string target_frame);
     void convertPointCloud(const sensor_msgs::PointCloud2& input, pcl::PointCloud<pcl::PointXYZ>& output);
