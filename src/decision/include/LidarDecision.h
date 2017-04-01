@@ -36,8 +36,8 @@ public:
     /**
      * Creates a LidarObstacle with a given distance and angle
      *
-     * @ param distance The distance to the obstacle
-     * @ param angle The angle to the obstacle
+     * @param distance The distance to the obstacle
+     * @param angle The angle to the obstacle
      */
     LidarObstacle(angle_t angle, distance_t distance);
 
@@ -49,16 +49,16 @@ public:
     LidarObstacle(std::vector<Reading> readings);
 
     /**
-    * Gets the distance of the first data (at the minimum angle) of a Obstacle group
+    * Gets the distance to the rightmost point of the Obstacle
     *
-    * @ return the distance of the first data from a Obstacle group
+    * @ return the distance to the rightmost point of the Obstacle
     */
     distance_t getFirstDistance();
 
     /**
-    * Gets the distance of the last data (at the maximum angle) of a Obstacle group
+    * Gets the distance to the leftmost point of the Obstacle
     *
-    * @ return the distance of the last data from a Obstacle group
+    * @ return the distance to the leftmost point of the obstacle
     */
     distance_t getLastDistance();
 
@@ -130,7 +130,7 @@ public:
      * Adds the given LidarObstacle's scan distances and scan angles to
      * this LidarObstacles scan distances and scan angles respectively
      *
-     * @ param obstacle The LidarObstacle to be merged in
+     * @param obstacle The LidarObstacle to be merged in
      */
     void mergeInLidarObstacle(LidarObstacle obstacle);
 
@@ -138,7 +138,7 @@ private:
     /**
      * Merges a given set of readings into the obstacle
      *
-     * @ param readings the readings to be merged in
+     * @param readings the readings to be merged in
      */
     void mergeInReadings(std::vector<Reading> &new_readings);
 
@@ -161,8 +161,8 @@ public:
     /**
      * Finds all obstacles in a given scan
      *
-     * @ param sensor_msgs\LaserScan a laser scan in which to find obstacles
-     * @ param max_obstacle_angle_diff the maximum possible angular difference between two lidar hits
+     * @param sensor_msgs\LaserScan a laser scan in which to find obstacles
+     * @param max_obstacle_angle_diff the maximum possible angular difference between two lidar hits
      *          for them to be considered the same obstacle
      *
      * @ return a vector of all obstacles
@@ -174,7 +174,7 @@ public:
     /**
      * Finds the obstacle most dangerous to the robot
      *
-     * @ param obstacles all obstacles to be considered
+     * @param obstacles all obstacles to be considered
      *
      * @ return the most dangerous obstacle out of those given
      */
@@ -185,10 +185,10 @@ public:
      *
      * The merge occurs in place
      *
-     * @ param obstacles the list of obstacles to be merged (if similar)
-     * @ param max_angle_diff the max difference that two obstacles may differ by and still be considered
+     * @param obstacles the list of obstacles to be merged (if similar)
+     * @param max_angle_diff the max difference that two obstacles may differ by and still be considered
      *                      part of the same obstacle
-     * @ param max_distance_diff the max difference that two obstacles may differ by and still be considered
+     * @param max_distance_diff the max difference that two obstacles may differ by and still be considered
      *                      part of the same obstacle
      */
     static void mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
@@ -203,8 +203,8 @@ public:
      * - If obstacle is to right, turn left
      * - If obstacle is exactly in front, turn left (arbitrary decision)
      *
-     * @ param max_obstacle_danger_distance distance which the obstacle must be within to be considered
-     * @ param obstacle the obstacle to be considered
+     * @param max_obstacle_danger_distance distance which the obstacle must be within to be considered
+     * @param obstacle the obstacle to be considered
      *
      * @ return a twist message
      */
