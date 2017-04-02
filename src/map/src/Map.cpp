@@ -15,9 +15,9 @@ Map::Map(int argc, char **argv, std::string node_name){
     ros::NodeHandle public_nh("~");
 
     // 40m x 40m map with 1 cell / cm
-    map_width = 40;
-    map_height = 40;
-    map_res = 0.01;
+    map_width = 80;
+    map_height = 80;
+    map_res = 0.02;
 
     setUpMap(map);
 
@@ -87,20 +87,20 @@ void Map::plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::
             // Resize map and hope everything goes smoothly,
             // this can be expensive since we assume it won't happen too often
             // TODO: Use smart pointers for goodness sake
-            grid_map::GridMap* resized_map = new grid_map::GridMap();
+            std::unique_ptr<grid_map::GridMap> resized_map = new grid_map::GridMap();
             map_width = 2*map_width;
             map_height = 2*map_height;
             setUpMap(resized_map);
             transferMap(map, resized_map);
-            delete map;
-            map = resized_map;
+            ROS_INFO("Resizing map to: %f x %f", map_width, map_height);
+            map.swap(resized_map);
 
         }
 
     }
 }
 
-void Map::setUpMap(grid_map::GridMap* map){
+void Map::setUpMap(std::unique_ptr<grid_map::GridMap> map){
     map->add("vision");
     map->add("lidar");
     map->add("footprint");
@@ -110,7 +110,7 @@ void Map::setUpMap(grid_map::GridMap* map){
     map->setGeometry(grid_map::Length(map_width, map_height), map_res);
 }
 
-void Map::transferMap(grid_map::GridMap* fromMap, grid_map::GridMap* toMap){
+void Map::transferMap(std::unique_ptr<grid_map::GridMap> fromMap, std::unique_ptr<grid_map::GridMap> toMap){
     // Check for map size
     double from_map_res = fromMap->getResolution();
     double to_map_res = fromMap->getResolution();

@@ -43,3 +43,8 @@ target_link_libraries(map_test_pub ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_CO
 add_executable(transform src/transformTest.cpp)
 target_link_libraries(transform ${catkin_LIBRARIES})
 
+
+#test
+add_executable(test_point_pub src/test_point_publisher.cpp)
+target_link_libraries(test_point_pub ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+

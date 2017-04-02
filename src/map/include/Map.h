@@ -28,6 +28,7 @@
 #include <laser_geometry/laser_geometry.h>
 #include <nav_msgs/Odometry.h>
 #include <tf2/transform_datatypes.h>
+#include <memory>
 
 class Map {
 public:
@@ -44,15 +45,15 @@ private:
     void visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg);
     void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
     void plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::string layer);
-    void transferMap(grid_map::GridMap* fromMap, grid_map::GridMap* toMap);
-    void setUpMap(grid_map::GridMap* map);
+    void transferMap(std::unique_ptr<grid_map::GridMap> fromMap, std::unique_ptr<grid_map::GridMap> toMap);
+    void setUpMap(std::unique_ptr<grid_map::GridMap> map);
 
     ros::Subscriber vision_sub;
     ros::Subscriber lidar_sub;
     ros::Publisher vision_map_pub;
     ros::Publisher lidar_map_pub;
     ros::Publisher location_map_pub;
-    grid_map::GridMap* map;
+    std::unique_ptr<grid_map::GridMap> map;
 
     ros::Publisher test_pub;
 
