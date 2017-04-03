@@ -16,7 +16,7 @@ class zed_filter {
 
 public:
     ZedFilter(int argc, char **argv, std::string node_name);
-
+    static pcl::PointCloud<pcl::PointXYZRGB>::Ptr filterImage(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
 
 private:
     ros::Subscriber raw_image_subscriber;

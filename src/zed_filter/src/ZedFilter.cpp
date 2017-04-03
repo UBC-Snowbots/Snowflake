@@ -26,6 +26,20 @@ ZedFilter::ZedFilter(int argc, char **argv, std::string node_name)
 
 void imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output) {
 
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr filtered_point_cloud;
+    filtered_point_cloud = filterImage(zed_camera_output);
+
+    publishFilteredImage(filtered_point_cloud);
+}
+
+
+void publishFilteredImage(const pcl::PointCloud<pcl::PointXYZRGB> filtered_point_cloud)
+{
+    filtered_image_publisher.publish(filtered_point_cloud);
+}
+
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr ZedFilter::filterImage(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output)
+{
     // Convert PointCloud2 into a pcl::PointCloud
     pcl::PCLPointCloud2 temp;
     pcl_conversions::toPCL(zed_camera_output, temp);
@@ -59,10 +73,5 @@ void imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output) 
         it->b = 255;
     }
 
-    publishFilteredImage(filtered_point_cloud);
-}
-
-void publishFilteredImage(const pcl::PointCloud<pcl::PointXYZRGB> filtered_point_cloud)
-{
-    filtered_image_publisher.publish(filtered_point_cloud);
+    return filtered_point_cloud;
 }

@@ -10,8 +10,8 @@
 
 using namespace sensor_msgs;
 
-TEST(pclTest, random){
-    PointCloud2Ptr points_msg = boost::make_shared<PointCloud2>();
+TEST(pclTest, random) {
+    sensor_msgs::PointCloud2::ConstPtr& points_msg;
     points_msg->height = 1; // Unorganized.
     points_msg->width  = 255;   // 255 data points.
     points_msg->is_bigendian = false;
@@ -31,7 +31,6 @@ TEST(pclTest, random){
     int i;
     for (i = 0;; iter_x != iter_x.end(); ++iter_x, ++iter_y, ++iter_z, ++iter_r, ++iter_g, ++iter_b, ++i)
     {
-        // TODO fill in x, y, z, r, g, b local variables
         *iter_x = i;
         *iter_y = i;
         *iter_z = i;
@@ -40,6 +39,16 @@ TEST(pclTest, random){
         *iter_b = i;
     }
 
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr filtered_point_cloud;
+    filtered_point_cloud = ZedFilter::filterImage(zed_camera_output);
+
+    pcl::PointCloud<pcl::PointXYZRGB>::const_iterator it;
+    for(it = filtered_point_cloud.begin(); it != filtered_point_cloud.end(); i++) {
+        EXPECT_EQ(0, it->z);
+        EXPECT_EQ(255, it->r);
+        EXPECT_EQ(255, it->g);
+        EXPECT_EQ(255, it->b);
+    }
 }
 
 int main(int pclTests, char **argv) {
