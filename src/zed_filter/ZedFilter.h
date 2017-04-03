@@ -5,6 +5,12 @@
 #ifndef PROJECT_ZED_FILTER_H
 #define PROJECT_ZED_FILTER_H
 
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <ros/ros.h>
+#include <pcl_ros/point_cloud.h>
+#include <pcl_ros/transforms.h>
+#include <pcl_conversions/pcl_conversions.h>
 
 class zed_filter {
 
@@ -17,7 +23,7 @@ private:
     ros::Publisher filtered_image_publisher;
 
     void imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
-    void publishFilteredImage(const sensor_msgs::PointCloud2::ConstPtr& filtered_point_cloud);
+    void publishFilteredImage(const pcl::PointCloud<pcl::PointXYZRGB> filtered_point_cloud);
 };
 
 
