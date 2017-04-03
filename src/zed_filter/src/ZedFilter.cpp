@@ -2,10 +2,11 @@
 // Created by sb on 25/03/17.
 //
 
-#include "ZedFilter.h"
+#include "../include/ZedFilter.h"
 
 // The constructor
-ZedFilter::ZedFilter(int argc, char **argv, std::string node_name) {
+ZedFilter::ZedFilter(int argc, char **argv, std::string node_name)
+{
     ros::init(argc, argv, node_name);
 
     // Setup NodeHandles
@@ -61,7 +62,6 @@ void imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output) 
     publishFilteredImage(filtered_point_cloud);
 }
 
-// TODO: See if there are any better point cloud data structures.
 void publishFilteredImage(const pcl::PointCloud<pcl::PointXYZRGB> filtered_point_cloud)
 {
     filtered_image_publisher.publish(filtered_point_cloud);
