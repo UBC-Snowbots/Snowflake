@@ -24,5 +24,13 @@ add_definitions(${PCL_DEFINITIONS})
 add_executable(zedfilter src/ZedFilter.cpp include/ZedFilter.h)
 target_link_libraries(zedfilter ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 
+#############
+## Testing ##
+#############
 
-
+## Add gtest based cpp test target and link libraries
+if (CATKIN_ENABLE_TESTING)
+    # gTest
+    catkin_add_gtest(zed-filter-test test/zed-filter-test.cpp src/ZedFilter.cpp)
+    target_link_libraries(zed-filter-test ${catkin_LIBRARIES})
+endif()
