@@ -12,7 +12,7 @@
 #include <pcl_ros/transforms.h>
 #include <pcl_conversions/pcl_conversions.h>
 
-class zed_filter {
+class ZedFilter {
 
 public:
     ZedFilter(int argc, char **argv, std::string node_name);
