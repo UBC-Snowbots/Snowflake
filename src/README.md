@@ -1,20 +1,17 @@
+```
 .
-├── challenge
-├── cmake-build-debug
-├── CMakeLists.txt -> /opt/ros/kinetic/share/catkin/cmake/toplevel.cmake
-├── decision
-├── drivers
-├── firmware
-├── map
-├── razor_imu_9dof
-├── README.md
-├── ros_arduino_bridge
-├── sample_package
-├── sb_gazebo
-├── sb_utils
-├── sicktoolbox
-├── sicktoolbox_wrapper
-├── vision
-└── zed-ros-wrapper
+├── challenge: The Snowbots Software Initiation Challenge 
+├── decision: The package which analyzes all the sensor inputs (GPS, LIDAR, vision)
+├── drivers: The package which converts ROS message into actual motor inputs 
+├── firmware: Various arduino (.ino) files which controls our firmware (GPS, IMU)
+├── razor_imu_9dof: ROS driver which interfaces with the razor IMU
+├── ros_arduino_bridge: Package which mainly contains the encoder driver and firmware
+├── sample_package: Probably the only well-formatted package we have. Reference this for package syntax & format
+├── sb_gazebo: Simulator files and packages
+├── sb_utils: utility package with useful general functions
+├── sicktoolbox: An SDK for the SICK lidar module
+├── sicktoolbox_wrapper: A ROS wrapper for the SICK SDK
+├── vision: The package which takes in camera input and converts it into consumable data
+└── zed-ros-wrapper: Contains nodes for working with the ZED Stereo Camera
 
-15 directories, 2 files
+```
