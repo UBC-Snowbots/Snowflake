@@ -1,7 +1,7 @@
 # DIRECTORY 
 ```
 .
-├── challenge: The Snowbots Software Initiation ~~Hazing~~Challenge 
+├── challenge: The Snowbots Software Initiation Challenge 
 ├── decision: The package which analyzes all the sensor inputs (GPS, LIDAR, vision)
 ├── drivers: The package which converts ROS message into actual motor inputs 
 ├── firmware: Various arduino (.ino) files which controls our firmware (GPS, IMU)
