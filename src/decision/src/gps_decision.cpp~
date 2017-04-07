@@ -1,6 +1,6 @@
 
 /*
- * Created By: Yu Chen(Chris)
+ * Created By: Yu Chen
  * Created On: September 22, 2016
  * Description: The Decision Node for GPS, takes in a point relative to
  *              the robots location and heading and broadcasts a
