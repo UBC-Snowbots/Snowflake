@@ -12,4 +12,4 @@
 	url = https://github.com/UBC-Snowbots/ros_arduino_bridge.git
 [submodule "src/razor_imu_9dof"]
 	path = src/razor_imu_9dof
-	url = git@github.com:UBC-Snowbots/razor_imu_9dof.git
+	url = https://github.com:UBC-Snowbots/razor_imu_9dof.git
