@@ -8,7 +8,7 @@
 
 Map::Map(int argc, char **argv, std::string node_name){
 
-    map = new grid_map::GridMap();
+    map = grid_map::GridMap();
 
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
@@ -45,7 +45,7 @@ void Map::visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
     nav_msgs::OccupancyGrid occ_grid;
     float occ_grid_min = 0;
     float occ_grid_max = 100;
-    grid_map::GridMapRosConverter::toOccupancyGrid(*map, "vision", occ_grid_min, occ_grid_max, occ_grid);
+    grid_map::GridMapRosConverter::toOccupancyGrid(map, "vision", occ_grid_min, occ_grid_max, occ_grid);
     vision_map_pub.publish(occ_grid);
 
 }
@@ -69,7 +69,7 @@ void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
     nav_msgs::OccupancyGrid occ_grid;
     float occ_grid_min = 0;
     float occ_grid_max = 100;
-    grid_map::GridMapRosConverter::toOccupancyGrid(*map, "lidar", occ_grid_min, occ_grid_max, occ_grid);
+    grid_map::GridMapRosConverter::toOccupancyGrid(map, "lidar", occ_grid_min, occ_grid_max, occ_grid);
     lidar_map_pub.publish(occ_grid);
 }
 
@@ -78,54 +78,54 @@ void Map::plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::
     for (it = cloud.points.begin(); it != cloud.points.end(); it++)
     {
         grid_map::Position pos(it->x, it->y);
-        if (map->isInside(pos))
+        if (map.isInside(pos))
         {
-            map->atPosition(layer, pos) = it->z;
+            map.atPosition(layer, pos) = it->z;
         }
         else
         {
             // Resize map and hope everything goes smoothly,
             // this can be expensive since we assume it won't happen too often
-            std::unique_ptr<grid_map::GridMap> resized_map = new grid_map::GridMap();
+            grid_map::GridMap resized_map =  grid_map::GridMap();
             map_width = 2*map_width;
             map_height = 2*map_height;
             setUpMap(resized_map);
             transferMap(map, resized_map);
             ROS_INFO("Resizing map to: %f x %f", map_width, map_height);
-            map.swap(resized_map);
+            map = resized_map;
 
         }
 
     }
 }
 
-void Map::setUpMap(std::unique_ptr<grid_map::GridMap> map){
-    map->add("vision");
-    map->add("lidar");
-    map->add("footprint");
+void Map::setUpMap(grid_map::GridMap map){
+    map.add("vision");
+    map.add("lidar");
+    map.add("footprint");
 
     // TODO: set this frame to "map" and create transform between "map" and "odom"
-    map->setFrameId("odom");
-    map->setGeometry(grid_map::Length(map_width, map_height), map_res);
+    map.setFrameId("odom");
+    map.setGeometry(grid_map::Length(map_width, map_height), map_res);
 }
 
-void Map::transferMap(std::unique_ptr<grid_map::GridMap> fromMap, std::unique_ptr<grid_map::GridMap> toMap){
+void Map::transferMap(grid_map::GridMap fromMap, grid_map::GridMap toMap){
     // Check for map size
-    double from_map_res = fromMap->getResolution();
-    double to_map_res = fromMap->getResolution();
+    double from_map_res = fromMap.getResolution();
+    double to_map_res = fromMap.getResolution();
 
-    if (    from_map_res * fromMap->getSize()[0] > to_map_res * toMap->getSize()[0] ||
-            from_map_res * fromMap->getSize()[1] > to_map_res * toMap->getSize()[1]     )
+    if (    from_map_res * fromMap.getSize()[0] > to_map_res * toMap.getSize()[0] ||
+            from_map_res * fromMap.getSize()[1] > to_map_res * toMap.getSize()[1]     )
     {
         ROS_WARN("Map being transferred to has smaller size, data might be lost");
     }
 
     //TODO: Check for existing layers
-    std::vector<std::string> fromMapLayers = fromMap->getBasicLayers();
+    //std::vector<std::string> fromMapLayers = fromMap->getBasicLayers();
 
     //nuke the existing map
-    toMap->clearAll();
-    toMap->addDataFrom(*fromMap, true, true, true);
+    toMap.clearAll();
+    toMap.addDataFrom(fromMap, true, true, true);
 }
 
 void Map::transformPointCloud(const sensor_msgs::PointCloud2& input,
@@ -150,15 +150,15 @@ void Map::convertPointCloud(const sensor_msgs::PointCloud2& input, pcl::PointClo
 }
 
 grid_map::Matrix Map::getVisionLayer(){
-    return map->get("vision");
+    return map.get("vision");
 }
 
 grid_map::Matrix Map::getLidarLayer(){
-    return map->get("lidar");
+    return map.get("lidar");
 }
 
 grid_map::Matrix Map::getFootprintLayer(){
-    return map->get("footprint");
+    return map.get("footprint");
 }
 
 
