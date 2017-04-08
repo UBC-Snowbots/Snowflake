@@ -2,7 +2,7 @@
 // Created by sb on 25/03/17.
 //
 
-#include "../include/ZedFilter.h"
+#include <ZedFilter.h>
 
 // The constructor
 ZedFilter::ZedFilter(int argc, char **argv, std::string node_name)
@@ -63,14 +63,26 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr ZedFilter::filterImage(const sensor_msgs:
     pass.filter(*filtered_point_cloud);
 
 
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr mapped_and_filtered_point_cloud (new pcl::PointCloud<pcl::PointXYZRGB>);
+
     pcl::PointCloud<pcl::PointXYZRGB>::const_iterator it;
     for(it = filtered_point_cloud->points.begin(); it != filtered_point_cloud->points.end(); it++) {
-        it->z = 0;  // Map all points to z = 0 plane.
+        pcl::PointXYZRGB curpoint_to_add;
+
+        // Map all points to z = 0 plane.
+        curpoint_to_add.z = 0;
+
         // All remaining points are mapped to white.
-        it->r = 255;
-        it->g = 255;
-        it->b = 255;
+        curpoint_to_add.r = 255;
+        curpoint_to_add.g = 255;
+        curpoint_to_add.b = 255;
+
+        // Retrieve the x and z values
+        curpoint_to_add.x = it->x;
+        curpoint_to_add.y = it->y;
+
+        mapped_and_filtered_point_cloud->points.push_back(curpoint_to_add);
     }
 
-    return filtered_point_cloud;
+    return mapped_and_filtered_point_cloud;
 }
