@@ -147,7 +147,6 @@ geometry_msgs::Point GpsManager::convertToRobotsPerspective(Waypoint waypoint,
     double gps_x = cos(origin_to_waypoint_angle) * origin_to_waypoint_distance; // x value from gps perspective
     double gps_y = sin(origin_to_waypoint_angle) * origin_to_waypoint_distance; // y value from gps perspective
     // Convert gps x,y to robot's frame of reference using a rotation matrix
-    origin_heading *= -1;
     geometry_msgs::Point point_msg;
     point_msg.x = cos(origin_heading) * gps_x + sin(origin_heading) * gps_y;
     point_msg.y = sin(origin_heading) * gps_x - cos(origin_heading) * gps_y;
