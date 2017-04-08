@@ -15,8 +15,8 @@ Map::Map(int argc, char **argv, std::string node_name){
     ros::NodeHandle public_nh("~");
 
     // 40m x 40m map with 1 cell / cm
-    map_width = 80;
-    map_height = 80;
+    map_width = 40;
+    map_height = 40;
     map_res = 0.02;
 
     setUpMap(map);
@@ -86,7 +86,6 @@ void Map::plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::
         {
             // Resize map and hope everything goes smoothly,
             // this can be expensive since we assume it won't happen too often
-            // TODO: Use smart pointers for goodness sake
             std::unique_ptr<grid_map::GridMap> resized_map = new grid_map::GridMap();
             map_width = 2*map_width;
             map_height = 2*map_height;
@@ -160,10 +159,6 @@ grid_map::Matrix Map::getLidarLayer(){
 
 grid_map::Matrix Map::getFootprintLayer(){
     return map->get("footprint");
-}
-
-std::pair<double, double> Map::getCurrentLocation(){
-    return std::pair<double, double>(0, 0);
 }
 
 

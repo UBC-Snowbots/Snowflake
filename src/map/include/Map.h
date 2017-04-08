@@ -36,7 +36,6 @@ public:
     grid_map::Matrix getVisionLayer();
     grid_map::Matrix getLidarLayer();
     grid_map::Matrix getFootprintLayer();
-    std::pair<double, double> getCurrentLocation();
     double map_width;
     double map_height;
     double map_res;
