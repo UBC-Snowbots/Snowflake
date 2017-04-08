@@ -131,11 +131,26 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
         twist.angular.y = 0;
         twist.angular.z = 0;
 
-        if (obstacle.getAvgDistance() < danger_distance && abs(obstacle.getAvgAngle()) < danger_angle) {
-            // TODO: Improve the algorithm here to at least use some sort of scale  (linear or otherwise) dependent on obstacle distance and angle
-            // Check if we should be turning left or right
-            int left_or_right = (obstacle.getAvgAngle() > 0) ? -1 : 1;
-            twist.angular.z = angular_vel_multiplier * left_or_right;
+        if (obstacle.getMinDistance() <= danger_distance && abs(obstacle.getAvgAngle()) <= danger_angle) {
+            float minDistance = obstacle.getMinDistance();
+            // Calculate linear x dependent on how close obstacle is to the robot
+            twist.linear.x = sqrt(minDistance);
+            // Calculate angular z dependent on how aligned obstacle is to the robot
+            float angle_score = abs(cos(obstacle.getAvgAngle()));
+            // Calculate angular z dependent on how close obstacle is to the robot
+            float distance_score = 1 / minDistance;
+            // Choose one score determined if angle or distance is more dangerous
+            if (angle_score >= distance_score)
+                twist.angular.z = angular_vel_multiplier * angle_score;
+            else {
+                // If distance score is too large robot will oversteer and come back around, so just set as
+                // multiplier value instead (should be set to 1.5). This translates angular z to ~90° turn
+                twist.angular.z = (distance_score > 1) ? linear_vel_multiplier :
+                                  linear_vel_multiplier * distance_score;
+            }
+            // Check if we should be turning left or right away from obstacle
+            if (obstacle.getAvgAngle() > 0)
+                twist.angular.z *= -1;
         }
         return twist;
     }

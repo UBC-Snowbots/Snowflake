@@ -41,7 +41,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 6. Clone this repository by running `git clone --recursive https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
 7. To start set-up run `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
     - _Just choose yes and enter your password when the terminal prompts you_ 
-8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin build` 
+8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ### Important Notes:
@@ -51,16 +51,6 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 ### Zed Configuration
 - Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
-
-### Catkin Migration
-- We are migrating from using the `ros-kinetic-catkin` to the `python-catkin-tools` wrapper for the `catkin` command. This is to take advantage of the blacklist feature since some packages (cough) Zed (cough) requires CUDA and ZED SDK related dependencies which won't compile for a lot of people.
-
-Old Command | New Command 
----|---
-catkin_make | catkin build
-catkin_make run_tests | catkin run_tests
-
-- If you've installed this repo *before* Feb 18 2017: re-run the updated `install_dependencies.sh` to get yourself sorted, or do `sudo apt install python-catkin-tools` if you're cool.
 
 ## Conventions
 
@@ -168,8 +158,8 @@ some_ros_package
 ## Testing
 ### GTest
 - GTest is our primary testing tool at the moment. The ROS wiki has a quick intro to it [here](http://wiki.ros.org/gtest), and we also strongly recommend you read Google's introduction to it [here] (https://github.com/google/googletest/blob/master/googletest/docs/Primer.md), then setup and write a few example tests before you start using it with ROS.
-- Once you've setup your tests in ROS, run `catkin run_tests` to run them
-- To test a specific package, run `catkin build [package_name] --no-deps --catkin-make-args run_tests`
+- Once you've setup your tests in ROS, run `catkin_make run_tests` to run them
+- To test a specific package, run `catkin_make run_tests_MY_PACKAGE_NAME`
 
 ### Rostest
 - For tests which require more than one active node, i.e. integrated testing, the rostest framework provides a way to launch your test alongside all the nodes it requires. This is an extension on roslaunch enabling it to run test nodes. Special test nodes are nested within a `<test></test>` tag. This also needs a special entry under CMakelists as shown in the sample package. See more details [here](http://wiki.ros.org/rostest)
