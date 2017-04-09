@@ -68,7 +68,7 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(vision-decision-test ${catkin_LIBRARIES})
 
 
-    catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp)
+    catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp src/Mover.cpp)
     target_link_libraries(gps-decision-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(final-decision-test test/final-decision-test.cpp src/FinalDecision.cpp)
