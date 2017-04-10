@@ -13,6 +13,8 @@
 #include "std_msgs/Float32.h"
 #include "sensor_msgs/NavSatFix.h"
 #include "geometry_msgs/Point.h"
+#include <sensor_msgs/Imu.h>
+#include <tf/transform_datatypes.h>
 #include <vector>
 #include <algorithm>
 #include <stack>
@@ -71,7 +73,7 @@ public:
                                                             double heading);
 private:
     ros::Subscriber raw_gps_subscriber;
-    ros::Subscriber compass_subscriber;
+    ros::Subscriber imu_subscriber;
     ros::Publisher current_location_publisher;
     ros::Publisher current_waypoint_publisher;
     ros::Publisher current_heading_publisher;
@@ -104,7 +106,7 @@ private:
      *
      * @param heading the most recent heading (should be directly from the compass)
      */
-    void compassCallBack(const std_msgs::Float32::ConstPtr heading);
+    void imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg);
     /**
      * Returns the distance to the next waypoint in waypoints
      *
@@ -129,7 +131,7 @@ private:
      *
      * @param heading the heading to translate to the robot's perspective
      */
-    void publishTranslatedHeading(std_msgs::Float32::ConstPtr heading);
+    void publishTranslatedHeading(float heading);
     /**
       * Publishes the current location as a location relative to the initial location and rotation
       *
