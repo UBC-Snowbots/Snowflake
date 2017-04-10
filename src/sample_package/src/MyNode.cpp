@@ -26,6 +26,7 @@ MyClass::MyClass(int argc, char **argv, std::string node_name) {
 }
 
 void MyClass::subscriberCallBack(const std_msgs::String::ConstPtr& msg) {
+    ROS_INFO("Received message");
     std::string input_string = msg->data.c_str();
     std::string new_msg = addExclamationPoint(input_string);
     republishMsg(new_msg);
@@ -39,4 +40,5 @@ void MyClass::republishMsg(std::string msg_to_publish) {
     std_msgs::String string_to_publish;
     string_to_publish.data = msg_to_publish;
     my_publisher.publish(string_to_publish);
+    ROS_INFO("Published message");
 }
