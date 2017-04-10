@@ -10,10 +10,12 @@
 #define DECISION_GPS_DECISION_H
 
 #include <iostream>
+#include <sb_utils.h>
+
+#include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Point.h>
-#include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
 #include <tf/transform_datatypes.h>
 
@@ -110,11 +112,11 @@ private:
     //callback for the current location
     void currentLocationCallback(const geometry_msgs::Point::ConstPtr& current_location);
     //callback for the current heading
-    void headingCallback(const sensor_msgs::Imu::ConstPtr& imu_msg);
+    void imuCallback(const sensor_msgs::Imu::ConstPtr &imu_msg);
     //callback for our destination waypoint
     void waypointCallback(const geometry_msgs::Point::ConstPtr& waypoint);
 
-    ros::Subscriber heading_subscriber;             // Subscribes to the current robot heading
+    ros::Subscriber imu_subscriber;             // Subscribes to the current robot heading
     ros::Subscriber current_location_subscriber;    // Subscribes to the current robot location
     ros::Subscriber waypoint_subscriber;            // Subscribes to the next waypoint the robot has to go to
 

@@ -51,7 +51,7 @@ TEST_F(MoverTest, createTwistMessage_heading0) {
 
 // Test of the robot facing "backwards" relative to initial heading,
 // with the obstacle (relative to the robot) behind and to the left
-TEST_F(MoverTest, createTwistMessage_headingPI) {
+TEST_F(MoverTest, createTwistMessage_headingPiObstacleBehindAndLeft) {
     auto current_location = createPoint(0,0);
     auto waypoint = createPoint(2,-2);
 
@@ -65,7 +65,22 @@ TEST_F(MoverTest, createTwistMessage_headingPI) {
     EXPECT_GE(twist.angular.z, 0);
 }
 
-// TODO: YOU ARE HERE - more tests for createTwistMessage
+// Test of the robot facing "backwards" relative to initial heading,
+// with the obstacle behind and to the right (relative to the robot)
+TEST_F(MoverTest, createTwistMessage_headingPiObstacleBehindAndRight) {
+    auto current_location = createPoint(0,0);
+    auto waypoint = createPoint(2,2);
+
+    auto twist = mover1.createTwistMessage(
+            current_location,
+            M_PI,
+            waypoint
+    );
+
+    // We should be trying to turn right
+    EXPECT_LE(twist.angular.z, 0);
+}
+
 // Simple test where the angle are already separated by an acute angle if
 // just subtracted
 TEST_F(MoverTest, minAngularChangeTest_acuteAngle){
@@ -85,7 +100,7 @@ TEST_F(MoverTest, minAngularChangeTest_obtuseAngle){
     EXPECT_DOUBLE_EQ(3.0/4.0 * M_PI, should_be_acute);
 }
 
-//Test where angle are seperated by a negative obtuse angle (if just subtracted)
+//Test where angle are separated by a negative obtuse angle (if just subtracted)
 TEST_F(MoverTest, minAngularChangeTest_negativeObtuseAngle){
     double should_be_acute = mover1.minAngularChange(-M_PI, M_PI/4);
     EXPECT_DOUBLE_EQ(-3.0/4.0 * M_PI, should_be_acute);

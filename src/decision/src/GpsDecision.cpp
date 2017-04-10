@@ -8,7 +8,6 @@
 
 #include <GpsDecision.h>
 
-
 GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
@@ -20,9 +19,9 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     std::string current_location_topic = "/gps_manager/current_location";
     current_location_subscriber = private_nh.subscribe(current_location_topic, refresh_rate,
                                                     &GpsDecision::currentLocationCallback, this);
-    std::string heading_topic = "/gps_manager/current_heading";
-    heading_subscriber = private_nh.subscribe(heading_topic, refresh_rate,
-                                              &GpsDecision::headingCallback, this);
+    std::string imu_topic = "/imu";
+    imu_subscriber = private_nh.subscribe(imu_topic, refresh_rate,
+                                          &GpsDecision::imuCallback, this);
     std::string waypoint_topic = "/gps_manager/current_waypoint";
     waypoint_subscriber = private_nh.subscribe(waypoint_topic, refresh_rate,
                                                &GpsDecision::waypointCallback, this);
@@ -32,19 +31,20 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     std::string twist_publisher_topic = private_nh.resolveName("twist");
     twist_publisher = private_nh.advertise<geometry_msgs::Twist>(twist_publisher_topic, queue_size);
 
-    // Misc.
     // Setup the mover class, which will figure out what command to send to the robot
     // based on our distance and heading to the destination GPS waypoint
-    // TODO: Better factor values. (Should probably be params)
-    mover.setHeadingFactor(1);
-    mover.setDistanceFactor(1);
+    double heading_factor, distance_factor;
+    SB_getParam(private_nh, "heading_factor", heading_factor, 1.0);
+    SB_getParam(private_nh, "distance_factor", distance_factor, 1.0);
+    mover.setHeadingFactor(heading_factor);
+    mover.setDistanceFactor(distance_factor);
 }
 
 void GpsDecision::currentLocationCallback(const geometry_msgs::Point::ConstPtr &current_location) {
     this->current_location = *current_location;
 }
 
-void GpsDecision::headingCallback(const sensor_msgs::Imu::ConstPtr& imu_msg) {
+void GpsDecision::imuCallback(const sensor_msgs::Imu::ConstPtr &imu_msg) {
     this->current_heading = tf::getYaw(imu_msg->orientation);
 }
 
