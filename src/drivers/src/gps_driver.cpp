@@ -63,7 +63,7 @@ int main(int argc, char **argv){
     ros::NodeHandle nh_private("~");
     ros::Rate loop_rate(10);
     ros::Publisher gps_lat_lon_pub = nh_private.advertise<sensor_msgs::NavSatFix>
-            ("lat_and_lon", 1000);
+            ("navsatfix", 1000);
 
     // Setup Arduino stuff
     // Get the arduino port from a ros param
