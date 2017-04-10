@@ -7,6 +7,7 @@
  */
 
 #include <GpsDecision.h>
+#include <std_msgs/Float32.h>
 
 GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
@@ -19,7 +20,7 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     std::string current_location_topic = "/gps_manager/current_location";
     current_location_subscriber = private_nh.subscribe(current_location_topic, refresh_rate,
                                                     &GpsDecision::currentLocationCallback, this);
-    std::string imu_topic = "/imu";
+    std::string imu_topic = "/gps_manager/current_heading";
     imu_subscriber = private_nh.subscribe(imu_topic, refresh_rate,
                                           &GpsDecision::imuCallback, this);
     std::string waypoint_topic = "/gps_manager/current_waypoint";
@@ -44,8 +45,8 @@ void GpsDecision::currentLocationCallback(const geometry_msgs::Point::ConstPtr &
     this->current_location = *current_location;
 }
 
-void GpsDecision::imuCallback(const sensor_msgs::Imu::ConstPtr &imu_msg) {
-    this->current_heading = tf::getYaw(imu_msg->orientation);
+void GpsDecision::imuCallback(const std_msgs::Float32::ConstPtr &heading) {
+    this->current_heading = heading->data;
 }
 
 void GpsDecision::waypointCallback(const geometry_msgs::Point::ConstPtr &waypoint) {
