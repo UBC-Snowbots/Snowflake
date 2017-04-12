@@ -8,26 +8,26 @@
 #include <gtest/gtest.h>
 
 
+/**
+ * Creates a geometry_msgs::Point with given x and y coordinates
+ *
+ * @param x the x coordinate of the point
+ * @param y the y coordinate of the point
+ * @return a point with given x and y coordinates
+ */
+geometry_msgs::Point createPoint(double x, double y){
+    geometry_msgs::Point p;
+    p.x = x;
+    p.y = y;
+    p.z = 0;
+    return p;
+}
+
 
 class MoverTest : public testing::Test {
 protected:
     virtual void SetUp(){
         mover1.setFactors(1,1);
-    }
-
-    /**
-     * Creates a geometry_msgs::Point with given x and y coordinates
-     *
-     * @param x the x coordinate of the point
-     * @param y the y coordinate of the point
-     * @return a point with given x and y coordinates
-     */
-    geometry_msgs::Point createPoint(double x, double y){
-        geometry_msgs::Point p;
-        p.x = x;
-        p.y = y;
-        p.z = 0;
-        return p;
     }
 
     Mover mover1;
@@ -79,6 +79,74 @@ TEST_F(MoverTest, createTwistMessage_headingPiObstacleBehindAndRight) {
 
     // We should be trying to turn right
     EXPECT_LE(twist.angular.z, 0);
+}
+
+// Test with the robot facing straight forward (relative to initial heading)
+// with the obstacle far behind and to the left
+TEST_F(MoverTest, createTwistMessage_headingLeftObstacleBehindAndLeft) {
+    auto current_location = createPoint(18.9, -6.96);
+    auto waypoint = createPoint(9.28, 2.47);
+
+    auto twist = mover1.createTwistMessage(
+            current_location,
+            -0.5876,
+            waypoint
+    );
+
+    // We should be trying to turn left
+    EXPECT_GE(twist.angular.z, 0);
+}
+
+// Test with the robot facing straight forward (relative to initial heading)
+// with the obstacle far behind and to the right
+TEST_F(MoverTest, createTwistMessage_headingLeftObstacleBehindAndRight) {
+    auto current_location = createPoint(18.9, 0);
+    auto waypoint = createPoint(9.28, -8.47);
+
+    auto twist = mover1.createTwistMessage(
+            current_location,
+            -0.5876,
+            waypoint
+    );
+
+    // We should be trying to turn right
+    EXPECT_LE(twist.angular.z, 0);
+}
+
+// Test of angleBetweenPoints with the destination point
+// ahead and to the left of the start point
+TEST_F(MoverTest, angleBetweenPoints_FrontLeft){
+    auto startPoint = createPoint(0,0);
+    auto endPoint = createPoint(1,0.5);
+    double angle = mover1.angleBetweenPoints(startPoint, endPoint);
+    EXPECT_DOUBLE_EQ(atan(0.5), angle);
+}
+
+// Test of angleBetweenPoints with the destination point
+// behind and to the left of the start point
+TEST_F(MoverTest, angleBetweenPoints_BackLeft){
+    auto startPoint = createPoint(0,0);
+    auto endPoint = createPoint(-1,0.5);
+    double angle = mover1.angleBetweenPoints(startPoint, endPoint);
+    EXPECT_DOUBLE_EQ(M_PI - atan(0.5), angle);
+}
+
+// Test of angleBetweenPoints with the destination point
+// ahead and to the right of the start point
+TEST_F(MoverTest, angleBetweenPoints_FrontRight){
+    auto startPoint = createPoint(0,0);
+    auto endPoint = createPoint(1,-0.5);
+    double angle = mover1.angleBetweenPoints(startPoint, endPoint);
+    EXPECT_DOUBLE_EQ(-atan(0.5), angle);
+}
+
+// Test of angleBetweenPoints with the destination point
+// behind and to the right of the start point
+TEST_F(MoverTest, angleBetweenPoints_BackRight){
+    auto startPoint = createPoint(0,0);
+    auto endPoint = createPoint(-1,-0.5);
+    double angle = mover1.angleBetweenPoints(startPoint, endPoint);
+    EXPECT_DOUBLE_EQ(-M_PI + atan(0.5), angle);
 }
 
 // Simple test where the angle are already separated by an acute angle if

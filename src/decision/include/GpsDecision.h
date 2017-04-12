@@ -18,6 +18,7 @@
 #include <geometry_msgs/Point.h>
 #include <sensor_msgs/Imu.h>
 #include <tf/transform_datatypes.h>
+#include <std_msgs/Float32.h>
 
 
 class Mover {
@@ -89,17 +90,17 @@ public:
      */
     double minAngularChange(double from_heading, double to_heading);
 
-private:
     /**
      * Find the angle between two points, based on the ROS coordinate system (see main README)
      *
-     * @param p1
-     * @param p2
+     * @param startPoint
+     * @param endPoint
      *
      * @return the angle FROM startPoint TO endPoint
      */
     double angleBetweenPoints(geometry_msgs::Point startPoint, geometry_msgs::Point endPoint);
 
+private:
     double distance_factor, heading_factor;
 };
 
@@ -112,7 +113,7 @@ private:
     //callback for the current location
     void currentLocationCallback(const geometry_msgs::Point::ConstPtr& current_location);
     //callback for the current heading
-    void imuCallback(const sensor_msgs::Imu::ConstPtr &imu_msg);
+    void imuCallback(const std_msgs::Float32::ConstPtr &heading);
     //callback for our destination waypoint
     void waypointCallback(const geometry_msgs::Point::ConstPtr& waypoint);
 

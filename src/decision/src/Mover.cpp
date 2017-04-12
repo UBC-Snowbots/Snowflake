@@ -6,6 +6,7 @@
 
 #include <GpsDecision.h>
 
+// TODO: RENAME ME
 double Mover::magicFunction(double x, double y, double x_scale, double y_scale){
    return (1/fabs(x)*x_scale + sqrt(fabs(y))*y_scale)/2;
 }
@@ -45,17 +46,18 @@ geometry_msgs::Twist Mover::createTwistMessage(geometry_msgs::Point current_loca
     double angle_to_waypoint = angleBetweenPoints(current_location, waypoint);
     double min_turning_angle = minAngularChange(current_heading, angle_to_waypoint);
 
-    // Figure out how far we are from the waypoint
-    double dx = waypoint.x - current_location.x;
-    double dy = waypoint.y - current_location.y;
-    double distance = sqrt(pow(dx,2) + pow(dy,2));
 
     // Figure out how fast we should turn
-    command.angular.z = magicFunction(distance, min_turning_angle, distance_factor, heading_factor);
+//    command.angular.z = magicFunction(distance, turning_angle, distance_factor, heading_factor);
+    command.angular.z = sqrt(fabs(min_turning_angle)) * heading_factor;
 
     // Figure out if we should be turning left or right
     command.angular.z *= (min_turning_angle > 0) ? 1 : -1;
 
+    // Figure out how far we are from the waypoint
+    double dx = waypoint.x - current_location.x;
+    double dy = waypoint.y - current_location.y;
+    double distance = sqrt(pow(dx,2) + pow(dy,2));
     // Figure out how fast we should move forward
     command.linear.x = magicFunction(min_turning_angle, distance, heading_factor, distance_factor);
 
@@ -75,6 +77,11 @@ double Mover::minAngularChange(double from_heading, double to_heading) {
 double Mover::angleBetweenPoints(geometry_msgs::Point startPoint, geometry_msgs::Point endPoint) {
     double dx = endPoint.x - startPoint.x;
     double dy = endPoint.y - startPoint.y;
-    return atan(dy/dx);
+    double angle = atan(dy/dx);
+    // If the endpoint is behind and to the left
+    if (dx < 0 && dy > 0) angle += M_PI;
+    // If the endpoint is behind and to the right
+    else if (dx < 0 && dy < 0) angle -= M_PI;
+    return angle;
 }
 

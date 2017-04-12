@@ -1,0 +1,8 @@
+<launch>
+
+    <!-- Launch GPS Decision -->
+    <node name="gps_decision" pkg="decision" type="gps_decision" output="screen">
+        <remap from="/gps_decision/twist" to="/robot/cmd_vel"/>
+    </node>
+
+</launch>
