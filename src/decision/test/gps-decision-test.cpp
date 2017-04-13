@@ -27,7 +27,6 @@ geometry_msgs::Point createPoint(double x, double y){
 class MoverTest : public testing::Test {
 protected:
     virtual void SetUp(){
-        mover1.setFactors(1,1);
     }
 
     Mover mover1;
