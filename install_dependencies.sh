@@ -24,7 +24,6 @@ sudo apt-get install -y\
     ros-kinetic-hector-gazebo \
     ros-kinetic-turtlebot-teleop \
     python-rosinstall \
-    python-catkin-tools \
     python-visual \
     python-wxtools \
     libserial-dev 
