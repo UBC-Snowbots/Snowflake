@@ -98,7 +98,7 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
     if (origin_heading != -1 && received_initial_navsatfix) {
         // If we're at the goal, start publishing the next waypoint
         if (distanceToNextWaypoint(*nav_sat_fix) < at_goal_tolerance) {
-            ROS_INFO("Hit waypoint! \nlat: %f \nlon: %f",
+            ROS_INFO("\nHit waypoint \nlat: %f \nlon: %f",
                     waypoint_stack.top().lat, waypoint_stack.top().lon);
             // Start going to the next waypoint
             waypoint_stack.pop();
@@ -106,7 +106,7 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
         if (waypoint_stack.size() > 0) {
             publishWaypoint(waypoint_stack.top());
         } else {
-            // Gone to all the waypoints
+            ROS_INFO("Visited all waypoints");
             // TODO: This will probably need to be handled more gracefully. Right now, the robot will probably get to the final waypoint and freak out
         }
         // Convert the nav_sat_fix to a Point with x,y in meters, and relative to the starting location
