@@ -34,13 +34,21 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
 
     // Setup the mover class, which will figure out what command to send to the robot
     // based on our distance and heading to the destination GPS waypoint
-    double heading_factor, distance_factor;
-    SB_getParam(private_nh, "heading_factor", heading_factor, 1.0);
-    SB_getParam(private_nh, "distance_factor", distance_factor, 1.0);
-    mover.setHeadingFactor(heading_factor);
-    mover.setDistanceFactor(distance_factor);
+    double linear_heading_factor, linear_distance_factor,
+            angular_heading_factor, angular_distance_factor;
+    double linear_cap, angular_cap;
+    SB_getParam(private_nh, "linear_heading_factor", linear_heading_factor, 1.0);
+    SB_getParam(private_nh, "linear_distance_factor", linear_distance_factor, 1.0);
+    SB_getParam(private_nh, "angular_heading_factor", angular_heading_factor, 1.0);
+    SB_getParam(private_nh, "angular_distance_factor", angular_distance_factor, 1.0);
+    mover.setFactors(linear_distance_factor, linear_heading_factor,
+                    angular_distance_factor, angular_heading_factor);
+    SB_getParam(private_nh, "max_linear_speed", linear_cap, 1.0);
+    SB_getParam(private_nh, "max_angular_speed", angular_cap, 1.0);
+    mover.setMaxSpeeds(linear_cap, angular_cap);
 }
 
+// TODO: Some sort of timeout? If we don't get commands, we should send all 0
 void GpsDecision::currentLocationCallback(const geometry_msgs::Point::ConstPtr &current_location) {
     this->current_location = *current_location;
 }

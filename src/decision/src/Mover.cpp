@@ -11,22 +11,23 @@ double Mover::magicFunction(double x, double y, double x_scale, double y_scale){
    return (1/fabs(x)*x_scale + sqrt(fabs(y))*y_scale)/2;
 }
 
-Mover::Mover(double distance_factor, double heading_factor) {
-    this->distance_factor = distance_factor;
-    this->heading_factor = heading_factor;
+Mover::Mover(double linear_distance_factor, double linear_heading_factor,
+             double angular_distance_factor, double angular_heading_factor) {
+    setFactors(linear_distance_factor, linear_heading_factor,
+                angular_distance_factor, angular_heading_factor);
 }
 
-void Mover::setDistanceFactor(double distance_factor) {
-    this->distance_factor = distance_factor;
+void Mover::setFactors(double linear_distance_factor, double linear_heading_factor,
+                    double angular_distance_factor, double angular_heading_factor) {
+    this->linear_distance_factor = linear_distance_factor;
+    this->angular_distance_factor = angular_distance_factor;
+    this->linear_heading_factor = linear_heading_factor;
+    this->angular_heading_factor = angular_heading_factor;
 }
 
-void Mover::setHeadingFactor(double heading_factor) {
-    this->heading_factor = heading_factor;
-}
-
-void Mover::setFactors(double distance_factor, double heading_factor){
-    setDistanceFactor(distance_factor);
-    setHeadingFactor(heading_factor);
+void Mover::setMaxSpeeds(double max_linear_speed, double max_angular_speed) {
+    this->max_linear_speed = max_linear_speed;
+    this->max_angular_speed = max_angular_speed;
 }
 
 geometry_msgs::Twist Mover::createTwistMessage(geometry_msgs::Point current_location,
@@ -46,20 +47,26 @@ geometry_msgs::Twist Mover::createTwistMessage(geometry_msgs::Point current_loca
     double angle_to_waypoint = angleBetweenPoints(current_location, waypoint);
     double min_turning_angle = minAngularChange(current_heading, angle_to_waypoint);
 
-
-    // Figure out how fast we should turn
-//    command.angular.z = magicFunction(distance, turning_angle, distance_factor, heading_factor);
-    command.angular.z = sqrt(fabs(min_turning_angle)) * heading_factor;
-
-    // Figure out if we should be turning left or right
-    command.angular.z *= (min_turning_angle > 0) ? 1 : -1;
-
     // Figure out how far we are from the waypoint
     double dx = waypoint.x - current_location.x;
     double dy = waypoint.y - current_location.y;
     double distance = sqrt(pow(dx,2) + pow(dy,2));
+
+    // Figure out how fast we should turn
+    command.angular.z = magicFunction(distance, min_turning_angle,
+                                      linear_distance_factor, linear_heading_factor);
+
+    // Figure out if we should be turning left or right
+    command.angular.z *= (min_turning_angle > 0) ? 1 : -1;
+
     // Figure out how fast we should move forward
-    command.linear.x = magicFunction(min_turning_angle, distance, heading_factor, distance_factor);
+    // TODO: Implement reversing? This may be a separate issue
+    command.linear.x = magicFunction(min_turning_angle, distance,
+                                     linear_heading_factor, linear_distance_factor);
+
+    // Cap our angular and linear speeds
+    capValue(command.linear.x, max_linear_speed);
+    capValue(command.angular.z, max_angular_speed);
 
     return command;
 }
@@ -85,3 +92,7 @@ double Mover::angleBetweenPoints(geometry_msgs::Point startPoint, geometry_msgs:
     return angle;
 }
 
+void Mover::capValue(double& val, double cap) {
+    if (fabs(val) > cap)
+        val = cap * val/fabs(val);
+}

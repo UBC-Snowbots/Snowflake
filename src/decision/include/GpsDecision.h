@@ -24,37 +24,47 @@
 class Mover {
 public:
     /**
-     * Constructor for a mover object
+     * A constructor for a mover object
      *
-     * @param distance_factor the weight of the distance to the gps waypoint in the movement command
-     * @param heading_factor the weight of the robots heading to the gps waypoint in the movement command
+     * See Mover::setFactors for param descriptions
+     *
+     * @param linear_distance_factor
+     * @param linear_heading_factor
+     * @param angular_distance_factor
+     * @param angular_heading_factor
      */
-    Mover(double distance_factor, double heading_factor);
+    Mover(double linear_distance_factor, double linear_heading_factor,
+          double angular_distance_factor, double angular_heading_factor);
 
     /**
      * An empty constructor will default to factors of 1
      */
-    Mover() : Mover(1,1) {};
+    Mover() : Mover(1,1,1,1) {};
 
     /**
-     * @param distance_factor the value to set the distance factor to
-     * @param heading_factor the value to set the heading factor to
-     */
-    void setFactors(double distance_factor, double heading_factor);
-
-    /**
-     * Sets the distance factor
+     * Sets relations between distance/angle to object, and linear/angular speeds
      *
-     * @param distance_factor the value to set the distance factor to
+     * @param linear_distance_factor how much distance from the obstacle influence
+     * linear speed
+     * @param linear_heading_factor how much the angle between the current heading and
+     * the angle to the obstacle influence the linear speed
+     * linear speed
+     * @param angular_distance_factor how much distance from the obstacle influence
+     * angular speed
+     * @param angular_heading_factor how much the angle between the current heading and
+     * the angle to the obstacle influence the angular speed
+     * angular speed
      */
-    void setDistanceFactor(double distance_factor);
+    void setFactors(double linear_distance_factor, double linear_heading_factor,
+                double angular_distance_factor, double angular_heading_factor);
 
     /**
-     * Sets the heading factor
+     * Sets the caps for linear and angular speed
      *
-     * @param heading_factor the value to set the distance factor to
+     * @param max_linear_speed the max linear speed for any commaand this mover returns
+     * @param max_angular_speed the max angular speed for any command this mover returns
      */
-    void setHeadingFactor(double heading_factor);
+    void setMaxSpeeds(double max_linear_speed, double max_angular_speed);
 
     /**
      * Creates a recommended twist command, based on the robots current heading, location, and dest. waypoint
@@ -101,7 +111,30 @@ public:
     double angleBetweenPoints(geometry_msgs::Point startPoint, geometry_msgs::Point endPoint);
 
 private:
-    double distance_factor, heading_factor;
+
+    /**
+     * Reduces a value to an specified absolute maximum
+     *
+     * @param val the value to cap
+     * @param cap the absolute cap
+     */
+     void capValue(double& val, double cap);
+
+    // How much effect the distance to the waypoint has on the linear speed
+    double linear_distance_factor;
+    // How much effect the angle between our heading and the
+    // angle to the waypoint has on the linear speed
+    double linear_heading_factor;
+    // How much effect the distance to the waypoint has on the angular speed
+    double angular_distance_factor;
+    // How much effect the heading between our heading and the
+    // heading to the waypoint has on the angular speed
+    double angular_heading_factor;
+
+    // The max linear speed allowed
+    double max_linear_speed;
+    // The max angular speed allowed
+    double max_angular_speed;
 };
 
 
