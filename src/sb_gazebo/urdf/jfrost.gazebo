@@ -43,11 +43,9 @@
         <updateRate>50</updateRate>
         <leftJoint>left_front_wheel_hinge</leftJoint>
         <rightJoint>right_front_wheel_hinge</rightJoint>
-        <!--
         <wheelSeparation>${chassis_width+wheel_width}</wheelSeparation>
         <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-        -->
-        <torque>20</torque>
+        <wheelTorque>3</wheelTorque>
         <commandTopic>robot/cmd_vel</commandTopic>
         <odometryTopic>robot/odom_diffdrive</odometryTopic>
         <odometryFrame>odom</odometryFrame>
