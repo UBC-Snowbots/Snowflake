@@ -51,14 +51,14 @@ public:
     /**
     * Gets the distance to the rightmost point of the Obstacle
     *
-    * @ return the distance to the rightmost point of the Obstacle
+    * @return the distance to the rightmost point of the Obstacle
     */
     distance_t getFirstDistance();
 
     /**
     * Gets the distance to the leftmost point of the Obstacle
     *
-    * @ return the distance to the leftmost point of the obstacle
+    * @return the distance to the leftmost point of the obstacle
     */
     distance_t getLastDistance();
 
@@ -67,7 +67,7 @@ public:
      *
      * The distance from the robot is the average of all scan distances
      *
-     * @ return the distance of the Obstacle from the robot
+     * @return the distance of the Obstacle from the robot
      */
     distance_t getAvgDistance();
 
@@ -76,7 +76,7 @@ public:
      *
      * The angle from the robot is the average of all scan angles
      *
-     * @ return the angle of the Obstacle from the robot
+     * @return the angle of the Obstacle from the robot
      */
     angle_t getAvgAngle();
 
@@ -113,14 +113,14 @@ public:
      *
      * ie. how dangerous the obstacle is to the robot
      *
-     * @ return danger_score how dangerous the obstacle is to the robot
+     * @return danger_score how dangerous the obstacle is to the robot
      */
     float dangerScore();
 
     /**
      * Gets all laser readings comprising the obstacle
      *
-     * @ return readings A list of pairs of all laser readings
+     * @return readings A list of pairs of all laser readings
      */
     const std::vector<Reading>& getAllLaserReadings();
 
@@ -154,7 +154,7 @@ public:
     /**
      * Creates a twist command from a given lidar scan that will best avoid obstacles in the scan
      *
-     * @ return A twist command from a given lidar scan that will best avoid obstacles in the scan
+     * @return A twist command from a given lidar scan that will best avoid obstacles in the scan
      */
     geometry_msgs::Twist generate_twist_message(const sensor_msgs::LaserScan::ConstPtr &raw_scan);
 
@@ -165,7 +165,7 @@ public:
      * @param max_obstacle_angle_diff the maximum possible angular difference between two lidar hits
      *          for them to be considered the same obstacle
      *
-     * @ return a vector of all obstacles
+     * @return a vector of all obstacles
      */
     static std::vector<LidarObstacle> findObstacles(const sensor_msgs::LaserScan& scan,
                                                     float max_obstacle_angle_diff,
@@ -176,7 +176,7 @@ public:
      *
      * @param obstacles all obstacles to be considered
      *
-     * @ return the most dangerous obstacle out of those given
+     * @return the most dangerous obstacle out of those given
      */
     static LidarObstacle mostDangerousObstacle(const std::vector<LidarObstacle> obstacles);
 
@@ -206,7 +206,7 @@ public:
      * @param max_obstacle_danger_distance distance which the obstacle must be within to be considered
      * @param obstacle the obstacle to be considered
      *
-     * @ return a twist message
+     * @return a twist message
      */
     static geometry_msgs::Twist twist_message_from_obstacle(LidarObstacle obstacle,
                                                             distance_t danger_distance,
