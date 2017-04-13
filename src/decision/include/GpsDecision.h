@@ -21,6 +21,8 @@
 #include <std_msgs/Float32.h>
 
 
+// TODO: Should this be it's own header file? If so, we should
+// probably do the same with the LidarObstacle class
 class Mover {
 public:
     /**
