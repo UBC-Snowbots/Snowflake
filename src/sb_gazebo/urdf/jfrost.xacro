@@ -74,8 +74,10 @@
 <wheel lr="right" tY="-1" fb="front" wheel_displacement="${wheel_displace}"/>
 
 <!-- Caster Wheels -->
+<!--
 <caster_wheel lr="left" tY="1" fb="back" wheel_displacement="${-wheel_displace}"/>
-<caster_wheel lr="right" tY="-1" fb="back" wheel_displacement="${-wheel_displace}"/>
+-->
+<caster_wheel lr="right" tY="0" fb="back" wheel_displacement="${-wheel_displace}"/>
 
 <!-- Vertical Tower Uprights -->
 <tower_vert lr="left" tY="1"/>
