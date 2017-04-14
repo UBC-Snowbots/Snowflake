@@ -14,7 +14,7 @@
 
 // Snowbots
 #include <sb_utils.h>
-#include <Mover.h>
+#include <GpsMover.h>
 
 // ROS
 #include <ros/ros.h>
@@ -47,7 +47,7 @@ private:
     double current_heading;                 // The current robot heading (in radians)
     geometry_msgs::Point current_location; // The current location of the robot
 
-    Mover mover;    // The class that generates our twist messages
+    GpsMover mover;    // The class that generates our twist messages
 };
 
 #endif //DECISION_GPS_DECISION_H

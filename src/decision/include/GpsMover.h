@@ -13,7 +13,7 @@
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Twist.h>
 
-class Mover {
+class GpsMover {
 public:
     /**
      * A constructor for a mover object
@@ -25,13 +25,13 @@ public:
      * @param angular_distance_factor
      * @param angular_heading_factor
      */
-    Mover(double linear_distance_factor, double linear_heading_factor,
+    GpsMover(double linear_distance_factor, double linear_heading_factor,
           double angular_distance_factor, double angular_heading_factor);
 
     /**
      * An empty constructor will default to factors of 1
      */
-    Mover() : Mover(1,1,1,1) {};
+    GpsMover() : GpsMover(1,1,1,1) {};
 
     /**
      * Sets relations between distance/angle to object, and linear/angular speeds

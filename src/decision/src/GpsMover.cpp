@@ -7,19 +7,19 @@
  *              towards a given point from it's current location
  */
 
-#include <Mover.h>
+#include <GpsMover.h>
 
-double Mover::magicFunction(double x, double y, double x_scale, double y_scale){
+double GpsMover::magicFunction(double x, double y, double x_scale, double y_scale){
    return (1/fabs(x)*x_scale + sqrt(fabs(y))*y_scale)/2;
 }
 
-Mover::Mover(double linear_distance_factor, double linear_heading_factor,
+GpsMover::GpsMover(double linear_distance_factor, double linear_heading_factor,
              double angular_distance_factor, double angular_heading_factor) {
     setFactors(linear_distance_factor, linear_heading_factor,
                 angular_distance_factor, angular_heading_factor);
 }
 
-void Mover::setFactors(double linear_distance_factor, double linear_heading_factor,
+void GpsMover::setFactors(double linear_distance_factor, double linear_heading_factor,
                     double angular_distance_factor, double angular_heading_factor) {
     this->linear_distance_factor = linear_distance_factor;
     this->angular_distance_factor = angular_distance_factor;
@@ -27,12 +27,12 @@ void Mover::setFactors(double linear_distance_factor, double linear_heading_fact
     this->angular_heading_factor = angular_heading_factor;
 }
 
-void Mover::setMaxSpeeds(double max_linear_speed, double max_angular_speed) {
+void GpsMover::setMaxSpeeds(double max_linear_speed, double max_angular_speed) {
     this->max_linear_speed = max_linear_speed;
     this->max_angular_speed = max_angular_speed;
 }
 
-geometry_msgs::Twist Mover::createTwistMessage(geometry_msgs::Point current_location,
+geometry_msgs::Twist GpsMover::createTwistMessage(geometry_msgs::Point current_location,
                                                      double current_heading,
                                                      geometry_msgs::Point waypoint) {
     // The command to return
@@ -72,7 +72,7 @@ geometry_msgs::Twist Mover::createTwistMessage(geometry_msgs::Point current_loca
     return command;
 }
 
-double Mover::minAngularChange(double from_heading, double to_heading) {
+double GpsMover::minAngularChange(double from_heading, double to_heading) {
     // Find the angular difference (mod 2*Pi)
     double angle_diff = fmod((to_heading - from_heading), 2*M_PI);
     // If obtuse angle, then get the acute angle
@@ -82,7 +82,7 @@ double Mover::minAngularChange(double from_heading, double to_heading) {
         return angle_diff;
 }
 
-double Mover::angleBetweenPoints(geometry_msgs::Point startPoint, geometry_msgs::Point endPoint) {
+double GpsMover::angleBetweenPoints(geometry_msgs::Point startPoint, geometry_msgs::Point endPoint) {
     double dx = endPoint.x - startPoint.x;
     double dy = endPoint.y - startPoint.y;
     double angle = atan(dy/dx);
@@ -93,7 +93,7 @@ double Mover::angleBetweenPoints(geometry_msgs::Point startPoint, geometry_msgs:
     return angle;
 }
 
-void Mover::capValue(double& val, double cap) {
+void GpsMover::capValue(double& val, double cap) {
     if (fabs(val) > cap)
         val = cap * val/fabs(val);
 }

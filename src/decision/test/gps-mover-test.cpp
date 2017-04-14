@@ -4,7 +4,7 @@
  * Description: Tests for the Mover class
  */
 
-#include <Mover.h>
+#include <GpsMover.h>
 #include <gtest/gtest.h>
 
 /**
@@ -23,17 +23,17 @@ geometry_msgs::Point createPoint(double x, double y){
 }
 
 
-class MoverTest : public testing::Test {
+class GpsMoverTest : public testing::Test {
 protected:
     virtual void SetUp(){
     }
 
-    Mover mover1;
+    GpsMover mover1;
 };
 
 // Test with robot facing straight ahead, with the obstacle to
 // the right and forwards of the robot
-TEST_F(MoverTest, createTwistMessage_heading0) {
+TEST_F(GpsMoverTest, createTwistMessage_heading0) {
     auto current_location = createPoint(0,0);
     auto waypoint = createPoint(2,2);
 
@@ -49,7 +49,7 @@ TEST_F(MoverTest, createTwistMessage_heading0) {
 
 // Test of the robot facing "backwards" relative to initial heading,
 // with the obstacle (relative to the robot) behind and to the left
-TEST_F(MoverTest, createTwistMessage_headingPiObstacleBehindAndLeft) {
+TEST_F(GpsMoverTest, createTwistMessage_headingPiObstacleBehindAndLeft) {
     auto current_location = createPoint(0,0);
     auto waypoint = createPoint(2,-2);
 
@@ -65,7 +65,7 @@ TEST_F(MoverTest, createTwistMessage_headingPiObstacleBehindAndLeft) {
 
 // Test of the robot facing "backwards" relative to initial heading,
 // with the obstacle behind and to the right (relative to the robot)
-TEST_F(MoverTest, createTwistMessage_headingPiObstacleBehindAndRight) {
+TEST_F(GpsMoverTest, createTwistMessage_headingPiObstacleBehindAndRight) {
     auto current_location = createPoint(0,0);
     auto waypoint = createPoint(2,2);
 
@@ -81,7 +81,7 @@ TEST_F(MoverTest, createTwistMessage_headingPiObstacleBehindAndRight) {
 
 // Test with the robot facing straight forward (relative to initial heading)
 // with the obstacle far behind and to the left
-TEST_F(MoverTest, createTwistMessage_headingLeftObstacleBehindAndLeft) {
+TEST_F(GpsMoverTest, createTwistMessage_headingLeftObstacleBehindAndLeft) {
     auto current_location = createPoint(18.9, -6.96);
     auto waypoint = createPoint(9.28, 2.47);
 
@@ -97,7 +97,7 @@ TEST_F(MoverTest, createTwistMessage_headingLeftObstacleBehindAndLeft) {
 
 // Test with the robot facing straight forward (relative to initial heading)
 // with the obstacle far behind and to the right
-TEST_F(MoverTest, createTwistMessage_headingLeftObstacleBehindAndRight) {
+TEST_F(GpsMoverTest, createTwistMessage_headingLeftObstacleBehindAndRight) {
     auto current_location = createPoint(18.9, 0);
     auto waypoint = createPoint(9.28, -8.47);
 
@@ -113,7 +113,7 @@ TEST_F(MoverTest, createTwistMessage_headingLeftObstacleBehindAndRight) {
 
 // Test of angleBetweenPoints with the destination point
 // ahead and to the left of the start point
-TEST_F(MoverTest, angleBetweenPoints_FrontLeft){
+TEST_F(GpsMoverTest, angleBetweenPoints_FrontLeft){
     auto startPoint = createPoint(0,0);
     auto endPoint = createPoint(1,0.5);
     double angle = mover1.angleBetweenPoints(startPoint, endPoint);
@@ -122,7 +122,7 @@ TEST_F(MoverTest, angleBetweenPoints_FrontLeft){
 
 // Test of angleBetweenPoints with the destination point
 // behind and to the left of the start point
-TEST_F(MoverTest, angleBetweenPoints_BackLeft){
+TEST_F(GpsMoverTest, angleBetweenPoints_BackLeft){
     auto startPoint = createPoint(0,0);
     auto endPoint = createPoint(-1,0.5);
     double angle = mover1.angleBetweenPoints(startPoint, endPoint);
@@ -131,7 +131,7 @@ TEST_F(MoverTest, angleBetweenPoints_BackLeft){
 
 // Test of angleBetweenPoints with the destination point
 // ahead and to the right of the start point
-TEST_F(MoverTest, angleBetweenPoints_FrontRight){
+TEST_F(GpsMoverTest, angleBetweenPoints_FrontRight){
     auto startPoint = createPoint(0,0);
     auto endPoint = createPoint(1,-0.5);
     double angle = mover1.angleBetweenPoints(startPoint, endPoint);
@@ -140,7 +140,7 @@ TEST_F(MoverTest, angleBetweenPoints_FrontRight){
 
 // Test of angleBetweenPoints with the destination point
 // behind and to the right of the start point
-TEST_F(MoverTest, angleBetweenPoints_BackRight){
+TEST_F(GpsMoverTest, angleBetweenPoints_BackRight){
     auto startPoint = createPoint(0,0);
     auto endPoint = createPoint(-1,-0.5);
     double angle = mover1.angleBetweenPoints(startPoint, endPoint);
@@ -149,30 +149,30 @@ TEST_F(MoverTest, angleBetweenPoints_BackRight){
 
 // Simple test where the angle are already separated by an acute angle if
 // just subtracted
-TEST_F(MoverTest, minAngularChangeTest_acuteAngle){
+TEST_F(GpsMoverTest, minAngularChangeTest_acuteAngle){
     double angle = mover1.minAngularChange(-M_PI, -M_PI/4);
     EXPECT_DOUBLE_EQ(3.0/4.0 * M_PI, angle);
 }
 
 // Test where the angle returned should be negative
-TEST_F(MoverTest, minAngularChangeTest_negativeReturnAngle){
+TEST_F(GpsMoverTest, minAngularChangeTest_negativeReturnAngle){
     double angle = mover1. minAngularChange(M_PI, M_PI/4);
     EXPECT_DOUBLE_EQ(-3.0/4.0 * M_PI, angle);
 }
 
 // Test where angles are separated by an obtuse angle (if just subtracted)
-TEST_F(MoverTest, minAngularChangeTest_obtuseAngle){
+TEST_F(GpsMoverTest, minAngularChangeTest_obtuseAngle){
     double should_be_acute = mover1.minAngularChange(M_PI, -M_PI/4);
     EXPECT_DOUBLE_EQ(3.0/4.0 * M_PI, should_be_acute);
 }
 
 //Test where angle are separated by a negative obtuse angle (if just subtracted)
-TEST_F(MoverTest, minAngularChangeTest_negativeObtuseAngle){
+TEST_F(GpsMoverTest, minAngularChangeTest_negativeObtuseAngle){
     double should_be_acute = mover1.minAngularChange(-M_PI, M_PI/4);
     EXPECT_DOUBLE_EQ(-3.0/4.0 * M_PI, should_be_acute);
 }
 
-TEST_F(MoverTest, magicFunctionTest_basic){
+TEST_F(GpsMoverTest, magicFunctionTest_basic){
     EXPECT_DOUBLE_EQ((1/(double)10 + sqrt((double)5))/2, mover1.magicFunction(10, 5, 1, 1));
 }
 
