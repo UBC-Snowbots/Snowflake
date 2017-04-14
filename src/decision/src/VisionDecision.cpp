@@ -20,7 +20,7 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
     image_subscriber = private_nh.subscribe(camera_image_topic_name, refresh_rate, &VisionDecision::imageCallBack, this);
 
     // Setup Publisher(s)
-    std::string twist_topic = private_nh.resolveName("command");
+    std::string twist_topic = private_nh.resolveName("twist");
     uint32_t queue_size = 10;
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
