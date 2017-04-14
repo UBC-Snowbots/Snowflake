@@ -1,0 +1,8 @@
+<launch>
+
+    <!-- Launch GPS Driver -->
+    <node name="gps_driver" pkg="drivers" type="gps_driver" output="screen">
+        <rosparam param="port">/dev/ttyACM1</rosparam>
+    </node>
+
+</launch>
