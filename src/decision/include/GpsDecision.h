@@ -9,14 +9,14 @@
 #ifndef DECISION_GPS_DECISION_H
 #define DECISION_GPS_DECISION_H
 
-// STD includes
+// STD
 #include <iostream>
 
-// Snowbots Includes
+// Snowbots
 #include <sb_utils.h>
 #include <Mover.h>
 
-// ROS Includes
+// ROS
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
@@ -24,6 +24,7 @@
 #include <sensor_msgs/Imu.h>
 #include <tf/transform_datatypes.h>
 #include <std_msgs/Float32.h>
+
 
 class GpsDecision {
 public:

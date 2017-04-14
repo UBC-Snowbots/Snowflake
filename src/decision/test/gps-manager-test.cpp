@@ -55,7 +55,6 @@ TEST(GpsManager, distanceBetweenWaypoints300Meters){
     wp1.lon = -123.240815;
     wp2.lat = 49.255595;
     wp2.lon = -123.236577;
-    // TODO: YOU ARE HERE, it's basically correct, just need to calculate distance to more sig figs for testing
     EXPECT_NEAR(343.0391, GpsManager::distanceBetweenWaypoints(wp1, wp2), 0.001);
 }
 
