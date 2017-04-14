@@ -44,7 +44,6 @@ geometry_msgs::Twist GpsMover::createTwistMessage(geometry_msgs::Point current_l
     command.angular.x= 0;
     command.angular.y = 0;
 
-
     // Figure out the minimum we have to turn to point directly at the waypoint
     double angle_to_waypoint = angleBetweenPoints(current_location, waypoint);
     double min_turning_angle = minAngularChange(current_heading, angle_to_waypoint);

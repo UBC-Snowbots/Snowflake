@@ -172,6 +172,7 @@ TEST_F(GpsMoverTest, minAngularChangeTest_negativeObtuseAngle){
     EXPECT_DOUBLE_EQ(-3.0/4.0 * M_PI, should_be_acute);
 }
 
+// Test out our magic function......
 TEST_F(GpsMoverTest, magicFunctionTest_basic){
     EXPECT_DOUBLE_EQ((1/(double)10 + sqrt((double)5))/2, mover1.magicFunction(10, 5, 1, 1));
 }
