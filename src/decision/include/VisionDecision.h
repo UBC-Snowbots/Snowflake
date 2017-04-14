@@ -8,8 +8,13 @@
 #ifndef DECISION_VISION_DECISION_H
 #define DECISION_VISION_DECISION_H
 
-
+// STD
 #include <iostream>
+
+// Snowbots
+#include <sb_utils.h>
+
+// ROS
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Image.h>
@@ -41,7 +46,8 @@ public:
      *
      * @return the angle of the line to the positive y-axis.
      */
-    static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image);
+    static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image,
+                               double angular_velocity_multiplier);
 
     /**
      * Determines the angle of the line parsed from the left or right side.
@@ -150,5 +156,9 @@ private:
     
     ros::Subscriber image_subscriber;
     ros::Publisher twist_publisher;
+
+    // The value to scale the angular velocity on the
+    // twist message we create by
+    double angular_velocity_multiplier;
 };
 #endif //DECISION_VISION_DECISION_H

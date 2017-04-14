@@ -12,19 +12,20 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
 
     // Setup NodeHandles
     ros::NodeHandle nh;
-    ros::NodeHandle public_nh("~");
+    ros::NodeHandle private_nh("~");
 
     // Setup Subscriber(s)
     std::string camera_image_topic_name = "/vision/filtered_image";
     int refresh_rate = 10;
-    image_subscriber = public_nh.subscribe(camera_image_topic_name, refresh_rate, &VisionDecision::imageCallBack, this);
+    image_subscriber = private_nh.subscribe(camera_image_topic_name, refresh_rate, &VisionDecision::imageCallBack, this);
 
     // Setup Publisher(s)
-    std::string twist_topic = public_nh.resolveName("command");
+    std::string twist_topic = private_nh.resolveName("command");
     uint32_t queue_size = 10;
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
-
+    // Get Param(s)
+    SB_getParam(private_nh, "angular_vel_multiplier", angular_velocity_multiplier, 1.0);
 }
 
 // This is called whenever a new message is received
@@ -33,7 +34,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
-    int relativeAngle = getDesiredAngle(image_scan->height / 5.0, image_scan);
+    int relativeAngle = getDesiredAngle(image_scan->height / 5.0, image_scan, angular_velocity_multiplier);
 
     // Initialize linear velocities to 0
     twistMsg.linear.y = 0;
@@ -59,7 +60,8 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist) {
 
 /* Functions to determine robot movement */
 
-int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan) {
+int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan,
+                                    double angular_velocity_multiplier) {
 
     int desiredAngle = getAngleOfLine(false, numSamples, image_scan);
     int row;
@@ -81,7 +83,7 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
 
     // If angle coming from the left is invalid try going from the right.
     if (!(desiredAngle < 90 && desiredAngle > -90))
-        desiredAngle = getAngleOfLine(true, numSamples, image_scan);
+        desiredAngle = -angular_velocity_multiplier * getAngleOfLine(true, numSamples, image_scan);
 
     // If both cases are invalid it will do a turn 90 degrees (Turns sharp right).
     if (!(desiredAngle < 90 && desiredAngle > -90))
