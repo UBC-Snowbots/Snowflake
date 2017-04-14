@@ -1,12 +1,11 @@
 /*
  * Created By: Gareth Ellis
  * Created On: July 22, 2016
- * Description: Tests for GpsDecision
+ * Description: Tests for the Mover class
  */
 
-#include <GpsDecision.h>
+#include <Mover.h>
 #include <gtest/gtest.h>
-
 
 /**
  * Creates a geometry_msgs::Point with given x and y coordinates

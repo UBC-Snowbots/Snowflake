@@ -46,9 +46,9 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     SB_getParam(private_nh, "max_linear_speed", linear_cap, 1.0);
     SB_getParam(private_nh, "max_angular_speed", angular_cap, 1.0);
     mover.setMaxSpeeds(linear_cap, angular_cap);
+
 }
 
-// TODO: Some sort of timeout? If we don't get commands, we should send all 0
 void GpsDecision::currentLocationCallback(const geometry_msgs::Point::ConstPtr &current_location) {
     this->current_location = *current_location;
 }

@@ -38,7 +38,7 @@ include_directories(
 # add_executable(sample_package_node src/sample_package_node.cpp)
 add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp include/LidarDecision.h src/LidarObstacle.cpp)
 add_executable(vision_decision src/vision_decision.cpp src/VisionDecision.cpp include/VisionDecision.h)
-add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp src/Mover.cpp include/GpsDecision.h)
+add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp src/Mover.cpp include/GpsDecision.h include/Mover.h)
 add_executable(final_decision src/final_decision.cpp src/FinalDecision.cpp include/FinalDecision.h)
 add_executable(gps_manager src/gps_manager.cpp src/GpsManager.cpp include/GpsManager.h)
 
@@ -67,8 +67,7 @@ if (CATKIN_ENABLE_TESTING)
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
     target_link_libraries(vision-decision-test ${catkin_LIBRARIES})
 
-
-    catkin_add_gtest(gps-decision-test test/gps-decision-test.cpp src/GpsDecision.cpp src/Mover.cpp)
+    catkin_add_gtest(mover-test test/mover-test.cpp src/Mover.cpp)
     target_link_libraries(gps-decision-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(final-decision-test test/final-decision-test.cpp src/FinalDecision.cpp)
@@ -76,6 +75,7 @@ if (CATKIN_ENABLE_TESTING)
 
     catkin_add_gtest(gps-manager-test test/gps-manager-test.cpp src/GpsManager.cpp)
     target_link_libraries(gps-manager-test ${catkin_LIBRARIES})
+
 
     # rostest
     find_package(rostest REQUIRED)

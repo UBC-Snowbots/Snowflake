@@ -1,12 +1,14 @@
 /*
  * Created By: Gareth Ellis
- * Created On: September 22, 2016
- * Description: TODO
+ * Created On: April 1, 2017
+ * Description: The implementation for the Mover class. This class
+ *              contains all the methods required to decide on the
+ *              appropriate twist message to make the robot move smoothly
+ *              towards a given point from it's current location
  */
 
-#include <GpsDecision.h>
+#include <Mover.h>
 
-// TODO: RENAME ME
 double Mover::magicFunction(double x, double y, double x_scale, double y_scale){
    return (1/fabs(x)*x_scale + sqrt(fabs(y))*y_scale)/2;
 }
@@ -60,7 +62,6 @@ geometry_msgs::Twist Mover::createTwistMessage(geometry_msgs::Point current_loca
     command.angular.z *= (min_turning_angle > 0) ? 1 : -1;
 
     // Figure out how fast we should move forward
-    // TODO: Implement reversing? This may be a separate issue
     command.linear.x = magicFunction(min_turning_angle, distance,
                                      linear_heading_factor, linear_distance_factor);
 
