@@ -109,14 +109,10 @@ protected:
                 LidarObstacle(1.2, 10),
                 LidarObstacle(1.1, 10),
         };
-        // A more realistic set of obstacles
-//        realistic_obstacles = {
-//                LidarObstacle()
-//        };
     }
 
     sensor_msgs::LaserScan scan1;
-    std::vector<LidarObstacle> sorted_obstacles, unsorted_obstacles, realistic_obstacles;
+    std::vector<LidarObstacle> sorted_obstacles, unsorted_obstacles;
 };
 
 TEST_F(LidarDecisionTest, mergeSimilarObstaclesPreSortedTest){
