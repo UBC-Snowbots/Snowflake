@@ -111,12 +111,11 @@ void LidarDecision::mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
     int i = 0;
     while(i < (long)obstacles.size() - 1){
         // Check if angle difference between two consecutive scans is less than max_angle_diff and max_distance_diff
-        if (abs(obstacles[i+1].getMinAngle() - obstacles[i].getMaxAngle()) < max_angle_diff &&
-            abs(obstacles[i+1].getFirstDistance() - obstacles[i].getLastDistance()) < max_distance_diff){
+        if (fabs(obstacles[i+1].getMinAngle() - obstacles[i].getMaxAngle()) < max_angle_diff &&
+            fabs(obstacles[i+1].getFirstDistance() - obstacles[i].getLastDistance()) < max_distance_diff){
                 // Merge next obstacle into current one
                 obstacles[i].mergeInLidarObstacle(obstacles[i+1]);
                 obstacles.erase(obstacles.begin()+i+1);
-
         } else {
             i++;
         }
@@ -141,7 +140,7 @@ geometry_msgs::Twist LidarDecision::twist_message_from_obstacle(LidarObstacle ob
         // Calculate linear x dependent on how close obstacle is to the robot
         twist.linear.x = sqrt(minDistance);
         // Calculate angular z dependent on how aligned obstacle is to the robot
-        float angle_score = abs(cos(obstacle.getAvgAngle()));
+        float angle_score = fabs(cos(obstacle.getAvgAngle()));
         // Calculate angular z dependent on how close obstacle is to the robot
         float distance_score = 1 / minDistance;
         // Choose one score determined if angle or distance is more dangerous

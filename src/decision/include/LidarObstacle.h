@@ -44,6 +44,19 @@ public:
     LidarObstacle(std::vector<Reading> readings);
 
     /**
+    * Gets the distance to the rightmost point of the Obstacle
+    *
+    * @return the distance to the rightmost point of the Obstacle
+    */
+    distance_t getFirstDistance();
+
+    /**
+    * Gets the distance to the leftmost point of the Obstacle
+    *
+    * @return the distance to the leftmost point of the obstacle
+    */
+    distance_t getLastDistance();
+    /**
      * Gets the average distance of the Obstacle from the robot
      *
      * The distance from the robot is the average of all scan distances
