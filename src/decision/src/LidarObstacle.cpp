@@ -19,17 +19,17 @@ LidarObstacle::LidarObstacle(std::vector<Reading> readings) {
 }
 
 distance_t LidarObstacle::getAvgDistance() {
-    float total_distance = std::accumulate(readings.begin(), readings.end(), 0.0,
-                                               [] (int accumulator, auto reading){
-                                                       return accumulator + reading.range;
-                                               });
+    float total_distance = std::accumulate(readings.begin(), readings.end(), 0,
+                                           [] (int accumulator, auto reading){
+                                                return accumulator + reading.range;
+                                            });
     return total_distance / readings.size();
 }
 
 angle_t LidarObstacle::getAvgAngle() {
     float total_angle = std::accumulate(readings.begin(), readings.end(), 0.0,
-                                            [] (float accumulator, auto reading){
-                                                    return accumulator + reading.angle;
+                                        [] (float accumulator, auto reading){
+                                                return accumulator + reading.angle;
                                             });
     return total_angle / readings.size();
 }
@@ -42,6 +42,14 @@ angle_t LidarObstacle::getMinAngle() {
 angle_t LidarObstacle::getMaxAngle() {
     // Readings are sorted, so max angle is just the last Reading
     return readings[readings.size()-1].angle;
+}
+
+distance_t LidarObstacle::getLastDistance(){
+    return readings[readings.size()-1].range;
+}
+
+distance_t LidarObstacle::getFirstDistance(){
+    return readings[0].range;
 }
 
 const std::vector<Reading>& LidarObstacle::getAllLaserReadings() {

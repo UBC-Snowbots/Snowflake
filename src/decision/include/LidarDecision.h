@@ -44,7 +44,8 @@ public:
      * @return a vector of all obstacles
      */
     static std::vector<LidarObstacle> findObstacles(const sensor_msgs::LaserScan& scan,
-                                                        float max_obstacle_angle_diff);
+                                                    float max_obstacle_angle_diff,
+                                                    float max_obstacle_distance_diff);
 
     /**
      * Finds the obstacle most dangerous to the robot
@@ -63,8 +64,12 @@ public:
      * @param obstacles the list of obstacles to be merged (if similar)
      * @param max_angle_diff the max difference that two obstacles may differ by and still be considered
      *                      part of the same obstacle
+     * @param max_distance_diff the max difference that two obstacles may differ by and still be considered
+     *                      part of the same obstacle
      */
-    static void mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles, float max_angle_diff);
+    static void mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
+                                      float max_angle_diff,
+                                      float max_distance_diff);
 
     /**
      * Creates a twist message from a given obstacle
@@ -90,6 +95,8 @@ private:
 
     // The maximum angle which two scans can be different by to be considered the same obstacle
     float max_obstacle_angle_diff;
+    // The maximum di which two scans can be different by to be considered the same obstacle
+    float max_obstacle_distance_diff;
     // The distance at which an obstacle can be and be considered a danger
     float max_obstacle_danger_distance;
     // The angle, measured from 0 being directly in front of the robot, at which an obstacle
