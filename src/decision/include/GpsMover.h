@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: April 1, 2017
- * Description: The declaration for the Mover class. This class
+ * Description: The declaration for the GpsMover class. This class
  *              contains all the methods required to decide on the
  *              appropriate twist message to make the robot move smoothly
  *              towards a given point from it's current location
@@ -16,9 +16,9 @@
 class GpsMover {
 public:
     /**
-     * A constructor for a mover object
+     * A constructor for a GpsMover object
      *
-     * See Mover::setFactors for param descriptions
+     * See GpsMover::setFactors for param descriptions
      *
      * @param linear_distance_factor
      * @param linear_heading_factor

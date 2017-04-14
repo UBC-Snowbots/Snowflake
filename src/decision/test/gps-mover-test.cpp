@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: July 22, 2016
- * Description: Tests for the Mover class
+ * Description: Tests for the GpsMover class
  */
 
 #include <GpsMover.h>

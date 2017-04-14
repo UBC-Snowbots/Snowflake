@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: April 1, 2017
- * Description: The implementation for the Mover class. This class
+ * Description: The implementation for the GpsMover class. This class
  *              contains all the methods required to decide on the
  *              appropriate twist message to make the robot move smoothly
  *              towards a given point from it's current location

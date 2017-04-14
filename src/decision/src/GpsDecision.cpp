@@ -32,7 +32,7 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     std::string twist_publisher_topic = private_nh.resolveName("twist");
     twist_publisher = private_nh.advertise<geometry_msgs::Twist>(twist_publisher_topic, queue_size);
 
-    // Setup the mover class, which will figure out what command to send to the robot
+    // Setup the GpsMover class, which will figure out what command to send to the robot
     // based on our distance and heading to the destination GPS waypoint
     double linear_heading_factor, linear_distance_factor,
             angular_heading_factor, angular_distance_factor;
