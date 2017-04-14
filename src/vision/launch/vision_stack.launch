@@ -1,12 +1,12 @@
 <launch>
 
-	<node name="ros_vision" pkg="vision" type="ros_vision" output="screen">
-		<remap from="/elsa/camera/image_raw" to="/robot/camera1/image_raw"/>
-	</node>
+    <node name="ros_vision" pkg="vision" type="ros_vision" output="screen">
+        <remap from="/elsa/camera/image_raw" to="/robot/camera1/image_raw"/>
+    </node>
 
-	<node name="vision_decision" pkg="decision" type="vision_decision" output="screen">
-		<remap from="/vision_processing/filtered_image" to="/vision/filtered_image"/>
-		<remap from="/vision_decision/command" to="robot/cmd_vel"/>
-	</node>
+    <node name="vision_decision" pkg="decision" type="vision_decision" output="screen">
+        <remap from="/vision_processing/filtered_image" to="/vision/filtered_image"/>
+        <remap from="/vision_decision/command" to="robot/cmd_vel"/>
+    </node>
      
 </launch>
