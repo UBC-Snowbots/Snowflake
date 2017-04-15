@@ -63,11 +63,10 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist) {
 int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan,
                                     double angular_velocity_multiplier) {
 
-    int desiredAngle = getAngleOfLine(false, numSamples, image_scan);
     int row;
     int whiteCount = 0;
 
-    // Check if the robot can go in a straight line.
+    // Check if there is a white line in the way of the robot
     for(row = 0; row < image_scan->height; row++) {
         if(image_scan->data[row * image_scan->width + image_scan->height/2] != 0)
             whiteCount++;
@@ -76,17 +75,23 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
         if(image_scan->data[row * image_scan->width + image_scan->height*2/3] != 0)
             whiteCount++;
     }
+
+    // If there is no white line in front of the robot, stop.
     if(whiteCount < NOISE_MAX)
-        return 0;
+        return STOP_SIGNAL_ANGLE;
+
+    // If there is a perpendicular line in front of the robot, stop.
     if (isPerpendicular(image_scan))
         return STOP_SIGNAL_ANGLE;
 
+    int desiredAngle = -angular_velocity_multiplier * getAngleOfLine(false, numSamples, image_scan);
+
     // If angle coming from the left is invalid try going from the right.
-    if (!(desiredAngle < 90 && desiredAngle > -90))
+    if (fabs(desiredAngle) > 90)
         desiredAngle = -angular_velocity_multiplier * getAngleOfLine(true, numSamples, image_scan);
 
-    // If both cases are invalid it will do a turn 90 degrees (Turns sharp right).
-    if (!(desiredAngle < 90 && desiredAngle > -90))
+    // If both cases are invalid it will stop
+    if (fabs(desiredAngle) > 90)
         desiredAngle = STOP_SIGNAL_ANGLE;
 
     return desiredAngle;

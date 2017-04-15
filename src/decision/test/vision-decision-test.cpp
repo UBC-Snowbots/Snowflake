@@ -106,7 +106,7 @@ TEST(imageTest, straightButLineNearEdge){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(0, VisionDecision::getDesiredAngle(testImageScan->height / 4.0, testImageScan, 0), 20);
+    EXPECT_NEAR(STOP_SIGNAL_ANGLE, VisionDecision::getDesiredAngle(testImageScan->height / 4.0, testImageScan, 0), 20);
 }
 
 TEST(imageTest, perpendicular){
