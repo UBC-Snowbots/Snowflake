@@ -10,11 +10,3 @@ char to send | what it does
 `d` | toggles debug mode. in debug mode, the gps will send messages over serial as it receives them
 `r` | requests the most recent gps message (it will be returned over serial)
 
-### RAzor_AHRS
-
-- This firmware was copied from [here](https://github.com/KristofRobot/razor_imu_9dof), which has a much more detailed readme
-- It was last copied at commit (PLEASE UPDATE THIS IF YOU UPDATE THE FIRMWARE): `7de220f`
-- The firmware for the [Razor 9Dof IMU](https://www.sparkfun.com/products/retired/10736)
-- Our particular model is a `SEN-10736 (HMC583L magnetomer)` and the `Hardware Options` section of the firmware is set accordingly 
-- A good tutorial and instructions for use can be found [here](http://wiki.ros.org/razor_imu_9dof), on the ROS wiki
-
