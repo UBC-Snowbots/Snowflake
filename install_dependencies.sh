@@ -16,16 +16,17 @@ echo "================================================================"
 
 sudo apt-get install -y\
     python-rosinstall \
-    ros-kinetic-xacro \
-    ros-kinetic-controller-manager \
-    ros-kinetic-gazebo-ros-control \
-    ros-kinetic-ros-controllers \
-    ros-kinetic-ros-control \
-    ros-kinetic-effort-controllers \
-    ros-kinetic-hector-gazebo \
-    ros-kinetic-turtlebot-teleop \
     python-visual \
-    python-wxtools 
+    python-wxtools \
+    ros-kinetic-controller-manager \
+    ros-kinetic-effort-controllers \
+    ros-kinetic-gazebo-ros-control \
+    ros-kinetic-hector-gazebo \
+    ros-kinetic-robot-pose-ekf \
+    ros-kinetic-ros-control \
+    ros-kinetic-ros-controllers \
+    ros-kinetic-turtlebot-teleop \
+    ros-kinetic-xacro
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."
