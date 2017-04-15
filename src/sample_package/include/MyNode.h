@@ -12,6 +12,7 @@
 #include <iostream>
 #include <std_msgs/String.h>
 #include <ros/ros.h>
+#include <sb_utils.h>
 
 class MyClass {
 public:
