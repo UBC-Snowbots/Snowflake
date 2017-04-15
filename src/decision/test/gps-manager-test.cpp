@@ -55,7 +55,6 @@ TEST(GpsManager, distanceBetweenWaypoints300Meters){
     wp1.lon = -123.240815;
     wp2.lat = 49.255595;
     wp2.lon = -123.236577;
-    // TODO: YOU ARE HERE, it's basically correct, just need to calculate distance to more sig figs for testing
     EXPECT_NEAR(343.0391, GpsManager::distanceBetweenWaypoints(wp1, wp2), 0.001);
 }
 
@@ -114,7 +113,7 @@ TEST(GpsManager, angleBetweenWaypoints359Degrees){
 }
 
 TEST(GpsManager, convertToRobotsPrespective_no_rotation_straight_ahead){
-    // Waypoint is 1 meter directly ahead
+    // Waypoint is 10 meters directly ahead
     // Origin rotation is 0
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
@@ -129,7 +128,7 @@ TEST(GpsManager, convertToRobotsPrespective_no_rotation_straight_ahead){
 }
 
 TEST(GpsManager, convertToRobotsPrespective_no_rotation_directly_behind){
-    // Waypoint is 1 meter directly behind
+    // Waypoint is 10 meters directly behind
     // Origin rotation is 0
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
@@ -144,7 +143,7 @@ TEST(GpsManager, convertToRobotsPrespective_no_rotation_directly_behind){
 }
 
 TEST(GpsManager, convertToRobotsPrespective_no_rotation_directly_left){
-    // Waypoint is 1 meter directly ahead
+    // Waypoint is 10 meters directly ahead
     // Origin rotation is 0
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
@@ -159,7 +158,7 @@ TEST(GpsManager, convertToRobotsPrespective_no_rotation_directly_left){
 }
 
 TEST(GpsManager, convertToRobotsPrespective_no_rotation_directly_right){
-    // Waypoint is 1 meter directly ahead
+    // Waypoint is 10 meters directly ahead
     // Origin rotation is 0
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
@@ -174,14 +173,14 @@ TEST(GpsManager, convertToRobotsPrespective_no_rotation_directly_right){
 }
 
 TEST(GpsManager, convertToRobotsPrespective_origin_rotated_left_straight_ahead){
-    // Waypoint is 1 meter directly ahead
+    // Waypoint is 10 meters directly ahead
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
     nsfix.latitude = 49.254226;
     nsfix.longitude = -123.240825;
     wp.lat = 49.25431591;
     wp.lon = -123.240825;
-    double origin_heading = 1.5 * M_PI;
+    double origin_heading = 0.5 * M_PI;
 
     geometry_msgs::Point converted_waypoint = GpsManager::convertToRobotsPerspective(wp, nsfix, origin_heading);
     EXPECT_NEAR(0, converted_waypoint.x, 0.005);
@@ -189,14 +188,14 @@ TEST(GpsManager, convertToRobotsPrespective_origin_rotated_left_straight_ahead){
 }
 
 TEST(GpsManager, convertToRobotsPrespective_origin_rotated_left_directly_left){
-    // Waypoint is 1 meter directly ahead
+    // Waypoint is 10 meters directly ahead
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
     nsfix.latitude = 49.254226;
     nsfix.longitude = -123.240825;
     wp.lat = 49.254226;
     wp.lon = -123.24096275;
-    double origin_heading = 1.5 * M_PI;
+    double origin_heading = 0.5 * M_PI;
 
     geometry_msgs::Point converted_waypoint = GpsManager::convertToRobotsPerspective(wp, nsfix, origin_heading);
     EXPECT_NEAR(10, converted_waypoint.x, 0.005);
@@ -204,14 +203,14 @@ TEST(GpsManager, convertToRobotsPrespective_origin_rotated_left_directly_left){
 }
 
 TEST(GpsManager, convertToRobotsPrespective_origin_rotated_left_directly_behind){
-    // Waypoint is 1 meter directly behind
+    // Waypoint is 10 meters directly behind
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
     nsfix.latitude = 49.25431591;
     nsfix.longitude = -123.240825;
     wp.lat = 49.254226;
     wp.lon = -123.240825;
-    double origin_heading = 1.5 * M_PI;
+    double origin_heading = 0.5 * M_PI;
 
     geometry_msgs::Point converted_waypoint = GpsManager::convertToRobotsPerspective(wp, nsfix, origin_heading);
     EXPECT_NEAR(0, converted_waypoint.x, 0.005);
@@ -219,7 +218,7 @@ TEST(GpsManager, convertToRobotsPrespective_origin_rotated_left_directly_behind)
 }
 
 TEST(GpsManager, convertToRobotsPrespective_rotated_45_straight_ahead){
-    // Waypoint is 1 meter directly ahead
+    // Waypoint is 10 meters directly ahead
     // Origin rotation is Pi/2
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
@@ -231,11 +230,11 @@ TEST(GpsManager, convertToRobotsPrespective_rotated_45_straight_ahead){
 
     geometry_msgs::Point converted_waypoint = GpsManager::convertToRobotsPerspective(wp, nsfix, origin_heading);
     EXPECT_NEAR(10 * cos(origin_heading), converted_waypoint.x, 0.005);
-    EXPECT_NEAR(10 * cos(origin_heading), converted_waypoint.y, 0.005);
+    EXPECT_NEAR(-10 * cos(origin_heading), converted_waypoint.y, 0.005);
 }
 
 TEST(GpsManager, convertToRobotsPrespective_rotated_60_straight_ahead){
-    // Waypoint is 1 meter directly ahead
+    // Waypoint is 10 meters directly ahead
     // Origin rotation is 60 degrees
     Waypoint wp;
     sensor_msgs::NavSatFix nsfix;
@@ -247,7 +246,7 @@ TEST(GpsManager, convertToRobotsPrespective_rotated_60_straight_ahead){
 
     geometry_msgs::Point converted_waypoint = GpsManager::convertToRobotsPerspective(wp, nsfix, origin_heading);
     EXPECT_NEAR(10 * cos(origin_heading), converted_waypoint.x, 0.005);
-    EXPECT_NEAR(10 * cos(M_PI/2 - origin_heading), converted_waypoint.y, 0.005);
+    EXPECT_NEAR(-10 * cos(M_PI/2 - origin_heading), converted_waypoint.y, 0.005);
 }
 
 int main(int argc, char **argv) {
