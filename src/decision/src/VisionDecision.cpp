@@ -26,6 +26,7 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
 
     // Get Param(s)
     SB_getParam(private_nh, "angular_vel_multiplier", angular_velocity_multiplier, 1.0);
+//    SB_getParam(private_nh, "noise_max", noise_max, 1);
 }
 
 // This is called whenever a new message is received
@@ -94,6 +95,7 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     if (fabs(desiredAngle) > 90)
         desiredAngle = STOP_SIGNAL_ANGLE;
 
+    printf("DESIRED: %d\n", desiredAngle);
     return desiredAngle;
 }
 
@@ -108,7 +110,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     // Assign garbage values
     int toParseFrom = -1;
     int bottomRow = -1;
-    
+
     // Initialize how and where to parse.
     incrementer = initializeIncrementerPosition(rightSide, image_scan, &startingPos);
 
@@ -146,7 +148,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             validSamples++;
         }
 
-        // printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
+        //printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
         // Add the angle to the average.
         sumAngles += foundAngle;
     }
