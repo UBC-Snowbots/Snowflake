@@ -128,7 +128,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     double sumAngles = 0;
     // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
     // also counts how many of them are valid.
-    for (double division = 30; (division < numSamples) && (bottomRow - division > 0); division++) {
+    for (double division = 1; (division < numSamples) && (bottomRow - division > 0); division++) {
         double yCompared = bottomRow - division;
         double xCompared = getMiddle(toParseFrom, (int) yCompared, rightSide, image_scan);
 
