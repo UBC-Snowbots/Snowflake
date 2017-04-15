@@ -31,7 +31,7 @@ protected:
     GpsMover mover1;
 };
 
-// Test with robot facing straight ahead, with the obstacle to
+// Test with robot facing straight ahead, with the waypoint to
 // the right and forwards of the robot
 TEST_F(GpsMoverTest, createTwistMessage_heading0) {
     auto current_location = createPoint(0,0);
@@ -48,7 +48,7 @@ TEST_F(GpsMoverTest, createTwistMessage_heading0) {
 }
 
 // Test of the robot facing "backwards" relative to initial heading,
-// with the obstacle (relative to the robot) behind and to the left
+// with the waypoint (relative to the robot) behind and to the left
 TEST_F(GpsMoverTest, createTwistMessage_headingPiObstacleBehindAndLeft) {
     auto current_location = createPoint(0,0);
     auto waypoint = createPoint(2,-2);
@@ -64,7 +64,7 @@ TEST_F(GpsMoverTest, createTwistMessage_headingPiObstacleBehindAndLeft) {
 }
 
 // Test of the robot facing "backwards" relative to initial heading,
-// with the obstacle behind and to the right (relative to the robot)
+// with the waypoint behind and to the right (relative to the robot)
 TEST_F(GpsMoverTest, createTwistMessage_headingPiObstacleBehindAndRight) {
     auto current_location = createPoint(0,0);
     auto waypoint = createPoint(2,2);
@@ -80,8 +80,8 @@ TEST_F(GpsMoverTest, createTwistMessage_headingPiObstacleBehindAndRight) {
 }
 
 // Test with the robot facing straight forward (relative to initial heading)
-// with the obstacle far behind and to the left
-TEST_F(GpsMoverTest, createTwistMessage_headingLeftObstacleBehindAndLeft) {
+// with the waypoint far behind and to the left
+TEST_F(GpsMoverTest, createTwistMessage_headingLeftWaypointBehindAndLeft) {
     auto current_location = createPoint(18.9, -6.96);
     auto waypoint = createPoint(9.28, 2.47);
 
@@ -96,8 +96,8 @@ TEST_F(GpsMoverTest, createTwistMessage_headingLeftObstacleBehindAndLeft) {
 }
 
 // Test with the robot facing straight forward (relative to initial heading)
-// with the obstacle far behind and to the right
-TEST_F(GpsMoverTest, createTwistMessage_headingLeftObstacleBehindAndRight) {
+// with the waypoint far behind and to the right
+TEST_F(GpsMoverTest, createTwistMessage_headingLeftWaypointBehindAndRight) {
     auto current_location = createPoint(18.9, 0);
     auto waypoint = createPoint(9.28, -8.47);
 
