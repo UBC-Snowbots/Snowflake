@@ -1,10 +1,12 @@
-#include <LidarDecision.h>
-
 /*
  * Created By: Gareth Ellis
  * Created On: January 22, 2017
- * Description: This class represents a Obstacle, as detected by the lidar
+ * Description: This class represents an Obstacle, as detected by the lidar,
+ *              and provides various utilities for working with obstacles
  */
+
+#include <LidarObstacle.h>
+
 
 LidarObstacle::LidarObstacle(){};
 
