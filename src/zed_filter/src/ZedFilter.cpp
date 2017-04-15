@@ -21,7 +21,7 @@ ZedFilter::ZedFilter(int argc, char **argv, std::string node_name)
     // Setup Publisher(s)
     std::string filtered_image_topic_name = "/zed_filter/filtered_point_cloud";
     uint32_t queue_size = 10;
-    filtered_image_publisher = nh.advertise<sensor_msgs::PointCloud2::ConstPtr>(filtered_image_topic_name, queue_size);
+    filtered_image_publisher = nh.advertise<pcl::PointCloud<pcl::PointXYZRGB> > (filtered_image_topic_name, queue_size);
 }
 
 void ZedFilter::imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output) {
