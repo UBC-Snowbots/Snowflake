@@ -97,7 +97,7 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
     // Make sure we've got origin readings before broadcasting waypoints
     if (origin_heading != -1 && received_initial_navsatfix) {
         // If we're at the goal, start publishing the next waypoint
-        if (distanceToNextWaypoint(*nav_sat_fix) < at_goal_tolerance) {
+        if (waypoint_stack.size() > 0 && distanceToNextWaypoint(*nav_sat_fix) < at_goal_tolerance) {
             ROS_INFO("\nHit waypoint \nlat: %f \nlon: %f",
                     waypoint_stack.top().lat, waypoint_stack.top().lon);
             // Start going to the next waypoint

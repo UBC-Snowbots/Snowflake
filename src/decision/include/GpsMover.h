@@ -53,7 +53,7 @@ public:
     /**
      * Sets the caps for linear and angular speed
      *
-     * @param max_linear_speed the max linear speed for any commaand this mover returns
+     * @param max_linear_speed the max linear speed for any command this mover returns
      * @param max_angular_speed the max angular speed for any command this mover returns
      */
     void setMaxSpeeds(double max_linear_speed, double max_angular_speed);
