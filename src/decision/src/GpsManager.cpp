@@ -30,29 +30,29 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
-    ros::NodeHandle public_nh("~");
+    ros::NodeHandle private_nh("~");
 
     // Setup Subscribers
-    uint32_t refresh_rate = 10;
+    uint32_t refresh_rate = 1;
     std::string raw_gps_topic_name = "/gps_driver/navsatfix";
-    raw_gps_subscriber = public_nh.subscribe(raw_gps_topic_name, refresh_rate,
+    raw_gps_subscriber = private_nh.subscribe(raw_gps_topic_name, refresh_rate,
                                              &GpsManager::rawGpsCallBack, this);
     std::string imu_topic_name = "/imu";
-    imu_subscriber = public_nh.subscribe(imu_topic_name, refresh_rate,
+    imu_subscriber = private_nh.subscribe(imu_topic_name, refresh_rate,
                                              &GpsManager::imuCallback, this);
 
     // Setup Publishers
-    uint32_t queue_size = 10;
-    std::string current_location_topic = public_nh.resolveName("current_location");
+    uint32_t queue_size = 1;
+    std::string current_location_topic = private_nh.resolveName("current_location");
     current_location_publisher = nh.advertise<geometry_msgs::Point>(current_location_topic, queue_size);
-    std::string current_waypoint_topic = public_nh.resolveName("current_waypoint");
+    std::string current_waypoint_topic = private_nh.resolveName("current_waypoint");
     current_waypoint_publisher = nh.advertise<geometry_msgs::Point>(current_waypoint_topic, queue_size);
-    std::string current_heading_topic = public_nh.resolveName("current_heading");
+    std::string current_heading_topic = private_nh.resolveName("current_heading");
     current_heading_publisher = nh.advertise<std_msgs::Float32>(current_heading_topic, queue_size);
 
     // Get Params
-    SB_getParam(public_nh, "at_goal_tolerance", at_goal_tolerance, (float)1.0);
-    if (!SB_getParam(public_nh, "waypoints", waypoints_raw)){
+    SB_getParam(private_nh, "at_goal_tolerance", at_goal_tolerance, (float)1.0);
+    if (!SB_getParam(private_nh, "waypoints", waypoints_raw)){
         ROS_ERROR("Waypoints should be a list in the form [lat, lon, lat, lon, ...]");
     } else {
         waypoint_list = parseWaypoints(waypoints_raw);
@@ -97,14 +97,16 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
     // Make sure we've got origin readings before broadcasting waypoints
     if (origin_heading != -1 && received_initial_navsatfix) {
         // If we're at the goal, start publishing the next waypoint
-        if (distanceToNextWaypoint(*nav_sat_fix) < at_goal_tolerance) {
+        if (waypoint_stack.size() > 0 && distanceToNextWaypoint(*nav_sat_fix) < at_goal_tolerance) {
+            ROS_INFO("\nHit waypoint \nlat: %f \nlon: %f",
+                    waypoint_stack.top().lat, waypoint_stack.top().lon);
             // Start going to the next waypoint
             waypoint_stack.pop();
         }
         if (waypoint_stack.size() > 0) {
             publishWaypoint(waypoint_stack.top());
         } else {
-            // Gone to all the waypoints
+            ROS_INFO("Visited all waypoints");
             // TODO: This will probably need to be handled more gracefully. Right now, the robot will probably get to the final waypoint and freak out
         }
         // Convert the nav_sat_fix to a Point with x,y in meters, and relative to the starting location
@@ -148,6 +150,7 @@ geometry_msgs::Point GpsManager::convertToRobotsPerspective(Waypoint waypoint,
     double gps_y = sin(origin_to_waypoint_angle) * origin_to_waypoint_distance; // y value from gps perspective
     // Convert gps x,y to robot's frame of reference using a rotation matrix
     geometry_msgs::Point point_msg;
+    origin_heading *= -1;
     point_msg.x = cos(origin_heading) * gps_x + sin(origin_heading) * gps_y;
     point_msg.y = sin(origin_heading) * gps_x - cos(origin_heading) * gps_y;
     return point_msg;
