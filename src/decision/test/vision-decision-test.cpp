@@ -11,33 +11,34 @@
 #include <cv_bridge/cv_bridge.h>
 
 using namespace cv;
+using namespace std;
 
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage);
 
-//TEST(imageTest, angleStraight){
-//    String filename = "imageTests/testStraightImage.jpg";
-//    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
-//
-//    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
-//
-//    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
-//
-//    EXPECT_NEAR(0, VisionDecision::getDesiredAngle(testImageScan->height / 4.0, testImageScan, 0), 10);
-//}
-
-TEST(imageTest, angleLeft){
-    String filename = "imageTests/testLeftImage.jpg";
+TEST(imageTest, angleStraight){
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 4.0, testImageScan, 0), 20);
+    EXPECT_NEAR(0, VisionDecision::getDesiredAngle(testImageScan->height / 4.0, testImageScan, 0), 10);
 }
 
+//TEST(imageTest, angleLeft){
+//    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testLeftImage.jpg";
+//    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+//
+//    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+//
+//    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+//
+//    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 4.0, testImageScan, 0), 20);
+//}
+
 //TEST(imageTest, angleRight){
-//    String filename = "imageTests/testNoisyRightImage.jpg";
+//    string filename = "imageTests/testNoisyRightImage.jpg";
 //    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 //
 //    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -48,7 +49,7 @@ TEST(imageTest, angleLeft){
 //}
 //
 //TEST(imageTest, noisyStraight){
-//    String filename = "imageTests/testVeryNoisyStraightImage.jpg";
+//    string filename = "imageTests/testVeryNoisyStraightImage.jpg";
 //    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 //
 //    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -58,7 +59,7 @@ TEST(imageTest, angleLeft){
 //}
 //
 //TEST(imageTest, noisyLeft){
-//    String filename = "imageTests/testVeryNoisyLeftImage.jpg";
+//    string filename = "imageTests/testVeryNoisyLeftImage.jpg";
 //    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 //
 //    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -73,7 +74,7 @@ TEST(imageTest, angleLeft){
 // *  of the image.
 // */
 //TEST(imageTest, elevatedLeftLine){
-//    String filename = "imageTests/testElevatedLeftLine.jpg";
+//    string filename = "imageTests/testElevatedLeftLine.jpg";
 //    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 //
 //    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -88,7 +89,7 @@ TEST(imageTest, angleLeft){
 // *  of the image.
 // */
 //TEST(imageTest, elevatedRightLine){
-//    String filename = "imageTests/testElevatedRightLine.jpg";
+//    string filename = "imageTests/testElevatedRightLine.jpg";
 //    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 //
 //    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -99,7 +100,7 @@ TEST(imageTest, angleLeft){
 //}
 //
 //TEST(imageTest, straightButLineNearEdge){
-//    String filename = "imageTests/testStraightButLineNearEdge.jpg";
+//    string filename = "imageTests/testStraightButLineNearEdge.jpg";
 //    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 //
 //    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -110,7 +111,7 @@ TEST(imageTest, angleLeft){
 //}
 //
 //TEST(imageTest, perpendicular){
-//    String filename = "imageTests/testPerpendicular.jpg";
+//    string filename = "imageTests/testPerpendicular.jpg";
 //    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 //
 //    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -121,7 +122,7 @@ TEST(imageTest, angleLeft){
 //}
 //
 //TEST(imageTest, curved){
-//    String filename = "imageTests/testCurvedLine.jpg";
+//    string filename = "imageTests/testCurvedLine.jpg";
 //    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 //
 //    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
