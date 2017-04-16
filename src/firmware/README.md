@@ -13,5 +13,6 @@ char to send | what it does
 - Designed to control a differential drive robot, via a remote control or autonomously (via commands sent over usb serial)
 
 - **TODO:** Format for passing twist messages to the arduino
+- Commands should be sent in the form (But with **no** spaces): `B LinearX LinearY LinearZ AngularX AngularY AngularZ`. **Ie:** linear and angular commands in all 3 dimensions, sent as single byte integer values, prefaced by `B`
  
 
