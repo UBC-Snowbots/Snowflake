@@ -33,11 +33,15 @@
 #include <stdlib.h>
 #include <Servo.h>
 
-// Uncomment this to enable debug mode, which will print out the
-// throttle input, turn input, and mode as set from the remote control
+// Uncommenting this will print out the throttle input, turn input, and mode 
+// as set from the remote control
 // You can use this to test and determine pinouts
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-//#define DEBUG
+//#define DEBUG_REMOTE
+
+// Uncommenting this will cause all received commands to be printed back
+// THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
+#define DEBUG_COMMANDS
 
 // error margin for joysticks
 #define TRIM 8 
@@ -114,21 +118,20 @@ void loop() {
   // read RC input
   rc_read();
   
-  
-  if (Mode == 1) { // Auto Mode
+  if (Mode == 1) { // Autonomous Mode
     serial_read(); 
     
     convert();
     drive(linear_x, angular_z);
   }
-  else if (Mode == 0) { //RC Mode
+  else if (Mode == 0) { // RC Mode
     linear_x = range1; 
     angular_z = range2;
     
     convert();
     drive(linear_x, angular_z);
   }
-  else { // STOP MODE
+  else { // E-STOP MODE
     linear_x = UNMAPPED_STOP_SPEED; 
     angular_z = UNMAPPED_STOP_SPEED;
     
@@ -189,7 +192,7 @@ void rc_read() {
     range2 = UNMAPPED_STOP_SPEED;
     
   // If we're in debug mode, print out the throttle, turn speed, and mode
-  #ifdef DEBUG
+  #ifdef DEBUG_REMOTE
     char* modeStr;
     if (Mode == -1) modeStr = "E-Stop";
     else if (Mode == 0) modeStr = "RC";
@@ -201,7 +204,7 @@ void rc_read() {
 }
 
 void serial_read(){
-    //reading in 6 chars from Serial
+  //reading in 6 chars from Serial
   if (Serial.available() > BUFFER_SIZE) {
 
       // BUFFER_HEAD identifies the start of the buffer
@@ -212,6 +215,15 @@ void serial_read(){
           angular_x = Serial.read();
           angular_y = Serial.read();
           angular_z = Serial.read();
+          #ifdef DEBUG_COMMANDS
+            Serial.print("Linear X: ");Serial.println(linear_x);
+            Serial.print("Linear Y: "); Serial.println(linear_y);
+            Serial.print("Linear Z: ");Serial.println(linear_z);
+            Serial.print("Angular X: ");Serial.println(angular_x);
+            Serial.print("Angular Y: ");Serial.println(angular_y);
+            Serial.print("Angular Z: ");Serial.println(angular_z);
+            Serial.println();
+          #endif
       } else {
           linear_x = angular_z = UNMAPPED_STOP_SPEED;
       }
