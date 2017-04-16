@@ -28,6 +28,7 @@
    3 -> 4  
 */
 
+
 #include <SoftwareSerial.h>
 #include <stdlib.h>
 #include <Servo.h>
@@ -188,7 +189,6 @@ void rc_read() {
     range2 = UNMAPPED_STOP_SPEED;
     
   // If we're in debug mode, print out the throttle, turn speed, and mode
-  // TODO: Definitly don't need multiple print statements per line
   #ifdef DEBUG
     char* modeStr;
     if (Mode == -1) modeStr = "E-Stop";
