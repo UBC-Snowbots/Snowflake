@@ -1,4 +1,4 @@
-/* Firmware for Elsa
+/* Drive Firmware for Elsa, modified for Jack Frost
    Author: Vincent Yuan, 
    Modified: Nick Wu
    Modified: James Asefa
@@ -41,7 +41,7 @@
 
 // Uncommenting this will cause all received commands to be printed back
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-#define DEBUG_COMMANDS
+//#define DEBUG_COMMANDS
 
 // error margin for joysticks
 #define TRIM 8 
