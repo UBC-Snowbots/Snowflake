@@ -39,9 +39,10 @@
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
 //#define DEBUG_REMOTE
 
-// Uncommenting this will cause all received commands to be printed back
+// Uncommenting this will cause the firmware to print out the final
+// determined commands that will control motor movement
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-//#define DEBUG_COMMANDS
+#define DEBUG_COMMANDS
 
 // error margin for joysticks
 #define TRIM 8 
@@ -138,6 +139,16 @@ void loop() {
     convert();
     drive(linear_x, angular_z);
   }
+  
+  #ifdef DEBUG_COMMANDS
+    Serial.print("Linear X: ");Serial.println(linear_x);
+    Serial.print("Linear Y: "); Serial.println(linear_y);
+    Serial.print("Linear Z: ");Serial.println(linear_z);
+    Serial.print("Angular X: ");Serial.println(angular_x);
+    Serial.print("Angular Y: ");Serial.println(angular_y);
+    Serial.print("Angular Z: ");Serial.println(angular_z);
+    Serial.println();
+  #endif
 }
 
 /*
@@ -197,9 +208,9 @@ void rc_read() {
     if (Mode == -1) modeStr = "E-Stop";
     else if (Mode == 0) modeStr = "RC";
     else if (Mode == 1) modeStr = "Autonomous";
-    Serial.print(" Throttle: ");Serial.print(range1);
-    Serial.print(" Turn Speed: ");Serial.print(range2);
-    Serial.print(" Mode: ");Serial.println(modeStr);
+    Serial.print(" RC Throttle: ");Serial.print(range1);
+    Serial.print(" RC Turn Speed: ");Serial.print(range2);
+    Serial.print(" RC Mode: ");Serial.println(modeStr);
   #endif
 }
 
@@ -215,15 +226,6 @@ void serial_read(){
           angular_x = Serial.read();
           angular_y = Serial.read();
           angular_z = Serial.read();
-          #ifdef DEBUG_COMMANDS
-            Serial.print("Linear X: ");Serial.println(linear_x);
-            Serial.print("Linear Y: "); Serial.println(linear_y);
-            Serial.print("Linear Z: ");Serial.println(linear_z);
-            Serial.print("Angular X: ");Serial.println(angular_x);
-            Serial.print("Angular Y: ");Serial.println(angular_y);
-            Serial.print("Angular Z: ");Serial.println(angular_z);
-            Serial.println();
-          #endif
       } else {
           linear_x = angular_z = UNMAPPED_STOP_SPEED;
       }
