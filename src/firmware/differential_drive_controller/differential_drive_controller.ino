@@ -42,7 +42,7 @@
 // Uncommenting this will cause the firmware to print out the final
 // determined commands that will control motor movement
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-#define DEBUG_COMMANDS
+//#define DEBUG_COMMANDS
 
 // error margin for joysticks
 #define TRIM 8 
