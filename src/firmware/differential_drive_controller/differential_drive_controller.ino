@@ -33,6 +33,11 @@
 #include <stdlib.h>
 #include <Servo.h>
 
+// Uncommenting this will cause the arduino to skip the read from the
+// RC Controller, which will prevent it from hanging if you do not have a remote connected
+// COMMENT OUT BEFORE ACTUAL USE
+#define NO_RC
+
 // Uncommenting this will print out the throttle input, turn input, and mode 
 // as set from the remote control
 // You can use this to test and determine pinouts
@@ -54,7 +59,7 @@
 #define BAUD_RATE 9600
 
 // size of character buffer being passed over serial connection
-#define BUFFER_SIZE 6
+#define BUFFER_SIZE 7
 
 // Robot speed will be received in a char buffer with each value between 0 and 255
 // as a result, this assigns 128 as stop. Then:
@@ -119,11 +124,12 @@ void setup() {
 }
 
 void loop() {
-
   // read RC input
-  rc_read();
+  #ifndef NO_RC
+    rc_read();
+  #endif
   
-  // If we're debugging serial, we always want to be printing out 
+  // If we're debugging serial, we always want to be reading and printing out 
   // the values received over serial, even if we don't use them 
   #ifdef DEBUG_SERIAL
     if (Mode != 1)
@@ -139,6 +145,7 @@ void loop() {
   else if (Mode == 0) { // RC Mode
     linear_x = range1; 
     angular_z = range2;
+    // TODO: Set other values to 0 here
     
     convert();
     drive(linear_x, angular_z);
@@ -146,6 +153,7 @@ void loop() {
   else { // E-STOP MODE
     linear_x = UNMAPPED_STOP_SPEED; 
     angular_z = UNMAPPED_STOP_SPEED;
+    // TODO: Set other values to 0 here
     
     convert();
     drive(linear_x, angular_z);
@@ -228,8 +236,8 @@ void rc_read() {
 }
 
 void serial_read(){
-  //reading in 6 chars from Serial
-  if (Serial.available() > BUFFER_SIZE) {
+  //reading in 7 chars from Serial
+  if (Serial.available() >= BUFFER_SIZE) {
 
       // BUFFER_HEAD identifies the start of the buffer
       if (Serial.read() == BUFFER_HEAD) {
