@@ -1,9 +1,9 @@
 /*
  * Created By: Gareth Ellis
  * Created On: February 24, 2017
- * Description: This node is responsible for passing twist messages received
- *              over serial to the arduino controlling the robot
- *
+ * Description: This node is responsible for publishing GPS messages
+ *              received from an arduino over serial to a ROS topic
+ *              as a sensor_msgs/NavSatFix message
  */
 
 #include <ros/ros.h>
