@@ -11,8 +11,7 @@ char to send | what it does
 
 ### differential_drive_controller
 - Designed to control a differential drive robot, via a remote control or autonomously (via commands sent over usb serial)
-
-- **TODO:** Format for passing twist messages to the arduino
+- All commands consist of a pair of linear and angular 3D vectors, where each component of each vector is an integer between 0 and 255
 - Commands should be sent in the form (But with **no** spaces): `B LinearX LinearY LinearZ AngularX AngularY AngularZ`. **Ie:** linear and angular commands in all 3 dimensions, sent as single byte integer values, prefaced by `B`
- 
+**TODO:** Some sample code here
 
