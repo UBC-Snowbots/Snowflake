@@ -12,7 +12,9 @@ find_library(libserial_LIBRARIES libserial.so.0)
 add_definitions(-std=c++14)
 
 catkin_package(
-#  INCLUDE_DIRS include
+    INCLUDE_DIRS include
+    LIBRARIES serial_detection
+    CATKIN_DEPENDS roscpp
 )
 
 ###########
@@ -29,6 +31,9 @@ include_directories(
     ./include
 )
 
+## Declare a C++ library
+add_library(serial_detection src/SerialDetection.cpp include/SerialDetection.h)
+
 ## Declare a C++ executable
 # add_executable(drivers_node src/drivers_node.cpp)
 add_executable(steering_driver src/steering_driver.cpp src/SteeringDriver.cpp include/SteeringDriver.h)
@@ -38,6 +43,9 @@ add_executable(gps_driver src/gps_driver.cpp)
 # target_link_libraries(drivers_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(serial_detection
+    ${catkin_LIBRARIES}
+    )
 target_link_libraries(steering_driver
     ${catkin_LIBRARIES}
     )
