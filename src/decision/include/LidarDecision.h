@@ -8,130 +8,20 @@
 #ifndef DECISION_LIDAR_DECISION_H
 #define DECISION_LIDAR_DECISION_H
 
-#include <ros/ros.h>
-#include <sb_utils.h>
+// STD
 #include <iostream>
 #include <cmath>
+
+// Snowbots
+#include <sb_utils.h>
+#include <LidarObstacle.h>
+
+// ROS
+#include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/LaserScan.h>
 
-using distance_t = float;
-using angle_t = float;
-
-using namespace std;
-
-struct Reading {
-    angle_t angle;
-    distance_t range;
-};
-
-class LidarObstacle {
-public:
-    /**
-     * Creates a LidarObstacle with no readings
-     */
-    LidarObstacle();
-
-    /**
-     * Creates a LidarObstacle with a given distance and angle
-     *
-     * @param distance The distance to the obstacle
-     * @param angle The angle to the obstacle
-     */
-    LidarObstacle(angle_t angle, distance_t distance);
-
-    /**
-     * Creates a LidarObstacle from a given set of readings (pair<angle, distance>)
-     *
-     * @param readings a vector of pairs of the form pair<angle, distance>
-     */
-    LidarObstacle(std::vector<Reading> readings);
-
-    /**
-     * Gets the average distance of the Obstacle from the robot
-     *
-     * The distance from the robot is the average of all scan distances
-     *
-     * @return the distance of the Obstacle from the robot
-     */
-    float getAvgDistance();
-
-    /**
-     * Gets the angle of the Obstacle from the robot
-     *
-     * The angle from the robot is the average of all scan angles
-     *
-     * @return the angle of the Obstacle from the robot
-     */
-    float getAvgAngle();
-
-    /**
-     * Gets the minimum angle from of an object from the robot
-     *
-     * @return the minimum angle of the obstacle from the robot
-     */
-    float getMinAngle();
-
-    /**
-     * Gets the maximum angle from of an object from the robot
-     *
-     * @return the maximum angle of the obstacle from the robot
-     */
-    float getMaxAngle();
-
-    /**
-     * Gets the minimum distance from of an object from the robot
-     *
-     * @return the minimum distance of the obstacle from the robot
-     */
-    float getMinDistance();
-
-    /**
-     * Gets the maximum distance from of an object from the robot
-     *
-     * @return the maximum distance of the obstacle from the robot
-     */
-    float getMaxDistance();
-
-    /**
-     * Calculates a danger score for the obstacle
-     *
-     * ie. how dangerous the obstacle is to the robot
-     *
-     * @return danger_score how dangerous the obstacle is to the robot
-     */
-    float dangerScore();
-
-    /**
-     * Gets all laser readings comprising the obstacle
-     *
-     * @return readings A list of pairs of all laser readings
-     */
-    const std::vector<Reading>& getAllLaserReadings();
-
-    /**
-     * Merges the given LidarObstacle in to this LidarObstacle
-     *
-     * Adds the given LidarObstacle's scan distances and scan angles to
-     * this LidarObstacles scan distances and scan angles respectively
-     *
-     * @param obstacle The LidarObstacle to be merged in
-     */
-    void mergeInLidarObstacle(LidarObstacle obstacle);
-
-private:
-    /**
-     * Merges a given set of readings into the obstacle
-     *
-     * @param readings the readings to be merged in
-     */
-    void mergeInReadings(std::vector<Reading> &new_readings);
-
-    // The distances and angles of all the laser scan hits that comprise the object.
-    // pairs are stored in sorted order, from min to max angle.
-    std::vector<Reading> readings;
-};
 
 class LidarDecision {
 public:
@@ -154,7 +44,8 @@ public:
      * @return a vector of all obstacles
      */
     static std::vector<LidarObstacle> findObstacles(const sensor_msgs::LaserScan& scan,
-                                                        float max_obstacle_angle_diff);
+                                                    float max_obstacle_angle_diff,
+                                                    float max_obstacle_distance_diff);
 
     /**
      * Finds the obstacle most dangerous to the robot
@@ -173,8 +64,12 @@ public:
      * @param obstacles the list of obstacles to be merged (if similar)
      * @param max_angle_diff the max difference that two obstacles may differ by and still be considered
      *                      part of the same obstacle
+     * @param max_distance_diff the max difference that two obstacles may differ by and still be considered
+     *                      part of the same obstacle
      */
-    static void mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles, float max_angle_diff);
+    static void mergeSimilarObstacles(std::vector<LidarObstacle>& obstacles,
+                                      float max_angle_diff,
+                                      float max_distance_diff);
 
     /**
      * Creates a twist message from a given obstacle
@@ -200,6 +95,8 @@ private:
 
     // The maximum angle which two scans can be different by to be considered the same obstacle
     float max_obstacle_angle_diff;
+    // The maximum di which two scans can be different by to be considered the same obstacle
+    float max_obstacle_distance_diff;
     // The distance at which an obstacle can be and be considered a danger
     float max_obstacle_danger_distance;
     // The angle, measured from 0 being directly in front of the robot, at which an obstacle

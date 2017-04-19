@@ -1,13 +1,12 @@
 /*
  * Created By: Gareth Ellis
- * Created On: September 22, 2016
- * Description: This node is responsible for passing received twist messages over
- *              serial to the arduino controlling the robot
- *
+ * Created On: April 16, 2017
+ * Description: This node is responsible for passing twist messages received
+ *              over serial to the arduino controlling the robot
  */
 
 #include <SteeringDriver.h>
-
+#include <ros/ros.h>
 
 int main(int argc, char **argv){
     // Setup your ROS node

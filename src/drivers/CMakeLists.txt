@@ -45,9 +45,12 @@ add_executable(gps_driver src/gps_driver.cpp)
 # )
 target_link_libraries(serial_detection
     ${catkin_LIBRARIES}
+    ${libserial_LIBRARIES}
     )
 target_link_libraries(steering_driver
     ${catkin_LIBRARIES}
+    ${sb_utils_LIBRARIES}
+    ${libserial_LIBRARIES}
     )
 target_link_libraries(gps_driver
     ${catkin_LIBRARIES}
@@ -62,6 +65,4 @@ target_link_libraries(gps_driver
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
-    catkin_add_gtest(steering-driver-test test/steering-driver-test.cpp src/SteeringDriver.cpp)
-    target_link_libraries(steering-driver-test ${catkin_LIBRARIES})
 endif()

@@ -89,7 +89,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Variables are **non_camel_case**
 - Constants are **ALL_CAPS_WITH_UNDERSCORES**
 - Functions are **camelCase**
-- Indentations are 4 spaces
+- Indentations are 4 spaces, with the exception of arduino firmware files, which are 2 spaces
 
 ### Coordinate Systems
 - We try to follow ROS standards, which can be found [here](http://www.ros.org/reps/rep-0103.html)
