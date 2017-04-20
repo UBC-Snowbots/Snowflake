@@ -51,7 +51,8 @@
 // Uncommenting this will cause the firmware to print out the final
 // determined commands that will control motor movement
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-#define DEBUG_COMMANDS
+// (Will also likely break serial communication)
+//#define DEBUG_COMMANDS
 
 // error margin for joysticks
 #define TRIM 8 
@@ -169,6 +170,19 @@ void loop() {
     Serial.print("Angular Z: ");Serial.println(angular_z);
     Serial.println();
   #endif
+}
+
+/*
+* Listen for requests and commands from computer
+*/
+void serialEvent(){
+  while (Serial.available()){
+    char cmd_char = Serial.read();
+    if (cmd_char == 'I'){
+      // Request for device ID
+      Serial.println("DIFFDRIVE");Serial.flush();
+    }
+  }
 }
 
 /*
