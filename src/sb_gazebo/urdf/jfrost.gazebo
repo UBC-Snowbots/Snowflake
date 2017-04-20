@@ -162,8 +162,8 @@
             <!-- Set these parameters depending on where you want to gps reference to be -->
             <!-- NOTE: THESE SHOULD MATCH THE COMPASS_SIM PLUGIN - SEE BELOW-->
             <!-- EDC (Very Roughly) -->
-            <referenceLongitude>49.262479</referenceLongitude>
-            <referenceLatitude>-123.248600</referenceLatitude>
+            <referenceLatitude>49.262479</referenceLatitude>
+            <referenceLongitude>-123.248600</referenceLongitude>
             <referenceAltitude>50.00</referenceAltitude>
             <referenceHeading>0.00</referenceHeading>
         </plugin>
