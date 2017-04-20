@@ -29,7 +29,9 @@ void map(double& input, double input_min, double input_max,
                    (input_max - input_min) + output_min;
 }
 
-SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) {
+SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) :
+    serialDetector("DIFFDRIVE", LibSerial::SerialStreamBuf::BAUD_9600)
+{
     // Setup ROS stuff
     ros::init(argc, argv, "steering_driver");
     ros::NodeHandle private_nh("~");
@@ -40,29 +42,36 @@ SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) {
                                             &SteeringDriver::twistCallback, this);
 
     // Get Params
-    SB_getParam(private_nh, "port", port, (std::string)"/dev/ttyACM0");
-    SB_getParam(private_nh, "max_abs_linear_speed", max_abs_linear_speed);
-    SB_getParam(private_nh, "max_abs_angular_speed", max_abs_angular_speed);
+//    SB_getParam(private_nh, "port", port, (std::string)"/dev/ttyACM0");
+    SB_getParam(private_nh, "max_abs_linear_speed", max_abs_linear_speed, 2.0);
+    SB_getParam(private_nh, "max_abs_angular_speed", max_abs_angular_speed, 1.0);
     // Ensure that the values given for max absolute speeds are positive
     max_abs_linear_speed = fabs(max_abs_linear_speed);
     max_abs_angular_speed = fabs(max_abs_angular_speed);
+
+//    // Setup Arduino stuff
+//    LibSerial::SerialStream& test = serialDetector.getSerialStream();
+//    serialDetector.getSerialWithPrefix("DIFFDRIVE", arduino,
+//                                       LibSerial::SerialStreamBuf::BAUD_9600);
 
     // Setup Arduino stuff
     // Get the arduino port from a ros param
     // TODO - Add detecton to make sure that this is the right port
     // TODO - Give some indication when we attach/detach from the Steering Controller. Could be as simple as checking how long it was since we last received a message
     // Open the given serial port
-    arduino.Open(port);
-    arduino.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
-    arduino.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
+//    arduino.Open(port);
+//    arduino.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
+//    arduino.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
 }
 
-SteeringDriver::~SteeringDriver() {
-    arduino.Close();
-}
 
 void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_msg) {
+    // TODO: delete me
     ROS_INFO("TWIST RECEIVED");
+
+    // Get a serialstream to the arduino running the diffdrive firmware
+    LibSerial::SerialStream& arduino = serialDetector.getSerialStream();
+
     // Get our own copies of the linear and angular components of the twist message
     std::vector<double> linear = {
             twist_msg->linear.x,

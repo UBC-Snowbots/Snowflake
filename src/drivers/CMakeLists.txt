@@ -51,6 +51,7 @@ target_link_libraries(steering_driver
     ${catkin_LIBRARIES}
     ${sb_utils_LIBRARIES}
     ${libserial_LIBRARIES}
+    serial_detection
     )
 target_link_libraries(gps_driver
     ${catkin_LIBRARIES}

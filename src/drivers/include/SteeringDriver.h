@@ -13,6 +13,7 @@
 
 // Snowbots
 #include <sb_utils.h>
+#include <SerialDetection.h>
 
 // ROS
 #include <geometry_msgs/Twist.h>
@@ -25,7 +26,6 @@
 class SteeringDriver {
 public:
     SteeringDriver(int argc, char **argv, std::string node_name);
-    ~SteeringDriver();
 
 private:
     void twistCallback(geometry_msgs::Twist::ConstPtr twist_msg);
@@ -33,9 +33,12 @@ private:
     ros::Subscriber twist_subscriber;
 
     // The SerialStream to/from the arduino
-    LibSerial::SerialStream arduino;
+//    LibSerial::SerialStream arduino;
+
+    // The SerialDetector we use to find out what port the arduino is on
+    SerialDetector serialDetector;
     // The Port the arduino is connected to
-    std::string port;
+//    std::string port;
     // The max ABSOLUTE linear and angular speeds this driver will receive
     // These define the mapping between the twist messages received
     // (in m/s and rad/s), and the speed values sent to the motors by the

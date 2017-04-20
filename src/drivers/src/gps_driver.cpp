@@ -67,7 +67,7 @@ int main(int argc, char **argv){
 
     // Setup Arduino stuff
     // Get the arduino port from a ros param
-    std::string port = "/dev/ttyACM0";
+    std::string port = "/dev/ttyACM1";
     SB_getParam(nh_private, "port", port, port);
     // TODO - Add detecton to make sure that this is the right port (ie. that this is where our gps is plugged in to)
     // TODO - Give some indication when we attach/detach from the GPS. Could be as simple as checking how long it was since we last received a message
