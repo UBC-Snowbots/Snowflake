@@ -46,8 +46,7 @@ public:
      *
      * @return the angle of the line to the positive y-axis.
      */
-    static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image,
-                               double angular_velocity_multiplier);
+    static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image);
 
     /**
      * Determines the angle of the line parsed from the left or right side.

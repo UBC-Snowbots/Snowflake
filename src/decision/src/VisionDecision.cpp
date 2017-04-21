@@ -35,7 +35,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
-    int relativeAngle = getDesiredAngle(image_scan->height / 5.0, image_scan, angular_velocity_multiplier);
+    int relativeAngle = getDesiredAngle(image_scan->height / 8.0, image_scan);
 
     // Initialize linear velocities to 0
     twistMsg.linear.y = 0;
@@ -49,7 +49,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     twistMsg.linear.x = getDesiredLinearSpeed(relativeAngle);
 
     // Decide how fast to turn
-    twistMsg.angular.z = getDesiredAngularSpeed(relativeAngle);
+    twistMsg.angular.z = angular_velocity_multiplier * getDesiredAngularSpeed(relativeAngle);
 
     // Publish the twist message
     publishTwist(twistMsg);
@@ -61,8 +61,7 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist) {
 
 /* Functions to determine robot movement */
 
-int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan,
-                                    double angular_velocity_multiplier) {
+int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan) {
 
     int row;
     int whiteCount = 0;
@@ -85,17 +84,16 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     if (isPerpendicular(image_scan))
         return STOP_SIGNAL_ANGLE;
 
-    int desiredAngle = -angular_velocity_multiplier * getAngleOfLine(false, numSamples, image_scan);
+    int desiredAngle = getAngleOfLine(false, numSamples, image_scan);
 
     // If angle coming from the left is invalid try going from the right.
-    if (fabs(desiredAngle) > 90)
-        desiredAngle = -angular_velocity_multiplier * getAngleOfLine(true, numSamples, image_scan);
+    if (fabs(desiredAngle) >= 90)
+        desiredAngle = getAngleOfLine(true, numSamples, image_scan);
 
     // If both cases are invalid it will stop
-    if (fabs(desiredAngle) > 90)
+    if (fabs(desiredAngle) >= 90)
         desiredAngle = STOP_SIGNAL_ANGLE;
 
-    printf("DESIRED: %d\n", desiredAngle);
     return desiredAngle;
 }
 
@@ -108,7 +106,6 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     int validSamples = 0;
 
     // Assign garbage values
-    int toParseFrom = -1;
     int bottomRow = -1;
 
     // Initialize how and where to parse.
@@ -117,22 +114,20 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     // starts parsing from the right and finds where the lowest white line
     // begins.
     for (int i = imageHeight - 1; i > 0; i--) {
-        int startPixel = getEdgePixel(startingPos, incrementer, i, image_scan, 1);
-        if (startPixel != -1 && bottomRow == -1) {
+        int startPixel = getEdgePixel(startingPos, incrementer, i, image_scan, rightSide);
+        if (startPixel != -1 && bottomRow == -1)
             bottomRow = i;
-            toParseFrom = startPixel - 1;
-        }
     }
 
     // Each slope will be compared to the bottom point of the lowest white line
-    double x1 = getMiddle(toParseFrom, bottomRow, rightSide, image_scan);
+    double x1 = getMiddle(startingPos, bottomRow, rightSide, image_scan);
 
     double sumAngles = 0;
     // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
     // also counts how many of them are valid.
     for (double division = 1; (division < numSamples) && (bottomRow - division > 0); division++) {
         double yCompared = bottomRow - division;
-        double xCompared = getMiddle(toParseFrom, (int) yCompared, rightSide, image_scan);
+        double xCompared = getMiddle(startingPos, (int) yCompared, rightSide, image_scan);
 
         double foundAngle;
         double foundSlope;
@@ -148,12 +143,12 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             validSamples++;
         }
 
-        printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
+        // printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
         // Add the angle to the average.
         sumAngles += foundAngle;
     }
 
-    if (validSamples < numSamples / 3 || bottomRow == -1)
+    if (validSamples < numSamples / 3 || x1 == -1)
         return STOP_SIGNAL_ANGLE;
     else
         return (int) (sumAngles / validSamples * 180.0 / M_PI); // returns the angle in degrees
@@ -215,12 +210,11 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
     // Parse through image horizontally to find a valid pixel
     while (column < image_scan->width && column >= 0) {
         // If white pixel found start verifying if proper start.
-        if ((image_scan->data[row * image_scan->width + column] == 0 && isStartPixel) ||
-            (image_scan->data[row * image_scan->width + column] != 0 && !isStartPixel)){
+        if ((image_scan->data[row * image_scan->width + column] != 0 && isStartPixel) ||
+            (image_scan->data[row * image_scan->width + column] == 0 && !isStartPixel)){
             blackVerificationCount = 0;
             // This pixel is what we are checking
             if (toBeChecked == -1) {
-                printf("To CHECK: %d\n", column);
                 toBeChecked = column;
             }
 
@@ -230,7 +224,7 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
                 return toBeChecked;
         } else {
             blackVerificationCount++;
-            if (blackVerificationCount == NOISE_MAX) {
+            if (blackVerificationCount >= NOISE_MAX) {
                 whiteVerificationCount = 0; // Reset verification if black pixel.
                 toBeChecked = -1;
             }
