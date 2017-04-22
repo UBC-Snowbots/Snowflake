@@ -19,16 +19,20 @@
 
 class ZedFilter {
 
+    typedef pcl::PointXYZRGB Point;
+    typedef pcl::PointCloud<Point> PointCloudColour;
+
+
 public:
     ZedFilter(int argc, char **argv, std::string node_name);
-    static pcl::PointCloud<pcl::PointXYZRGB>::Ptr filterImage(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
+    static PointCloudColour::Ptr filterImage(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
 
 private:
     ros::Subscriber raw_image_subscriber;
     ros::Publisher filtered_image_publisher;
 
     void imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
-    void publishFilteredImage(const pcl::PointCloud<pcl::PointXYZRGB> filtered_point_cloud);
+    void publishFilteredImage(const PointCloudColour filtered_point_cloud);
 };
 
 

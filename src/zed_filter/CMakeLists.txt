@@ -21,7 +21,7 @@ link_directories(${PCL_LIBRARY_DIRS})
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(zedfilter src/ZedFilter.cpp include/ZedFilter.h)
+add_executable(zedfilter src/zed_filter.cpp src/ZedFilter.cpp include/ZedFilter.h)
 target_link_libraries(zedfilter ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
 
 #############
