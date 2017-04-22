@@ -9,6 +9,10 @@
  
 #include <SerialDetection.h>
 
+using Clock = std::chrono::steady_clock;
+using std::chrono::time_point;
+
+
 SerialDetector::SerialDetector(std::string device_id, LibSerial::SerialStreamBuf::BaudRateEnum baud_rate) {
     this->device_id = device_id;
     this->baud_rate = baud_rate;
@@ -40,40 +44,77 @@ void SerialDetector::findSerialStream() {
     while (true) {
         auto serialDeviceFileNames = getAllSerialDevices();
         for (std::string serial_file_path : serialDeviceFileNames) {
-            // Open the device
-            serial_stream.Open(serial_file_path);
-            serial_stream.SetBaudRate(baud_rate);
-            serial_stream.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
-
-            // Check that it opened successfully
-            if (serial_stream.IsOpen()){
-                char buffer[256];
-                // "Clear" the buffer
-                memset(buffer, '\0', 256);
-                // TODO: THIS IS THE FUCKING BUG - We need to wait for the arduino to turn on, or the buffer will open and hang,
-                // Request the ID of the device
-                sleep(10);
-                serial_stream << (char)'I';
-
-                // Read the ID the device should send back
+//            // Open the device
+//            serial_stream.Open(serial_file_path);
+//            serial_stream.SetBaudRate(baud_rate);
+//            serial_stream.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
+//
+//            // Check that it opened successfully
+//            if (serial_stream.IsOpen()){
+//                char buffer[BUFFER_SIZE];
+//                SerialPort::DataBuffer dataBuffer;
+//                // "Clear" the buffer
+//                memset(buffer, '\0', BUFFER_SIZE);
+//                // Request the ID of the device
+//                serial_stream << (char)'I';
+//
+//                // Read the ID the device should send back (with a given timeout)
 //                std::string response;
 //                char serial_char;
 //                while (serial_stream.read(&serial_char, 1) && serial_char != '\n'){
 //                    response += serial_char;
 //                }
-                // TODO: YOU ARE HERE -  Seems to hang on opening the buffer after replugging usb devices
-                // TODO: Can we put a timeout here so we don't just hang with the buffer open??
-                serial_stream >> buffer;
+//                serial_stream >> buffer;
+//
+//                // Is this the device we're looking for?
+//                if (buffer == "DiffDrive"){
+//                    this->serial_file_path = serial_file_path;
+//                    // TODO: Should we maybe be using a ROS stream here? Probably...
+//                    std::cout << "Found Device on: " << serial_file_path << std::endl;
+//                    return;
+//                }
+//            }
+//            serial_stream.Close();
+            // Open the device
+            SerialPort serial_port(serial_file_path);
+            try {
+                serial_port.Open();
+            } catch (SerialPort::OpenFailed) {
+                continue;
+            }
+            // TODO: How can we make it so we only need to pass in one baud rate for stream and port?
+            serial_port.SetBaudRate(SerialPort::BAUD_9600);
+            serial_port.SetCharSize(SerialPort::CHAR_SIZE_8);
 
-                // Is this the device we're looking for?
-                if (buffer == device_id){
+            if (serial_port.IsOpen()) {
+                SerialPort::DataBuffer data_buffer;
+
+                // Request the device ID
+                serial_port.WriteByte(ID_REQUEST_CHAR);
+
+                // Read what we get back
+                std::string response;
+                try {
+                    response = serial_port.ReadLine(TIMEOUT);
+                } catch (SerialPort::ReadTimeout) {
+                    continue;
+                }
+
+                serial_port.Close();
+
+                if (response == device_id){
+                    // If this is the device we want, get a stream to it
+                    // Make sure the stream is closed first
+                    serial_stream.Close();
+                    serial_stream.Open(serial_file_path);
+                    serial_stream.SetBaudRate(baud_rate);
+                    serial_stream.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
+                    // Remember where we found the device for checking the stream is still valid later on
                     this->serial_file_path = serial_file_path;
-                    // TODO: Should we maybe be using a ROS stream here? Probably...
-                    std::cout << "Found Device on: " << serial_file_path << std::endl;
+                    ROS_WARN("Found device on: %s", serial_file_path.c_str());
                     return;
                 }
             }
-            serial_stream.Close();
         }
         // Wait for a little while so we don't spam USB devices
         std::this_thread::sleep_for(std::chrono::milliseconds(500));

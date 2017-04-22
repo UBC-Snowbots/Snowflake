@@ -20,9 +20,20 @@
 //#include <unistd.h>
 #include <stdlib.h>
 #include <cstring>
+#include <ros/ros.h>
 
 // Other
 #include <SerialStream.h>
+#include <SerialPort.h>
+
+
+// The size of the buffer used for checking device ID's
+static const int BUFFER_SIZE = 256;
+// How long to wait for a response from each device (in milliseconds)
+static const unsigned int TIMEOUT = 2000;
+// The char to send to the device to request the ID
+static const char ID_REQUEST_CHAR = 'I';
+
 
 class SerialDetector {
 public:

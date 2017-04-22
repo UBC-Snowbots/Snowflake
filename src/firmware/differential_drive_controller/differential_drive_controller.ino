@@ -180,7 +180,7 @@ void serialEvent(){
     char cmd_char = Serial.read();
     if (cmd_char == 'I'){
       // Request for device ID
-      Serial.println("DIFFDRIVE");Serial.flush();
+      Serial.println("DIFFDRIVE");
     }
   }
 }
