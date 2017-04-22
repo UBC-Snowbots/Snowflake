@@ -50,7 +50,8 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr ZedFilter::filterImage(const sensor_msgs:
     pcl::PassThrough<Point> pass;
     pass.setInputCloud(transformed_point_cloud);
 
-
+    // TODO: Convert to HSV (If not computationally expensive) before analyzing colour
+    // Also should be pass.setFilterFieldName("rgb") methinks
 
     // Filter red
     pass.setFilterFieldName("r");
