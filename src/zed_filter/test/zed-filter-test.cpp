@@ -28,7 +28,7 @@ TEST(pclTest, random) {
         pcl_to_populate->points[i].b = i;
     }
 
-    sensor_msgs::PointCloud2::Ptr points_msg;
+    sensor_msgs::PointCloud2::Ptr points_msg(new sensor_msgs::PointCloud2);
     pcl::toROSMsg(*pcl_to_populate, *points_msg);
 
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr filtered_point_cloud;

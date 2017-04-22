@@ -41,14 +41,17 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr ZedFilter::filterImage(const sensor_msgs:
     // Convert PointCloud2 into a pcl::PointCloud
     pcl::PCLPointCloud2 temp;
     pcl_conversions::toPCL(*zed_camera_output, temp);
-    PointCloudColour::Ptr transformed_point_cloud;
+    PointCloudColour::Ptr transformed_point_cloud(new PointCloudColour);
     pcl::fromPCLPointCloud2(temp, *transformed_point_cloud);
 
     // Filter out non-white points from the point cloud
-    PointCloudColour::Ptr filtered_point_cloud;
+    PointCloudColour::Ptr filtered_point_cloud(new PointCloudColour);
     // Create the filtering object;
     pcl::PassThrough<Point> pass;
     pass.setInputCloud(transformed_point_cloud);
+
+
+
     // Filter red
     pass.setFilterFieldName("r");
     pass.setFilterLimits(250.0, 255.0);
@@ -62,7 +65,7 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr ZedFilter::filterImage(const sensor_msgs:
     pass.filter(*filtered_point_cloud);
 
 
-    PointCloudColour::Ptr mapped_and_filtered_point_cloud (new PointCloudColour);
+    PointCloudColour::Ptr mapped_and_filtered_point_cloud(new PointCloudColour);
 
     PointCloudColour::const_iterator it;
     for(it = filtered_point_cloud->points.begin(); it != filtered_point_cloud->points.end(); it++) {

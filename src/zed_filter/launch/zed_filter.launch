@@ -1,0 +1,4 @@
+<launch>
+  <node name="zed_filter" pkg="zed_filter" type="zed_filter" output="screen">
+  </node>
+</launch>
