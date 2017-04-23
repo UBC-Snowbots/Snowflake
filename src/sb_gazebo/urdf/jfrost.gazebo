@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- 
-     The Controllers for Elsa, a 4-wheel drive, skid-steering robot
+     The Controllers for jfrost, a 2-wheel drive, diff-steering robot
 -->
 <robot name="jfrost" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
@@ -15,26 +15,6 @@
     </gazebo>
 
     <!-- STEERING CONTROLLER -->
-    <!-- SKID STEERING -->
-    <!--
-    <gazebo>
-      <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>100.0</updateRate>
-        <leftFrontJoint>left_front_wheel_hinge</leftFrontJoint>
-        <rightFrontJoint>right_front_wheel_hinge</rightFrontJoint>
-        <leftRearJoint>left_back_wheel_hinge</leftRearJoint>
-        <rightRearJoint>right_back_wheel_hinge</rightRearJoint>
-        <wheelSeparation>${chassis_width + wheel_width}</wheelSeparation>
-        <wheelDiameter>${2 * wheel_radius}</wheelDiameter>
-        <torque>10</torque>
-        <commandTopic>robot/cmd_vel</commandTopic>
-        <odometryTopic>robot/odom</odometryTopic>
-        <odometryFrame>odom</odometryFrame>
-        <robotBaseFrame>base_link</robotBaseFrame>
-      </plugin>
-    </gazebo>
-    -->
 
     <!-- DIFFERENTIAL DRIVE -->
     <gazebo>
@@ -161,23 +141,6 @@
 
             <!-- Set these parameters depending on where you want to gps reference to be -->
             <!-- NOTE: THESE SHOULD MATCH THE COMPASS_SIM PLUGIN - SEE BELOW-->
-            <!-- EDC (Very Roughly) -->
-            <referenceLatitude>49.262479</referenceLatitude>
-            <referenceLongitude>-123.248600</referenceLongitude>
-            <referenceAltitude>50.00</referenceAltitude>
-            <referenceHeading>90.00</referenceHeading>
-        </plugin>
-        <plugin name="compass_sim" filename="libhector_gazebo_ros_magnetic.so">
-            <topicName>/robot/magnetic_vector</topicName>
-            <bodyName>chassis</bodyName>
-            <drift>0 0 0</drift>
-            <gaussianNoise>0 0 0</gaussianNoise>
-            <velocityDrift>0 0 0</velocityDrift>
-            <velocityGaussianNoise>0 0 0</velocityGaussianNoise>
-            <inclination>0.00</inclination>
-
-            <!-- Set these parameters depending on where you want to gps reference to be -->
-            <!-- NOTE: THESE SHOULD MATCH THE GPS_SIM PLUGIN - SEE ABOVE -->
             <!-- EDC (Very Roughly) -->
             <referenceLatitude>49.262479</referenceLatitude>
             <referenceLongitude>-123.248600</referenceLongitude>

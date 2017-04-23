@@ -27,13 +27,11 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(gazebo_node src/gazebo_node.cpp)
-add_executable(compass_sim src/compass_sim.cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(gazebo_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(compass_sim ${catkin_LIBRARIES})
 
 
 #############
