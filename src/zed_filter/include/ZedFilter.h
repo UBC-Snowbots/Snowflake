@@ -14,25 +14,27 @@
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/point_types.h>
+#include <pcl/point_types_conversion.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/point_cloud2_iterator.h>
 
 class ZedFilter {
 
-    typedef pcl::PointXYZRGB Point;
-    typedef pcl::PointCloud<Point> PointCloudColour;
-
+    typedef pcl::PointXYZRGB PointRGB;
+    typedef pcl::PointXYZHSV PointHSV;
+    typedef pcl::PointCloud<PointRGB> PointCloudRGB;
+    typedef pcl::PointCloud<PointHSV> PointCloudHSV;
 
 public:
     ZedFilter(int argc, char **argv, std::string node_name);
-    static PointCloudColour::Ptr filterImage(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
+    static PointCloudRGB::Ptr filterImage(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
 
 private:
     ros::Subscriber raw_image_subscriber;
     ros::Publisher filtered_image_publisher;
 
     void imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
-    void publishFilteredImage(const PointCloudColour filtered_point_cloud);
+    void publishFilteredImage(const PointCloudRGB filtered_point_cloud);
 };
 
 

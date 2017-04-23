@@ -20,18 +20,18 @@ ZedFilter::ZedFilter(int argc, char **argv, std::string node_name)
     
     // Setup Publisher(s)
     std::string filtered_image_topic_name = "/zed_filter/filtered_point_cloud";
-    filtered_image_publisher = nh.advertise<PointCloudColour>(filtered_image_topic_name, queue_size);
+    filtered_image_publisher = nh.advertise<PointCloudRGB>(filtered_image_topic_name, queue_size);
 }
 
 void ZedFilter::imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output) {
 
-    PointCloudColour::Ptr filtered_point_cloud;
+    PointCloudRGB::Ptr filtered_point_cloud;
     filtered_point_cloud = ZedFilter::filterImage(zed_camera_output);
     publishFilteredImage(*filtered_point_cloud);
 }
 
 
-void ZedFilter::publishFilteredImage(const PointCloudColour filtered_point_cloud)
+void ZedFilter::publishFilteredImage(const PointCloudRGB filtered_point_cloud)
 {
     filtered_image_publisher.publish(filtered_point_cloud);
 }
@@ -41,51 +41,50 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr ZedFilter::filterImage(const sensor_msgs:
     // Convert PointCloud2 into a pcl::PointCloud
     pcl::PCLPointCloud2 temp;
     pcl_conversions::toPCL(*zed_camera_output, temp);
-    PointCloudColour::Ptr transformed_point_cloud(new PointCloudColour);
-    pcl::fromPCLPointCloud2(temp, *transformed_point_cloud);
+    PointCloudRGB::Ptr point_cloud_RGB(new PointCloudRGB);
+    pcl::fromPCLPointCloud2(temp, *point_cloud_RGB);
+
+    // Conversion to HSV colourspace
+    PointCloudHSV::Ptr point_cloud_HSV(new PointCloudHSV);
+    pcl::PointCloudXYZRGBtoXYZHSV(*point_cloud_RGB, *point_cloud_HSV);
 
     // Filter out non-white points from the point cloud
-    PointCloudColour::Ptr filtered_point_cloud(new PointCloudColour);
+    PointCloudHSV::Ptr filtered_point_cloud(new PointCloudHSV);
     // Create the filtering object;
-    pcl::PassThrough<Point> pass;
-    pass.setInputCloud(transformed_point_cloud);
-
-    // TODO: Convert to HSV (If not computationally expensive) before analyzing colour
-    // Also should be pass.setFilterFieldName("rgb") methinks
+    pcl::PassThrough<PointHSV> pass;
+    pass.setInputCloud(point_cloud_HSV);
 
     // Filter red
-    pass.setFilterFieldName("r");
+    pass.setFilterFieldName("h");
     pass.setFilterLimits(250.0, 255.0);
     pass.filter(*filtered_point_cloud);
     // Filter green
     pass.setInputCloud(filtered_point_cloud);
-    pass.setFilterFieldName("g");
+    pass.setFilterFieldName("s");
     pass.filter(*filtered_point_cloud);
     // Filter blue
-    pass.setFilterFieldName("b");
+    pass.setFilterFieldName("v");
     pass.filter(*filtered_point_cloud);
 
-
-    PointCloudColour::Ptr mapped_and_filtered_point_cloud(new PointCloudColour);
-
-    PointCloudColour::const_iterator it;
+    PointCloudRGB::Ptr output(new PointCloudRGB);
+    PointCloudHSV::const_iterator it;
     for(it = filtered_point_cloud->points.begin(); it != filtered_point_cloud->points.end(); it++) {
-        Point curpoint_to_add;
+        PointRGB current_point;
 
         // Map all points to z = 0 plane.
-        curpoint_to_add.z = 0;
+        current_point.z = 0;
 
         // All remaining points are mapped to white.
-        curpoint_to_add.r = 255;
-        curpoint_to_add.g = 255;
-        curpoint_to_add.b = 255;
+        current_point.r = 255;
+        current_point.g = 255;
+        current_point.b = 255;
 
         // Retrieve the x and z values
-        curpoint_to_add.x = it->x;
-        curpoint_to_add.y = it->y;
+        current_point.x = it->x;
+        current_point.y = it->y;
 
-        mapped_and_filtered_point_cloud->points.push_back(curpoint_to_add);
+        output->points.push_back(current_point);
     }
 
-    return mapped_and_filtered_point_cloud;
+    return output;
 }
