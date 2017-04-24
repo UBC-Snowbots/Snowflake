@@ -49,7 +49,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     twistMsg.linear.x = getDesiredLinearSpeed(relativeAngle);
 
     // Decide how fast to turn
-    twistMsg.angular.z = angular_velocity_multiplier * getDesiredAngularSpeed(relativeAngle);
+    twistMsg.angular.z = -angular_velocity_multiplier * getDesiredAngularSpeed(relativeAngle);
 
     // Publish the twist message
     publishTwist(twistMsg);

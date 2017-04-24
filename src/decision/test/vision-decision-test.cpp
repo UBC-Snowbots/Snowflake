@@ -55,7 +55,9 @@ TEST(imageTest, noisyStraight){
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
-    EXPECT_NEAR(0, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 10);
+
+    // TODO: Should turn away from straight lines; Best case scenario is no lines on screen.
+    EXPECT_NEAR(0, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 15);
 }
 
 TEST(imageTest, noisyLeft){
