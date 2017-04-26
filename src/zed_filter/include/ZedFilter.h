@@ -17,6 +17,8 @@
 #include <pcl/point_types_conversion.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/point_cloud2_iterator.h>
+#include <sb_utils.h>
+#include <PointCloudFilter.h>
 
 class ZedFilter {
 
@@ -26,15 +28,16 @@ class ZedFilter {
     typedef pcl::PointCloud<PointHSV> PointCloudHSV;
 
 public:
+
     ZedFilter(int argc, char **argv, std::string node_name);
-    static PointCloudRGB::Ptr filterImage(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
 
 private:
+
     ros::Subscriber raw_image_subscriber;
     ros::Publisher filtered_image_publisher;
+    PointCloudFilter filter;
 
     void imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
-    void publishFilteredImage(const PointCloudRGB filtered_point_cloud);
 };
 
 

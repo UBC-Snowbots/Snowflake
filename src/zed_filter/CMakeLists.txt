@@ -3,6 +3,7 @@ project(zed_filter)
 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy pcl_ros tf2_sensor_msgs)
 find_package(PCL REQUIRED)
+find_package(sb_utils REQUIRED)
 
 catkin_package(
 #  INCLUDE_DIRS include
@@ -12,8 +13,8 @@ catkin_package(
 )
 
 include_directories(
-    ${catkin_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS}
-    ./include
+  ${catkin_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS} ${sb_utils_INCLUDE_DIRS}
+  ./include
 )
 
 
@@ -21,8 +22,8 @@ link_directories(${PCL_LIBRARY_DIRS})
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(zedfilter src/zed_filter.cpp src/ZedFilter.cpp include/ZedFilter.h)
-target_link_libraries(zedfilter ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+add_executable(zedfilter src/zed_filter.cpp src/ZedFilter.cpp include/ZedFilter.h include/PointCloudFilter.h src/PointCloudFilter.cpp)
+target_link_libraries(zedfilter ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${sb_utils_INCLUDE_DIRS})
 
 #############
 ## Testing ##
@@ -30,7 +31,11 @@ target_link_libraries(zedfilter ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMO
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
-    #gTest
-    catkin_add_gtest(zed-filter-test test/zed-filter-test.cpp src/ZedFilter.cpp)
-    target_link_libraries(zed-filter-test ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+  #gTest
+  #catkin_add_gtest(zed-filter-test test/zed-filter-test.cpp src/ZedFilter.cpp include/PointCloudFilter.h src/PointCloudFilter.cpp)
+  #target_link_libraries(zed-filter-test ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+
+  catkin_add_gtest(point-cloud-filter-test test/point-cloud-filter-test.cpp include/PointCloudFilter.h src/PointCloudFilter.cpp src/ZedFilter.cpp include/ZedFilter.h )
+  target_link_libraries(point-cloud-filter-test ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+
 endif()
