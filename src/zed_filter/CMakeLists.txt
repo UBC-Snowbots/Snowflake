@@ -22,8 +22,8 @@ link_directories(${PCL_LIBRARY_DIRS})
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(zedfilter src/zed_filter.cpp src/ZedFilter.cpp include/ZedFilter.h include/PointCloudFilter.h src/PointCloudFilter.cpp)
-target_link_libraries(zedfilter ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${sb_utils_INCLUDE_DIRS})
+add_executable(zed_filter src/zed_filter.cpp src/ZedFilter.cpp include/ZedFilter.h include/PointCloudFilter.h src/PointCloudFilter.cpp)
+target_link_libraries(zed_filter ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${sb_utils_INCLUDE_DIRS})
 
 #############
 ## Testing ##

@@ -22,6 +22,9 @@ public:
     typedef pcl::PointCloud<PointRGB> PointCloudRGB;
     typedef pcl::PointCloud<PointHSV> PointCloudHSV;
 
+    // h = [0,360]
+    // s, v values are from 0 to 1
+    // if s = 0 > h = -1 (undefined)
     struct FilterValues {
         float h_min, h_max, s_min, s_max, v_min, v_max;
     };
@@ -29,6 +32,7 @@ public:
 
     PointCloudFilter();
     PointCloudFilter(FilterValues values);
+    PointCloudFilter(float h_min, float h_max, float s_min, float s_max, float v_min, float v_max);
     bool filterCloud(PointCloudRGB::Ptr& input, PointCloudRGB::Ptr& output);
 };
 
