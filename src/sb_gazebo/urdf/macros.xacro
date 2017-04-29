@@ -31,14 +31,14 @@
 
 <link name="${lr}_${fb}_wheel">
   <collision>
-    <origin xyz="0 0 0" rpy="0 ${PI/2} ${PI/2}" />
+    <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
     <geometry>
       <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
     </geometry>
   </collision>
 
   <visual>
-    <origin xyz="0 0 0" rpy="0 ${PI/2} ${PI/2}" />
+    <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
     <geometry>
       <cylinder length="${wheel_width}" radius="${wheel_radius}"/>
     </geometry>
@@ -46,7 +46,7 @@
   </visual>
 
   <inertial>
-    <origin xyz="0 0 0" rpy="0 ${PI/2} ${PI/2}" />
+    <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
     <mass value="${wheel_mass}"/>
     <cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
   </inertial>
@@ -90,7 +90,7 @@
     
 <link name="${lr}_${fb}_caster_wheel">
   <collision>
-    <origin xyz="0 0 0" rpy="0 ${PI/2} ${PI/2}" />
+    <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
     <geometry>
       <sphere radius="${wheel_radius}"/>
     </geometry>
@@ -107,7 +107,7 @@
   </collision>
 
   <visual>
-    <origin xyz="0 0 0" rpy="0 ${PI/2} ${PI/2}" />
+    <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
     <geometry>
       <sphere radius="${wheel_radius}"/>
     </geometry>
@@ -115,7 +115,7 @@
   </visual>
 
   <inertial>
-    <origin xyz="0 0 0" rpy="0 ${PI/2} ${PI/2}" />
+    <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
     <mass value="0"/>
     <sphere_inertia m="0" r="0"/>
   </inertial>
