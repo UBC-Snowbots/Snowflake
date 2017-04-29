@@ -85,7 +85,6 @@ TEST(PointCloudFilterTest, preserve_all_valid_points) {
     filter.filterCloud(pcl_to_populate, filtered_point_cloud);
 
     EXPECT_EQ(filtered_point_cloud->points.size(), 255);
-
 }
 
 

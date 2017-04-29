@@ -1,4 +1,10 @@
 <launch>
   <node name="zed_filter" pkg="zed_filter" type="zed_filter" output="screen">
+    <param name="h_min" type="double" value="0.0" />
+    <param name="h_max" type="double" value="360.0" />
+    <param name="s_min" type="double" value="0.0" />
+    <param name="s_max" type="double" value="0.4" />
+    <param name="v_min" type="double" value="0.8" />
+    <param name="v_max" type="double" value="1.0" />
   </node>
 </launch>

@@ -33,7 +33,11 @@ public:
     PointCloudFilter();
     PointCloudFilter(FilterValues values);
     PointCloudFilter(float h_min, float h_max, float s_min, float s_max, float v_min, float v_max);
-    bool filterCloud(PointCloudRGB::Ptr& input, PointCloudRGB::Ptr& output);
+    bool filterCloud(PointCloudRGB::Ptr input, PointCloudRGB::Ptr output);
+
+    // Our own cause PCL is bad (pending pull request)
+    void PointCloudRGBtoPointCloudHSV(PointCloudRGB::Ptr point_cloud_RGB, PointCloudHSV::Ptr point_cloud_HSV);
+    void PointRGBtoPointHSV(PointRGB& in, PointHSV& out);
 };
 
 
