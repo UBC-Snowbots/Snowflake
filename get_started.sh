@@ -29,14 +29,12 @@ declare -a new_shell_config_lines=(
     # Make sure that all shells know where to find our custom gazebo models,
     # plugins, and resources. Make sure to preserve the path that already exists as well
     "export GAZEBO_MODEL_PATH=$DIR/src/sb_gazebo/models:${GAZEBO_MODEL_PATH}"\
-    "export GAZEBO_PLUGIN_PATH=/home/path/to/IGVC-2017/src/sb_gazebo/lib:${GAZEBO_PLUGIN_PATH}"\
-    "export GAZEBO_RESOURCE_PATH=/home/path/to/IGVC-2017/src/sb_gazebo/models:${GAZEBO_RESOURCE_PATH}"\
+    "export GAZEBO_PLUGIN_PATH=$DIR/src/sb_gazebo/lib:${GAZEBO_PLUGIN_PATH}"\
+    "export GAZEBO_RESOURCE_PATH=$DIR/src/sb_gazebo/models:${GAZEBO_RESOURCE_PATH}"\
     # Aliases to make development easier
     "alias clion=\"clion & disown && exit\""\
     "alias rviz=\"rviz & disown && exit\""\
-    "alias rqt=\"rqt & disown && exit\""\
-    "alias catkin=\"catkin \""\
-    "alias run_tests=\"run_tests && catkin_test_results\""
+    "alias rqt=\"rqt & disown && exit\""
 )
 
 # Add all of our new shell config options to all the shell
@@ -53,6 +51,13 @@ do
     done
 done
 
+
+echo "================================================================"
+echo "Giving user correct permissions"
+echo "================================================================"
+
+# Add the user to the dialout so they can do arduino things
+sudo adduser $USER dialout
 
 ###############
 # Install ROS #
@@ -82,7 +87,7 @@ sudo apt-get install -y openjdk-8-jdk
 
 # Fetch and extract CLion
 echo "Fetching and extracting CLion"
-wget https://download.jetbrains.com/cpp/CLion-2016.3.2.tar.gz
+wget https://download.jetbrains.com/cpp/CLion-2017.1.1.tar.gz
 sudo tar xzf CLion*.tar.gz -C /usr/share
 rm CLion*.tar.gz
 
@@ -103,4 +108,6 @@ cd $DIR
 
 echo "================================================================"
 echo "Finished first time installation and setup; you're good to go!"
+echo "If you're working with arduino, or any usb devices, please log"
+echo "out and login again for the required changes to take effect"
 echo "================================================================"
