@@ -94,6 +94,9 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     if (fabs(desiredAngle) >= 90)
         desiredAngle = STOP_SIGNAL_ANGLE;
 
+    if(fabs(desiredAngle) <= 15)
+        desiredAngle = moveAwayFromLine(image_scan);
+
     return desiredAngle;
 }
 
@@ -289,6 +292,33 @@ int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &ima
         }
     }
 }
+
+int VisionDecision::getLeftToRightPixelRatio(const sensor_msgs::Image::ConstPtr& image_scan) {
+    int leftCount, rightCount = 0;
+
+    for (int row = 0; row < image_scan->height; row++) {
+        for (int column = 0; column < image_scan->width; column++) {
+            if(image_scan->data[row * image_scan->width + column] != 0 && column <= image_scan->width / 2) {
+                leftCount++;
+            }
+            if(image_scan->data[row * image_scan->width + column] != 0 && column > image_scan->width / 2)
+                rightCount++;
+        }
+    }
+
+    return rightCount - leftCount;
+}
+
+int VisionDecision::moveAwayFromLine(const sensor_msgs::Image::ConstPtr& image_scan) {
+
+    if(getLeftToRightPixelRatio(image_scan) < 0)
+        return 45;
+    else
+        return -45;
+}
+
+
+
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax) {
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }

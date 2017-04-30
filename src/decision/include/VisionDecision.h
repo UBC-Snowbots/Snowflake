@@ -149,6 +149,20 @@ private:
      */
     static int getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &image_scan, int column);
 
+    /*
+     * Returns an angle that moves away from the line
+     *
+     * @param image_scan the image to parse
+     */
+    static int moveAwayFromLine(const sensor_msgs::Image::ConstPtr& image);
+
+    /*
+     * Returns the difference of rightWhitePixels - leftWhitePixels
+     *
+     * @param image_scan the image to parse
+     */
+    static int getLeftToRightPixelRatio(const sensor_msgs::Image::ConstPtr& image);
+
     void imageCallBack(const sensor_msgs::Image::ConstPtr& image);
     void publishTwist(geometry_msgs::Twist twist);
    
