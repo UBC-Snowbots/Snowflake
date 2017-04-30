@@ -5,28 +5,31 @@
 #include "../include/PointCloudFilter.h"
 
 PointCloudFilter::PointCloudFilter(){
-
-    filter_values.h_min = 0;
-    filter_values.h_max = 360;
-    filter_values.s_min = 0;
-    filter_values.s_max = 1;
-    filter_values.v_min = 0;
-    filter_values.v_max = 1;
+    setFilter(0, 360, 0, 1, 0 ,1);
 }
 
 PointCloudFilter::PointCloudFilter(FilterValues values){
-    filter_values = values;
+    setFilter(values);
 }
 
 PointCloudFilter::PointCloudFilter(float h_min, float h_max, float s_min, float s_max, float v_min, float v_max){
-    filter_values.h_min = h_min;
-    filter_values.h_max = h_max;
-    filter_values.s_min = s_min;
-    filter_values.s_max = s_max;
-    filter_values.v_min = v_min;
-    filter_values.v_max = v_max;
+    setFilter(h_min, h_max, s_min, s_max, v_min, v_max);
 }
 
+void PointCloudFilter::setFilter(float h_min, float h_max, float s_min, float s_max, float v_min, float v_max) {
+    FilterValues values;
+    values.h_min = h_min;
+    values.h_max = h_max;
+    values.s_min = s_min;
+    values.s_max = s_max;
+    values.v_min = v_min;
+    values.v_max = v_max;
+    setFilter(values);
+}
+
+void PointCloudFilter::setFilter(FilterValues values) {
+    filter_values = values;
+}
 
 void PointCloudFilter::PointCloudRGBtoPointCloudHSV(PointCloudRGB::Ptr in,
                           PointCloudHSV::Ptr out)
@@ -40,7 +43,6 @@ void PointCloudFilter::PointCloudRGBtoPointCloudHSV(PointCloudRGB::Ptr in,
         PointRGBtoPointHSV(*it, p);
         out->points.push_back(p);
     }
-
 }
 
 void PointCloudFilter::PointRGBtoPointHSV(PointRGB& in, PointHSV& out){
