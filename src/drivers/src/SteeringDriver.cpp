@@ -62,7 +62,6 @@ SteeringDriver::~SteeringDriver() {
 }
 
 void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_msg) {
-    ROS_INFO("TWIST RECEIVED");
     // Get our own copies of the linear and angular components of the twist message
     std::vector<double> linear = {
             twist_msg->linear.x,
