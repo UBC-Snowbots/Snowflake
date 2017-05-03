@@ -13,4 +13,7 @@
         <remap from="/joint_states" to="/robot/joint_states" />
     </node>
 
+    <!-- This is for jfrost's Zed module -->
+    <!-- <node name="zed_transform" pkg="sb_gazebo" type="zed_transform" output="screen" /> -->
+
 </launch>

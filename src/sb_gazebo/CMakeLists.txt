@@ -6,6 +6,8 @@ project(sb_gazebo)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
+  tf2_ros
+  tf2_sensor_msgs
 )
 
 add_definitions(-std=c++14)
@@ -27,6 +29,7 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(gazebo_node src/gazebo_node.cpp)
+add_executable(zed_transform src/zed_transform.cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(gazebo_node
@@ -43,3 +46,4 @@ include_directories(
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
+target_link_libraries(zed_transform ${catkin_LIBRARIES})
