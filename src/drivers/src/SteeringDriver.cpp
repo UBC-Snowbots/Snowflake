@@ -25,8 +25,9 @@ void map(double& input, double input_min, double input_max,
         double output_min, double output_max) {
     if (input < input_min) input = input_min;
     else if (input > input_max) input = input_max;
-    input = (input - input_min) * (output_max - output_min) /
-                   (input_max - input_min) + output_min;
+    input = ((input - input_min) * (output_max - output_min)) /
+            (input_max - input_min)
+            + output_min;
 }
 
 SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) {
@@ -41,16 +42,25 @@ SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) {
 
     // Get Params
     SB_getParam(private_nh, "port", port, (std::string)"/dev/ttyACM0");
-    SB_getParam(private_nh, "max_abs_linear_speed", max_abs_linear_speed);
-    SB_getParam(private_nh, "max_abs_angular_speed", max_abs_angular_speed);
-    // Ensure that the values given for max absolute speeds are positive
+    SB_getParam(private_nh, "max_abs_linear_speed", max_abs_linear_speed, 5.0);
+    SB_getParam(private_nh, "max_abs_angular_speed", max_abs_angular_speed, 5.0);
+    SB_getParam(private_nh, "max_throttle_percentage", max_throttle_percentage, 0.15);
+
+    // Ensure that the absolute values are positive
     max_abs_linear_speed = fabs(max_abs_linear_speed);
     max_abs_angular_speed = fabs(max_abs_angular_speed);
 
-    // Setup Arduino stuff
-    // Get the arduino port from a ros param
-    // TODO - Add detecton to make sure that this is the right port
-    // TODO - Give some indication when we attach/detach from the Steering Controller. Could be as simple as checking how long it was since we last received a message
+    // Make sure throttle is positive, cap the throttle percentage at 1,
+    // and warn if we have to fix it
+    if (max_throttle_percentage > 1 || max_throttle_percentage < 0) {
+        double new_max_throttle_percentage = fabs(max_throttle_percentage);
+        if (new_max_throttle_percentage > 1)
+            new_max_throttle_percentage = 1;
+        ROS_ERROR("Invalid max throttle value given. Changing from '%f' to '%f'",
+            max_throttle_percentage, new_max_throttle_percentage);
+        max_throttle_percentage = new_max_throttle_percentage;
+    }
+
     // Open the given serial port
     arduino.Open(port);
     arduino.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
@@ -74,9 +84,14 @@ void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_ms
             twist_msg->angular.z,
     };
 
+    // Translate the throttle percentage to a concrete value to send to the robot
+    double max_signal = 90 + max_throttle_percentage * 90;
+    double min_signal = 90 - max_throttle_percentage * 90;
     // Map the twist message values to ones the arduino can understand
-    for (double val : linear) map(val, -max_abs_linear_speed, max_abs_linear_speed, 0, 255);
-    for (double val : angular) map(val, -max_abs_angular_speed, max_abs_angular_speed, 0, 255);
+    for (double& val : linear) map(val, -max_abs_linear_speed, max_abs_linear_speed,
+                                   min_signal, max_signal);
+    for (double& val : angular) map(val, -max_abs_angular_speed, max_abs_angular_speed,
+                                    min_signal, max_signal);
 
     // Send the message over to the arduino
     arduino << "B";

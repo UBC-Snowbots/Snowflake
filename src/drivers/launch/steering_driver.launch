@@ -2,9 +2,14 @@
 
     <!-- Launch Steering Driver -->
     <node name="steering_driver" pkg="drivers" type="steering_driver" output="screen">
-        <!-- TODO: Descriptive COmments -->
-        <rosparam param="max_abs_linear_speed">2</rosparam>
-        <rosparam param="max_abs_angular_speed">2</rosparam>
+        <!-- The maximum absolute linear and angular speeds that this driver will receive
+            These help to define the mapping from the twist message received (in m/s and rad/s)
+            to the throttle percentage to send to the robot -->
+        <rosparam param="max_abs_linear_speed"> 2 </rosparam>
+        <rosparam param="max_abs_angular_speed"> 2 </rosparam>
+        <!-- A value between 0-1 representing the maximum positive or
+                negative throttle percentage to send to the robot -->
+        <rosparam param="max_throttle_percentage"> 0.15 </rosparam>
     </node>
 
 </launch>

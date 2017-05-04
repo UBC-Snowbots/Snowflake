@@ -36,10 +36,12 @@ private:
     LibSerial::SerialStream arduino;
     // The Port the arduino is connected to
     std::string port;
-    // The max ABSOLUTE linear and angular speeds this driver will receive
     // These define the mapping between the twist messages received
     // (in m/s and rad/s), and the speed values sent to the motors by the
-    // arduino (integer values between 0 and 255)
+    // arduino
+    // The max ABSOLUTE linear and angular speeds this driver will receive
     double max_abs_linear_speed, max_abs_angular_speed;
+    // The maximum percent throttle that received twist messages will be translated to
+    double max_throttle_percentage;
 };
 #endif //DRIVERS_STEERING_DRIVER_H
