@@ -1,8 +1,7 @@
 /* Drive Firmware for Elsa, modified for Jack Frost
    Author: Vincent Yuan, 
-   Modified: Nick Wu
-   Modified: James Asefa
-   Date Last Modified: Oct 30, 2016
+   Modified: Nick Wu, James Asefa, Gareth Ellis
+   Date Last Modified: May 3rd, 2017
 */
 
 /*
@@ -270,20 +269,16 @@ void serial_read(){
 
 void convert() {
  
-  if (linear_x > 255)
+  if (linear_x > LINEAR_MAX)
     linear_x = 255; 
-  else if (linear_x < 0)
+  else if (linear_x < LINEAR_MIN)
     linear_x = 0;
   
-  if (angular_z > 255)
+  if (angular_z > ANGULAR_MAX)
     angular_z = 255; 
-  else if (angular_z < 0)
+  else if (angular_z < ANGULAR_MIN)
     angular_z = 0;
-  
-  // map to our pre-defined max and mins
-  
-  linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);
-  angular_z = map(angular_z, 0, 255, ANGULAR_MIN, ANGULAR_MAX);
+
 }
 
 
