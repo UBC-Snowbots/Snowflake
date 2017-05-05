@@ -35,7 +35,7 @@
 // Uncommenting this will cause the arduino to skip the read from the
 // RC Controller, which will prevent it from hanging if you do not have a remote connected
 // COMMENT OUT BEFORE ACTUAL USE
-#define NO_RC
+// #define NO_RC
 
 // Uncommenting this will print out the throttle input, turn input, and mode 
 // as set from the remote control
