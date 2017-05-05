@@ -16,6 +16,9 @@
 
   <include file="$(find sb_gazebo)/launch/general_robot_control.launch">
     <arg name="robot" value="jfrost"/>
-  </include> 
+  </include>
+
+  <!-- This is for jfrost's Zed module -->
+  <node name="zed_transform" pkg="sb_gazebo" type="zed_transform" output="screen" />
 
 </launch>
