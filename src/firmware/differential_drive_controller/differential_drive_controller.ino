@@ -50,12 +50,12 @@
 // Uncommenting this will cause the firmware to print out the final
 // determined throttle commands that will control motor movement
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-//#define DEBUG_COMMANDS
+#define DEBUG_COMMANDS
 
 // error margin for joysticks
 #define TRIM 8 
 
-#define BAUD_RATE 9600
+#define BAUD_RATE 115200
 
 // size of character buffer being passed over serial connection
 #define BUFFER_SIZE 7
@@ -144,7 +144,6 @@ void loop() {
   else if (Mode == 0) { // RC Mode
     linear_x = range1;
     angular_z = range2;
-    // TODO: Set other values to 0 here
     
     convert();
     drive(linear_x, angular_z);
@@ -154,7 +153,6 @@ void loop() {
   else { // E-STOP MODE
     linear_x = UNMAPPED_STOP_SPEED; 
     angular_z = UNMAPPED_STOP_SPEED;
-    // TODO: Set other values to 0 here
     
     convert();
     drive(linear_x, angular_z);
@@ -260,18 +258,18 @@ void serial_read(){
 
 void convert() {
  
-  if (linear_x > LINEAR_MAX)
-    linear_x = LINEAR_MAX; 
-  else if (linear_x < LINEAR_MIN)
-    linear_x = LINEAR_MIN;
+  // TODO: 0 and 255 should be constants
+  if (linear_x > 255)
+    linear_x = 255; 
+  else if (linear_x < 0)
+    linear_x = 0;
   
-  if (angular_z > ANGULAR_MAX)
-    angular_z = ANGULAR_MAX; 
-  else if (angular_z < ANGULAR_MIN)
-    angular_z = ANGULAR_MIN;
+  if (angular_z > 255)
+    angular_z = 255; 
+  else if (angular_z < 0)
+    angular_z = 0;
     
-    		
-  linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);		
+  linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);
   angular_z = map(angular_z, 0, 255, ANGULAR_MIN, ANGULAR_MAX);
 }
 
@@ -295,8 +293,10 @@ void drive(int linear_speed, int angular_speed){
   int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP);
   int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP);
   #ifdef DEBUG_COMMANDS
+  Serial.flush();
   Serial.print("Left Throttle: ");Serial.print(left_throttle);
   Serial.print(" Right Throttle: ");Serial.println(right_throttle);
+  Serial.flush();
   #endif
   servo_write(LeftM, left_throttle);
   servo_write(RightM, right_throttle);
