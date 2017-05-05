@@ -35,7 +35,7 @@
 // Uncommenting this will cause the arduino to skip the read from the
 // RC Controller, which will prevent it from hanging if you do not have a remote connected
 // COMMENT OUT BEFORE ACTUAL USE
-// #define NO_RC
+//#define NO_RC
 
 // Uncommenting this will print out the throttle input, turn input, and mode 
 // as set from the remote control
@@ -45,12 +45,12 @@
 
 // Uncommenting this will print out the twist message as sent over USB serial
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-// #define DEBUG_SERIAL
+//#define DEBUG_SERIAL
 
 // Uncommenting this will cause the firmware to print out the final
-// determined commands that will control motor movement
+// determined throttle commands that will control motor movement
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-// #define DEBUG_COMMANDS
+//#define DEBUG_COMMANDS
 
 // error margin for joysticks
 #define TRIM 8 
@@ -89,13 +89,13 @@ const char BUFFER_HEAD = 'B';
 
 
 // max and min linear speeds and stopping condition
-const int LINEAR_MAX = 100;
-const int LINEAR_MIN = 80;
+const int LINEAR_MAX = 180;
+const int LINEAR_MIN = 0;
 const int LINEAR_STOP = 90;
 
 // max and min angular speeds and stopping condition
-const int ANGULAR_MAX = 100;
-const int ANGULAR_MIN = 80;
+const int ANGULAR_MAX = 180;
+const int ANGULAR_MIN = 0;
 const int ANGULAR_STOP = 90;
 
 Servo LeftM;
@@ -142,12 +142,14 @@ void loop() {
     drive(linear_x, angular_z);
   }
   else if (Mode == 0) { // RC Mode
-    linear_x = range1; 
+    linear_x = range1;
     angular_z = range2;
     // TODO: Set other values to 0 here
     
     convert();
     drive(linear_x, angular_z);
+    //Serial.print("Linear X:");Serial.println(linear_x);
+    //Serial.print("Angular Z:");Serial.println(angular_z); 
   }
   else { // E-STOP MODE
     linear_x = UNMAPPED_STOP_SPEED; 
@@ -157,17 +159,6 @@ void loop() {
     convert();
     drive(linear_x, angular_z);
   }
-  
-  #ifdef DEBUG_COMMANDS
-    Serial.println("Command going to wheels:");
-    Serial.print("Linear X: ");Serial.println(linear_x);
-    Serial.print("Linear Y: "); Serial.println(linear_y);
-    Serial.print("Linear Z: ");Serial.println(linear_z);
-    Serial.print("Angular X: ");Serial.println(angular_x);
-    Serial.print("Angular Y: ");Serial.println(angular_y);
-    Serial.print("Angular Z: ");Serial.println(angular_z);
-    Serial.println();
-  #endif
 }
 
 /*
@@ -227,7 +218,7 @@ void rc_read() {
     if (Mode == -1) modeStr = "E-Stop";
     else if (Mode == 0) modeStr = "RC";
     else if (Mode == 1) modeStr = "Autonomous";
-    Serial.println("RC Command");
+    Serial.print("RC Command ");
     Serial.print(" RC Throttle: ");Serial.print(range1);
     Serial.print(" RC Turn Speed: ");Serial.print(range2);
     Serial.print(" RC Mode: ");Serial.println(modeStr);
@@ -270,15 +261,18 @@ void serial_read(){
 void convert() {
  
   if (linear_x > LINEAR_MAX)
-    linear_x = 255; 
+    linear_x = LINEAR_MAX; 
   else if (linear_x < LINEAR_MIN)
-    linear_x = 0;
+    linear_x = LINEAR_MIN;
   
   if (angular_z > ANGULAR_MAX)
-    angular_z = 255; 
+    angular_z = ANGULAR_MAX; 
   else if (angular_z < ANGULAR_MIN)
-    angular_z = 0;
-
+    angular_z = ANGULAR_MIN;
+    
+    		
+  linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);		
+  angular_z = map(angular_z, 0, 255, ANGULAR_MIN, ANGULAR_MAX);
 }
 
 
@@ -300,7 +294,10 @@ void drive(int linear_speed, int angular_speed){
   
   int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP);
   int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP);
-  
+  #ifdef DEBUG_COMMANDS
+  Serial.print("Left Throttle: ");Serial.print(left_throttle);
+  Serial.print(" Right Throttle: ");Serial.println(right_throttle);
+  #endif
   servo_write(LeftM, left_throttle);
   servo_write(RightM, right_throttle);
 }
