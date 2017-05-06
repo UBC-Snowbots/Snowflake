@@ -103,6 +103,7 @@ void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_ms
     arduino << "B";
     for (double val : linear) arduino << (char)val;
     for (double val : angular) arduino << (char)val;
+    // TODO: These should be "ROSINFO" and should have some descriptions
     for (double val : linear) std::cout << (int)val << std::endl;
     for (double val : angular) std::cout << (int)val << std::endl;
     std::cout << std::endl;
