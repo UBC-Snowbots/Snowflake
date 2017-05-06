@@ -1,7 +1,8 @@
-/* Drive Firmware for Elsa, modified for Jack Frost
+/* Firmware for Elsa
    Author: Vincent Yuan, 
-   Modified: Nick Wu, James Asefa, Gareth Ellis
-   Date Last Modified: May 3rd, 2017
+   Modified: Nick Wu
+   Modified: James Asefa
+   Date Last Modified: Oct 30, 2016
 */
 
 /*
@@ -28,37 +29,29 @@
 */
 
 
-#include <SoftwareSerial.h>
-#include <stdlib.h>
-#include <Servo.h>
-
 // Uncommenting this will cause the arduino to skip the read from the
-// RC Controller, which will prevent it from hanging if you do not have a remote connected
-// COMMENT OUT BEFORE ACTUAL USE
+// RC Controller, which will prevent it from hanging if you do not 
+// have a remote connected
+// THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
 //#define NO_RC
-
-// Uncommenting this will print out the throttle input, turn input, and mode 
-// as set from the remote control
-// You can use this to test and determine pinouts
-// THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-//#define DEBUG_REMOTE
-
-// Uncommenting this will print out the twist message as sent over USB serial
-// THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-//#define DEBUG_SERIAL
 
 // Uncommenting this will cause the firmware to print out the final
 // determined throttle commands that will control motor movement
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-#define DEBUG_COMMANDS
+//#define DEBUG_COMMANDS
 
-// error margin for joysticks
-#define TRIM 8 
 
-#define BAUD_RATE 115200
+#include <SoftwareSerial.h>
+#include <stdlib.h>
+#include <Servo.h>
+
+
+#define TRIM 8 // error margin for joysticks
+
+#define BAUD_RATE 9600
 
 // size of character buffer being passed over serial connection
-#define BUFFER_SIZE 7
+#define BUFFER_SIZE 6
 
 // Robot speed will be received in a char buffer with each value between 0 and 255
 // as a result, this assigns 128 as stop. Then:
@@ -89,13 +82,13 @@ const char BUFFER_HEAD = 'B';
 
 
 // max and min linear speeds and stopping condition
-const int LINEAR_MAX = 180;
-const int LINEAR_MIN = 0;
+const int LINEAR_MAX = 100;
+const int LINEAR_MIN = 80;
 const int LINEAR_STOP = 90;
 
 // max and min angular speeds and stopping condition
-const int ANGULAR_MAX = 180;
-const int ANGULAR_MIN = 0;
+const int ANGULAR_MAX = 100;
+const int ANGULAR_MIN = 80;
 const int ANGULAR_STOP = 90;
 
 Servo LeftM;
@@ -123,39 +116,32 @@ void setup() {
 }
 
 void loop() {
+
   // read RC input
-  #ifndef NO_RC
-    rc_read();
-  #endif
+  rc_read();
   
-  // If we're debugging serial, we always want to be reading and printing out 
-  // the values received over serial, even if we don't use them 
-  #ifdef DEBUG_SERIAL
-    if (Mode != 1)
-      serial_read();
-  #endif
   
-  if (Mode == 1) { // Autonomous Mode
+  if (Mode == 1) { // Auto Mode
     serial_read(); 
     
     convert();
     drive(linear_x, angular_z);
   }
-  else if (Mode == 0) { // RC Mode
-    linear_x = range1;
+  else if (Mode == 0) { //RC Mode
+    linear_x = range1; 
     angular_z = range2;
     
     convert();
     drive(linear_x, angular_z);
-    //Serial.print("Linear X:");Serial.println(linear_x);
-    //Serial.print("Angular Z:");Serial.println(angular_z); 
+    Serial.flushRX();
   }
-  else { // E-STOP MODE
+  else { // STOP MODE
     linear_x = UNMAPPED_STOP_SPEED; 
     angular_z = UNMAPPED_STOP_SPEED;
     
     convert();
     drive(linear_x, angular_z);
+    Serial.flushRX();
   }
 }
 
@@ -163,9 +149,8 @@ void loop() {
 * Calculates OFFSET for the joystick controllers. 
 */
 void set_offset() {
-  delay(100);
-  int linear_x_mid = pulseIn(2,HIGH); //RX standard - radio signal midpoint
-  int angular_z_mid = pulseIn(3,HIGH); //RY standard - radio signal midpoint
+  int linear_x_mid = 1325; //RX standard - radio signal midpoint
+  int angular_z_mid = 1325; //RY standard - radio signal midpoint
   
   // JOYSTICK_MARGIN is an error margin for joystick control
   // e.g. if the joystick is moved just a little bit, it is assumed that no movement 
@@ -183,12 +168,13 @@ void set_offset() {
 void rc_read() {
   range1 = pulseIn(2, HIGH); // 1140 - 1965 RX LEFT-RIGHT -> turn on spot
   range2 = pulseIn(3, HIGH); // 1965 - 1140 RY UP-DOWN -> Steer left/right y axis (turn while moving)
-  range3 = pulseIn(4, HIGH); // 1970 - 1115 linear_x UP-DOWN -> Mode
+  range3 = pulseIn(4, HIGH); // 1970 - 1115 linear_x UP-DOWN -> forward/backward
   
   if (range1 < linearXHigh && range1 > linearXLow) 
     range1 = UNMAPPED_STOP_SPEED;
   else 
     range1 = map (range1, 949, 1700, 0, 255);
+
   if (range2 < angularZHigh && range2 > angularZLow) 
     range2 = UNMAPPED_STOP_SPEED;
   else 
@@ -224,8 +210,8 @@ void rc_read() {
 }
 
 void serial_read(){
-  //reading in 7 chars from Serial
-  if (Serial.available() >= BUFFER_SIZE) {
+    //reading in 6 chars from Serial
+  if (Serial.available() > BUFFER_SIZE) {
 
       // BUFFER_HEAD identifies the start of the buffer
       if (Serial.read() == BUFFER_HEAD) {
@@ -235,30 +221,20 @@ void serial_read(){
           angular_x = Serial.read();
           angular_y = Serial.read();
           angular_z = Serial.read();
-          
-          #ifdef DEBUG_SERIAL
-            Serial.println("Serial Input:");
-            Serial.print("Linear X: ");Serial.println(linear_x);
-            Serial.print("Linear Y: "); Serial.println(linear_y);
-            Serial.print("Linear Z: ");Serial.println(linear_z);
-            Serial.print("Angular X: ");Serial.println(angular_x);
-            Serial.print("Angular Y: ");Serial.println(angular_y);
-            Serial.print("Angular Z: ");Serial.println(angular_z);
-            Serial.println();
-          #endif
       } else {
           linear_x = angular_z = UNMAPPED_STOP_SPEED;
       }
 
   } else {
       linear_x = angular_z = UNMAPPED_STOP_SPEED;
-  }
+    }
   
+  //flushRX defined here: https://forum.sparkfun.com/viewtopic.php?f=32&t=32715 
+  Serial.flushRX();
 }
 
 void convert() {
  
-  // TODO: 0 and 255 should be constants
   if (linear_x > 255)
     linear_x = 255; 
   else if (linear_x < 0)
@@ -268,7 +244,9 @@ void convert() {
     angular_z = 255; 
   else if (angular_z < 0)
     angular_z = 0;
-    
+  
+  // map to our pre-defined max and mins
+  
   linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);
   angular_z = map(angular_z, 0, 255, ANGULAR_MIN, ANGULAR_MAX);
 }
@@ -292,12 +270,14 @@ void drive(int linear_speed, int angular_speed){
   
   int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP);
   int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP);
+  
   #ifdef DEBUG_COMMANDS
-  Serial.flush();
-  Serial.print("Left Throttle: ");Serial.print(left_throttle);
-  Serial.print(" Right Throttle: ");Serial.println(right_throttle);
-  Serial.flush();
+    Serial.flush();
+    Serial.print("Left Throttle: ");Serial.print(left_throttle);
+    Serial.print(" Right Throttle: ");Serial.println(right_throttle);
+    Serial.flush();
   #endif
+
   servo_write(LeftM, left_throttle);
   servo_write(RightM, right_throttle);
 }
@@ -314,4 +294,3 @@ void servo_write(Servo motor, int throttle) {
   throttle = map(throttle, 70, 110, 1000, 2000); 
   motor.writeMicroseconds(throttle);
 }
-
