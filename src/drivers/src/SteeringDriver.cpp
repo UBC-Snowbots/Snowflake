@@ -44,6 +44,7 @@ SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) {
     SB_getParam(private_nh, "port", port, (std::string)"/dev/ttyACM0");
     SB_getParam(private_nh, "max_abs_linear_speed", max_abs_linear_speed, 5.0);
     SB_getParam(private_nh, "max_abs_angular_speed", max_abs_angular_speed, 5.0);
+    // TODO: remove this param here and in the launch file, it's in firmware
     SB_getParam(private_nh, "max_throttle_percentage", max_throttle_percentage, 0.15);
 
     // Ensure that the absolute values are positive
@@ -63,7 +64,7 @@ SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) {
 
     // Open the given serial port
     arduino.Open(port);
-    arduino.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
+    arduino.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_115200);
     arduino.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
 }
 
@@ -71,6 +72,8 @@ SteeringDriver::~SteeringDriver() {
     arduino.Close();
 }
 
+// TODO: We need to account for error here by calculating the number of expected ticks and compare them to
+// the actual number of ticks given the last command we sent to the robot
 void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_msg) {
     // Get our own copies of the linear and angular components of the twist message
     std::vector<double> linear = {
@@ -84,9 +87,12 @@ void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_ms
             twist_msg->angular.z,
     };
 
+    // Invert the angular values, because firmware doesn't obey ROS coordinate systems
+    for (double& val : angular) val *= -1;
+
     // Translate the throttle percentage to a concrete value to send to the robot
-    double max_signal = 90 + max_throttle_percentage * 90;
-    double min_signal = 90 - max_throttle_percentage * 90;
+    double max_signal = 128 + max_throttle_percentage * 127;
+    double min_signal = 128 - max_throttle_percentage * 127;
     // Map the twist message values to ones the arduino can understand
     for (double& val : linear) map(val, -max_abs_linear_speed, max_abs_linear_speed,
                                    min_signal, max_signal);
@@ -97,4 +103,7 @@ void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_ms
     arduino << "B";
     for (double val : linear) arduino << (char)val;
     for (double val : angular) arduino << (char)val;
+    for (double val : linear) std::cout << (int)val << std::endl;
+    for (double val : angular) std::cout << (int)val << std::endl;
+    std::cout << std::endl;
 }
