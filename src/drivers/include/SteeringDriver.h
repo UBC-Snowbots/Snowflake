@@ -41,7 +41,11 @@ private:
     // arduino
     // The max ABSOLUTE linear and angular speeds this driver will receive
     double max_abs_linear_speed, max_abs_angular_speed;
-    // The maximum percent throttle that received twist messages will be translated to
-    double max_throttle_percentage;
+    // This value is used to send more power to one wheel then the other,
+    // to account for mechanical differences between the two wheels
+    // This obeys the ROS coordinate system, so:
+    // steering_trim > 0 : turn more left
+    // steering_trim < 0 : turn more right
+    double steering_trim;
 };
 #endif //DRIVERS_STEERING_DRIVER_H

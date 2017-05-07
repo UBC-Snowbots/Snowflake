@@ -7,9 +7,11 @@
             to the throttle percentage to send to the robot -->
         <rosparam param="max_abs_linear_speed"> 2 </rosparam>
         <rosparam param="max_abs_angular_speed"> 2 </rosparam>
-        <!-- A value between 0-1 representing the maximum positive or
-                negative throttle percentage to send to the robot -->
-        <rosparam param="max_throttle_percentage"> 0.15 </rosparam>
+        <!-- Trim the robot so we send a slightly higher command to one wheel to account
+            for mechanical differences between the left and right side
+            > 0 : turn more left
+            < 0 : turn more right -->
+        <rosparam param="steering_trim"> -0.2 </rosparam>
     </node>
 
 </launch>

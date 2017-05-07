@@ -51,7 +51,7 @@
 #define BAUD_RATE 9600
 
 // size of character buffer being passed over serial connection
-#define BUFFER_SIZE 6
+#define BUFFER_SIZE 7
 
 // Robot speed will be received in a char buffer with each value between 0 and 255
 // as a result, this assigns 128 as stop. Then:
@@ -73,6 +73,8 @@ int linear_z = 0;
 int angular_x = 0;
 int angular_y = 0;
 int angular_z = 0;
+// TODO: Should probably be a constant (but should already be defined)
+int correction_constant = 128;
 
 // motor pins
 const int RIGHT_MOTOR_PIN = 10;
@@ -221,6 +223,7 @@ void serial_read(){
           angular_x = Serial.read();
           angular_y = Serial.read();
           angular_z = Serial.read();
+          correction_constant = Serial.read();
       } else {
           linear_x = angular_z = UNMAPPED_STOP_SPEED;
       }
@@ -268,8 +271,15 @@ void drive(int linear_speed, int angular_speed){
   // if linear_speed == LINEAR_STOP, this resolves to turning on the spot, using the above definitions for
   // angular turning
   
-  int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP);
-  int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP);
+  // Calculate correction values
+  // TODO: Might need to scale as we increase the throttle commands
+  int left_correction = correction_constant - 128;
+  int right_correction = 128 - correction_constant;
+  if (left_correction < 0) left_correction = 0;
+  if (right_correction < 0) right_correction = 0;
+
+  int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP) + left_correction;
+  int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP) + right_correction;
   
   #ifdef DEBUG_COMMANDS
     Serial.flush();
