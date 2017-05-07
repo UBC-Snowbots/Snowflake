@@ -16,6 +16,14 @@
 
   <include file="$(find sb_gazebo)/launch/general_robot_control.launch">
     <arg name="robot" value="jfrost"/>
-  </include> 
+  </include>
+
+  <!-- This is for jfrost's depthcamera/kinect/zed plugin -->
+  <node name="zed_transform" pkg="sb_gazebo" type="zed_transform" output="screen">
+    <rosparam param="output_frame"> "zed_pointcloud" </rosparam>
+    
+    <remap from="/input_pointcloud" to="/zed/camera/point_cloud/uncorrected_cloud_do_not_use"/>
+    <remap from="/output_pointcloud" to="/zed/camera/point_cloud/cloud_registered"/>
+  </node>
 
 </launch>
