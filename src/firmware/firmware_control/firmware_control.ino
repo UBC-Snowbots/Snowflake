@@ -247,11 +247,18 @@ void convert() {
     angular_z = 255; 
   else if (angular_z < 0)
     angular_z = 0;
+    
+  if (correction_constant > 255)
+    correction_constant = 255;
+  else if (correction_constant > 0)
+    correction_constant = 0;
   
   // map to our pre-defined max and mins
   
   linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);
   angular_z = map(angular_z, 0, 255, ANGULAR_MIN, ANGULAR_MAX);
+  
+  correction_constant = map(correction_constant, 0, 255, LINEAR_MIN, LINEAR_MAX);
 }
 
 
