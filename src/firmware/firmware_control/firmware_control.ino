@@ -5,6 +5,42 @@
    Date Last Modified: Oct 30, 2016
 */
 
+/*
+   ~~~~ PinOuts ~~~~
+   -Note: PinOuts are NOT the same for Mode 1 and Mode 2 controllers,
+   please make sure you're using the right one
+   (It will say on the screen when you turn it on)
+   -Note: All arduino pins are digital, NOT analog
+   
+   ~~~ PinOuts are in the form: ~~~
+   Arduino -> Receiver
+   
+   ~~~ PinOut for Turnigy TGY 9X Controller/Receiver ~~~ 
+   Please note the Signal,+,- order indicated on the top of the receiver.
+   Any of the + or - pins can be used for power or ground respectively
+   ~~ Mode 1 ~~
+   2 -> 2
+   4 -> 3
+   3 -> 4
+   ~~ Mode 2 (Untested, so may be incorrect) ~~
+   2 -> 1
+   4 -> 2
+   3 -> 4  
+*/
+
+
+// Uncommenting this will cause the arduino to skip the read from the
+// RC Controller, which will prevent it from hanging if you do not 
+// have a remote connected
+// THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
+//#define NO_RC
+
+// Uncommenting this will cause the firmware to print out the final
+// determined throttle commands that will control motor movement
+// THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
+#define DEBUG_COMMANDS
+
+
 #include <SoftwareSerial.h>
 #include <stdlib.h>
 #include <Servo.h>
@@ -12,10 +48,10 @@
 
 #define TRIM 8 // error margin for joysticks
 
-#define BAUD_RATE 9600
+#define BAUD_RATE 115200
 
 // size of character buffer being passed over serial connection
-#define BUFFER_SIZE 6
+#define BUFFER_SIZE 7
 
 // Robot speed will be received in a char buffer with each value between 0 and 255
 // as a result, this assigns 128 as stop. Then:
@@ -37,6 +73,8 @@ int linear_z = 0;
 int angular_x = 0;
 int angular_y = 0;
 int angular_z = 0;
+// TODO: Should probably be a constant (but should already be defined)
+int correction_constant = 128;
 
 // motor pins
 const int RIGHT_MOTOR_PIN = 10;
@@ -160,6 +198,17 @@ void rc_read() {
   if (abs(range2 - 90) < TRIM) 
     range2 = UNMAPPED_STOP_SPEED;
     
+  // If we're in debug mode, print out the throttle, turn speed, and mode
+  #ifdef DEBUG_REMOTE
+    char* modeStr;
+    if (Mode == -1) modeStr = "E-Stop";
+    else if (Mode == 0) modeStr = "RC";
+    else if (Mode == 1) modeStr = "Autonomous";
+    Serial.print("RC Command ");
+    Serial.print(" RC Throttle: ");Serial.print(range1);
+    Serial.print(" RC Turn Speed: ");Serial.print(range2);
+    Serial.print(" RC Mode: ");Serial.println(modeStr);
+  #endif
 }
 
 void serial_read(){
@@ -174,6 +223,7 @@ void serial_read(){
           angular_x = Serial.read();
           angular_y = Serial.read();
           angular_z = Serial.read();
+          correction_constant = Serial.read();
       } else {
           linear_x = angular_z = UNMAPPED_STOP_SPEED;
       }
@@ -199,7 +249,6 @@ void convert() {
     angular_z = 0;
   
   // map to our pre-defined max and mins
-  
   linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);
   angular_z = map(angular_z, 0, 255, ANGULAR_MIN, ANGULAR_MAX);
 }
@@ -221,9 +270,34 @@ void drive(int linear_speed, int angular_speed){
   // if linear_speed == LINEAR_STOP, this resolves to turning on the spot, using the above definitions for
   // angular turning
   
+  // Calculate correction values
+  // TODO: Might need to scale as we increase the throttle commands
+  // correction_constant > 128 = TURN LEFT
+  // correction_constant < 128 = TURN RIGHT
+  
   int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP);
   int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP);
   
+//  #ifdef DEBUG_COMMANDS
+//    Serial.flush();
+//    Serial.print("Left Throttle Raw: ");Serial.print(left_throttle);
+//    Serial.print(" Right Throttle Raw: ");Serial.println(right_throttle);
+//    Serial.flush();
+//  #endif
+  
+  int left_correction = ((128 - correction_constant)/128) * (90 - left_throttle);
+  int right_correction = ((correction_constant - 128)/128) * (90 - right_throttle);
+  
+  left_throttle += left_correction;
+  right_throttle += right_correction;
+  
+  #ifdef DEBUG_COMMANDS
+    Serial.flush();
+    Serial.print("Left Throttle: ");Serial.print(left_throttle);
+    Serial.print(" Right Throttle: ");Serial.println(right_throttle);
+    Serial.flush();
+  #endif
+
   servo_write(LeftM, left_throttle);
   servo_write(RightM, right_throttle);
 }

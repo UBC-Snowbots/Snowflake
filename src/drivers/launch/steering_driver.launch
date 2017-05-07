@@ -1,0 +1,18 @@
+<launch>
+
+    <!-- Launch Steering Driver -->
+    <node name="steering_driver" pkg="drivers" type="steering_driver" output="screen">
+        <!-- The maximum absolute linear and angular speeds that this driver will receive
+            These help to define the mapping from the twist message received (in m/s and rad/s)
+            to the throttle percentage to send to the robot -->
+        <rosparam param="max_abs_linear_speed"> 2 </rosparam>
+        <rosparam param="max_abs_angular_speed"> 2 </rosparam>
+        <!-- Trim the robot so we send a slightly higher command to one wheel to account
+            for mechanical differences between the left and right side
+            > 0 : turn more left
+            < 0 : turn more right -->
+        <rosparam param="steering_trim"> 0.25 </rosparam>
+        <rosparam param="port">"/dev/ttyACM0"</rosparam>
+    </node>
+
+</launch>

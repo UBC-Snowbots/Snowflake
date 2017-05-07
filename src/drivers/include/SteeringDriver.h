@@ -1,24 +1,51 @@
 /*
- * Created By: YOUR NAME HERE
- * Created On: September 22, 2016
- * Description: This node is responsible for passing received twist messages over
- *              serial to the arduino controlling the robot
- *
+ * Created By: Gareth Ellis
+ * Created On: April 16, 2017
+ * Description: This node is responsible for passing twist messages received
+ *              over serial to the arduino controlling the robot
  */
 
 #ifndef DRIVERS_STEERING_DRIVER_H
 #define DRIVERS_STEERING_DRIVER_H
 
+// STD
 #include <iostream>
-#include <std_msgs/String.h>
+
+// Snowbots
+#include <sb_utils.h>
+
+// ROS
+#include <geometry_msgs/Twist.h>
 #include <ros/ros.h>
+#include <std_msgs/String.h>
+
+// Other
+#include <SerialStream.h>
 
 class SteeringDriver {
 public:
     SteeringDriver(int argc, char **argv, std::string node_name);
-private:
-    void commandCallBack(const std_msgs::String::ConstPtr& msg);
+    ~SteeringDriver();
 
-    ros::Subscriber command_subscriber;
+private:
+    void twistCallback(geometry_msgs::Twist::ConstPtr twist_msg);
+
+    ros::Subscriber twist_subscriber;
+
+    // The SerialStream to/from the arduino
+    LibSerial::SerialStream arduino;
+    // The Port the arduino is connected to
+    std::string port;
+    // These define the mapping between the twist messages received
+    // (in m/s and rad/s), and the speed values sent to the motors by the
+    // arduino
+    // The max ABSOLUTE linear and angular speeds this driver will receive
+    double max_abs_linear_speed, max_abs_angular_speed;
+    // This value is used to send more power to one wheel then the other,
+    // to account for mechanical differences between the two wheels
+    // This obeys the ROS coordinate system, so:
+    // steering_trim > 0 : turn more left
+    // steering_trim < 0 : turn more right
+    double steering_trim;
 };
 #endif //DRIVERS_STEERING_DRIVER_H
