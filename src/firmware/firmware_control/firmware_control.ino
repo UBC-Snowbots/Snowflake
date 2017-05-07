@@ -38,7 +38,7 @@
 // Uncommenting this will cause the firmware to print out the final
 // determined throttle commands that will control motor movement
 // THIS USES A LOT OF BANDWIDTH - COMMENT OUT BEFORE ACTUAL USE
-//#define DEBUG_COMMANDS
+#define DEBUG_COMMANDS
 
 
 #include <SoftwareSerial.h>
@@ -48,7 +48,7 @@
 
 #define TRIM 8 // error margin for joysticks
 
-#define BAUD_RATE 9600
+#define BAUD_RATE 115200
 
 // size of character buffer being passed over serial connection
 #define BUFFER_SIZE 7
@@ -273,8 +273,11 @@ void drive(int linear_speed, int angular_speed){
   
   // Calculate correction values
   // TODO: Might need to scale as we increase the throttle commands
-  int left_correction = correction_constant - 128;
-  int right_correction = 128 - correction_constant;
+  // correction_constant > 128 = TURN LEFT
+  // correction_constant < 128 = TURN RIGHT
+  int left_correction = 128 - correction_constant;
+  int right_correction = correction_constant - 128;
+  
   if (left_correction < 0) left_correction = 0;
   if (right_correction < 0) right_correction = 0;
 
