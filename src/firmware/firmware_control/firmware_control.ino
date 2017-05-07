@@ -247,18 +247,10 @@ void convert() {
     angular_z = 255; 
   else if (angular_z < 0)
     angular_z = 0;
-    
-  if (correction_constant > 255)
-    correction_constant = 255;
-  else if (correction_constant > 0)
-    correction_constant = 0;
   
   // map to our pre-defined max and mins
-  
   linear_x = map(linear_x, 0, 255, LINEAR_MIN, LINEAR_MAX);
   angular_z = map(angular_z, 0, 255, ANGULAR_MIN, ANGULAR_MAX);
-  
-  correction_constant = map(correction_constant, 0, 255, LINEAR_MIN, LINEAR_MAX);
 }
 
 
@@ -282,14 +274,22 @@ void drive(int linear_speed, int angular_speed){
   // TODO: Might need to scale as we increase the throttle commands
   // correction_constant > 128 = TURN LEFT
   // correction_constant < 128 = TURN RIGHT
-  int left_correction = 128 - correction_constant;
-  int right_correction = correction_constant - 128;
   
-  if (left_correction < 0) left_correction = 0;
-  if (right_correction < 0) right_correction = 0;
-
-  int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP) + left_correction;
-  int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP) + right_correction;
+  int left_throttle = linear_speed + (angular_speed - ANGULAR_STOP);
+  int right_throttle = linear_speed - (angular_speed - ANGULAR_STOP);
+  
+//  #ifdef DEBUG_COMMANDS
+//    Serial.flush();
+//    Serial.print("Left Throttle Raw: ");Serial.print(left_throttle);
+//    Serial.print(" Right Throttle Raw: ");Serial.println(right_throttle);
+//    Serial.flush();
+//  #endif
+  
+  int left_correction = ((128 - correction_constant)/128) * (90 - left_throttle);
+  int right_correction = ((correction_constant - 128)/128) * (90 - right_throttle);
+  
+  left_throttle += left_correction;
+  right_throttle += right_correction;
   
   #ifdef DEBUG_COMMANDS
     Serial.flush();

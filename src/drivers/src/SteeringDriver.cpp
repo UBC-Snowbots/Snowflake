@@ -52,7 +52,7 @@ SteeringDriver::SteeringDriver(int argc, char **argv, std::string node_name) {
     max_abs_angular_speed = fabs(max_abs_angular_speed);
 
     // Map the correction value to one the arduino can understand
-    map(steering_trim, -1, 1, 0, 255);
+    map(steering_trim, -1, 1, 1, 255);
 
     // Open the given serial port
     arduino.Open(port);
@@ -84,9 +84,9 @@ void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_ms
     // TODO: 0 and 255 should be constants or member variables (arduino mapping side)
     // Map the twist message values to ones the arduino can understand
     for (double& val : linear) map(val, -max_abs_linear_speed, max_abs_linear_speed,
-                                   0, 255);
+                                   1, 255);
     for (double& val : angular) map(val, -max_abs_angular_speed, max_abs_angular_speed,
-                                    0, 255);
+                                    1, 255);
 
     // Send the message over to the arduino
     // TODO: "B" should be a member variable or constant
@@ -101,5 +101,5 @@ void SteeringDriver::twistCallback(const geometry_msgs::Twist::ConstPtr twist_ms
     // TODO: maybe add a debug flag? or just delete them if we don't need them
     for (double& val : linear) std::cout << (int)val << std::endl;
     for (double& val : angular) std::cout << (int)val << std::endl;
-    std::cout << (int)steering_trim << std::endl;
+    std::cout << (int)steering_trim << std::endl << std::endl;
 }

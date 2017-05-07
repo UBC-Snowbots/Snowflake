@@ -11,7 +11,7 @@
             for mechanical differences between the left and right side
             > 0 : turn more left
             < 0 : turn more right -->
-        <rosparam param="steering_trim"> -0.2 </rosparam>
+        <rosparam param="steering_trim"> 0.25 </rosparam>
         <rosparam param="port">"/dev/ttyACM0"</rosparam>
     </node>
 
