@@ -12,6 +12,7 @@
 #include <iostream>
 #include <std_msgs/String.h>
 #include <ros/ros.h>
+#include <sb_utils.h>
 
 class MyClass {
 public:
@@ -25,7 +26,9 @@ public:
      *
      * @return input_string with an exclamation point added to it
      */
-    static std::string addExclamationPoint(std::string input_string);
+     static std::string addCharacterToString(std::string input_string, std::string suffix);
+     std::string suffix;
+
 private:
     /**
      * Callback function for when a new string is received

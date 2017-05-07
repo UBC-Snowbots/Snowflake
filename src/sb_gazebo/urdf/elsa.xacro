@@ -3,8 +3,6 @@
      The Model for Elsa, a 4-wheel drive, skid-steering robot
 -->
 <robot name="elsa" xmlns:xacro="http://www.ros.org/wiki/xacro">
-<xacro:property name="PI" value="3.1415926535897931"/>
-
 <xacro:property name="chassis_length" value="0.85" />
 <xacro:property name="chassis_width" value="0.85" />
 <xacro:property name="chassis_height" value="0.7" />
