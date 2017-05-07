@@ -1,37 +1,28 @@
 /*
  * Created By: Valerian Ratu
  * Created On: May 1 2017
- * Description: A node which transforms the pointcloud output on the Zed
- *              of the gazebo simulation
+ * Description: A node which transforms a given pointcloud from
+ *              it's current frame to a given frame
  */
 
-#include <sensor_msgs/PointCloud2.h>
 #include <ros/ros.h>
+#include <sensor_msgs/PointCloud2.h>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_sensor_msgs/tf2_sensor_msgs.h>
 
+#include <sb_utils.h>
+
 ros::Publisher pub;
+std::string output_frame;
 
 void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
     try {
-
+        // Create an empty pointcloud
         sensor_msgs::PointCloud2 output;
-        tf2_ros::Buffer tfBuffer;
-        tf2_ros::TransformListener tfListener(tfBuffer);
-        geometry_msgs::TransformStamped tstamped;
-        tstamped = tfBuffer.lookupTransform(msg->header.frame_id, "zed_pointcloud", ros::Time(0), ros::Duration(1.0));
-        ROS_INFO("Frame %s -> %s", msg->header.frame_id.c_str(), "zed_pointcloud");
-        ROS_INFO("Transform: x:%f y:%f z:%f x:%f y:%f z:%f w:%f",
-                 tstamped.transform.translation.x,
-                 tstamped.transform.translation.y,
-                 tstamped.transform.translation.z,
-                 tstamped.transform.rotation.x,
-                 tstamped.transform.rotation.y,
-                 tstamped.transform.rotation.z,
-                 tstamped.transform.rotation.w);
-        tf2::doTransform(*msg, output, tstamped);
+        // Transform the pointcloud to the requested frame
+        SB_doTransform(*msg, output, output_frame);
+        // Publish the transformed pointcloud
         pub.publish(output);
-
     } catch (tf2::TransformException ex){
         ROS_WARN("%s", ex.what());
         ros::Duration(1.0).sleep();
@@ -39,10 +30,17 @@ void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
 }
 
 int main(int argc, char** argv){
-    ros::init(argc, argv, "zed_transform");
-    ros::NodeHandle nh;
-    pub = nh.advertise<sensor_msgs::PointCloud2>("/zed/camera/point_cloud/cloud_corrected", 1);
-    ros::Subscriber sub = nh.subscribe("/zed/camera/point_cloud/cloud_registered", 1, pointCloudCallback);
+    ros::init(argc, argv, "pointcloud_transformer");
+    ros::NodeHandle private_nh("~");
+    if (!SB_getParam(private_nh, "output_frame", output_frame)){
+        // Error and exit if we didn't get a frame to transform to.
+        // We need this to transform anything, and there is no reasonable default
+        ROS_ERROR("Param 'output_frame' not provided. " \
+                  "Can't  transform anything without a frame to transform it to");
+        return 1;
+    }
+    ros::Subscriber sub = private_nh.subscribe("/input_pointcloud", 1, pointCloudCallback);
+    pub = private_nh.advertise<sensor_msgs::PointCloud2>("/output_pointcloud", 1);
     ros::spin();
     return 0;
 }

@@ -10,6 +10,8 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_sensor_msgs
 )
 
+find_package(sb_utils REQUIRED)
+
 add_definitions(-std=c++14)
 
 catkin_package(
@@ -24,7 +26,9 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+    ${catkin_INCLUDE_DIRS}
+    ${sb_utils_INCLUDE_DIRS}
+    ./include
 )
 
 ## Declare a C++ executable
@@ -35,6 +39,7 @@ add_executable(zed_transform src/zed_transform.cpp)
 # target_link_libraries(gazebo_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(zed_transform ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 
 #############
@@ -46,4 +51,3 @@ add_executable(zed_transform src/zed_transform.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-target_link_libraries(zed_transform ${catkin_LIBRARIES})
