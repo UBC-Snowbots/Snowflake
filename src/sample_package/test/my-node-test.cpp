@@ -8,8 +8,8 @@
 #include <gtest/gtest.h>
 
 TEST(MyNode, addExclamationPoint){
-    EXPECT_EQ("!", MyClass::addExclamationPoint(""));
-    EXPECT_EQ("Hello!", MyClass::addExclamationPoint("Hello"));
+    EXPECT_EQ("!", MyClass::addCharacterToString("", "!"));
+    EXPECT_EQ("Hello!", MyClass::addCharacterToString("Hello", "!"));
 }
 
 int main(int argc, char **argv) {
