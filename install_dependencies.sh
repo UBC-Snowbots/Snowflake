@@ -21,6 +21,7 @@ sudo apt-get install -y\
     ros-kinetic-controller-manager \
     ros-kinetic-effort-controllers \
     ros-kinetic-gazebo-ros-control \
+    ros-kinetic-gps-common \
     ros-kinetic-hector-gazebo \
     ros-kinetic-robot-pose-ekf \
     ros-kinetic-ros-control \
