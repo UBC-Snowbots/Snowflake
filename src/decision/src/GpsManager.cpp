@@ -52,6 +52,8 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
 
     // Get Params
     SB_getParam(private_nh, "at_goal_tolerance", at_goal_tolerance, (float)1.0);
+    SB_getParam(private_nh, "num_initial_headings", num_intial_headings, 20);
+    SB_getParam(private_nh, "num_initial_navsatfixes", num_initial_navsatfixes, 20);
     if (!SB_getParam(private_nh, "waypoints", waypoints_raw)){
         ROS_ERROR("Waypoints should be a list in the form [lat, lon, lat, lon, ...]");
     } else {
@@ -61,6 +63,7 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
 
     // Initialize misc. variables
     received_initial_navsatfix = false;
+    received_initial_heading = false;
     origin_heading = -1;
     most_recent_heading = -1;
 
@@ -69,13 +72,21 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
 
 void GpsManager::imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg){
     // Get current heading (yaw) from the imu message
-    float curr_heading = (float)tf::getYaw(imu_msg->orientation);
+    double curr_heading = tf::getYaw(imu_msg->orientation);
     // If this is the first received compass message, make it origin_heading
-    if (origin_heading == -1){
-        origin_heading = curr_heading;
-        ROS_INFO("Received initial compass reading");
-        if (received_initial_navsatfix){
-            ROS_INFO("Received initial compass and gps readings, good to go!");
+    if (!received_initial_heading){
+        initial_headings.emplace_back(curr_heading);
+        // Check if we've received enough headings to estimate our initial heading
+        if (initial_headings.size() >= num_intial_headings) {
+            // Average out the headings to get our estimated initial heading
+            origin_heading = std::accumulate(initial_headings.begin(), initial_headings.end(), 0)
+                             / initial_headings.size();
+
+            received_initial_heading = true;
+            ROS_INFO("Received initial compass reading");
+            if (received_initial_navsatfix){
+                ROS_INFO("Received initial compass and gps readings, good to go!");
+            }
         }
     }
     // Received heading is now the most recent one
@@ -85,13 +96,25 @@ void GpsManager::imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg){
 }
 
 void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_fix) {
-    // Set origin_navsatfix to the first navsatfix we receive
     if (!received_initial_navsatfix){
-        origin_navsatfix = *nav_sat_fix;
-        received_initial_navsatfix = true;
-        ROS_INFO("Received initial NavSatFix");
-        if (origin_heading != -1){
-            ROS_INFO("Received initial compass and gps readings, good to go!");
+        initial_navsatfixes.emplace_back(*nav_sat_fix);
+        // Check if we've received enough navsatfixes to estimate our starting location
+        if (initial_navsatfixes.size() >= num_initial_navsatfixes) {
+            // Average the lat and lon's, and place the them in origin_navsatfix
+            double sum_lat = 0;
+            double sum_lon = 0;
+            for (sensor_msgs::NavSatFix navsatfix : initial_navsatfixes) {
+                sum_lat += navsatfix.latitude;
+                sum_lon += navsatfix.longitude;
+            }
+            origin_navsatfix = initial_navsatfixes[initial_navsatfixes.size()];
+            origin_navsatfix.latitude = sum_lat / (double)initial_navsatfixes.size();
+            origin_navsatfix.longitude = sum_lon / (double)initial_navsatfixes.size();
+
+            received_initial_navsatfix = true;
+            ROS_INFO("Received initial NavSatFix");
+            if(received_initial_heading)
+                ROS_INFO("Received initial compass and gps readings, good to go!");
         }
     }
     // Make sure we've got origin readings before broadcasting waypoints
