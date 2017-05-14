@@ -43,14 +43,14 @@ void ZedFilter::imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_came
 
     // Conversion to PCL datatype
     pcl::PCLPointCloud2 temp;
-    pcl_conversions::toPCL(*zed_camera_output, temp);
+    pcl_conversions::toPCL(transformed_input, temp);
     PointCloudRGB::Ptr point_cloud_RGB(new PointCloudRGB);
     pcl::fromPCLPointCloud2(temp, *point_cloud_RGB);
 
     // Filter Values
     PointCloudRGB::Ptr output_cloud(new PointCloudRGB);
     filter.filterCloud(point_cloud_RGB, output_cloud);
-    output_cloud->header.frame_id = "/zed_current_frame";
+    //output_cloud->header.frame_id = "/zed_current_frame";
     // Publish output
-    filtered_image_publisher.publish(transformed_input);
+    filtered_image_publisher.publish(output_cloud);
 }

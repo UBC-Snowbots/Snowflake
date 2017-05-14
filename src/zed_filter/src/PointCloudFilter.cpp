@@ -80,39 +80,39 @@ void PointCloudFilter::PointRGBtoPointHSV(PointRGB& in, PointHSV& out){
 bool PointCloudFilter::filterCloud(PointCloudRGB::Ptr input, PointCloudRGB::Ptr output){
     PointCloudHSV::Ptr point_cloud_HSV(new PointCloudHSV);
     PointCloudRGBtoPointCloudHSV(input, point_cloud_HSV);
-    ROS_INFO("Incoming points: %u", input->points.size());
-    ROS_INFO("Incoming points: %u", point_cloud_HSV->points.size());
+    //ROS_INFO("Incoming points: %u", input->points.size());
+    //ROS_INFO("Incoming points: %u", point_cloud_HSV->points.size());
 
     // Filter out non-white points from the point cloud
     PointCloudHSV::Ptr filtered_point_cloud(new PointCloudHSV);
     // Create the filtering object;
     pcl::PassThrough<PointHSV> pass;
     pass.setInputCloud(point_cloud_HSV);
-//
-//    // Filter Hue
+
+    // Filter Hue
     pass.setFilterFieldName("h");
     pass.setFilterLimits(filter_values.h_min, filter_values.h_max);
     pass.filter(*filtered_point_cloud);
-    ROS_INFO("Points after h: %u", filtered_point_cloud->points.size());
-//    // Filter Saturation
+    //ROS_INFO("Points after h: %u", filtered_point_cloud->points.size());
+    // Filter Saturation
     pass.setInputCloud(filtered_point_cloud);
     pass.setFilterFieldName("s");
     pass.setFilterLimits(filter_values.s_min, filter_values.s_max);
     pass.filter(*filtered_point_cloud);
-    ROS_INFO("Points after s: %u", filtered_point_cloud->points.size());
-//
-//    // Filter Value
+    //ROS_INFO("Points after s: %u", filtered_point_cloud->points.size());
+
+    // Filter Value
     pass.setInputCloud(filtered_point_cloud);
     pass.setFilterFieldName("v");
     pass.setFilterLimits(filter_values.v_min, filter_values.v_max);
     pass.filter(*filtered_point_cloud);
-    ROS_INFO("Points after v: %u", filtered_point_cloud->points.size());
+    //ROS_INFO("Points after v: %u", filtered_point_cloud->points.size());
 
     // Clear the output point cloud and populates it
     output->points.clear();
     PointCloudHSV::const_iterator it;
-//    output->height = filtered_point_cloud->height;
-//    output->width = filtered_point_cloud->width;
+    output->height = filtered_point_cloud->height;
+    output->width = filtered_point_cloud->width;
     for(it = filtered_point_cloud->points.begin(); it != filtered_point_cloud->points.end(); it++) {
         PointRGB current_point;
 
@@ -130,5 +130,6 @@ bool PointCloudFilter::filterCloud(PointCloudRGB::Ptr input, PointCloudRGB::Ptr 
 
         output->points.push_back(current_point);
     }
+    output->header.frame_id = input->header.frame_id;
     return true;
 }

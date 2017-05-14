@@ -6,5 +6,7 @@
     <param name="s_max" type="double" value="0.4" />
     <param name="v_min" type="double" value="0.6" />
     <param name="v_max" type="double" value="1.0" />
+    <remap from="/zed/point_cloud/cloud_registered" to="/zed/camera/point_cloud/cloud_corrected" />
+    <remap from="/zed_filter/filtered_point_cloud" to="/zed_filter/filtered_point_cloud" />
   </node>
 </launch>

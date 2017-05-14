@@ -82,7 +82,7 @@ void SB_doTransform(const T& input, T& output, std::string output_frame){
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
     geometry_msgs::TransformStamped transformStamped = tfBuffer.lookupTransform(
-            input.header.frame_id, output_frame, ros::Time(0), ros::Duration(1.0)
+            output_frame, input.header.frame_id, ros::Time(0), ros::Duration(1.0)
     );
     tf2::doTransform(input, output, transformStamped);
 }
