@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(zed_filter)
 
-find_package(catkin REQUIRED COMPONENTS roscpp rospy pcl_ros tf2_sensor_msgs)
+find_package(catkin REQUIRED COMPONENTS
+    roscpp
+    rospy
+    pcl_ros
+)
+
 find_package(PCL REQUIRED)
 find_package(sb_utils REQUIRED)
 
@@ -13,8 +18,10 @@ catkin_package(
 )
 
 include_directories(
-  ${catkin_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS} ${sb_utils_INCLUDE_DIRS}
-  ./include
+    ${catkin_INCLUDE_DIRS}
+    ${PCL_INCLUDE_DIRS}
+    ${sb_utils_INCLUDE_DIRS}
+    ./include
 )
 
 
@@ -22,8 +29,21 @@ link_directories(${PCL_LIBRARY_DIRS})
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(zed_filter src/zed_filter.cpp src/ZedFilter.cpp include/ZedFilter.h include/PointCloudFilter.h src/PointCloudFilter.cpp)
-target_link_libraries(zed_filter ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${sb_utils_INCLUDE_DIRS})
+add_executable(zed_filter
+        src/zed_filter.cpp
+        src/ZedFilter.cpp
+        include/ZedFilter.h
+        include/PointCloudFilter.h
+        src/PointCloudFilter.cpp
+        )
+
+target_link_libraries(zed_filter
+        ${catkin_LIBRARIES}
+        ${PCL_LIBRARIES}
+        ${PCL_COMMON_LIBRARIES}
+        ${PCL_IO_LIBRARIES}
+        ${sb_utils_LIBRARIES}
+        )
 
 #############
 ## Testing ##

@@ -7,7 +7,6 @@ project(sb_gazebo)
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
   tf2_ros
-  tf2_sensor_msgs
 )
 
 find_package(sb_utils REQUIRED)

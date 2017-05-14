@@ -11,12 +11,9 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl_ros/transforms.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include <pcl/filters/passthrough.h>
-#include <pcl/filters/extract_indices.h>
 #include <pcl/point_types.h>
 #include <pcl/point_types_conversion.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <sensor_msgs/point_cloud2_iterator.h>
 #include <sb_utils.h>
 #include <PointCloudFilter.h>
 
@@ -36,6 +33,7 @@ private:
     ros::Subscriber raw_image_subscriber;
     ros::Publisher filtered_image_publisher;
     PointCloudFilter filter;
+    std::string base_link_name;
 
     void imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output);
 };

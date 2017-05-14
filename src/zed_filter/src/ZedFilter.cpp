@@ -22,6 +22,8 @@ ZedFilter::ZedFilter(int argc, char **argv, std::string node_name)
     std::string filtered_image_topic_name = "/zed_filter/filtered_point_cloud";
     filtered_image_publisher = nh.advertise<PointCloudRGB>(filtered_image_topic_name, queue_size);
 
+    base_link_name = "base_link";
+
     PointCloudFilter::FilterValues filter_values;
     // Obtain filter value parameters
     SB_getParam(private_nh, "h_min", filter_values.h_min, (float) 1.0);
@@ -36,6 +38,9 @@ ZedFilter::ZedFilter(int argc, char **argv, std::string node_name)
 }
 
 void ZedFilter::imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_camera_output) {
+    sensor_msgs::PointCloud2 transformed_input;
+    SB_doTransform(*zed_camera_output, transformed_input, base_link_name);
+
     // Conversion to PCL datatype
     pcl::PCLPointCloud2 temp;
     pcl_conversions::toPCL(*zed_camera_output, temp);
@@ -47,5 +52,5 @@ void ZedFilter::imageCallBack(const sensor_msgs::PointCloud2::ConstPtr& zed_came
     filter.filterCloud(point_cloud_RGB, output_cloud);
     output_cloud->header.frame_id = "/zed_current_frame";
     // Publish output
-    filtered_image_publisher.publish(*output_cloud);
+    filtered_image_publisher.publish(transformed_input);
 }
