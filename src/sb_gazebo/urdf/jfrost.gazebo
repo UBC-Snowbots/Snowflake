@@ -148,7 +148,7 @@
       <topicName>/gps_driver/navsatfix</topicName>
       <velocityTopicName>/robot/gps_vel</velocityTopicName>
       <drift>5.0 5.0 5.0</drift>
-      <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
+      <gaussianNoise>1 1 1</gaussianNoise>
       <velocityDrift>0 0 0</velocityDrift>
       <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
       <!-- Set these parameters depending on where you want to gps reference to be -->
