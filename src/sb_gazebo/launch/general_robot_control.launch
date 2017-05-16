@@ -13,9 +13,6 @@
         <remap from="/joint_states" to="/robot/joint_states" />
     </node>
 
-    <!-- start the compass sim to convert magnetic vectors from
-            GazeboRosMagnetic to compass headings -->
-        <node name="compass_sim" pkg="sb_gazebo" type="compass_sim" output="screen">
-    </node>
+
 
 </launch>

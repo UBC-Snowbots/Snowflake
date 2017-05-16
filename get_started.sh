@@ -52,6 +52,13 @@ do
 done
 
 
+echo "================================================================"
+echo "Giving user correct permissions"
+echo "================================================================"
+
+# Add the user to the dialout so they can do arduino things
+sudo adduser $USER dialout
+
 ###############
 # Install ROS #
 ###############
@@ -80,7 +87,7 @@ sudo apt-get install -y openjdk-8-jdk
 
 # Fetch and extract CLion
 echo "Fetching and extracting CLion"
-wget https://download.jetbrains.com/cpp/CLion-2016.3.2.tar.gz
+wget https://download.jetbrains.com/cpp/CLion-2017.1.1.tar.gz
 sudo tar xzf CLion*.tar.gz -C /usr/share
 rm CLion*.tar.gz
 
@@ -101,4 +108,6 @@ cd $DIR
 
 echo "================================================================"
 echo "Finished first time installation and setup; you're good to go!"
+echo "If you're working with arduino, or any usb devices, please log"
+echo "out and login again for the required changes to take effect"
 echo "================================================================"

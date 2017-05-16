@@ -15,9 +15,7 @@ echo "Installing other ROS dependencies..."
 echo "================================================================"
 
 sudo apt-get install -y\
-    python-rosinstall \
-    python-visual \
-    python-wxtools \
+    ros-kinetic-xacro \
     ros-kinetic-controller-manager \
     ros-kinetic-effort-controllers \
     ros-kinetic-gazebo-ros-control \
@@ -27,7 +25,10 @@ sudo apt-get install -y\
     ros-kinetic-ros-control \
     ros-kinetic-ros-controllers \
     ros-kinetic-turtlebot-teleop \
-    ros-kinetic-xacro
+    python-rosinstall \
+    python-visual \
+    python-wxtools \
+    libserial-dev 
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."
