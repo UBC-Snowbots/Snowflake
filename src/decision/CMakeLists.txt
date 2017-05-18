@@ -10,7 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
         cv_bridge
         )
 find_package(OpenCV REQUIRED)
-
 find_package(sb_utils REQUIRED)
 
 add_definitions(-std=c++14)
@@ -41,6 +40,7 @@ add_executable(vision_decision src/vision_decision.cpp src/VisionDecision.cpp in
 add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp src/GpsMover.cpp include/GpsDecision.h include/GpsMover.h)
 add_executable(final_decision src/final_decision.cpp src/FinalDecision.cpp include/FinalDecision.h)
 add_executable(gps_manager src/gps_manager.cpp src/GpsManager.cpp include/GpsManager.h)
+add_executable(gps_manager2 src/gps_manager2.cpp src/GpsManager2.cpp include/GpsManager2.h)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(sample_package_node
@@ -51,6 +51,7 @@ target_link_libraries(vision_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(gps_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(final_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(gps_manager ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(gps_manager2 ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 
 #############
@@ -79,6 +80,8 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(gps-manager-test test/gps-manager-test.cpp src/GpsManager.cpp)
     target_link_libraries(gps-manager-test ${catkin_LIBRARIES})
 
+    #catkin_add_gtest(gps-manager2-test test/gps-manager2-test.cpp src/GpsManager2.cpp)
+    #target_link_libraries(gps-manager2-test ${catkin_LIBRARIES})
 
     # rostest
     find_package(rostest REQUIRED)
