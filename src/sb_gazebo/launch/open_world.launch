@@ -31,5 +31,4 @@
     <!-- push robot_description to factory and spawn robot in gazebo -->
     <node name="robot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
      args="-urdf -param robot_description -model $(arg robot) -x $(arg x_start_coordinate) -y $(arg y_start_coordinate) -Y $(arg initial_rotation)" />
-
 </launch>
