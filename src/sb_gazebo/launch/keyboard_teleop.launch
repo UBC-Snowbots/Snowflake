@@ -1,8 +1,8 @@
 <launch>
   <!-- turtlebot_teleop_key already has its own built in velocity smoother -->
-  <node pkg="sb_gazebo" type="teleop_twist_keyboard.py" name="keyboard_teleop"  output="screen">
+  <node pkg="sb_gazebo" type="teleop_twist_keyboard" name="keyboard_teleop"  output="screen">
     <rosparam param="speed"> 0.7 </rosparam>
     <rosparam param="turn"> 0.4 </rosparam>
-    <remap from="turtlebot_teleop_keyboard/cmd_vel" to="/cmd_vel"/>
+    <remap from="/cmd_vel" to="/robot/cmd_vel"/>
   </node>
 </launch>
