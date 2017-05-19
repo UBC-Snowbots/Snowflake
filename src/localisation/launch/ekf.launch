@@ -17,7 +17,7 @@
     <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
         <param name="output_frame" value="odom_combined" />
         <param name="base_footprint_frame" value="base_link" />
-        <param name="freq" value="30.0" />
+        <param name="freq" value="60.0" />
         <param name="sensor_timeout" value="1.0" />  
         
         <!-- The topics that input to the EKF -->
@@ -30,10 +30,13 @@
         <!-- 3D Orientation | /imu_data | sensor_msgs/Imu   -->
         <param name="imu_used" value="true" />
         <!-- Source: GPS (translated to a Odometry message) -->
-        <!-- 3D Pose        | /vo       | nav_msgs/Odometry -->
-        <param name="vo_used" value="true" />
+        <!-- 2D Pose        | /gps      | nav_msgs/Odometry -->
+        <param name="gps_used" value="false" />
+        
+        <!-- 3D Pose        | /vo      | nav_msgs/Odometry -->
+        <param name="vo_used" value="false"/>
 
-        <remap from="vo" to="/gps_driver/odom" />
+        <remap from="gps" to="/gps_driver/odom" />
         <remap from="imu_data" to="/imu" />
     </node>
 
