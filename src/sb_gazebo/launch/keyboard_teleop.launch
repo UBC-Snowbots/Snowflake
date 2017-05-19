@@ -3,6 +3,5 @@
   <node pkg="sb_gazebo" type="teleop_twist_keyboard" name="keyboard_teleop"  output="screen">
     <rosparam param="speed"> 0.7 </rosparam>
     <rosparam param="turn"> 0.4 </rosparam>
-    <remap from="/cmd_vel" to="/robot/cmd_vel"/>
   </node>
 </launch>
