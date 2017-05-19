@@ -101,7 +101,7 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
 
 void GpsManager::imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg) {
     // Get current heading (yaw) from the imu message
-    float curr_heading = (float) tf::getYaw(imu_msg->orientation);
+    curr_heading = tf::getYaw(imu_msg->orientation);
 
     if (!received_initial_heading) {
         received_initial_heading = true;
@@ -122,8 +122,8 @@ void GpsManager::publishWaypoint(Waypoint waypoint){
     // Calculate the x and y displacement to the waypoint in the robot's
     // frame of reference
     double d_theta = heading_to_waypoint - this->curr_heading;
-    double dx = cos(d_theta) * -distance;
-    double dy = sin(d_theta) * -distance;
+    double dx = cos(d_theta) * distance;
+    double dy = sin(d_theta) * distance;
     // Use the tf tree to convert the waypoint to the global frame of reference
     geometry_msgs::PointStamped point_msg;
     point_msg.point.x = dx;
@@ -175,8 +175,12 @@ double GpsManager::angleBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoint_
     double delta_lon = lon2 - lon1;
     double y = sin(delta_lon) * cos(lat2);
     double x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(delta_lon);
-    // Atan2 returns a value between -Pi and Pi, which we want to normalize to a compass bearing
+    // Atan2 returns a value between -Pi and Pi, which we want to normalize to
+    // between 0 and 2Pi
     double angle = fmod((atan2(y,x) + (2 * M_PI)), 2 * M_PI);
+    // We also need to make positive rotation COUNTER-clockwise as per the standard
+    // ROS frame of reference
+    angle = (2 * M_PI) - angle;
     return angle;
 }
 
