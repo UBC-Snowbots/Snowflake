@@ -26,7 +26,7 @@
 
 #include "GpsManager2.h"
 
-GpsManager::GpsManager(int argc, char **argv, std::string node_name){
+GpsManager2::GpsManager2(int argc, char **argv, std::string node_name){
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
@@ -36,10 +36,10 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     uint32_t refresh_rate = 1;
     std::string raw_gps_topic_name = "/gps_driver/navsatfix";
     raw_gps_subscriber = private_nh.subscribe(raw_gps_topic_name, refresh_rate,
-                                             &GpsManager::rawGpsCallBack, this);
+                                             &GpsManager2::rawGpsCallBack, this);
     std::string imu_topic_name = "/imu";
     imu_subscriber = private_nh.subscribe(imu_topic_name, refresh_rate,
-                                          &GpsManager::imuCallback, this);
+                                          &GpsManager2::imuCallback, this);
 
     // Setup Publishers
     uint32_t queue_size = 1;
@@ -67,7 +67,7 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     ROS_INFO("Hold on a sec, just waiting on initial compass and gps readings");
 }
 
-void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_fix) {
+void GpsManager2::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_fix) {
     curr_navsatfix = *nav_sat_fix;
 
     if (!received_initial_navsatfix){
@@ -99,7 +99,7 @@ void GpsManager::rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_f
     }
 }
 
-void GpsManager::imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg) {
+void GpsManager2::imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg) {
     // Get current heading (yaw) from the imu message
     curr_heading = tf::getYaw(imu_msg->orientation);
 
@@ -113,7 +113,7 @@ void GpsManager::imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg) {
 }
 
 
-void GpsManager::publishWaypoint(Waypoint waypoint){
+void GpsManager2::publishWaypoint(Waypoint waypoint){
     // Get the distance to the waypoint
     double distance = distanceToWaypoint(waypoint);
     // Get the heading to the waypoint
@@ -136,14 +136,14 @@ void GpsManager::publishWaypoint(Waypoint waypoint){
     current_waypoint_publisher.publish(point_msg);
 }
 
-double GpsManager::distanceToWaypoint(Waypoint waypoint){
+double GpsManager2::distanceToWaypoint(Waypoint waypoint){
     Waypoint temp_waypoint;
     temp_waypoint.lat = curr_navsatfix.latitude;
     temp_waypoint.lon = curr_navsatfix.longitude;
     return distanceBetweenWaypoints(temp_waypoint, waypoint_stack.top());
 }
 
-double GpsManager::distanceBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoint_2){
+double GpsManager2::distanceBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoint_2){
     // Convert lat/lon from degrees to radians
     double lat1 = waypoint_1.lat * (M_PI/180);
     double lon1 = waypoint_1.lon * (M_PI/180);
@@ -158,14 +158,14 @@ double GpsManager::distanceBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoi
     return distance;
 }
 
-double GpsManager::angleToWaypoint(Waypoint waypoint){
+double GpsManager2::angleToWaypoint(Waypoint waypoint){
     Waypoint temp_waypoint;
     temp_waypoint.lat = curr_navsatfix.latitude;
     temp_waypoint.lon = curr_navsatfix.longitude;
     return angleBetweenWaypoints(temp_waypoint, waypoint_stack.top());
 }
 
-double GpsManager::angleBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoint_2){
+double GpsManager2::angleBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoint_2){
     // Convert lat/lon from degrees to radians
     double lat1 = waypoint_1.lat * (M_PI/180);
     double lon1 = waypoint_1.lon * (M_PI/180);
@@ -184,7 +184,7 @@ double GpsManager::angleBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoint_
     return angle;
 }
 
-std::vector<Waypoint> GpsManager::parseWaypoints(std::vector<double> waypoints_raw){
+std::vector<Waypoint> GpsManager2::parseWaypoints(std::vector<double> waypoints_raw){
     if (waypoints_raw.size() % 2 != 0){
         ROS_ERROR("Given odd length list of waypoints, check that \"waypoints\" parameter "
                           "has an (numerically) even length. As this is a series of lat/lon coordinates,"
@@ -204,7 +204,7 @@ std::vector<Waypoint> GpsManager::parseWaypoints(std::vector<double> waypoints_r
     return waypoints;
 }
 
-void GpsManager::populateWaypointStack(std::vector<Waypoint> waypoint_list){
+void GpsManager2::populateWaypointStack(std::vector<Waypoint> waypoint_list){
     for (int i = (int)waypoint_list.size() - 1; i >= 0; i--){
         waypoint_stack.push(waypoint_list[i]);
     }

@@ -27,9 +27,9 @@ struct Waypoint {
     double lon;
 };
 
-class GpsManager {
+class GpsManager2 {
 public:
-    GpsManager(int argc, char **argv, std::string node_name);
+    GpsManager2(int argc, char **argv, std::string node_name);
     /**
      * Parses a raw list of waypoints (in order lat,lon,lat,lon,...) into a vector of pairs
      *

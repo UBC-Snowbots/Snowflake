@@ -14,7 +14,7 @@ int main(int argc, char **argv){
     std::string node_name = "gps_manager";
 
     // Create an instance of your class
-    GpsManager gps_manager(argc, argv, node_name);
+    GpsManager2 gps_manager(argc, argv, node_name);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();
