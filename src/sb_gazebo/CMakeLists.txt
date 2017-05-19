@@ -19,7 +19,7 @@ catkin_package(
 )
 
 catkin_install_python(PROGRAMS
-   scripts/teleop_twist_keyboard.py
+   scripts/teleop_twist_keyboard
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
