@@ -17,7 +17,8 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
     // Setup Subscriber(s)
     std::string camera_image_topic_name = "/vision/filtered_image";
     int refresh_rate = 10;
-    image_subscriber = private_nh.subscribe(camera_image_topic_name, refresh_rate, &VisionDecision::imageCallBack, this);
+    image_subscriber = private_nh.subscribe(camera_image_topic_name, refresh_rate, &VisionDecision::imageCallBack,
+                                            this);
 
     // Setup Publisher(s)
     std::string twist_topic = private_nh.resolveName("twist");
@@ -26,7 +27,7 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
 
     // Get Param(s)
     SB_getParam(private_nh, "angular_vel_multiplier", angular_velocity_multiplier, 1.0);
-//    SB_getParam(private_nh, "noise_max", noise_max, 1);
+    SB_getParam(private_nh, "angular_vel_cap", angular_velocity_cap, 1.0);
 }
 
 // This is called whenever a new message is received
@@ -51,6 +52,10 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     // Decide how fast to turn
     twistMsg.angular.z = -angular_velocity_multiplier * getDesiredAngularSpeed(relativeAngle);
 
+    // Cap the absolute value of the turning velocity
+    if (fabs(twistMsg.angular.z) > angular_velocity_cap)
+        twistMsg.angular.z = angular_velocity_cap * twistMsg.angular.z / fabs(twistMsg.angular.z);
+
     // Publish the twist message
     publishTwist(twistMsg);
 }
@@ -67,17 +72,17 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     int whiteCount = 0;
 
     // Check if there is a white line in the way of the robot
-    for(row = 0; row < image_scan->height; row++) {
-        if(image_scan->data[row * image_scan->width + image_scan->height/2] != 0)
+    for (row = 0; row < image_scan->height; row++) {
+        if (image_scan->data[row * image_scan->width + image_scan->height / 2] != 0)
             whiteCount++;
-        if(image_scan->data[row * image_scan->width + image_scan->height/3] != 0)
+        if (image_scan->data[row * image_scan->width + image_scan->height / 3] != 0)
             whiteCount++;
-        if(image_scan->data[row * image_scan->width + image_scan->height*2/3] != 0)
+        if (image_scan->data[row * image_scan->width + image_scan->height * 2 / 3] != 0)
             whiteCount++;
     }
 
     // If there is no white line in front of the robot, stop.
-    if(whiteCount < NOISE_MAX)
+    if (whiteCount < NOISE_MAX)
         return STOP_SIGNAL_ANGLE;
 
     // If there is a perpendicular line in front of the robot, stop.
@@ -94,7 +99,7 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     if (fabs(desiredAngle) >= 90)
         desiredAngle = STOP_SIGNAL_ANGLE;
 
-    if(fabs(desiredAngle) <= 20)
+    if (fabs(desiredAngle) <= 20)
         desiredAngle = moveAwayFromLine(image_scan);
 
     return desiredAngle;
@@ -140,8 +145,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
         double foundAngle;
         double foundSlope;
 
-        if (xCompared != -1 && x1 != -1)
-        {
+        if (xCompared != -1 && x1 != -1) {
             // slope is valid, find the angle compared the the positive y-axis.
             foundSlope = -(xCompared - x1) / (yCompared - bottomRow);
             foundAngle = atan(foundSlope);
@@ -150,7 +154,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
 
             //printf("curAngle: %f, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", currentAngle * 180 / M_PI, x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
             // Update the current angle if the change is not too sudden
-            if(fabs(currentAngle - foundAngle)*180/M_PI < 90)
+            if (fabs(currentAngle - foundAngle) * 180 / M_PI < 90)
                 currentAngle = alpha * foundAngle + (1 - alpha) * currentAngle;
             else
                 validSamples--;
@@ -220,7 +224,7 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
     while (column < image_scan->width && column >= 0) {
         // If white pixel found start verifying if proper start.
         if ((image_scan->data[row * image_scan->width + column] != 0 && isStartPixel) ||
-            (image_scan->data[row * image_scan->width + column] == 0 && !isStartPixel)){
+            (image_scan->data[row * image_scan->width + column] == 0 && !isStartPixel)) {
             blackVerificationCount = 0;
             // This pixel is what we are checking
             if (toBeChecked == -1) {
@@ -246,8 +250,8 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
     return -1;
 }
 
-int VisionDecision::initializeIncrementerPosition(bool rightSide, const sensor_msgs::Image::ConstPtr &image_scan, int *startingPos)
-{
+int VisionDecision::initializeIncrementerPosition(bool rightSide, const sensor_msgs::Image::ConstPtr &image_scan,
+                                                  int *startingPos) {
     // Decides how to parse depending on if rightSide is true or false.
     if (rightSide) {
         // starts at right side then increments to the left
@@ -260,15 +264,13 @@ int VisionDecision::initializeIncrementerPosition(bool rightSide, const sensor_m
     }
 }
 
-bool VisionDecision::isPerpendicular(const sensor_msgs::Image::ConstPtr &image_scan)
-{
-    int leftSidePixel = getVerticalEdgePixel(image_scan, image_scan->width/4);
-    int rightSidePixel = getVerticalEdgePixel(image_scan, image_scan->width*3/4);
-    return (abs(rightSidePixel - leftSidePixel) < image_scan->height/10);
+bool VisionDecision::isPerpendicular(const sensor_msgs::Image::ConstPtr &image_scan) {
+    int leftSidePixel = getVerticalEdgePixel(image_scan, image_scan->width / 4);
+    int rightSidePixel = getVerticalEdgePixel(image_scan, image_scan->width * 3 / 4);
+    return (abs(rightSidePixel - leftSidePixel) < image_scan->height / 10);
 }
 
-int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &image_scan, int column)
-{
+int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &image_scan, int column) {
     int row;
     int whiteVerificationCount = 0;
     int blackVerificationCount = 0;
@@ -277,9 +279,9 @@ int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &ima
     int toBeChecked = -1;
 
     // Parse vertically to find a valid starting white pixel.
-    for(row = image_scan->height-1; row >= 0; row--) {
+    for (row = image_scan->height - 1; row >= 0; row--) {
         // If white pixel found start verifying if proper start.
-        if ((image_scan->data[row * image_scan->width + column] != 0)){
+        if ((image_scan->data[row * image_scan->width + column] != 0)) {
             blackVerificationCount = 0;
             // This pixel is what we are checking
             if (toBeChecked == -1)
@@ -299,16 +301,16 @@ int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &ima
     }
 }
 
-int VisionDecision::getLeftToRightPixelRatio(const sensor_msgs::Image::ConstPtr& image_scan) {
+int VisionDecision::getLeftToRightPixelRatio(const sensor_msgs::Image::ConstPtr &image_scan) {
     int leftCount = 0;
     int rightCount = 0;
 
     for (int row = 0; row < image_scan->height; row++) {
         for (int column = 0; column < image_scan->width; column++) {
-            if(image_scan->data[row * image_scan->width + column] != 0 && column <= image_scan->width / 2) {
+            if (image_scan->data[row * image_scan->width + column] != 0 && column <= image_scan->width / 2) {
                 leftCount++;
             }
-            if(image_scan->data[row * image_scan->width + column] != 0 && column > image_scan->width / 2)
+            if (image_scan->data[row * image_scan->width + column] != 0 && column > image_scan->width / 2)
                 rightCount++;
         }
     }
@@ -316,14 +318,13 @@ int VisionDecision::getLeftToRightPixelRatio(const sensor_msgs::Image::ConstPtr&
     return rightCount - leftCount;
 }
 
-int VisionDecision::moveAwayFromLine(const sensor_msgs::Image::ConstPtr& image_scan) {
+int VisionDecision::moveAwayFromLine(const sensor_msgs::Image::ConstPtr &image_scan) {
 
-    if(getLeftToRightPixelRatio(image_scan) < 0)
+    if (getLeftToRightPixelRatio(image_scan) < 0)
         return 45;
     else
         return -45;
 }
-
 
 
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax) {

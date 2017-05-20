@@ -173,5 +173,9 @@ private:
     // The value to scale the angular velocity on the
     // twist message we create by
     double angular_velocity_multiplier;
+
+    // The max value of angular velocity given by twist
+    // message.
+    double angular_velocity_cap;
 };
 #endif //DECISION_VISION_DECISION_H
