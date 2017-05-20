@@ -94,7 +94,7 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     if (fabs(desiredAngle) >= 90)
         desiredAngle = STOP_SIGNAL_ANGLE;
 
-    if(fabs(desiredAngle) <= 15)
+    if(fabs(desiredAngle) <= 20)
         desiredAngle = moveAwayFromLine(image_scan);
 
     return desiredAngle;
@@ -111,6 +111,10 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     // Assign garbage values
     int bottomRow = -1;
     double x1 = -1;
+
+    // rolling average constant
+    double alpha = 0.25;
+
     // Initialize how and where to parse.
     incrementer = initializeIncrementerPosition(rightSide, image_scan, &startingPos);
 
@@ -122,12 +126,11 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             // Each slope will be compared to the bottom point of the lowest white line
             bottomRow = i;
             x1 = getMiddle(startingPos, bottomRow, rightSide, image_scan);
-//            startingPos = startPixel;
             break;
         }
     }
 
-    double sumAngles = 0;
+    double currentAngle = 0;
     // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
     // also counts how many of them are valid.
     for (double division = 1; (division < numSamples) && (bottomRow - division > 0); division++) {
@@ -137,26 +140,27 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
         double foundAngle;
         double foundSlope;
 
-        if (xCompared == -1 || x1 == -1)
-            // slope is invalid so nothing is added to sum of all angles.
-            foundAngle = 0;
-        else {
+        if (xCompared != -1 && x1 != -1)
+        {
             // slope is valid, find the angle compared the the positive y-axis.
             foundSlope = -(xCompared - x1) / (yCompared - bottomRow);
             foundAngle = atan(foundSlope);
             // increment amount of valid samples
             validSamples++;
-        }
 
-        printf("Side: %d, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", rightSide, x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
-        // Add the angle to the average.
-        sumAngles += foundAngle;
+            //printf("curAngle: %f, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", currentAngle * 180 / M_PI, x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
+            // Update the current angle if the change is not too sudden
+            if(fabs(currentAngle - foundAngle)*180/M_PI < 90)
+                currentAngle = alpha * foundAngle + (1 - alpha) * currentAngle;
+            else
+                validSamples--;
+        }
     }
 
     if (validSamples < numSamples / 3 || x1 == -1)
         return STOP_SIGNAL_ANGLE;
     else
-        return (int) (sumAngles / validSamples * 180.0 / M_PI); // returns the angle in degrees
+        return (int) (currentAngle * 180.0 / M_PI); // returns the angle in degrees
 }
 
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {

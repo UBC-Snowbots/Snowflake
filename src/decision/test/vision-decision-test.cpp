@@ -144,6 +144,28 @@ TEST(imageTest, curved){
     EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
 }
 
+TEST(imageTest, multiLineLeft){
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testMultipleLinesLeft.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+}
+
+TEST(imageTest, multiLineRight){
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testMultipleLinesRight.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+}
+
 TEST(speedTest, angular){
     EXPECT_EQ(0, VisionDecision::getDesiredAngularSpeed(0));
     EXPECT_EQ(0, VisionDecision::getDesiredAngularSpeed(90));
