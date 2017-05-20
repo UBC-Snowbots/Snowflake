@@ -28,6 +28,8 @@
 // size.
 const int NOISE_MAX = 30;
 
+const bool DEBUG = false;
+
 // Since 90 can never be returned by arctan. 90 will be used as a special angle
 // to signal desired angular speed and desired linear speed functions to return 0.
 const int STOP_SIGNAL_ANGLE = 90;

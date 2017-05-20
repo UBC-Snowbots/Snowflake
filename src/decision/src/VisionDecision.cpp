@@ -152,8 +152,13 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             // increment amount of valid samples
             validSamples++;
 
-            //printf("curAngle: %f, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", currentAngle * 180 / M_PI, x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
-            // Update the current angle if the change is not too sudden
+            if(DEBUG)
+                printf("curAngle: %f, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, "
+                               "Found Angle: %f, Valid: %d \n", currentAngle * 180 / M_PI, x1, bottomRow,
+                       xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
+
+            // Update the current angle if the change is not too sudden.
+            // (Found angle does not exceed a right angle turn of the current angle)
             if (fabs(currentAngle - foundAngle) * 180 / M_PI < 90)
                 currentAngle = rolling_average_constant * foundAngle + (1 - rolling_average_constant) * currentAngle;
             else
