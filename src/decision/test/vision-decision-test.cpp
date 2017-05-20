@@ -23,7 +23,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRight){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 10);
+    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 10);
 }
 
 TEST(imageTest, angleLeft){
@@ -34,7 +34,7 @@ TEST(imageTest, angleLeft){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 TEST(imageTest, angleRight){
@@ -45,7 +45,7 @@ TEST(imageTest, angleRight){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 TEST(imageTest, moveAwayFromLineAndTurnRightTwo){
@@ -56,7 +56,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRightTwo){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 15);
+    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 15);
 }
 
 TEST(imageTest, moveAwayFromLineAndTurnLeft){
@@ -67,7 +67,7 @@ TEST(imageTest, moveAwayFromLineAndTurnLeft){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 15);
+    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 15);
 }
 
 TEST(imageTest, noisyLeft){
@@ -78,7 +78,7 @@ TEST(imageTest, noisyLeft){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 /**
@@ -93,7 +93,7 @@ TEST(imageTest, elevatedLeftLine){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 /**
@@ -108,7 +108,7 @@ TEST(imageTest, elevatedRightLine){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 TEST(imageTest, straightButLineNearEdge){
@@ -119,7 +119,7 @@ TEST(imageTest, straightButLineNearEdge){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_EQ(STOP_SIGNAL_ANGLE, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan));
+    EXPECT_EQ(STOP_SIGNAL_ANGLE, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25));
 }
 
 TEST(imageTest, perpendicular){
@@ -130,7 +130,7 @@ TEST(imageTest, perpendicular){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_EQ(STOP_SIGNAL_ANGLE, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan));
+    EXPECT_EQ(STOP_SIGNAL_ANGLE, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25));
 }
 
 TEST(imageTest, curved){
@@ -141,7 +141,7 @@ TEST(imageTest, curved){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 TEST(imageTest, multiLineLeft){
@@ -152,7 +152,7 @@ TEST(imageTest, multiLineLeft){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 TEST(imageTest, multiLineRight){
@@ -163,7 +163,7 @@ TEST(imageTest, multiLineRight){
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan), 20);
+    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 TEST(speedTest, angular){

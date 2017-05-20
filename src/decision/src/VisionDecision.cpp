@@ -28,6 +28,7 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
     // Get Param(s)
     SB_getParam(private_nh, "angular_vel_multiplier", angular_velocity_multiplier, 1.0);
     SB_getParam(private_nh, "angular_vel_cap", angular_velocity_cap, 1.0);
+    SB_getParam(private_nh, "rolling_average_constant", rolling_average_constant, 0.5);
 }
 
 // This is called whenever a new message is received
@@ -36,7 +37,7 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     geometry_msgs::Twist twistMsg;
 
     // Decide how much to turn
-    int relativeAngle = getDesiredAngle(image_scan->height / 8.0, image_scan);
+    int relativeAngle = getDesiredAngle(image_scan->height / 8.0, image_scan, rolling_average_constant);
 
     // Initialize linear velocities to 0
     twistMsg.linear.y = 0;
@@ -66,7 +67,8 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist) {
 
 /* Functions to determine robot movement */
 
-int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan) {
+int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan,
+                                    double rolling_average_constant) {
 
     int row;
     int whiteCount = 0;
@@ -89,11 +91,11 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     if (isPerpendicular(image_scan))
         return STOP_SIGNAL_ANGLE;
 
-    int desiredAngle = getAngleOfLine(false, numSamples, image_scan);
+    int desiredAngle = getAngleOfLine(false, numSamples, image_scan, rolling_average_constant);
 
     // If angle coming from the left is invalid try going from the right.
     if (fabs(desiredAngle) >= 90)
-        desiredAngle = getAngleOfLine(true, numSamples, image_scan);
+        desiredAngle = getAngleOfLine(true, numSamples, image_scan, rolling_average_constant);
 
     // If both cases are invalid it will stop
     if (fabs(desiredAngle) >= 90)
@@ -105,7 +107,8 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     return desiredAngle;
 }
 
-int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan) {
+int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan,
+                                   double rolling_average_constant) {
 
     // initialization of local variables.
     double imageHeight = image_scan->height;
@@ -116,9 +119,6 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     // Assign garbage values
     int bottomRow = -1;
     double x1 = -1;
-
-    // rolling average constant
-    double alpha = 0.25;
 
     // Initialize how and where to parse.
     incrementer = initializeIncrementerPosition(rightSide, image_scan, &startingPos);
@@ -155,7 +155,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             //printf("curAngle: %f, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", currentAngle * 180 / M_PI, x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
             // Update the current angle if the change is not too sudden
             if (fabs(currentAngle - foundAngle) * 180 / M_PI < 90)
-                currentAngle = alpha * foundAngle + (1 - alpha) * currentAngle;
+                currentAngle = rolling_average_constant * foundAngle + (1 - rolling_average_constant) * currentAngle;
             else
                 validSamples--;
         }
