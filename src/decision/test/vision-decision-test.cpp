@@ -16,7 +16,7 @@ using namespace std;
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage);
 
 TEST(imageTest, moveAwayFromLineAndTurnRight){
-    string filename = "imageTests/testStraightImage.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -27,7 +27,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRight){
 }
 
 TEST(imageTest, angleLeft){
-    string filename = "imageTests/testLeftImage.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testLeftImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -38,7 +38,7 @@ TEST(imageTest, angleLeft){
 }
 
 TEST(imageTest, angleRight){
-    string filename = "imageTests/testNoisyRightImage.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testNoisyRightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -49,7 +49,7 @@ TEST(imageTest, angleRight){
 }
 
 TEST(imageTest, moveAwayFromLineAndTurnRightTwo){
-    string filename = "imageTests/testVeryNoisyStraightImage.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testVeryNoisyStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -60,7 +60,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRightTwo){
 }
 
 TEST(imageTest, moveAwayFromLineAndTurnLeft){
-    string filename = "imageTests/testStraightOnRightSide.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testStraightOnRightSide.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -71,7 +71,7 @@ TEST(imageTest, moveAwayFromLineAndTurnLeft){
 }
 
 TEST(imageTest, noisyLeft){
-    string filename = "imageTests/testVeryNoisyLeftImage.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testVeryNoisyLeftImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -86,7 +86,7 @@ TEST(imageTest, noisyLeft){
  *  of the image.
  */
 TEST(imageTest, elevatedLeftLine){
-    string filename = "imageTests/testElevatedLeftLine.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testElevatedLeftLine.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -101,7 +101,7 @@ TEST(imageTest, elevatedLeftLine){
  *  of the image.
  */
 TEST(imageTest, elevatedRightLine){
-    string filename = "imageTests/testElevatedRightLine.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testElevatedRightLine.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -112,7 +112,7 @@ TEST(imageTest, elevatedRightLine){
 }
 
 TEST(imageTest, straightButLineNearEdge){
-    string filename = "imageTests/testStraightButLineNearEdge.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testStraightButLineNearEdge.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -123,7 +123,7 @@ TEST(imageTest, straightButLineNearEdge){
 }
 
 TEST(imageTest, perpendicular){
-    string filename = "imageTests/testPerpendicular.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testPerpendicular.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
@@ -134,7 +134,7 @@ TEST(imageTest, perpendicular){
 }
 
 TEST(imageTest, curved){
-    string filename = "imageTests/testCurvedLine.jpg";
+    string filename = "/home/robyncastro/IGVC-2017/src/decision/test/imageTests/testCurvedLine.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);

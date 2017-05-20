@@ -105,25 +105,27 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     // initialization of local variables.
     double imageHeight = image_scan->height;
     int incrementer;
-    int startingPos;
+    int startingPos = 0;
     int validSamples = 0;
 
     // Assign garbage values
     int bottomRow = -1;
-
+    double x1 = -1;
     // Initialize how and where to parse.
     incrementer = initializeIncrementerPosition(rightSide, image_scan, &startingPos);
 
     // starts parsing from the right and finds where the lowest white line
     // begins.
     for (int i = imageHeight - 1; i > 0; i--) {
-        int startPixel = getEdgePixel(startingPos, incrementer, i, image_scan, rightSide);
-        if (startPixel != -1 && bottomRow == -1)
+        int startPixel = getEdgePixel(startingPos, incrementer, i, image_scan, true);
+        if (startPixel != -1 && bottomRow == -1) {
+            // Each slope will be compared to the bottom point of the lowest white line
             bottomRow = i;
+            x1 = getMiddle(startingPos, bottomRow, rightSide, image_scan);
+//            startingPos = startPixel;
+            break;
+        }
     }
-
-    // Each slope will be compared to the bottom point of the lowest white line
-    double x1 = getMiddle(startingPos, bottomRow, rightSide, image_scan);
 
     double sumAngles = 0;
     // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
@@ -146,7 +148,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             validSamples++;
         }
 
-        // printf("x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
+        printf("Side: %d, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, Found Angle: %f, Valid: %d \n", rightSide, x1, bottomRow, xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
         // Add the angle to the average.
         sumAngles += foundAngle;
     }
@@ -294,7 +296,8 @@ int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &ima
 }
 
 int VisionDecision::getLeftToRightPixelRatio(const sensor_msgs::Image::ConstPtr& image_scan) {
-    int leftCount, rightCount = 0;
+    int leftCount = 0;
+    int rightCount = 0;
 
     for (int row = 0; row < image_scan->height; row++) {
         for (int column = 0; column < image_scan->width; column++) {
