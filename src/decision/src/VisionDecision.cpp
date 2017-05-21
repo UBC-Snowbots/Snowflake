@@ -76,13 +76,13 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     // Check if there is a white line in the way of the robot
 
     for (row = 0; row < image_scan->height; row++) {
-        for (col = image_scan->height / 4; col < image_scan->height * 3 / 4; col++)
+        for (col = image_scan->width / 3; col < image_scan->width * 2 / 3; col++)
             if (image_scan->data[row * image_scan->width + col] != 0)
                 whiteCount++;
     }
 
     // If there is no white line in front of the robot, stop.
-    if (whiteCount < NOISE_MAX)
+    if (whiteCount < image_scan->width * image_scan->height / 5000)
         return STOP_SIGNAL_ANGLE;
 
     // If there is a perpendicular line in front of the robot, stop.
@@ -268,9 +268,21 @@ int VisionDecision::initializeIncrementerPosition(bool rightSide, const sensor_m
 }
 
 bool VisionDecision::isPerpendicular(const sensor_msgs::Image::ConstPtr &image_scan) {
-    int leftSidePixel = getVerticalEdgePixel(image_scan, image_scan->width / 4);
+    int leftSidePixel = -1;
+    for (int i = 0; i < image_scan->width; i++) {
+        leftSidePixel = getVerticalEdgePixel(image_scan, i);
+        if (leftSidePixel != -1)
+            break;
+    }
+
     int rightSidePixel = getVerticalEdgePixel(image_scan, image_scan->width * 3 / 4);
-    return (abs(rightSidePixel - leftSidePixel) < image_scan->height / 10);
+    for (int i = image_scan->width - 1; i > 0; i--) {
+        rightSidePixel = getVerticalEdgePixel(image_scan, i);
+        if (rightSidePixel != -1)
+            break;
+    }
+
+    return (fabs(rightSidePixel - leftSidePixel) < image_scan->height / 300);
 }
 
 int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &image_scan, int column) {
