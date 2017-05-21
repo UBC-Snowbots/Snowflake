@@ -282,7 +282,7 @@ bool VisionDecision::isPerpendicular(const sensor_msgs::Image::ConstPtr &image_s
             break;
     }
 
-    return (fabs(rightSidePixel - leftSidePixel) < image_scan->height / 300);
+    return (fabs(rightSidePixel - leftSidePixel) < image_scan->height / 400);
 }
 
 int VisionDecision::getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &image_scan, int column) {

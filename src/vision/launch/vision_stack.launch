@@ -3,6 +3,9 @@
     <!-- TODO: We need to start up the cameras here -->
 
     <node name="ros_vision" pkg="vision" type="ros_vision" output="screen">
+        <remap from="/camera1/image_raw" to="/zed/rgb/image_raw_color" />
+        <rosparam param="show_image_window">true</rosparam>
+        <rosparam param="show_calibration_window">true</rosparam>
     </node>
 
     <node name="vision_decision" pkg="decision" type="vision_decision" output="screen">
