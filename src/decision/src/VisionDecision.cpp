@@ -70,17 +70,15 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist) {
 int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan,
                                     double rolling_average_constant) {
 
-    int row;
+    int row, col;
     int whiteCount = 0;
 
     // Check if there is a white line in the way of the robot
+
     for (row = 0; row < image_scan->height; row++) {
-        if (image_scan->data[row * image_scan->width + image_scan->height / 2] != 0)
-            whiteCount++;
-        if (image_scan->data[row * image_scan->width + image_scan->height / 3] != 0)
-            whiteCount++;
-        if (image_scan->data[row * image_scan->width + image_scan->height * 2 / 3] != 0)
-            whiteCount++;
+        for (col = image_scan->height / 3; col < image_scan->height * 2 / 3; col++)
+            if (image_scan->data[row * image_scan->width + col] != 0)
+                whiteCount++;
     }
 
     // If there is no white line in front of the robot, stop.
@@ -152,7 +150,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
             // increment amount of valid samples
             validSamples++;
 
-            if(DEBUG)
+            if (DEBUG)
                 printf("curAngle: %f, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, "
                                "Found Angle: %f, Valid: %d \n", currentAngle * 180 / M_PI, x1, bottomRow,
                        xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
