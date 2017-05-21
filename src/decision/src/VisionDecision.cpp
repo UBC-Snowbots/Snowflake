@@ -76,7 +76,7 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     // Check if there is a white line in the way of the robot
 
     for (row = 0; row < image_scan->height; row++) {
-        for (col = image_scan->height / 3; col < image_scan->height * 2 / 3; col++)
+        for (col = image_scan->height / 4; col < image_scan->height * 3 / 4; col++)
             if (image_scan->data[row * image_scan->width + col] != 0)
                 whiteCount++;
     }
