@@ -29,6 +29,8 @@
 #include <nav_msgs/Odometry.h>
 #include <tf2/transform_datatypes.h>
 #include <memory>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/buffer.h>
 
 class Map {
 public:
@@ -53,8 +55,11 @@ private:
     ros::Publisher lidar_map_pub;
     ros::Publisher location_map_pub;
     grid_map::GridMap* map;
-
     ros::Publisher test_pub;
+
+    // TF definitions
+    tf2_ros::Buffer tfBuffer;
+    tf2_ros::TransformListener* tfListener;
 
     laser_geometry::LaserProjection projector;
 

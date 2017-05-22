@@ -29,6 +29,9 @@ Map::Map(int argc, char **argv, std::string node_name){
     // Initialize publishers
     vision_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("vision_map", 1, true);
     lidar_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("lidar_map", 1, true);
+
+    //Initialize TFs
+    tfListener = new tf2_ros::TransformListener(tfBuffer);
 }
 
 void Map::visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
@@ -132,11 +135,9 @@ void Map::transformPointCloud(const sensor_msgs::PointCloud2& input,
                               sensor_msgs::PointCloud2& output,
                               std::string target_frame){
     try {
-        tf2_ros::Buffer tfBuffer;
-        tf2_ros::TransformListener tfListener(tfBuffer);
-        geometry_msgs::TransformStamped tstamped;
-        tstamped = tfBuffer.lookupTransform(target_frame, input.header.frame_id, ros::Time(0), ros::Duration(1.0));
-        tf2::doTransform(input, output, tstamped);
+        geometry_msgs::TransformStamped tStamped;
+        tStamped = tfBuffer.lookupTransform(target_frame, input.header.frame_id, input.header.stamp, ros::Duration(1.0));
+        tf2::doTransform(input, output, tStamped);
     } catch (tf2::TransformException &ex) {
         ROS_WARN("%s", ex.what());
         ros::Duration(1.0).sleep();
