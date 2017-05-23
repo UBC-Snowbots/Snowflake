@@ -42,6 +42,8 @@ add_executable(gps_decision2 src/gps_decision2.cpp src/GpsDecision2.cpp src/GpsM
 add_executable(final_decision src/final_decision.cpp src/FinalDecision.cpp include/FinalDecision.h)
 add_executable(gps_manager src/gps_manager.cpp src/GpsManager.cpp include/GpsManager.h)
 add_executable(gps_manager2 src/gps_manager2.cpp src/GpsManager2.cpp include/GpsManager2.h)
+add_executable(gps_manager3 src/gps_manager3.cpp src/GpsManager3.cpp 
+    include/GpsManager3.h include/gps_conversions.h)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(sample_package_node
@@ -54,6 +56,7 @@ target_link_libraries(gps_decision2 ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(final_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(gps_manager ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(gps_manager2 ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(gps_manager3 ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 
 #############
@@ -85,6 +88,10 @@ if (CATKIN_ENABLE_TESTING)
     #TODO
     #catkin_add_gtest(gps-manager2-test test/gps-manager2-test.cpp src/GpsManager2.cpp)
     #target_link_libraries(gps-manager2-test ${catkin_LIBRARIES})
+
+    #TODO
+    #catkin_add_gtest(gps-manager3-test test/gps-manager3-test.cpp src/GpsManager3.cpp)
+    #target_link_libraries(gps-manager3-test ${catkin_LIBRARIES})
 
     # rostest
     find_package(rostest REQUIRED)
