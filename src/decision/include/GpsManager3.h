@@ -38,40 +38,7 @@ public:
      * @return a vector of pairs of lat/lon coordinates parsed from raw_waypoints
      */
     static std::vector<Waypoint> parseWaypoints(std::vector<double> raw_waypoints);
-    /**
-     * Finds the distance between two waypoints using the haversine formula
-     *
-     * @param waypoint_1 the first waypoint
-     * @param waypoint_2 the second waypoint
-     */
-    static double distanceBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoint_2);
-    /**
-     * Find the angle between two waypoints relative to true north
-     *
-     * Angle is from the perspective of the first waypoint
-     *
-     * @ param waypoint_1 the first waypoint
-     * @ param waypoint_2 the second waypoint
-     *
-     * @ return the angle between the two waypoints, and relative to magnetic north
-     */
-    static double angleBetweenWaypoints(Waypoint waypoint_1, Waypoint waypoint_2);
-    /**
-     * Converts a Waypoint to the robots perspective
-     *
-     * Converts the lat/lon coordinates to x,y coordinates in meters, relative to
-     * where the robot started, taking in to account the robot's initial rotation
-     *
-     * @param waypoint the waypoint to convert
-     * @param origin_navsatfix a navsatfix at the origin
-     * @param heading the heading at the origin
-     *
-     * @return a geometry_msgs::Point with x and y representing the given waypoint converted to the
-     *         the robots perspective
-     */
-    static geometry_msgs::Point convertToRobotsPerspective(Waypoint waypoint,
-                                                            sensor_msgs::NavSatFix origin_navsatfix,
-                                                            double heading);
+
 private:
     /**
      * Called whenever a new tf message is published
@@ -82,63 +49,11 @@ private:
      */
     void tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message);
     /**
-     * Publishes current_position and next waypoint on each received navsatfix
-     *
-     * Every time a new nav_sat_fix is received, the next waypoint and current location
-     * are calculated and published as points relative to the robot's initial position and
-     * rotation
-     *
-     * @param nav_sat_fix a NavSatFix at the current location (should be straight from the gps)
-     *
-     */
-    void rawGpsCallBack(const sensor_msgs::NavSatFix::ConstPtr nav_sat_fix);
-    /**
-     * Sets most_recent_heading to the new compass heading
-     *
-     * @param heading the most recent heading (should be directly from the compass)
-     */
-    void imuCallback(const sensor_msgs::Imu::ConstPtr imu_msg);
-    /**
-     * Returns the distance to the given waypoint from the curr_navsatfix
-     *
-     * @param waypoint the waypoint to find the distance
-     *
-     * @return the distance to the given waypoint
-     */
-    double distanceToWaypoint(Waypoint waypoint);
-    /**
-     * Returns the distance to the given waypoint from the curr_navsatfix
-     *
-     * @param waypoint the waypoint to find the distance
-     *
-     * @return the distance to the given waypoint
-     */
-    double angleToWaypoint(Waypoint waypoint);
-    /**
      * Clears waypoint_stack, then puts all the elements from waypoint_list onto the waypoint_stack,
      * with the 0'th element from waypoint_list at the top of waypoint_stack
      */
     void populateWaypointStack(std::vector<Waypoint> waypoint_list);
-    /**
-     * Publishes the next waypoint as a location relative to the initial location and rotation
-     *
-     * @param waypoint the waypoint to publish
-     */
-    void publishWaypoint(Waypoint waypoint);
-    /**
-     * Publishes the current heading of the robot, relative to the initial heading being 0
-     *
-     * @param heading the heading to translate to the robot's perspective
-     */
-    void publishTranslatedHeading(float heading);
-    /**
-      * Publishes the current location as a location relative to the initial location and rotation
-      *
-      * @param curr_location the current location
-      */
-    void publishCurrentLocation(sensor_msgs::NavSatFix curr_location);
 
-    ros::Timer timer;
     ros::Subscriber tf_subscriber;
     ros::Publisher current_waypoint_publisher;
 
