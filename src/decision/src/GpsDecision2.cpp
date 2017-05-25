@@ -50,19 +50,28 @@ void GpsDecision2::waypointCallback(const geometry_msgs::PointStamped::ConstPtr 
     // Get the current position and heading of the robot
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
-    geometry_msgs::TransformStamped tfStamped = tfBuffer.lookupTransform(
-            global_frame, base_frame, ros::Time(0), ros::Duration(1.0));
-    geometry_msgs::Point current_location;
-    current_location.x = tfStamped.transform.translation.x;
-    current_location.y = tfStamped.transform.translation.y;
-    double current_heading = tf::getYaw(tfStamped.transform.rotation);
-
-    // Get the non-stamped waypoint, because we don't care about the
-    // stamped info at this point
-    geometry_msgs::Point non_stamped_waypoint = waypoint->point;
-    // Create a new twist message and publish it
-    geometry_msgs::Twist twist = mover.createTwistMessage(
-            current_location, current_heading, non_stamped_waypoint);
-    twist_publisher.publish(twist);
+    try {
+        geometry_msgs::TransformStamped tfStamped = tfBuffer.lookupTransform(
+                global_frame, base_frame, ros::Time(0), ros::Duration(1.0));
+        // Get our current heading and location from the global_frame <-> base_frame tf
+        geometry_msgs::Point current_location;
+        current_location.x = tfStamped.transform.translation.x;
+        current_location.y = tfStamped.transform.translation.y;
+        double current_heading = tf::getYaw(tfStamped.transform.rotation);
+        // Get the non-stamped waypoint, because we don't care about the
+        // stamped info at this point
+        geometry_msgs::Point non_stamped_waypoint = waypoint->point;
+        // Create a new twist message and publish it
+        geometry_msgs::Twist twist = mover.createTwistMessage(
+                current_location, current_heading, non_stamped_waypoint);
+        twist_publisher.publish(twist);
+    } catch (tf2::LookupException e) {
+        // If we can't lookup the tf, then warn the user and tell robot to stop
+        ROS_WARN_STREAM("Could not lookup tf between " <<
+                            global_frame << " and " << base_frame);
+        // TODO: Confirm that this is initialized to 0 (or find a nice way to init it to 0)
+        geometry_msgs::Twist allZeroTwist;
+        twist_publisher.publish(allZeroTwist);
+    }
 }
 
