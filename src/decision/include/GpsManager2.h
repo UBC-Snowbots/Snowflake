@@ -6,8 +6,8 @@
  *              at the current one)
  */
 
-#ifndef DECISION_GPSMANAGER_H
-#define DECISION_GPSMANAGER_H
+#ifndef DECISION_GPSMANAGER2_H
+#define DECISION_GPSMANAGER2_H
 
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
@@ -148,4 +148,4 @@ private:
 };
 
 
-#endif //DECISION_GPSMANAGER_H
+#endif //DECISION_GPSMANAGER2_H
