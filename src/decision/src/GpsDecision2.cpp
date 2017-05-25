@@ -67,7 +67,7 @@ void GpsDecision2::waypointCallback(const geometry_msgs::PointStamped::ConstPtr 
         twist_publisher.publish(twist);
     } catch (tf2::LookupException e) {
         // If we can't lookup the tf, then warn the user and tell robot to stop
-        ROS_WARN_STREAM("Could not lookup tf between " <<
+        ROS_ERROR_STREAM("Could not lookup tf between " <<
                             global_frame << " and " << base_frame);
         // TODO: Confirm that this is initialized to 0 (or find a nice way to init it to 0)
         geometry_msgs::Twist allZeroTwist;
