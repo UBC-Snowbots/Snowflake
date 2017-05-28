@@ -85,7 +85,7 @@ int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image:
     if (whiteCount < image_scan->width * image_scan->height / 1000)
         return STOP_SIGNAL_ANGLE;
 
-    // If there is a perpendicular line in front of the robot, stop.
+//    // If there is a perpendicular line in front of the robot, stop.
 //    if (isPerpendicular(image_scan))
 //        return STOP_SIGNAL_ANGLE;
 
@@ -174,7 +174,20 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
     // the higher the desired angle, the higher the angular speed
     if (desiredAngle == STOP_SIGNAL_ANGLE)
         return 0;
-    return mapRange(desiredAngle, -90, 90, -1, 1);
+
+    double mappedSpeed = pow(desiredAngle, 2.0);
+
+    mappedSpeed = mappedSpeed / 10000.0;
+
+    if(mappedSpeed > 1.0)
+        mappedSpeed = 1.0;
+
+    if (desiredAngle < 0)
+        mappedSpeed = mappedSpeed*(-1.0);
+
+    return mappedSpeed;
+
+    //    return mapRange(desiredAngle, -90, 90, -1, 1);
 
 }
 
