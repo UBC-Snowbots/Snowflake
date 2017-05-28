@@ -34,7 +34,7 @@ public:
      *
      * @return              The Twist message with the highest priority.
      */
-    static geometry_msgs::Twist arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps);
+    geometry_msgs::Twist arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps);
 
 private:
     // This is called whenever a new message is received
