@@ -53,6 +53,10 @@ void FinalDecision::gpsCallBack(const geometry_msgs::Twist::ConstPtr& gps_decisi
     arbitrator(recent_lidar,recent_vision,recent_gps);
 }
 
+void FinalDecision::imuCallback(const sensor_msgs::Imu::ConstPtr& imu){
+    last_imu_callback = imu->header.stamp;
+}
+
 void FinalDecision::publishTwist(geometry_msgs::Twist twist){
     twist_publisher.publish(twist);
 }
@@ -65,8 +69,16 @@ geometry_msgs::Twist FinalDecision::arbitrator(geometry_msgs::Twist recent_lidar
         publishTwist(recent_lidar);
     else if(recent_vision.angular.z != 0)
         publishTwist(recent_vision);
-    else
-        publishTwist(recent_gps);
+    else {
+        if (ros::Time::now() - last_imu_callback > ros::Duration(0.5)) {
+            geometry_msgs::Twist stop; // Technically can assume this will give it 0s, but explicitely written will help;
+            stop.angular.x = 0; stop.angular.y = 0; stop.angular.z = 0;
+            stop.linear.x = 0; stop.linear.y = 0; stop.linear.z = 0;
+            publishTwist(stop);
+        } else {
+            publishTwist(recent_gps);
+        }
+    }
 }
 
 bool FinalDecision::turning(geometry_msgs::Twist twist){
