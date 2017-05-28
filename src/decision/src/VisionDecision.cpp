@@ -174,7 +174,15 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
     // the higher the desired angle, the higher the angular speed
     if (desiredAngle == STOP_SIGNAL_ANGLE)
         return 0;
-    return mapRange(desiredAngle, -90, 90, -1, 1);
+
+    double mappedSpeed = pow(desiredAngle, 2.0);
+
+    mappedSpeed = mappedSpeed / 10000.0;
+
+    if (desiredAngle < 0)
+        mappedSpeed = mappedSpeed*(-1.0);
+
+    return mappedSpeed;
 
 }
 
