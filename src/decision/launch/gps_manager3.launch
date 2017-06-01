@@ -4,7 +4,7 @@
     <node name="gps_manager" pkg="decision" type="gps_manager3" output="screen">
         <rosparam param="at_goal_tolerance">0.5</rosparam>
         <rosparam param="waypoints">
-        [49.2631220833, -123.247314763]
+            [49.2630696683, -123.247368622]
         </rosparam>
     </node>
 

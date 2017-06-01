@@ -97,15 +97,15 @@ private:
     float max_obstacle_angle_diff;
     // The maximum di which two scans can be different by to be considered the same obstacle
     float max_obstacle_distance_diff;
-    // The distance at which an obstacle can be and be considered a danger
+    // The distance at which an obstacle can be considered a danger
     float max_obstacle_danger_distance;
     // The angle, measured from 0 being directly in front of the robot, at which an obstacle
     // is considered a danger to the robot
-    float obstacle_danger_angle;
-    // The multiplier for angular velocity that that robot uses to create twist messages
-    float twist_turn_rate;
-    // The multiplier for linear velocity that that robot uses to create twist messages
-    float twist_velocity;
+    float max_obstacle_danger_angle;
+    // The multiplier for linear speed in the twist message produced by this node
+    float twist_angular_speed_multiplier;
+    // The multiplier for linear speed in the twist message produced by this node
+    float twist_linear_speed_multiplier;
     ros::Subscriber scan_subscriber;
     ros::Publisher twist_publisher;
 };
