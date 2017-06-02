@@ -29,7 +29,7 @@ struct Waypoint {
 
 class GpsManager {
 public:
-    GpsManager(int argc, char **argv, std::string node_name);
+GpsManager(int argc, char **argv, std::string node_name);
     /**
      * Parses a raw list of waypoints (in order lat,lon,lat,lon,...) into a vector of pairs
      *
@@ -84,9 +84,14 @@ private:
     std::stack<Waypoint> waypoint_stack;    // A stack of all unvisited waypoints
     std::vector<Waypoint> waypoint_list;    // A list of all the waypoints to visit
 
+    std::vector<sensor_msgs::NavSatFix> initial_navsatfixes;     // A collection of navsat fixes used to compute a good initial navsatfix
+    int num_initial_navsatfixes;                // The number of initial navsatfixes to gather before estimating our intial posititon
     bool received_initial_navsatfix;            // Whether or not we've received the first navsatfix yet
     sensor_msgs::NavSatFix origin_navsatfix;    // The initial nav_sat_fix at (0,0)
 
+    std::vector<double> initial_headings;       // Initial heading readings averaged out to get a good initial heading
+    bool received_initial_heading;              // Whether or not we've received enough heading readings to estimate our initial heading
+    int num_intial_headings;                    // The number of compass headings to gather before estimating our initial heading
     double origin_heading;                      // The compass heading at initialization (relative to true north)
     double most_recent_heading;                 // The most recent heading received from the gps
 
