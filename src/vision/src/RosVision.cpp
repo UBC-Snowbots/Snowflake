@@ -158,7 +158,7 @@ RosVision::RosVision(int argc, char **argv, std::string node_name) {
     ros::NodeHandle nh_private("~");
 
     // Set topics
-    image_topic = "/robot/camera1/image_raw";
+    image_topic = "/camera1/image_raw";
     output_topic = "/vision/filtered_image";
     ROS_INFO("Image (Subscribe) Topic: %s", image_topic.c_str());
     ROS_INFO("Output (Publish) Topic: %s", output_topic.c_str());
