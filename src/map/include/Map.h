@@ -37,12 +37,14 @@ public:
     Map(int argc, char **argv, std::string node_name);
     grid_map::Matrix getVisionLayer();
     grid_map::Matrix getLidarLayer();
-    grid_map::Matrix getFootprintLayer();
+    grid_map::Matrix getCombinedLayer();
     double map_width;
     double map_height;
     double map_res;
 
 private:
+    void publishCombinedMap();
+
     void visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg);
     void lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
     void plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::string layer);
@@ -54,6 +56,7 @@ private:
     ros::Publisher vision_map_pub;
     ros::Publisher lidar_map_pub;
     ros::Publisher location_map_pub;
+    ros::Publisher combined_map_pub;
     grid_map::GridMap* map;
     ros::Publisher test_pub;
 

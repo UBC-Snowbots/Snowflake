@@ -29,6 +29,7 @@ Map::Map(int argc, char **argv, std::string node_name){
     // Initialize publishers
     vision_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("vision_map", 1, true);
     lidar_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("lidar_map", 1, true);
+    combined_map_pub = nh.advertise<nav_msgs::OccupancyGrid>("map", 1, true);
 
     //Initialize TFs
     tfListener = new tf2_ros::TransformListener(tfBuffer);
@@ -49,7 +50,10 @@ void Map::visionCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
     float occ_grid_min = 0;
     float occ_grid_max = 100;
     grid_map::GridMapRosConverter::toOccupancyGrid(*map, "vision", occ_grid_min, occ_grid_max, occ_grid);
+
     vision_map_pub.publish(occ_grid);
+
+    publishCombinedMap();
 
 }
 
@@ -73,7 +77,11 @@ void Map::lidarCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
     float occ_grid_min = 0;
     float occ_grid_max = 100;
     grid_map::GridMapRosConverter::toOccupancyGrid(*map, "lidar", occ_grid_min, occ_grid_max, occ_grid);
+
+
     lidar_map_pub.publish(occ_grid);
+
+    publishCombinedMap();
 }
 
 void Map::plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::string layer){
@@ -105,7 +113,7 @@ void Map::plotPointCloudOnMap(const pcl::PointCloud<pcl::PointXYZ>& cloud, std::
 void Map::setUpMap(grid_map::GridMap* map){
     map->add("vision");
     map->add("lidar");
-    map->add("footprint");
+    map->add("combined");
 
     // TODO: set this frame to "map" and create transform between "map" and "odom"
     map->setFrameId("odom");
@@ -158,8 +166,15 @@ grid_map::Matrix Map::getLidarLayer(){
     return map->get("lidar");
 }
 
-grid_map::Matrix Map::getFootprintLayer(){
-    return map->get("footprint");
+grid_map::Matrix Map::getCombinedLayer(){
+    return map->get("combined");
+}
+
+void Map::publishCombinedMap() {
+    nav_msgs::OccupancyGrid combined_grid;
+    map->get("combined") = map->get("vision") + map->get("lidar");
+    grid_map::GridMapRosConverter::toOccupancyGrid(*map, "combined", 0, 100, combined_grid);
+    combined_map_pub.publish(combined_grid);
 }
 
 
