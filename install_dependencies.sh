@@ -23,6 +23,7 @@ sudo apt-get install -y\
     ros-kinetic-effort-controllers \
     ros-kinetic-gazebo-ros-control \
     ros-kinetic-gps-common \
+    ros-kinetic-pointcloud-to-laserscan
     ros-kinetic-hector-gazebo \
     ros-kinetic-robot-pose-ekf \
     ros-kinetic-ros-control \
