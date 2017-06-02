@@ -37,11 +37,8 @@ include_directories(
 # add_executable(sample_package_node src/sample_package_node.cpp)
 add_executable(lidar_decision src/lidar_decision.cpp src/LidarDecision.cpp include/LidarDecision.h src/LidarObstacle.cpp include/LidarObstacle.h)
 add_executable(vision_decision src/vision_decision.cpp src/VisionDecision.cpp include/VisionDecision.h)
-add_executable(gps_decision src/gps_decision.cpp src/GpsDecision.cpp src/GpsMover.cpp include/GpsDecision.h include/GpsMover.h)
 add_executable(gps_decision2 src/gps_decision2.cpp src/GpsDecision2.cpp src/GpsMover.cpp include/GpsDecision2.h include/GpsMover.h)
 add_executable(final_decision src/final_decision.cpp src/FinalDecision.cpp include/FinalDecision.h)
-add_executable(gps_manager src/gps_manager.cpp src/GpsManager.cpp include/GpsManager.h)
-add_executable(gps_manager2 src/gps_manager2.cpp src/GpsManager2.cpp include/GpsManager2.h)
 add_executable(gps_manager3 src/gps_manager3.cpp src/GpsManager3.cpp 
     include/GpsManager3.h include/gps_conversions.h)
 
@@ -51,11 +48,8 @@ add_executable(gps_manager3 src/gps_manager3.cpp src/GpsManager3.cpp
 # )
 target_link_libraries(lidar_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(vision_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
-target_link_libraries(gps_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(gps_decision2 ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(final_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
-target_link_libraries(gps_manager ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
-target_link_libraries(gps_manager2 ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(gps_manager3 ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 
@@ -81,9 +75,6 @@ if (CATKIN_ENABLE_TESTING)
 
     catkin_add_gtest(final-decision-test test/final-decision-test.cpp src/FinalDecision.cpp)
     target_link_libraries(final-decision-test ${catkin_LIBRARIES})
-
-    catkin_add_gtest(gps-manager-test test/gps-manager-test.cpp src/GpsManager.cpp)
-    target_link_libraries(gps-manager-test ${catkin_LIBRARIES})
 
     #TODO
     #catkin_add_gtest(gps-manager2-test test/gps-manager2-test.cpp src/GpsManager2.cpp)
