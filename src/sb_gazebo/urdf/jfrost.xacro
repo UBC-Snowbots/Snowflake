@@ -92,7 +92,7 @@
         rpy="0 0 0"/>
   </joint>
 
-  <link name='tower_top_bar'>
+  <link name="tower_top_bar">
 
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>

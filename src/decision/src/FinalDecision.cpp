@@ -67,17 +67,21 @@ geometry_msgs::Twist FinalDecision::arbitrator(geometry_msgs::Twist recent_lidar
     // TODO: Should we? Don't we want to be able to operate with just some of the nodes?
     if(recent_lidar.angular.z != 0)
         publishTwist(recent_lidar);
-    else if(recent_vision.angular.z != 0)
+    else if(fabs(recent_vision.angular.z) != 0)
         publishTwist(recent_vision);
     else {
+        /*
         if (ros::Time::now() - last_imu_callback > ros::Duration(0.5)) {
             geometry_msgs::Twist stop; // Technically can assume this will give it 0s, but explicitely written will help;
             stop.angular.x = 0; stop.angular.y = 0; stop.angular.z = 0;
             stop.linear.x = 0; stop.linear.y = 0; stop.linear.z = 0;
             publishTwist(stop);
         } else {
+            */
             publishTwist(recent_gps);
+            /*
         }
+        */
     }
 }
 

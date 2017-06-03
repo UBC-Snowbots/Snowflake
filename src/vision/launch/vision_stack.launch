@@ -14,7 +14,7 @@
         <remap from="/vision_processing/filtered_image" to="/vision/filtered_image"/>
 
         <!-- The value to scale the angular velocity on outputted twist messages by -->
-        <rosparam param="angular_vel_multiplier">0.5</rosparam>
+        <rosparam param="angular_vel_multiplier">1.5</rosparam>
     </node>
      
 </launch>

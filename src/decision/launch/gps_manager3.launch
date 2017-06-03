@@ -3,8 +3,19 @@
     <!-- Launch GPS Manager -->
     <node name="gps_manager" pkg="decision" type="gps_manager3" output="screen">
         <rosparam param="at_goal_tolerance">0.5</rosparam>
+        <!--
         <rosparam param="waypoints">
             [49.2630696683, -123.247368622]
+        </rosparam>
+        -->
+        <!-- Practice EAST -->
+        <!--
+        <rosparam param="waypoints">
+            [42.67857277, -83.19506167]
+        </rosparam>
+        -->
+        <rosparam param="waypoints">
+            [42.67833241, -83.19551079, 42.67815183, -83.19550314]
         </rosparam>
     </node>
 
