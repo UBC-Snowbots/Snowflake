@@ -1,12 +1,12 @@
 /*
  * Created By: Gareth Ellis
- * Created On: October 20, 2016
+ * Created On: May 17, 2016
  * Description: Manages the GPS waypoints we are given
  *              (publishing the next one once we've arrived
  *              at the current one)
  */
 
-#include <GpsManager.h>
+#include <GpsManager3.h>
 
 
 int main(int argc, char **argv){
@@ -14,7 +14,7 @@ int main(int argc, char **argv){
     std::string node_name = "gps_manager";
 
     // Create an instance of your class
-    GpsManager gps_manager(argc, argv, node_name);
+    GpsManager3 gps_manager(argc, argv, node_name);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();

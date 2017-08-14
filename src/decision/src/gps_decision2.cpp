@@ -1,12 +1,12 @@
 /*
- * Created By: YOUR NAME HERE
- * Created On: September 22, 2016
+ * Created By: Gareth Ellis
+ * Created On: May 18, 2017
  * Description: The Decision Node for GPS, takes in a point relative to
  *              the robots location and heading and broadcasts a
- *              recommended twist message
+ *              recommended twist message. Revised to use TF's
  */
 
-#include <GpsDecision.h>
+#include <GpsDecision2.h>
 
 
 int main(int argc, char **argv){
@@ -14,7 +14,7 @@ int main(int argc, char **argv){
     std::string node_name = "gps_decision";
 
     // Create an instance of your class
-    GpsDecision gps_decision(argc, argv, node_name);
+    GpsDecision2 gps_decision(argc, argv, node_name);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();

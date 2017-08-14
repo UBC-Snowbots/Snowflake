@@ -15,18 +15,21 @@ echo "Installing other ROS dependencies..."
 echo "================================================================"
 
 sudo apt-get install -y\
-    ros-kinetic-xacro \
-    ros-kinetic-controller-manager \
-    ros-kinetic-gazebo-ros-control \
-    ros-kinetic-ros-controllers \
-    ros-kinetic-ros-control \
-    ros-kinetic-effort-controllers \
-    ros-kinetic-hector-gazebo \
-    ros-kinetic-turtlebot-teleop \
+    libserial-dev \
     python-rosinstall \
     python-visual \
     python-wxtools \
-    libserial-dev 
+    ros-kinetic-controller-manager \
+    ros-kinetic-effort-controllers \
+    ros-kinetic-gazebo-ros-control \
+    ros-kinetic-gps-common \
+    ros-kinetic-pointcloud-to-laserscan
+    ros-kinetic-hector-gazebo \
+    ros-kinetic-robot-pose-ekf \
+    ros-kinetic-ros-control \
+    ros-kinetic-ros-controllers \
+    ros-kinetic-turtlebot-teleop \
+    ros-kinetic-xacro
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."

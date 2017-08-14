@@ -1,0 +1,20 @@
+<launch>
+
+    <!-- Start the Zed -->
+    <include file="$(find zed_wrapper)/launch/zed.launch" />
+
+    <node name="ros_vision" pkg="vision" type="ros_vision" output="screen">
+        <remap from="/camera1/image_raw" to="/zed/rgb/image_raw_color" />
+        <rosparam param="show_image_window">true</rosparam>
+        <rosparam param="show_calibration_window">true</rosparam>
+    </node>
+
+    <node name="vision_decision" pkg="decision" type="vision_decision" output="screen">
+        <!-- TODO: These should be the default values -->
+        <remap from="/vision_processing/filtered_image" to="/vision/filtered_image"/>
+
+        <!-- The value to scale the angular velocity on outputted twist messages by -->
+        <rosparam param="angular_vel_multiplier">1.5</rosparam>
+    </node>
+     
+</launch>

@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <sdf version="1.4">
-  <model name="grass_plane">
+  <model name="vision_test_ground_plane">
     <static>true</static>
           <link name='link'>
         <collision name='collision'>
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>75 75</size>
+              <size>40 40</size>
             </plane>
           </geometry>
           <surface>
             <friction>
               <ode>
-                <mu>100</mu>
-                <mu2>50</mu2>
+                <mu>1.0</mu>
+                <mu2>1.0</mu2>
               </ode>
             </friction>
           </surface>
@@ -24,13 +24,13 @@
           <geometry>
             <plane>
               <normal>0 0 1</normal>
-              <size>75 75</size>
+              <size>40 40</size>
             </plane>
           </geometry>
           <material>
             <script>
-              <uri>model://grass_plane/materials/scripts</uri>
-              <uri>model://grass_plane/materials/textures</uri>
+              <uri>model://vision_test_ground_plane/materials/scripts</uri>
+              <uri>model://vision_test_ground_plane/materials/textures</uri>
               <name>grass_plane/Image</name>
             </script>
           </material>

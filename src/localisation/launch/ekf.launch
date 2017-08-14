@@ -1,0 +1,44 @@
+<launch>
+
+    <!-- 
+        Start up the node to translate NavSatFix's to Odom
+        messages that the EKF can use
+    -->
+    <node name="gps_to_odom" pkg="gps_common" type="utm_odometry_node">
+        <param name="rot_covariance" value="99999" />
+        <param name="frame_id" value="base_link" />
+
+        <remap from="odom" to="/gps_driver/odom" />
+        <remap from="fix" to="/gps_driver/navsatfix" />
+    </node>
+
+
+    <!-- Start up the EKF -->
+    <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
+        <param name="output_frame" value="odom_combined" />
+        <param name="base_footprint_frame" value="base_link" />
+        <param name="freq" value="60.0" />
+        <param name="sensor_timeout" value="1.0" />  
+        
+        <!-- The topics that input to the EKF -->
+        <!-- Description    | /topic    | message_type      -->
+
+        <!-- Source: ros_arduino_bridge (wheel encoders) -->
+        <!-- 2D Pose        | /odom     | nav_msgs/Odometry --> 
+        <param name="odom_used" value="true" />
+        <!-- Source: Razor 9DOF IMU -->
+        <!-- 3D Orientation | /imu_data | sensor_msgs/Imu   -->
+        <param name="imu_used" value="true" />
+        <!-- Source: GPS (translated to a Odometry message) -->
+        <!-- 2D Pose        | /gps      | nav_msgs/Odometry -->
+        <param name="gps_used" value="true" />
+        
+        <!-- 3D Pose        | /vo      | nav_msgs/Odometry -->
+        <param name="vo_used" value="false"/>
+
+        <remap from="gps" to="/gps_driver/odom" />
+        <remap from="imu_data" to="/imu" />
+    </node>
+
+</launch>
+

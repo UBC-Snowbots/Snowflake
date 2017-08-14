@@ -16,22 +16,23 @@ LidarDecision::LidarDecision(int argc, char **argv, std::string node_name) {
     ros::NodeHandle public_nh("~");
 
     // Setup Subscriber(s)
-    std::string laserscan_topic_name = "/robot/laser/scan";
+    // TODO: We're moving away from the /robot namespace, update it here and in gazebo
+    std::string laserscan_topic_name = "/scan";
     uint32_t refresh_rate = 10;
     scan_subscriber = public_nh.subscribe(laserscan_topic_name, refresh_rate,
                                           &LidarDecision::scanCallBack, this);
 
     // Setup Publisher(s)
-    std::string twist_topic = public_nh.resolveName("command");
+    std::string twist_topic = public_nh.resolveName("twist");
     uint32_t queue_size = 10;
     twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
     // Get Param(s)
     SB_getParam(public_nh, "max_obstacle_angle_diff", max_obstacle_angle_diff, (float) M_PI / 36);
-    SB_getParam(public_nh, "max_obstacle_danger_distance", max_obstacle_danger_distance, (float) 10);
-    SB_getParam(public_nh, "obstacle_danger_angle", obstacle_danger_angle, (float) M_PI / 4);
-    SB_getParam(public_nh, "twist_turn_rate", twist_turn_rate, (float) 10);
-    SB_getParam(public_nh, "twist_velocity", twist_velocity, (float) 10);
+    SB_getParam(public_nh, "max_obstacle_danger_distance", max_obstacle_danger_distance, (float) 2);
+    SB_getParam(public_nh, "max_obstacle_danger_angle", max_obstacle_danger_angle, (float) M_PI / 4);
+    SB_getParam(public_nh, "twist_angular_speed_multiplier", twist_angular_speed_multiplier, (float) 3);
+    SB_getParam(public_nh, "twist_linear_speed_multiplier", twist_linear_speed_multiplier, (float) 3);
 }
 
 // This is called whenever a new message is received
@@ -52,7 +53,7 @@ geometry_msgs::Twist LidarDecision::generate_twist_message(const sensor_msgs::La
 
         // Create and return a twist message based on the most dangerous obstacle
         return twist_message_from_obstacle(most_dangerous_obstacle, max_obstacle_danger_distance,
-                                           obstacle_danger_angle, twist_velocity, twist_turn_rate);
+                                           max_obstacle_danger_angle, twist_linear_speed_multiplier, twist_angular_speed_multiplier);
     } else {
         // We don't have any obstacles, return a all zero twist message
         geometry_msgs::Twist all_zero;
@@ -142,7 +143,7 @@ geometry_msgs::Twist LidarDecision::twist_message_from_obstacle(LidarObstacle ob
         // Calculate angular z dependent on how aligned obstacle is to the robot
         float angle_score = fabs(cos(obstacle.getAvgAngle()));
         // Calculate angular z dependent on how close obstacle is to the robot
-        float distance_score = 1 / minDistance;
+        float distance_score = 0.4 / minDistance;
         // Choose one score determined if angle or distance is more dangerous
         if (angle_score >= distance_score)
             twist.angular.z = angular_vel_multiplier * angle_score;

@@ -1,0 +1,22 @@
+<launch>
+
+    <!-- Start the Lidar -->
+    <node name="lidar" pkg="sicktoolbox_wrapper" type="sicklms" output="screen">
+        <rosparam param="port">/dev/ttyUSB3</rosparam>
+    </node> 
+
+    <!-- Start Lidar Decision -->
+    <node name="lidar_decision" pkg="decision" type="lidar_decision" output="screen">
+        <!-- The maximum distance at which an obstacle will be considered 
+            dangerous enough to make the robot turn -->
+        <rosparam param="max_obstacle_danger_distance">1.3</rosparam>
+        <!-- The maximum angle at which an obstacle will be considered 
+            dangerous enough to make the robot turn -->
+        <rosparam param="max_obstacle_danger_angle">1.56</rosparam>
+        <!-- The multiplier for linear speed in the twist message produced -->
+        <rosparam param="twist_linear_speed_multiplier">0.05</rosparam>
+        <!-- The multiplier for angular speed in the twist message produced -->
+        <rosparam param="twist_angular_speed_multiplier">2</rosparam>
+    </node>
+
+</launch>

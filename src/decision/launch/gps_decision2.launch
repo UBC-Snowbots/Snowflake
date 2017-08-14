@@ -1,12 +1,12 @@
 <launch>
 
     <!-- Launch GPS Decision -->
-    <node name="gps_decision" pkg="decision" type="gps_decision" output="screen">
+    <node name="gps_decision" pkg="decision" type="gps_decision2" output="screen">
         <!-- The max linear (forward) speed -->
         <rosparam param="max_linear_speed">1.0</rosparam>
 
         <!-- The max angular (rotational) speed -->
-        <rosparam param="max_angular_speed">0.7</rosparam>
+        <rosparam param="max_angular_speed">0.4</rosparam>
 
         <!-- How much effect the distance to the waypoint has on the linear speed -->
         <rosparam param="linear_distance_factor">0.1</rosparam>
@@ -22,7 +22,6 @@
         <!-- heading we should be on to get the the waypoint has on our angular speed -->
         <rosparam param="angular_heading_factor">0.4</rosparam>
 
-        <remap from="/gps_decision/twist" to="/robot/cmd_vel"/>
     </node>
 
 </launch>

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Imu.h>
 #include <ros/ros.h>
 
 class FinalDecision {
@@ -34,7 +35,7 @@ public:
      *
      * @return              The Twist message with the highest priority.
      */
-    static geometry_msgs::Twist arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps);
+    geometry_msgs::Twist arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps);
 
 private:
     // This is called whenever a new message is received
@@ -43,13 +44,17 @@ private:
     void lidarCallBack(const geometry_msgs::Twist::ConstPtr& lidar_decision);
     // This is called whenever a new message is received
     void visionCallBack(const geometry_msgs::Twist::ConstPtr& vision_decision);
+    void imuCallback(const sensor_msgs::Imu::ConstPtr& imu);
     void publishTwist(geometry_msgs::Twist twist);
     // This function evaluates whether GPS, Vision, or Lidar is sending a turning command
     bool turning(geometry_msgs::Twist twist);
 
+    ros::Time last_imu_callback;
+
     ros::Subscriber lidar_subscriber;
     ros::Subscriber vision_subscriber;
     ros::Subscriber gps_subscriber;
+    ros::Subscriber imu_subscriber;
     ros::Publisher twist_publisher;
     geometry_msgs::Twist recent_lidar;
     geometry_msgs::Twist recent_vision;

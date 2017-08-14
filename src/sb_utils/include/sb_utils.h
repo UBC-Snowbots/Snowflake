@@ -15,6 +15,8 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/buffer.h>
+#include <tf2/convert.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 /**
  * Get a param with a default value
@@ -70,7 +72,10 @@ bool SB_getParam(ros::NodeHandle& nh, const std::string& param_name, T& param_va
 }
 
 /**
- * Transforms a given message from it's current frame to another frame
+ * Transforms a given message from it's current frame to a given frame
+ * Note that input may be the same as output (ie. you can just change the
+ * frame of a given object, rather then place the transformed object in a
+ * new object)
  *
  * @param input the message to be transformed
  * @param output the transformed message will be placed in this
@@ -81,7 +86,7 @@ void SB_doTransform(const T& input, T& output, std::string output_frame){
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
     geometry_msgs::TransformStamped transformStamped = tfBuffer.lookupTransform(
-            input.header.frame_id, output_frame, ros::Time(0), ros::Duration(1.0)
+            output_frame, input.header.frame_id, ros::Time(0), ros::Duration(1.0)
     );
     tf2::doTransform(input, output, transformStamped);
 }

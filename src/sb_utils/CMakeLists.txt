@@ -8,7 +8,10 @@ add_definitions(-std=c++14)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  tf2_geometry_msgs
 )
+# This is required for certain doTransform functions in tf2_geometry_msgs
+find_package(orocos_kdl)
 
 
 ###################################

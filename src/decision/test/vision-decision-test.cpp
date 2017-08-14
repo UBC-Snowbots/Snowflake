@@ -11,131 +11,173 @@
 #include <cv_bridge/cv_bridge.h>
 
 using namespace cv;
+using namespace std;
 
 sensor_msgs::Image convertToSensorMsg(Mat cvMatImage);
 
-TEST(imageTest, angleStraight){
-    String filename = "imageTests/testStraightImage.jpg";
+TEST(imageTest, moveAwayFromLineAndTurnRight){
+    string filename = "imageTests/testStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(0, VisionDecision::getDesiredAngle(300, testImageScan), 10);
+    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 10);
 }
 
 TEST(imageTest, angleLeft){
-    String filename = "imageTests/testLeftImage.jpg";
+    string filename = "imageTests/testLeftImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 TEST(imageTest, angleRight){
-    String filename = "imageTests/testNoisyRightImage.jpg";
+    string filename = "imageTests/testNoisyRightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
-TEST(imageTest, noisyStraight){
-    String filename = "imageTests/testVeryNoisyStraightImage.jpg";
+TEST(imageTest, moveAwayFromLineAndTurnRightTwo){
+    string filename = "imageTests/testVeryNoisyStraightImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
-    EXPECT_NEAR(0, VisionDecision::getDesiredAngle(300, testImageScan), 10);
+
+    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 15);
+}
+
+TEST(imageTest, moveAwayFromLineAndTurnLeft){
+    string filename = "imageTests/testStraightOnRightSide.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 15);
 }
 
 TEST(imageTest, noisyLeft){
-    String filename = "imageTests/testVeryNoisyLeftImage.jpg";
+    string filename = "imageTests/testVeryNoisyLeftImage.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 /**
- * Tests when one line starts higher and ends higher than the other line.
- * As opposed to both starting or ending at the same height.
- *
- * Should turn LEFT.
+ *  Tests for line that signals to turn left while starting higher than the bottom
+ *  of the image.
  */
-TEST(imageTest, splitLines){
-    String filename = "imageTests/testSplitLines.jpg";
+TEST(imageTest, elevatedLeftLine){
+    string filename = "imageTests/testElevatedLeftLine.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(-45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 /**
- * Tests when one line starts higher and ends higher than the other line.
- * As opposed to both starting or ending at the same height.
- *
- * Should turn RIGHT.
+ *  Tests for line that signals to turn right while starting higher than the bottom
+ *  of the image.
  */
-TEST(imageTest, splitLinesRight){
-    String filename = "imageTests/testSplitLinesRight.jpg";
+TEST(imageTest, elevatedRightLine){
+    string filename = "imageTests/testElevatedRightLine.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
-TEST(imageTest, smallRight){
-    String filename = "imageTests/testSmallRight.jpg";
+TEST(imageTest, straightButLineNearEdge){
+    string filename = "imageTests/testStraightButLineNearEdge.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45, VisionDecision::getDesiredAngle(300, testImageScan), 20);
+    EXPECT_EQ(STOP_SIGNAL_ANGLE, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25));
 }
 
 TEST(imageTest, perpendicular){
-    String filename = "imageTests/testPerpendicular.jpg";
+    string filename = "imageTests/testPerpendicular.jpg";
     Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_EQ(90, VisionDecision::getDesiredAngle(300, testImageScan));
+    EXPECT_EQ(STOP_SIGNAL_ANGLE, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25));
+}
+
+TEST(imageTest, curved){
+    string filename = "imageTests/testCurvedLine.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
+}
+
+TEST(imageTest, multiLineLeft){
+    string filename = "imageTests/testMultipleLinesLeft.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_NEAR(-30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
+}
+
+TEST(imageTest, multiLineRight){
+    string filename = "imageTests/testMultipleLinesRight.jpg";
+    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+
+    sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
+
+    sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
+
+    EXPECT_NEAR(30, VisionDecision::getDesiredAngle(testImageScan->height / 8.0, testImageScan, 0.25), 20);
 }
 
 TEST(speedTest, angular){
     EXPECT_EQ(0, VisionDecision::getDesiredAngularSpeed(0));
-    EXPECT_EQ(100, VisionDecision::getDesiredAngularSpeed(90));
-    EXPECT_EQ(100, VisionDecision::getDesiredAngularSpeed(-90));
-    EXPECT_EQ(50, VisionDecision::getDesiredAngularSpeed(45));
+    EXPECT_EQ(0, VisionDecision::getDesiredAngularSpeed(90));
+    EXPECT_EQ(-1, VisionDecision::getDesiredAngularSpeed(-90));
+    EXPECT_EQ(0.5, VisionDecision::getDesiredAngularSpeed(45));
 }
 
 TEST(speedTest, linear){
-    EXPECT_EQ(100, VisionDecision::getDesiredLinearSpeed(0));
+    EXPECT_EQ(1, VisionDecision::getDesiredLinearSpeed(0));
     EXPECT_EQ(0, VisionDecision::getDesiredLinearSpeed(90));
     EXPECT_EQ(0, VisionDecision::getDesiredLinearSpeed(-90));
-    EXPECT_EQ(50, VisionDecision::getDesiredLinearSpeed(45));
+    EXPECT_EQ(0.5, VisionDecision::getDesiredLinearSpeed(45));
 }
 
 /**
@@ -163,6 +205,7 @@ sensor_msgs::Image convertToSensorMsg(Mat cvMatImage){
     }
 
 int main(int aimageTests, char **argv) {
+    std::cout << argv[0] << std::endl;
     testing::InitGoogleTest(&aimageTests, argv);
     return RUN_ALL_TESTS();
 }
