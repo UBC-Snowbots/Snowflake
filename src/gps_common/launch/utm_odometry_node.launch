@@ -1,0 +1,15 @@
+<launch> 
+    <!--  
+        Start the `utm_odometry_node`, which translates 
+        `sensor_msgs/NavSatFix` messages into `nav_msgs/Odometry` messages
+    --> 
+    <node name="gps_to_odom" pkg="gps_common" type="utm_odometry_node"> 
+        <param name="rot_covariance" value="99999" /> 
+
+        <!-- Frame of the published Odometry messages -->
+        <param name="frame_id" value="base_link" /> 
+ 
+        <remap from="fix" to="/gps_driver/navsatfix" /> 
+        <remap from="odom" to="/gps_driver/odom" /> 
+    </node>
+<launch> 
