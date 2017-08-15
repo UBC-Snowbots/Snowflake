@@ -8,8 +8,13 @@
 #ifndef DECISION_VISION_DECISION_H
 #define DECISION_VISION_DECISION_H
 
-
+// STD
 #include <iostream>
+
+// Snowbots
+#include <sb_utils.h>
+
+// ROS
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Image.h>
@@ -21,7 +26,13 @@
 // It determines the maximum consecutive number of pixels that will still
 // be considered noise. The lower the number, the smaller the expected noise
 // size.
-const int NOISE_MAX = 30;
+const int NOISE_MAX = 10;
+
+const bool DEBUG = false;
+
+// Since 90 can never be returned by arctan. 90 will be used as a special angle
+// to signal desired angular speed and desired linear speed functions to return 0.
+const int STOP_SIGNAL_ANGLE = 90;
 
 class VisionDecision {
 public:
@@ -37,7 +48,8 @@ public:
      *
      * @return the angle of the line to the positive y-axis.
      */
-    static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image);
+    static int getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image,
+                               double rolling_average_constant);
 
     /**
      * Determines the angle of the line parsed from the left or right side.
@@ -48,7 +60,8 @@ public:
      *
      * @returns the angle of the line, or INVALID if line is invalid.
      */
-    static int getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image);
+    static int getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image,
+                              double rolling_average_constant);
 
     /**
      *  Returns a rotation speed based on the imageRatio
@@ -79,7 +92,7 @@ private:
      * @param rightSide determines whether to parse from the right or the left
      * @param image_scan the image to parse
      */
-    static int getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr& image);
+    static int getMiddle(int startingPos, int row, bool rightSide, const sensor_msgs::Image::ConstPtr &image);
 
     /*
      * Returns the edge pixel of the line. Which side depends on parameter
@@ -95,7 +108,7 @@ private:
      * @returns the white pixel's column position, -1 if none found
      */
     static int getEdgePixel(int startingPos, int incrementer, int row,
-                             const sensor_msgs::Image::ConstPtr& image, bool isStartPixel);
+                            const sensor_msgs::Image::ConstPtr &image, bool isStartPixel);
 
     /**
      * Re-maps a number from one range to another
@@ -115,11 +128,65 @@ private:
      */
     static double mapRange(double x, double inMin, double inMax, double outMin, double outMax);
 
-    void imageCallBack(const sensor_msgs::Image::ConstPtr& image);
+    /**
+     * Initializes the incrementer's starting position and how it will parse.
+     *
+     * @param image_scan the image to parse.
+     * @param rightSide determines whether to parse from the left or the right side of the image.
+     * @param startingPos where the parser will start parsing the image.
+     */
+    static int initializeIncrementerPosition(bool rightSide, const sensor_msgs::Image::ConstPtr &image_scan,
+                                             int *startingPos);
+
+    /**
+     * Checks whether the line is perpendicular to the robot's vision.
+     *
+     * @param image_scan the image to parse.
+     */
+    static bool isPerpendicular(const sensor_msgs::Image::ConstPtr &image_scan);
+
+    /**
+     * Gets the first valid white pixel bottom to top at the specified column.
+     *
+     * @param image_scan the image to parse.
+     * @param column the column to parse at.
+     *
+     */
+    static int getVerticalEdgePixel(const sensor_msgs::Image::ConstPtr &image_scan, int column);
+
+    /*
+     * Returns an angle that moves away from the line
+     *
+     * @param image_scan the image to parse
+     */
+    static int moveAwayFromLine(const sensor_msgs::Image::ConstPtr &image);
+
+    /*
+     * Returns the difference of rightWhitePixels - leftWhitePixels
+     *
+     * @param image_scan the image to parse
+     */
+    static int getLeftToRightPixelRatio(const sensor_msgs::Image::ConstPtr &image);
+
+    void imageCallBack(const sensor_msgs::Image::ConstPtr &image);
+
     void publishTwist(geometry_msgs::Twist twist);
-   
-    
+
+
     ros::Subscriber image_subscriber;
     ros::Publisher twist_publisher;
+
+    // The value to scale the angular velocity on the
+    // twist message we create by
+    double angular_velocity_multiplier;
+
+    // The max value of angular velocity given by twist
+    // message.
+    double angular_velocity_cap;
+
+    // Dictates how much new samples will influence the current
+    // average (Smaller value means less influence).
+    double rolling_average_constant;
 };
+
 #endif //DECISION_VISION_DECISION_H
