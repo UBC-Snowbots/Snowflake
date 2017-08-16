@@ -26,7 +26,7 @@
       <wheelSeparation>${chassis_width+wheel_width}</wheelSeparation>
       <wheelDiameter>${2*wheel_radius}</wheelDiameter>
       <wheelTorque>3</wheelTorque>
-      <commandTopic>robot/cmd_vel</commandTopic>
+      <commandTopic>cmd_vel</commandTopic>
       <odometryTopic>robot/odom_diffdrive</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <robotBaseFrame>base_link</robotBaseFrame>
