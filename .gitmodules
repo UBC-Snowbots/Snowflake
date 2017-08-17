@@ -16,3 +16,6 @@
 [submodule "src/nmea_navsat_driver"]
 	path = src/nmea_navsat_driver
 	url = https://github.com/UBC-Snowbots/nmea_navsat_driver.git
+[submodule "src/gps_umd"]
+	path = src/gps_umd
+	url = https://github.com/swri-robotics/gps_umd
