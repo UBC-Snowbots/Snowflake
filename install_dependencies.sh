@@ -14,19 +14,14 @@ echo "================================================================"
 echo "Installing other ROS dependencies..."
 echo "================================================================"
 
-sudo apt-get install -y\
-    ros-kinetic-xacro \
-    ros-kinetic-controller-manager \
-    ros-kinetic-gazebo-ros-control \
-    ros-kinetic-ros-controllers \
-    ros-kinetic-ros-control \
-    ros-kinetic-effort-controllers \
-    ros-kinetic-hector-gazebo \
-    ros-kinetic-turtlebot-teleop \
-    python-rosinstall \
-    python-visual \
-    python-wxtools \
-    libserial-dev 
+# Update Rosdeps
+rosdep update
+
+# The current directory
+CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Installs all required dependencies to build this repo
+rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."
