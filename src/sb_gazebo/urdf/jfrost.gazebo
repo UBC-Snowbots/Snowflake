@@ -27,7 +27,7 @@
       <wheelDiameter>${2*wheel_radius}</wheelDiameter>
       <wheelTorque>3</wheelTorque>
       <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>robot/odom_diffdrive</odometryTopic>
+      <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <robotBaseFrame>base_link</robotBaseFrame>
       <legacyMode>False</legacyMode>
