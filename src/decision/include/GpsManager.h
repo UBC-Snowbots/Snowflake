@@ -14,7 +14,7 @@
 #include "sensor_msgs/NavSatFix.h"
 #include "geometry_msgs/Point.h"
 #include <sensor_msgs/Imu.h>
-#include <gps_conversions.h>
+#include <gps_common/conversions.h>
 #include <tf/transform_datatypes.h>
 #include <vector>
 #include <algorithm>

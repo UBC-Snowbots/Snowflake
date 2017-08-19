@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
         std_msgs
         cv_bridge
         tf2_ros
+        gps_common
         )
 find_package(OpenCV REQUIRED)
 find_package(sb_utils REQUIRED)
@@ -64,7 +65,6 @@ add_executable(gps_manager
     src/gps_manager.cpp
     src/GpsManager.cpp 
     include/GpsManager.h
-    include/gps_conversions.h
     )
 
 ## Specify libraries to link a library or executable target against
@@ -101,9 +101,8 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(final-decision-test test/final-decision-test.cpp src/FinalDecision.cpp)
     target_link_libraries(final-decision-test ${catkin_LIBRARIES})
 
-    #TODO
-    #catkin_add_gtest(gps-manager-test test/gps-manager-test.cpp src/GpsManager.cpp)
-    #target_link_libraries(gps-manager-test ${catkin_LIBRARIES})
+    catkin_add_gtest(gps-manager-test test/gps-manager-test.cpp src/GpsManager.cpp)
+    target_link_libraries(gps-manager-test ${catkin_LIBRARIES})
 
     #TODO: gps_decision tests
 
