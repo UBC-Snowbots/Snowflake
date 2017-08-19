@@ -19,9 +19,9 @@ FinalDecision::FinalDecision(int argc, char **argv, std::string node_name) {
     std::string gps_decision_topic_name = "/gps_decision/twist";
 
     uint32_t queue_size = 1;
-    lidar_subscriber = private_nh.subscribe(lidar_decision_topic_name, queue_size, &FinalDecision::lidarCallBack, this);
-    vision_subscriber = private_nh.subscribe(vision_decision_topic_name, queue_size, &FinalDecision::visionCallBack, this);
-    gps_subscriber = private_nh.subscribe(gps_decision_topic_name, queue_size, &FinalDecision::gpsCallBack, this);
+    lidar_subscriber = public_nh.subscribe(lidar_decision_topic_name, queue_size, &FinalDecision::lidarCallBack, this);
+    vision_subscriber = public_nh.subscribe(vision_decision_topic_name, queue_size, &FinalDecision::visionCallBack, this);
+    gps_subscriber = public_nh.subscribe(gps_decision_topic_name, queue_size, &FinalDecision::gpsCallBack, this);
 
     // Setup Publisher(s)
     std::string twist_topic = public_nh.resolveName("cmd_vel");
