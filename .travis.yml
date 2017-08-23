@@ -14,7 +14,7 @@ env:
   matrix:
     - ROS_DISTRO=kinetic ROS_REPO=ros UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
     - ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
-    - CLANG_FORMAT_TEST=TRUE ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
+    - TEST_CLANG_FORMAT=TRUE ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
 matrix:
   allow_failures:
       - env: ROS_DISTRO=kinetic ROS_REPO=ros UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/IGVC-2017/$TRAVIS_BRANCH/.rosinstall
