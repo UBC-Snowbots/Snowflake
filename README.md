@@ -57,6 +57,9 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 ### Github Conventions
 - We follow the ["Feature Branch Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
+- All files **must** be formatted properly. Formatting will be enforced with `clang-format`. 
+    - To check that things are formatted properly, run `git clang-format --diff master`
+    - To reformat your code so that it's formatted properly, run `git clang-format master`
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
