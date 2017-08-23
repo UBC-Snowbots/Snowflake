@@ -9,20 +9,19 @@
 #include <GpsDecision.h>
 #include <std_msgs/Float32.h>
 
-GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
+GpsDecision::GpsDecision(int argc, char **argv, std::string node_name){
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
     // Setup Subscriber(s)
-    uint32_t refresh_rate = 10;
+    uint32_t queue_size = 1;
     std::string waypoint_topic = "/gps_manager/current_waypoint";
-    waypoint_subscriber = private_nh.subscribe(waypoint_topic, refresh_rate,
+    waypoint_subscriber = nh.subscribe(waypoint_topic, queue_size,
                                                &GpsDecision::waypointCallback, this);
 
     // Setup Publisher(s)
-    uint32_t queue_size = 10;
     std::string twist_publisher_topic = private_nh.resolveName("twist");
     twist_publisher = private_nh.advertise<geometry_msgs::Twist>(twist_publisher_topic, queue_size);
 
@@ -48,10 +47,10 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
 
 void GpsDecision::waypointCallback(const geometry_msgs::PointStamped::ConstPtr &waypoint) {
     // Get the current position and heading of the robot
-    tf2_ros::Buffer tfBuffer;
-    tf2_ros::TransformListener tfListener(tfBuffer);
+    tf2_ros::Buffer tf_buffer;
+    tf2_ros::TransformListener tf_listener(tf_buffer);
     try {
-        geometry_msgs::TransformStamped tfStamped = tfBuffer.lookupTransform(
+        geometry_msgs::TransformStamped tfStamped = tf_buffer.lookupTransform(
                 global_frame, base_frame, ros::Time(0), ros::Duration(1.0));
         // Get our current heading and location from the global_frame <-> base_frame tf
         geometry_msgs::Point current_location;

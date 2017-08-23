@@ -24,7 +24,7 @@ FinalDecision::FinalDecision(int argc, char **argv, std::string node_name) {
     gps_subscriber = public_nh.subscribe(gps_decision_topic_name, queue_size, &FinalDecision::gpsCallBack, this);
 
     // Setup Publisher(s)
-    std::string twist_topic = public_nh.resolveName("cmd_vel");
+    std::string twist_topic = "/cmd_vel";
     twist_publisher = public_nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 }
 

@@ -34,15 +34,20 @@ private:
     //callback for our destination waypoint
     void waypointCallback(const geometry_msgs::PointStamped::ConstPtr& waypoint);
 
-    ros::Subscriber waypoint_subscriber; // Subscribes to the next waypoint the robot has to go to
+    // Subscribes to the next waypoint the robot has to go to
+    ros::Subscriber waypoint_subscriber; 
 
-    ros::Publisher twist_publisher; // Publishes a twist message telling the robot how to move
+    // Publishes a twist message telling the robot how to move
+    ros::Publisher twist_publisher; 
 
-    GpsMover mover; // The class that generates our twist messages
+    // The class that generates our twist messages
+    GpsMover mover; 
 
+    // The base frame of the robot ("base_link", "base_footprint", etc.)
+    std::string base_frame; 
+    // The global frame ("map", "odom", etc.)
+    std::string global_frame; 
 
-    std::string base_frame; // The base frame of the robot ("base_link", "base_footprint", etc.)
-    std::string global_frame; // The global frame ("map", "odom", etc.)
 };
 
 #endif //DECISION_GPS_DECISION_H

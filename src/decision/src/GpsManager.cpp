@@ -17,7 +17,7 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     // Setup Subscribers
     uint32_t queue_size = 1;
     std::string tf_topic_name = "/tf";
-    tf_subscriber = private_nh.subscribe(tf_topic_name, queue_size,
+    tf_subscriber = nh.subscribe(tf_topic_name, queue_size,
                                         &GpsManager::tfCallBack, this);
 
     // Setup Publishers
@@ -48,7 +48,8 @@ void GpsManager::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message){
         return;
     }
 
-    // Publish the current waypoint
+    // Set the TimeStamp on the current waypoint and publish it
+    waypoint_stack.top().header.stamp = ros::Time::now(); 
     current_waypoint_publisher.publish(waypoint_stack.top());
 
     // Check if the tf_message contains the transform we're looking for
