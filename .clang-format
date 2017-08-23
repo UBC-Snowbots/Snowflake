@@ -1,6 +1,8 @@
 ﻿---
+AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: 'true'
 AlignEscapedNewlinesLeft: 'true'
+AlignConsecutiveDeclarations: 'false'
 AlignOperands: 'true'
 AlignTrailingComments: 'true'
 AllowAllParametersOfDeclarationOnNextLine: 'true'
@@ -11,17 +13,18 @@ AllowShortIfStatementsOnASingleLine: 'true'
 AllowShortLoopsOnASingleLine: 'true'
 AlwaysBreakBeforeMultilineStrings: 'true'
 AlwaysBreakTemplateDeclarations: 'false'
-BinPackArguments: 'true'
-BinPackParameters: 'true'
+BinPackArguments: 'false'
+BinPackParameters: 'false'
 BreakBeforeBinaryOperators: None
 BreakBeforeTernaryOperators: 'true'
 ColumnLimit: '80'
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
 ConstructorInitializerIndentWidth: '2'
 ContinuationIndentWidth: '0'
-FixNamespaceComments: 'true'
+# TODO: Enable me when clang-format has been updated to understand me
+#FixNamespaceComments: 'true'
 IndentCaseLabels: 'true'
-IndentWidth: '0'
+IndentWidth: '4'
 IndentWrappedFunctionNames: 'true'
 KeepEmptyLinesAtTheStartOfBlocks: 'false'
 Language: Cpp
@@ -29,9 +32,11 @@ NamespaceIndentation: Inner
 PointerAlignment: Left
 ReflowComments: 'true'
 SortIncludes: 'true'
-SortUsingDeclarations: 'true'
+# TODO: Enable me when clang-format has been updated to understand me
+#SortUsingDeclarations: 'true'
 SpaceAfterCStyleCast: 'true'
-SpaceAfterTemplateKeyword: 'false'
+# TODO: Enable me when clang-format has been updated to understand me
+#SpaceAfterTemplateKeyword: 'false'
 SpaceBeforeAssignmentOperators: 'true'
 SpaceBeforeParens: ControlStatements
 SpaceInEmptyParentheses: 'false'
@@ -39,7 +44,7 @@ SpacesBeforeTrailingComments: '1'
 SpacesInAngles: 'false'
 SpacesInCStyleCastParentheses: 'false'
 SpacesInContainerLiterals: 'true'
-SpacesInParentheses: 'true'
+SpacesInParentheses: 'false'
 SpacesInSquareBrackets: 'false'
 Standard: Cpp11
 TabWidth: '4'
