@@ -14,7 +14,7 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name) {
     ros::init(argc, 
                                 argv, node_name);
     ros::NodeHandle nh;
-    ros::NodeHandle private_nh(       "~");
+    ros::NodeHandle private_nh("~");
 
     // Setup Subscriber(s)
     uint32_t refresh_rate = 10;
