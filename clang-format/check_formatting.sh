@@ -1,9 +1,13 @@
 #!/bin/bash
 
+# The version of the clang executable to use
 export CLANG_VERSION=4.0
 
+# The current directory
+CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Run clang-format to see if we need to change anything
-output="$(./git-clang-format --binary clang-format-$CLANG_VERSION --commit master --diff)"
+output="$($CURR_DIR/git-clang-format --binary clang-format-$CLANG_VERSION --commit master --diff)"
 
 # Check the results of clang format
 if [[ $output == *"no modified files to format"* ]] || [[ $output == *"clang-format did not modify any files"* ]] ; then
