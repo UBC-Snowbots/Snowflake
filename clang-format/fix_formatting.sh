@@ -7,6 +7,6 @@ export CLANG_VERSION=4.0
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Run clang-format to see if we need to change anything
-output="$($CURR_DIR/git-clang-format --binary clang-format-$CLANG_VERSION --commit master)"
+output="$($CURR_DIR/git-clang-format --binary $CURR_DIR/clang-format-$CLANG_VERSION --commit master)"
 
 echo $output
