@@ -24,7 +24,8 @@ CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
 
 # Second time to take care of recursive rosdeps
-rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
+# to find nested `package.xml` files
+rosdep install --from-paths src/gps_umd --rosdistro kinetic -y
 
 echo "================================================================"
 echo "Finished installing other ROS dependencies."
