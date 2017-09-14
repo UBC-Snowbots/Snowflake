@@ -27,7 +27,12 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
     // Get Param(s)
     SB_getParam(private_nh, "angular_vel_multiplier", angular_velocity_multiplier, 1.0);
     SB_getParam(private_nh, "angular_vel_cap", angular_velocity_cap, 1.0);
-    SB_getParam(private_nh, "rolling_average_constant", rolling_average_constant, 0.5);
+    SB_getParam(private_nh, "rolling_average_constant", rolling_average_constant, 0.25);
+    SB_getParam(private_nh, "percent_of_samples_needed", percent_of_samples_needed, 0.125);
+    SB_getParam(private_nh, "percent_of_image_sampled", percent_of_image_sampled, 0.25);
+    SB_getParam(private_nh, "move_away_threshold", move_away_threshold, 25.0);
+    SB_getParam(private_nh, "confidence_threshold", confidence_threshold, 60.0);
+    SB_getParam(private_nh, "percent_of_white_needed", percent_of_white_needed, 0.05);
 }
 
 // This is called whenever a new message is received
@@ -35,8 +40,11 @@ void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_sca
     // Deal with new messages here
     geometry_msgs::Twist twistMsg;
 
+    double confidence_value = 0;
     // Decide how much to turn
-    int relativeAngle = getDesiredAngle(image_scan->height / 8.0, image_scan, rolling_average_constant);
+    int relativeAngle = getDesiredAngle(image_scan->height * percent_of_image_sampled, image_scan,
+                                        rolling_average_constant, percent_of_image_sampled, percent_of_samples_needed,
+                                        confidence_value, move_away_threshold, percent_of_white_needed);
 
     // Initialize linear velocities to 0
     twistMsg.linear.y = 0;
@@ -67,51 +75,71 @@ void VisionDecision::publishTwist(geometry_msgs::Twist twist) {
 /* Functions to determine robot movement */
 
 int VisionDecision::getDesiredAngle(double numSamples, const sensor_msgs::Image::ConstPtr &image_scan,
-                                    double rolling_average_constant) {
+                                    double rolling_average_constant, double percent_of_image_sampled,
+                                    double percent_of_samples_needed,
+                                    double &confidence_value,
+                                    double move_away_threshold,
+                                    double percent_of_white_needed) {
 
     int row, col;
     int whiteCount = 0;
+    confidence_value = 0;
 
     // Check if there is a white line in the way of the robot
-
     for (row = 0; row < image_scan->height; row++) {
-        for (col = image_scan->width / 4; col < image_scan->width * 3 / 4; col++)
+        for (col = 0; col < image_scan->width; col++)
             if (image_scan->data[row * image_scan->width + col] != 0)
                 whiteCount++;
     }
 
-    // If there is no white line in front of the robot, stop.
-    if (whiteCount < image_scan->width * image_scan->height / 1000)
-        return STOP_SIGNAL_ANGLE;
+    double valid_samples;
+
+    int leftToRightAngle = getAngleOfLine(false, numSamples, image_scan, rolling_average_constant,
+                                          percent_of_samples_needed, valid_samples);
+
+    double leftConfidence = getConfidence(image_scan, percent_of_image_sampled, percent_of_samples_needed,
+                                          valid_samples);
+
+
+    double rightToLeftAngle = getAngleOfLine(true, numSamples, image_scan, rolling_average_constant,
+                                             percent_of_samples_needed, valid_samples);
+
+    double rightConfidence = getConfidence(image_scan, percent_of_image_sampled, percent_of_samples_needed,
+                                           valid_samples);
+
+    int desiredAngle;
+
+    if (rightConfidence > leftConfidence) {
+        desiredAngle = rightToLeftAngle;
+        confidence_value = rightConfidence;
+    } else {
+        desiredAngle = leftToRightAngle;
+        confidence_value = leftConfidence;
+    }
+
+    if (fabs(desiredAngle) <= move_away_threshold)
+        desiredAngle = moveAwayFromLine(image_scan);
 
     // If there is a perpendicular line in front of the robot, stop.
-//    if (isPerpendicular(image_scan))
-//        return STOP_SIGNAL_ANGLE;
+    if (isPerpendicular(image_scan))
+        confidence_value = 0;
 
-    int desiredAngle = getAngleOfLine(false, numSamples, image_scan, rolling_average_constant);
-
-    // If angle coming from the left is invalid try going from the right.
-    if (fabs(desiredAngle) >= 90)
-        desiredAngle = getAngleOfLine(true, numSamples, image_scan, rolling_average_constant);
-
-    // If both cases are invalid it will stop
-    if (fabs(desiredAngle) >= 90)
-        desiredAngle = STOP_SIGNAL_ANGLE;
-
-    if (fabs(desiredAngle) <= 20)
+    double num_of_white_needed = image_scan->height * image_scan->width * percent_of_white_needed;
+    if(whiteCount < num_of_white_needed)
         desiredAngle = moveAwayFromLine(image_scan);
 
     return desiredAngle;
 }
 
 int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sensor_msgs::Image::ConstPtr &image_scan,
-                                   double rolling_average_constant) {
+                                   double rolling_average_constant, double percent_of_samples_needed,
+                                   double &validSamples) {
 
     // initialization of local variables.
     double imageHeight = image_scan->height;
     int incrementer;
     int startingPos = 0;
-    int validSamples = 0;
+    validSamples = 0;
 
     // Assign garbage values
     int bottomRow = -1;
@@ -133,6 +161,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
     }
 
     double currentAngle = 0;
+
     // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
     // also counts how many of them are valid.
     for (double division = 1; (division < numSamples) && (bottomRow - division > 0); division++) {
@@ -151,7 +180,7 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
 
             if (DEBUG)
                 printf("curAngle: %f, x1: %f, bottomRow: %d, xCompared: %f, yCompared: %f, "
-                               "Found Angle: %f, Valid: %d \n", currentAngle * 180 / M_PI, x1, bottomRow,
+                               "Found Angle: %f, Valid: %f \n", currentAngle * 180 / M_PI, x1, bottomRow,
                        xCompared, yCompared, foundAngle * 180 / M_PI, validSamples);
 
             // Update the current angle if the change is not too sudden.
@@ -163,10 +192,10 @@ int VisionDecision::getAngleOfLine(bool rightSide, double numSamples, const sens
         }
     }
 
-    if (validSamples < numSamples / 3 || x1 == -1)
-        return STOP_SIGNAL_ANGLE;
-    else
-        return (int) (currentAngle * 180.0 / M_PI); // returns the angle in degrees
+    if (x1 == -1)
+        validSamples = 0;
+
+    return (int) (currentAngle * 180.0 / M_PI); // returns the angle in degrees
 }
 
 double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
@@ -179,7 +208,7 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
     mappedSpeed = mappedSpeed / 10000.0;
 
     if (desiredAngle < 0)
-        mappedSpeed = mappedSpeed*(-1.0);
+        mappedSpeed = mappedSpeed * (-1.0);
 
     return mappedSpeed;
 
@@ -187,8 +216,10 @@ double VisionDecision::getDesiredAngularSpeed(double desiredAngle) {
 
 double VisionDecision::getDesiredLinearSpeed(double desiredAngle) {
     double speedToMap = abs((int) desiredAngle);
+
     if (desiredAngle == STOP_SIGNAL_ANGLE)
         return 0;
+
     // the higher the desired angle the lower the linear speed.
     return 1 - mapRange(speedToMap, 0, 90, 0, 1);
 }
@@ -290,7 +321,7 @@ bool VisionDecision::isPerpendicular(const sensor_msgs::Image::ConstPtr &image_s
             break;
     }
 
-    if(rightSidePixel == 0 && leftSidePixel == 0)
+    if (rightSidePixel == 0 && leftSidePixel == 0)
         return 0;
 
     return (fabs(rightSidePixel - leftSidePixel) < image_scan->height / 10 && fabs(j - i) > image_scan->width / 10);
@@ -355,4 +386,15 @@ int VisionDecision::moveAwayFromLine(const sensor_msgs::Image::ConstPtr &image_s
 
 double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax) {
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+double VisionDecision::getConfidence(const sensor_msgs::Image::ConstPtr &image_scan,
+                                     double percent_of_image_sampled, double percent_of_samples_needed,
+                                     double valid_samples) {
+
+    double samples_needed = image_scan->height * percent_of_samples_needed;
+
+    if (valid_samples > samples_needed)
+        valid_samples = samples_needed;
+    return mapRange(valid_samples, 0, samples_needed, 0, 100);
 }
