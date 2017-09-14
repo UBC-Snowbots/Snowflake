@@ -9,17 +9,17 @@
 #ifndef DECISION_GPSManager_H
 #define DECISION_GPSManager_H
 
-#include "ros/ros.h"
-#include "std_msgs/Float32.h"
-#include "sensor_msgs/NavSatFix.h"
 #include "geometry_msgs/Point.h"
-#include <sensor_msgs/Imu.h>
+#include "ros/ros.h"
+#include "sensor_msgs/NavSatFix.h"
+#include "std_msgs/Float32.h"
+#include <algorithm>
 #include <gps_common/conversions.h>
+#include <sb_utils.h>
+#include <sensor_msgs/Imu.h>
+#include <stack>
 #include <tf/transform_datatypes.h>
 #include <vector>
-#include <algorithm>
-#include <stack>
-#include <sb_utils.h>
 
 // A struct to hold lat/lon coordinates (a waypoint)
 // lat/lon should be in degrees
@@ -39,17 +39,20 @@ public:
      */
     static std::vector<Waypoint> parseWaypoints(std::vector<double> raw_waypoints);
 
-private:
+  private:
     /**
      * Called whenever a new tf message is published
      *
-     * Checks if we're at the waypoint yet, and starts publishing the next waypoint if we are
+     * Checks if we're at the waypoint yet, and starts publishing the next
+     * waypoint if we are
      *
-     * @param tf_message contains all the tf's currently being published on a given topic
+     * @param tf_message contains all the tf's currently being published on a
+     * given topic
      */
     void tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message);
     /**
-     * Clears waypoint_stack, then puts all the elements from waypoint_list onto the waypoint_stack,
+     * Clears waypoint_stack, then puts all the elements from waypoint_list onto
+     * the waypoint_stack,
      * with the 0'th element from waypoint_list at the top of waypoint_stack
      */
     void populateWaypointStack(std::vector<Waypoint> waypoint_list);
@@ -57,14 +60,17 @@ private:
     ros::Subscriber tf_subscriber;
     ros::Publisher current_waypoint_publisher;
 
-    std::string base_frame; // The base frame of the robot ("base_link", "base_footprint", etc.)
+    std::string base_frame;   // The base frame of the robot ("base_link",
+                              // "base_footprint", etc.)
     std::string global_frame; // The global frame ("map", "odom", etc.)
 
     // Params
     float at_goal_tolerance;
-    std::stack<geometry_msgs::PointStamped> waypoint_stack; // A stack of all unvisited waypoints stored in the UTM coordinate frame
-
+    std::stack<geometry_msgs::PointStamped> waypoint_stack; // A stack of all
+                                                            // unvisited
+                                                            // waypoints stored
+                                                            // in the UTM
+                                                            // coordinate frame
 };
 
-
-#endif //DECISION_GPSManager_H
+#endif // DECISION_GPSManager_H

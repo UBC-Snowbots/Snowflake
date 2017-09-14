@@ -9,17 +9,17 @@
 #include <GpsDecision.h>
 #include <std_msgs/Float32.h>
 
-GpsDecision::GpsDecision(int argc, char **argv, std::string node_name){
+GpsDecision::GpsDecision(int argc, char** argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
     // Setup Subscriber(s)
-    uint32_t queue_size = 1;
+    uint32_t queue_size        = 1;
     std::string waypoint_topic = "/gps_manager/current_waypoint";
-    waypoint_subscriber = nh.subscribe(waypoint_topic, queue_size,
-                                               &GpsDecision::waypointCallback, this);
+    waypoint_subscriber        = nh.subscribe(
+    waypoint_topic, queue_size, &GpsDecision::waypointCallback, this);
 
     // Setup Publisher(s)
     std::string twist_publisher_topic = private_nh.resolveName("twist");
@@ -41,34 +41,40 @@ GpsDecision::GpsDecision(int argc, char **argv, std::string node_name){
     SB_getParam(private_nh, "max_angular_speed", angular_cap, 1.0);
     mover.setMaxSpeeds(linear_cap, angular_cap);
 
-    SB_getParam(private_nh, "base_frame", base_frame, (std::string)"base_link");
-    SB_getParam(private_nh, "global_frame", global_frame, (std::string)"odom_combined");
+    SB_getParam(
+    private_nh, "base_frame", base_frame, (std::string) "base_link");
+    SB_getParam(
+    private_nh, "global_frame", global_frame, (std::string) "odom_combined");
 }
 
-void GpsDecision::waypointCallback(const geometry_msgs::PointStamped::ConstPtr &waypoint) {
+void GpsDecision::waypointCallback(
+const geometry_msgs::PointStamped::ConstPtr& waypoint) {
     // Get the current position and heading of the robot
     tf2_ros::Buffer tf_buffer;
     tf2_ros::TransformListener tf_listener(tf_buffer);
     try {
         geometry_msgs::TransformStamped tfStamped = tf_buffer.lookupTransform(
-                global_frame, base_frame, ros::Time(0), ros::Duration(1.0));
-        // Get our current heading and location from the global_frame <-> base_frame tf
+        global_frame, base_frame, ros::Time(0), ros::Duration(1.0));
+        // Get our current heading and location from the global_frame <->
+        // base_frame tf
         geometry_msgs::Point current_location;
-        current_location.x = tfStamped.transform.translation.x;
-        current_location.y = tfStamped.transform.translation.y;
+        current_location.x     = tfStamped.transform.translation.x;
+        current_location.y     = tfStamped.transform.translation.y;
         double current_heading = tf::getYaw(tfStamped.transform.rotation);
         // Get the non-stamped waypoint, because we don't care about the
         // stamped info at this point
         geometry_msgs::Point non_stamped_waypoint = waypoint->point;
         // Create a new twist message and publish it
         geometry_msgs::Twist twist = mover.createTwistMessage(
-                current_location, current_heading, non_stamped_waypoint);
+        current_location, current_heading, non_stamped_waypoint);
         twist_publisher.publish(twist);
     } catch (tf2::LookupException e) {
         // If we can't lookup the tf, then warn the user and tell robot to stop
-        ROS_WARN_STREAM("Could not lookup tf between " <<
-                            global_frame << " and " << base_frame);
-        // TODO: Confirm that this is initialized to 0 (or find a nice way to init it to 0)
+        ROS_WARN_STREAM("Could not lookup tf between " << global_frame
+                                                       << " and "
+                                                       << base_frame);
+        // TODO: Confirm that this is initialized to 0 (or find a nice way to
+        // init it to 0)
         geometry_msgs::Twist allZeroTwist;
         twist_publisher.publish(allZeroTwist);
     }

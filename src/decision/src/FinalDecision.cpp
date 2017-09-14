@@ -25,7 +25,8 @@ FinalDecision::FinalDecision(int argc, char **argv, std::string node_name) {
 
     // Setup Publisher(s)
     std::string twist_topic = "/cmd_vel";
-    twist_publisher = public_nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
+    twist_publisher =
+    public_nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 }
 
 
