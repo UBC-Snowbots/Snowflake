@@ -30,9 +30,6 @@ std::vector<std::pair<double, double>> pairsFromWaypointVector(std::vector<Waypo
 }
 
 TEST(GpsManager, parseWaypoints){
-    std::vector<std::pair<double, double>> empty_result = {};
-    std::vector<double> odd_length_input (9, 10.123123);
-
     std::vector<std::pair<double, double>> one_waypoint_result = {std::pair<double, double> (9.87,10.98)};
     std::vector<double> one_waypoint_input = {9.87, 10.98};
 
@@ -43,7 +40,6 @@ TEST(GpsManager, parseWaypoints){
     };
     std::vector<double> multi_waypoint_input = {9.87, 10.98, 98.123, 97.122, 87.12, 12.12};
 
-    EXPECT_EQ(empty_result, pairsFromWaypointVector(GpsManager::parseWaypoints(odd_length_input)));
     EXPECT_EQ(one_waypoint_result, pairsFromWaypointVector(GpsManager::parseWaypoints(one_waypoint_input)));
     EXPECT_EQ(multi_waypoint_result, pairsFromWaypointVector(GpsManager::parseWaypoints(multi_waypoint_input)));
 
