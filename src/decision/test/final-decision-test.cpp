@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: July 22, 2016
- * Description: Tests for GpsDecision
+ * Description: Tests for Final Decision
  */
 
 #include <FinalDecision.h>
