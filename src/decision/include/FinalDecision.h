@@ -2,17 +2,18 @@
  * Created By: Kevin Luo
  * Modified by: Valerian Ratu
  * Created On: September 22, 2016
- * Description: The Final Decision node, arbitrates between the decisions of other nodes.
+ * Description: The Final Decision node, arbitrates between the decisions of
+ * other nodes.
  */
 
 #ifndef DECISION_FINAL_DECISION_H
 #define DECISION_FINAL_DECISION_H
 
-#include <iostream>
-#include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
-#include <sensor_msgs/Imu.h>
+#include <iostream>
 #include <ros/ros.h>
+#include <sensor_msgs/Imu.h>
+#include <std_msgs/String.h>
 
 class FinalDecision {
 public:
@@ -37,26 +38,26 @@ public:
     static geometry_msgs::Twist arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps);
 
 private:
-    // Sensor callbacks
-    void gpsCallBack(const geometry_msgs::Twist::ConstPtr& gps_decision);
-    void lidarCallBack(const geometry_msgs::Twist::ConstPtr& lidar_decision);
-    void visionCallBack(const geometry_msgs::Twist::ConstPtr& vision_decision);
+  // Sensor callbacks
+  void gpsCallBack(const geometry_msgs::Twist::ConstPtr& gps_decision);
+  void lidarCallBack(const geometry_msgs::Twist::ConstPtr& lidar_decision);
+  void visionCallBack(const geometry_msgs::Twist::ConstPtr& vision_decision);
 
-    // Publishes twist
-    void publishTwist(geometry_msgs::Twist twist);
+  // Publishes twist
+  void publishTwist(geometry_msgs::Twist twist);
 
-    // Subscribers
-    ros::Subscriber lidar_subscriber;
-    ros::Subscriber vision_subscriber;
-    ros::Subscriber gps_subscriber;
+  // Subscribers
+  ros::Subscriber lidar_subscriber;
+  ros::Subscriber vision_subscriber;
+  ros::Subscriber gps_subscriber;
 
-    // Publishers
-    ros::Publisher twist_publisher;
+  // Publishers
+  ros::Publisher twist_publisher;
 
-    // Sensor data placeholders
-    geometry_msgs::Twist recent_lidar;
-    geometry_msgs::Twist recent_vision;
-    geometry_msgs::Twist recent_gps;
+  // Sensor data placeholders
+  geometry_msgs::Twist recent_lidar;
+  geometry_msgs::Twist recent_vision;
+  geometry_msgs::Twist recent_gps;
 
 
 };
