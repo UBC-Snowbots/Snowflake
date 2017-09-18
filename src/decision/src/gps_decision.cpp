@@ -1,9 +1,9 @@
 /*
- * Created By: YOUR NAME HERE
- * Created On: September 22, 2016
+ * Created By: Gareth Ellis
+ * Created On: May 18, 2017
  * Description: The Decision Node for GPS, takes in a point relative to
  *              the robots location and heading and broadcasts a
- *              recommended twist message
+ *              recommended twist message. Revised to use TF's
  */
 
 #include <GpsDecision.h>

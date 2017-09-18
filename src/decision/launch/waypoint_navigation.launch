@@ -1,0 +1,24 @@
+<!-- 
+    This launches all the nodes needed to create twist messages to
+    navigate the robot between a series of GPS waypoints, based on 
+    raw gps data (to re-compute the location of the waypoint relative
+    to the robot), and the TF tree (to get an estimation as to the 
+    current location of the robot) 
+-->
+
+<launch>
+
+    <!-- 
+        Start the GPS manager
+        This node translates GPS waypoints from lat/lon into x,y
+        coordinates in the robots frame of reference
+    -->
+    <include file="$(find decision)/launch/gps_manager.launch"/>
+
+    <!--
+        Start node to generate the twist message required to move
+        to the desired waypoint
+    -->
+    <include file="$(find decision)/launch/gps_decision.launch"/>
+
+</launch>

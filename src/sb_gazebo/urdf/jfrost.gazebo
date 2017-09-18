@@ -26,8 +26,8 @@
       <wheelSeparation>${chassis_width+wheel_width}</wheelSeparation>
       <wheelDiameter>${2*wheel_radius}</wheelDiameter>
       <wheelTorque>3</wheelTorque>
-      <commandTopic>robot/cmd_vel</commandTopic>
-      <odometryTopic>robot/odom_diffdrive</odometryTopic>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <robotBaseFrame>base_link</robotBaseFrame>
       <legacyMode>False</legacyMode>
@@ -151,13 +151,12 @@
       <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
       <velocityDrift>0 0 0</velocityDrift>
       <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
-      <!-- Set these parameters depending on where you want to gps reference to be -->
-      <!-- NOTE: THESE SHOULD MATCH THE COMPASS_SIM PLUGIN - SEE BELOW-->
       <!-- EDC (Very Roughly) -->
       <referenceLatitude>49.262479</referenceLatitude>
       <referenceLongitude>-123.248600</referenceLongitude>
       <referenceAltitude>50.00</referenceAltitude>
-      <referenceHeading>0.00</referenceHeading>
+      <!-- referenceHeading is in DEGREES -->
+      <referenceHeading>90</referenceHeading>
       </plugin>
   </gazebo>
 
