@@ -23,10 +23,6 @@ CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Install all required dependencies to build this repo
 rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
 
-# Second time to take care of recursive rosdeps
-# to find nested `package.xml` files
-rosdep install --from-paths src/gps_umd --rosdistro kinetic -y
-
 echo "================================================================"
 echo "Finished installing other ROS dependencies."
 echo "================================================================"
@@ -36,8 +32,7 @@ echo "Installing Misc. Utilities"
 echo "================================================================"
 
 sudo apt-get install -y\
-    clang-format \
-    libgps-dev
+    clang-format
 
 echo "================================================================"
 echo "Finished Installing Utilities"
