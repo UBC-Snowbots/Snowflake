@@ -13,10 +13,14 @@
     <arg name="robot"/>
 
     <!-- Start up the world -->
-    <include file="$(find gazebo_ros)/launch/empty_world.launch">       
+    <include file="$(find sb_gazebo)/launch/gazebo_open_world.launch">       
         <arg name="world_name" value="$(find sb_gazebo)/worlds/$(arg world)"/> 
         <arg name="gui" value="true"/>
+        <!-- Remap the tf topic to another topic, so that we can test out things
+            that create tf's, like robot_pose_ekf -->
+        <arg name="tf_topic" value="gazebo_tf"/>
     </include>  
+    <remap from="tf" to="gazebo_tf"/>
     
     <!-- setup controllers for robot -->
     <include file="$(find sb_gazebo)/launch/$(arg robot)_control.launch" />

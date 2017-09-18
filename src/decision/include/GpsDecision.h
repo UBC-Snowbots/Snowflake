@@ -1,9 +1,9 @@
 /*
  * Created By: Gareth Ellis
- * Created On: April 1, 2017
+ * Created On: May 18, 2017
  * Description: The Decision Node for GPS, takes in a point relative to
  *              the robots location and heading and broadcasts a
- *              recommended twist message
+ *              recommended twist message. Revised to use TF's
  */
 
 #ifndef DECISION_GPS_DECISION_H
@@ -31,23 +31,22 @@ public:
     GpsDecision(int argc, char **argv, std::string node_name);
 
 private:
-    //callback for the current location
-    void currentLocationCallback(const geometry_msgs::Point::ConstPtr& current_location);
-    //callback for the current heading
-    void imuCallback(const std_msgs::Float32::ConstPtr &heading);
     //callback for our destination waypoint
-    void waypointCallback(const geometry_msgs::Point::ConstPtr& waypoint);
+  void waypointCallback(const geometry_msgs::PointStamped::ConstPtr& waypoint);
 
-    ros::Subscriber imu_subscriber;             // Subscribes to the current robot heading
-    ros::Subscriber current_location_subscriber;    // Subscribes to the current robot location
-    ros::Subscriber waypoint_subscriber;            // Subscribes to the next waypoint the robot has to go to
+  // Subscribes to the next waypoint the robot has to go to
+  ros::Subscriber waypoint_subscriber;
 
-    ros::Publisher twist_publisher;     // Publishes a twist message telling the robot how to move
+  // Publishes a twist message telling the robot how to move
+  ros::Publisher twist_publisher;
 
-    double current_heading;                 // The current robot heading (in radians)
-    geometry_msgs::Point current_location; // The current location of the robot
+  // The class that generates our twist messages
+  GpsMover mover;
 
-    GpsMover mover;    // The class that generates our twist messages
+  // The base frame of the robot ("base_link", "base_footprint", etc.)
+  std::string base_frame;
+  // The global frame ("map", "odom", etc.)
+  std::string global_frame;
 };
 
 #endif //DECISION_GPS_DECISION_H

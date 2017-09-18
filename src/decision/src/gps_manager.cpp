@@ -1,6 +1,6 @@
 /*
  * Created By: Gareth Ellis
- * Created On: October 20, 2016
+ * Created On: May 17, 2016
  * Description: Manages the GPS waypoints we are given
  *              (publishing the next one once we've arrived
  *              at the current one)
