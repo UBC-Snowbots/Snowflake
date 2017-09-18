@@ -1,9 +1,9 @@
 /*
  * Created By: Gareth Ellis
  * Created On: February 24, 2017
- * Description: This node is responsible for passing twist messages received
- *              over serial to the arduino controlling the robot
- *
+ * Description: This node is responsible for publishing GPS messages
+ *              received from an arduino over serial to a ROS topic
+ *              as a sensor_msgs/NavSatFix message
  */
 
 #include <ros/ros.h>
@@ -67,7 +67,7 @@ int main(int argc, char **argv){
 
     // Setup Arduino stuff
     // Get the arduino port from a ros param
-    std::string port = "/dev/ttyACM0";
+    std::string port = "/dev/ttyACM1";
     SB_getParam(nh_private, "port", port, port);
     // TODO - Add detecton to make sure that this is the right port (ie. that this is where our gps is plugged in to)
     // TODO - Give some indication when we attach/detach from the GPS. Could be as simple as checking how long it was since we last received a message

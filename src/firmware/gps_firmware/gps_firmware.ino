@@ -54,6 +54,9 @@ void serialEvent() {
      } else if (cmd_chr == 'd' && debug_mode){
          // Turn off debug mode
          debug_mode = false;
+     } else if (cmd_chr == 'I'){
+         // Request for ID
+         Serial.println("GPS");
      } else {
          // Invalid command - Do nothing
      }
