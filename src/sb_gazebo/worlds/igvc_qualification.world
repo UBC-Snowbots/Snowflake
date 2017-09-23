@@ -11,13 +11,13 @@
     </include>
 
     <include>
-      <uri>model://construction_cone</uri>
+      <uri>model://construction_barrel</uri>
       <pose>1.5 0 0 0 0 0</pose>
       <scale>2 2 2</scale>
     </include>
 
     <include>
-      <uri>model://construction_cone</uri>
+      <uri>model://construction_barrel</uri>
       <pose>-1.5 -3 0 0 0 0</pose>
       <scale>2 2 2</scale>
     </include>
