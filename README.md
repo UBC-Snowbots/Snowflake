@@ -1,5 +1,7 @@
 # Snowflake
-UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
+UBC Snowbots Repository for competitions.
+	- IGVC - International Ground Vehicle Competition
+	- IARRC - International Autonomous Robot Racing Competition
 
 ![alt tag](https://travis-ci.org/UBC-Snowbots/Snowflake.svg?branch=master)
 
