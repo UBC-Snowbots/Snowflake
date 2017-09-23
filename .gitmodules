@@ -1,3 +1,0 @@
-[submodule "src/zed-ros-wrapper"]
-	path = src/zed-ros-wrapper
-	url = https://github.com/UBC-Snowbots/zed-ros-wrapper.git
