@@ -13,6 +13,3 @@
 [submodule "src/razor_imu_9dof"]
 	path = src/razor_imu_9dof
 	url = https://github.com/UBC-Snowbots/razor_imu_9dof.git
-[submodule "src/nmea_navsat_driver"]
-	path = src/nmea_navsat_driver
-	url = https://github.com/UBC-Snowbots/nmea_navsat_driver.git
