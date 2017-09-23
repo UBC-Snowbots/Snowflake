@@ -10,6 +10,3 @@
 [submodule "src/ros_arduino_bridge"]
 	path = src/ros_arduino_bridge
 	url = https://github.com/UBC-Snowbots/ros_arduino_bridge.git
-[submodule "src/razor_imu_9dof"]
-	path = src/razor_imu_9dof
-	url = https://github.com/UBC-Snowbots/razor_imu_9dof.git
