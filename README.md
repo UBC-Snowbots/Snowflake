@@ -1,7 +1,7 @@
 # Snowflake
 UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
 
-![alt tag](https://travis-ci.org/UBC-Snowbots/Snowflake.svg?branch=master)
+![alt tag](https://travis-ci.org/UBC-Snowbots/Snowflake.svg?branch=core)
 
 ## Table of Contents
 - [Installation and Setup](#installation-and-setup)
