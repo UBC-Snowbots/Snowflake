@@ -182,36 +182,37 @@ some_ros_package
 - When developing the firmware/Arduino parts of the software, we've made a complete arduino workspace in `src/firmware`. This way you don't need to worry about downloading the libraries yourself!
 - In order to use this, go to your Arduino IDE's Preferences dialog box and use `/your/path/to/Snowflake/src/firmware` as your sketchbook directory. Open arduino sketches in the workspace and they will work!
 
-###udev Rules
+### Udev Rules
+
 Udev provides a userspace solution for a dynamic /dev directory, with persistent device naming.
 
-Rule Writing Guideline:
-- Creat file: /etc/udev/rules.d/10-local.rules (where xx represent the priority; Here 10 is higher than 50, the default)
-- Write rules with match keys (helps indentify devices) and assignment keys (assigns names/symlinks to identified devices)
-    common match keys: 
-    	KERNEL - match against the kernel name for the device
-    	SUBSYSTEM - match against the subsystem of the device
-    	DRIVER - match against the name of the driver backing the device
-    common assignment keys:
-    	NAME - the name that shall be used for the device node
-    	SYMLINK - a list of symbolic links which act as alternative names for the device node
-    	MODE - define Unix permissions, by default 0666 (read/write to owner group)
-    	GROUP - define the Unix group ownship of the device node
+- Rule Writing Guideline
+	- Creat file: /etc/udev/rules.d/10-local.rules (where xx represent the priority; Here 10 is higher than 50, the default)
+	- Write rules with match keys (helps indentify devices) and assignment keys (assigns names/symlinks to identified devices)
+	    - common match keys: 
+	    	KERNEL - match against the kernel name for the device
+	    	SUBSYSTEM - match against the subsystem of the device
+	    	DRIVER - match against the name of the driver backing the device
+	    - common assignment keys:
+	    	NAME - the name that shall be used for the device node
+	    	SYMLINK - a list of symbolic links which act as alternative names for the device node
+	    	MODE - define Unix permissions, by default 0666 (read/write to owner group)
+	    	GROUP - define the Unix group ownship of the device node
 
-Device Info Collection:
-- Serial Number: `udevadm info -a -n /dev/ttyUSB1 | grep '{serial}' | head -n1`
-- Vendor ID and Product ID: `lsusb` (Bus xxx Device xxx: ID <Vendor>:<Product>)
+- Device Info Collection
+	- Serial Number: `udevadm info -a -n /dev/ttyUSB1 | grep '{serial}' | head -n1`
+	- Vendor ID and Product ID: `lsusb` (Bus xxx Device xxx: ID <Vendor>:<Product>)
 
-Example:
+- Example
 ```
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="<idVendor>", ATTRS{idProduct}=="<idProduct>", ATTRS{serial}=="<serial>", MODE="0666", SYMLINK+="SB-Ardu", GROUP="dialout"
 ```
 
-References: 
-- [Writing udev rules](http://www.reactivated.net/writing_udev_rules.html)
-- [Persistent names for usb-serial devices](http://hintshop.ludvig.co.nz/show/persistent-names-usb-serial-devices/)
+- References
+	- [Writing udev rules](http://www.reactivated.net/writing_udev_rules.html)
+	- [Persistent names for usb-serial devices](http://hintshop.ludvig.co.nz/show/persistent-names-usb-serial-devices/)
 
-Caveat: Arduino IDE only recognizes serial ports whose names follow this format `ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}`
+- Caveat: Arduino IDE only recognizes serial ports whose names follow this format `ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}`
 
 ## Debugging Tips
 - If something is happening that does not seem to correspond to your code, (ex. if your node is subscribing to the totally wrong topic) try deleting the `build` and `devel` folders (if present) to remove any "cached" information
