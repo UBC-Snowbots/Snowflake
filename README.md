@@ -1,7 +1,9 @@
-# IGVC-2017
-UBC Snowbots Repository for the 2017 Intelligent Ground Vehicle Competition.
+# Snowflake
+UBC Snowbots Repository for competitions.
+- IGVC - International Ground Vehicle Competition
+- IARRC - International Autonomous Robot Racing Competition
 
-![alt tag](https://travis-ci.org/UBC-Snowbots/IGVC-2017.svg?branch=master)
+![alt tag](https://travis-ci.org/UBC-Snowbots/Snowflake.svg?branch=core)
 
 ## Table of Contents
 - [Installation and Setup](#installation-and-setup)
@@ -38,14 +40,14 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
     you will use this account to set up CLion later on_
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
-6. Clone this repository by running `git clone --recursive https://github.com/UBC-Snowbots/IGVC-2017.git ~/IGVC-2017`
-7. To start set-up run `cd ~/IGVC-2017 && ./get_started.sh` **(Do not run this script as root)**
+6. Clone this repository by running `git clone --recursive https://github.com/UBC-Snowbots/Snowflake.git ~/Snowflake`
+7. To start set-up run `cd ~/Snowflake && ./get_started.sh` **(Do not run this script as root)**
     - _Just choose yes and enter your password when the terminal prompts you_ 
-8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/IGVC-2017 && catkin_make` 
+8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/Snowflake && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ### Important Notes:
-- To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/IGVC-2017`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
+- To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/Snowflake`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
 
 ### Zed Configuration
@@ -58,8 +60,8 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - We follow the ["Feature Branch Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
-    - To check that things are formatted properly, from the `IGVC-2017` folder run `./clang_format/check_formatting.sh`
-    - To reformat your code so that it's formatted properly, from the `IGVC-2017` folder run `./clang_format/fix_formatting.sh` (note that you may have to stage or commit any changes before this will work, this is to prevent you accidentally losing work)
+    - To check that things are formatted properly, from the `Snowflake` folder run `./clang_format/check_formatting.sh`
+    - To reformat your code so that it's formatted properly, from the `Snowflake` folder run `./clang_format/fix_formatting.sh` (note that you may have to stage or commit any changes before this will work, this is to prevent you accidentally losing work)
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
@@ -169,16 +171,16 @@ some_ros_package
 - Similar to launch files, the command is: `rostest package_name package_test_file.test`.
 
 ## Simulating with Gazebo
-- You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/IGVC-2017` and then `source devel/setup.sh`
+- You will always need to source the project before running gazebo, by moving to the project directory with `cd ~/Snowflake` and then `source devel/setup.sh`
 - You will probably need a computer with an dedicated gpu, as gazebo **sometimes** works with intel integrated graphics, but generally not. If you do end up using a computer without a dedicated gpu, make sure to go in to `sb_gazebo/urdf/**ROBOT_NAME**.gazebo` and switch around the lidar settings (see comments in said file)
 - All worlds should go in the `sb_gazebo/worlds` folder
 - To launch a world, simply run the appropriate launch file in `sb_gazebo/launch`
 - Once the world has launched, it is common for the robot to be initially unable to move. Just lift it up a bit in gazebo and drop it for this to be fixed
-- You can manually control the robot with your keyboard, logitech, ps3, or xbox controller. To do so, simply `cd ~/IGVC-2017` and then `source devel/setup.sh`, then run the appriate launchfile from `src/sb_gazebo/launch` by running `roslaunch LAUNCH_FILE.launch` (from within the launch folder). **Note:** At least with PS3 controllers, you have to hold down `L1` while using the joystick for the controller to work
+- You can manually control the robot with your keyboard, logitech, ps3, or xbox controller. To do so, simply `cd ~/Snowflake` and then `source devel/setup.sh`, then run the appriate launchfile from `src/sb_gazebo/launch` by running `roslaunch LAUNCH_FILE.launch` (from within the launch folder). **Note:** At least with PS3 controllers, you have to hold down `L1` while using the joystick for the controller to work
 
 ## Arduino Development
 - When developing the firmware/Arduino parts of the software, we've made a complete arduino workspace in `src/firmware`. This way you don't need to worry about downloading the libraries yourself!
-- In order to use this, go to your Arduino IDE's Preferences dialog box and use `/your/path/to/IGVC-2017/src/firmware` as your sketchbook directory. Open arduino sketches in the workspace and they will work!
+- In order to use this, go to your Arduino IDE's Preferences dialog box and use `/your/path/to/Snowflake/src/firmware` as your sketchbook directory. Open arduino sketches in the workspace and they will work!
 
 ## Debugging Tips
 - If something is happening that does not seem to correspond to your code, (ex. if your node is subscribing to the totally wrong topic) try deleting the `build` and `devel` folders (if present) to remove any "cached" information
