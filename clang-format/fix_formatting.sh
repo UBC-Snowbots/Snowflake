@@ -14,6 +14,7 @@ fi
 TARGET_BRANCH=$1
 
 # Fix formatting on all changes between this branch and the target branch
-output="$($CURR_DIR/git-clang-format --binary $CURR_DIR/clang-format-$CLANG_VERSION --commit $TARGET_BRANCH)"
+OUTPUT="$($CURR_DIR/git-clang-format --binary $CURR_DIR/clang-format-$CLANG_VERSION --commit $TARGET_BRANCH)"
 
-echo $output 
+# Print the output (the files changed), replacing spaces with newlines
+printf '%s\n' $OUTPUT
