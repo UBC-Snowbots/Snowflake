@@ -29,11 +29,23 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(drivers_node src/drivers_node.cpp)
-add_executable(ros_vision
-    src/ros_vision.cpp include/RosVision.h src/RosVision.cpp
-    include/filter.h src/filter.cpp
-    include/IPM.h src/IPM.cpp
-    )
+add_executable(HSVFilter
+        src/HSVFilter.cpp
+        src/hsv_filter.cpp
+        src/HSVFilterNode.cpp
+        include/HSVFilter.h
+        include/HSVFilterNode.h
+        )
+
+add_executable(IPMFilter
+        src/IPMFilter.cpp
+        src/ipm_filter.cpp
+        src/IPMFilterNode.cpp
+        src/IPM.cpp
+        include/IPMFilter.h
+        include/IPMFilterNode.h
+        include/IPM.h
+        )
 
 add_executable(camera src/camera_init.cpp)
 
@@ -41,11 +53,18 @@ add_executable(camera src/camera_init.cpp)
 # target_link_libraries(drivers_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(ros_vision
-    ${catkin_LIBRARIES}
-    ${OpenCV_LIBS}
-    ${sb_utils_LIBRARIES}
-    )
+target_link_libraries(HSVFilter
+        ${catkin_LIBRARIES}
+        ${OpenCV_LIBS}
+        ${sb_utils_LIBRARIES}
+        )
+
+target_link_libraries(IPMFilter
+        ${catkin_LIBRARIES}
+        ${OpenCV_LIBS}
+        ${sb_utils_LIBRARIES}
+        )
+
 target_link_libraries(camera ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 
