@@ -9,32 +9,32 @@
 #define IPM_FILTER_H
 
 // OpenCV
-#include <opencv2/opencv.hpp>
-#include <opencv2/objdetect/objdetect.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/opencv.hpp>
 
 // Image Conversion
 #include <cv_bridge/cv_bridge.h>
-#include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
+#include <sensor_msgs/image_encodings.h>
 
 // ROS
-#include <ros/ros.h>
-#include <sensor_msgs/Image.h>
 #include <geometry_msgs/Twist.h>
 #include <ros/console.h>
 #include <ros/package.h>
+#include <ros/ros.h>
+#include <sensor_msgs/Image.h>
 
 // STD
-#include <vector>
 #include <string>
+#include <vector>
 
 // I/O
+#include <fstream>
 #include <iostream>
 #include <stdio.h>
-#include <fstream>
 
 // Snowbots
 #include "IPMFilter.h"
@@ -43,9 +43,7 @@
 using namespace cv;
 
 class IPMFilterNode {
-
-public:
-
+  public:
     /**
      * Empty Constructor
      */
@@ -54,16 +52,15 @@ public:
     /**
      * Constructor
      */
-    IPMFilterNode(int argc, char **argv, std::string node_name);
+    IPMFilterNode(int argc, char** argv, std::string node_name);
 
-private:
-
+  private:
     /**
      * Callback for the filtered image
      *
      * @param address of filtered image matrix
      */
-    void filteredImageCallBack(const sensor_msgs::Image::ConstPtr &image);
+    void filteredImageCallBack(const sensor_msgs::Image::ConstPtr& image);
 
     /**
      * Converts ros::sensor_msgs::Image into a cv::Mat
@@ -89,10 +86,9 @@ private:
     int image_width, image_height;
 
     // IPM Filter Variables
-    IPMFilter *ipmFilter;
-    float ipm_base_width, ipm_top_width, ipm_base_displacement, ipm_top_displacement;
-
-
+    IPMFilter* ipmFilter;
+    float ipm_base_width, ipm_top_width, ipm_base_displacement,
+    ipm_top_displacement;
 };
 
 #endif

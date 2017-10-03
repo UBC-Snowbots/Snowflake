@@ -8,15 +8,14 @@
  *			http://opencv-srf.blogspot.ca/2010/09/object-detection-using-color-seperation.html
  */
 
-#include <opencv2/core/core.hpp>
-#include <stdio.h>
-#include <opencv2/highgui/highgui.hpp>
 #include <iostream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <stdio.h>
 
-class HSVFilter
-{
-    //Thresholds
+class HSVFilter {
+    // Thresholds
     int _iLowH;
     int _iHighH;
     int _iLowS;
@@ -27,17 +26,15 @@ class HSVFilter
     cv::Mat rangeOutput;
     cv::Mat hsvOutput;
 
-    //Window Names
+    // Window Names
     std::string manualCalibrationWindow;
 
-public:
-
+  public:
     /**
      * Initializes the filter with known values
      */
-    HSVFilter( int iLowH, int iHighH,
-                    int iLowS, int iHighS,
-                    int iLowV, int iHighV);
+    HSVFilter(
+    int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, int iHighV);
 
     /**
      * Initializes the filter with default values
@@ -50,7 +47,7 @@ public:
      * @param input the frame being filtered
      * @param output the output image
      */
-    void filterImage(const cv::Mat &input, cv::Mat &output);
+    void filterImage(const cv::Mat& input, cv::Mat& output);
 
     /**
      * Enables manual calibration of HSV values
@@ -74,16 +71,12 @@ public:
      */
     std::string getValues(void);
 
-private:
-
+  private:
     /**
      * Initializator
      *
      * @params the appropriate HSV ranges
      */
-    void createFilter(int iLowH, int iHighH,
-                      int iLowS, int iHighS,
-                      int iLowV, int iHighV);
-
-
+    void createFilter(
+    int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, int iHighV);
 };

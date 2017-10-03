@@ -10,32 +10,32 @@
 #define GREEN_FILTER_H
 
 // OpenCV
-#include <opencv2/opencv.hpp>
-#include <opencv2/objdetect/objdetect.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/opencv.hpp>
 
 // Image Conversion
 #include <cv_bridge/cv_bridge.h>
-#include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
+#include <sensor_msgs/image_encodings.h>
 
 // ROS
-#include <ros/ros.h>
-#include <sensor_msgs/Image.h>
 #include <geometry_msgs/Twist.h>
 #include <ros/console.h>
 #include <ros/package.h>
+#include <ros/ros.h>
+#include <sensor_msgs/Image.h>
 
 // STD
-#include <vector>
 #include <string>
+#include <vector>
 
 // I/O
+#include <fstream>
 #include <iostream>
 #include <stdio.h>
-#include <fstream>
 
 // Snowbots
 #include "HSVFilter.h"
@@ -44,22 +44,19 @@
 using namespace cv;
 
 class HSVFilterNode {
-
-public:
-
+  public:
     /**
      * Constructor
      */
-    HSVFilterNode(int argc, char **argv, std::string node_name);
+    HSVFilterNode(int argc, char** argv, std::string node_name);
 
-private:
-
+  private:
     /**
      * Callback for the filtered image
      *
      * @param address of filtered image matrix
      */
-    void rawImageCallBack(const sensor_msgs::Image::ConstPtr &image);
+    void rawImageCallBack(const sensor_msgs::Image::ConstPtr& image);
 
     /**
      * Initialization of the filter
@@ -94,11 +91,11 @@ private:
      */
     image_transport::Publisher filter_pub;
 
-    //Frequency handling
+    // Frequency handling
     ros::Time last_published;
     ros::Duration publish_interval;
 
-    //Image processing Mat pipeline
+    // Image processing Mat pipeline
     cv::Mat imageInput;
     cv::Mat filterOutput;
 
@@ -117,10 +114,6 @@ private:
     int image_width, image_height;
     bool showWindow;
     bool isCalibratingManually;
-
-
-
-
 };
 
 #endif
