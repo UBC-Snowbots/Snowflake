@@ -9,19 +9,14 @@
 #define LIDAROBSTACLE_H
 
 // STD
-#include <vector>
 #include <algorithm>
-
+#include <vector>
 
 using distance_t = double;
-using angle_t = double;
+using angle_t    = double;
 
 // Types of Obstacle
-enum ObstacleType {
-    NONE,
-    CONE,
-    WALL
-};
+enum ObstacleType { NONE, CONE, WALL };
 
 struct Reading {
     angle_t angle;
@@ -37,8 +32,9 @@ double distanceBetweenPoints(const Point& p1, const Point& p2);
 bool operator==(const Point& p1, const Point& p2);
 
 class LidarObstacle {
-public:
-    // TODO: see what functions we can delete here.... probably don't want all them
+  public:
+    // TODO: see what functions we can delete here.... probably don't want all
+    // them
     /**
      * Creates a LidarObstacle with no readings
      */
@@ -47,9 +43,11 @@ public:
     /**
      * Creates a LidarObstacle with no readings
      *
-     * @param min_wall_length the minimum length for the obstacle to be considered a wall
+     * @param min_wall_length the minimum length for the obstacle to be
+     * considered a wall
      */
-    // TODO: default constructors suck (not really but still...). we should require min_wall_length
+    // TODO: default constructors suck (not really but still...). we should
+    // require min_wall_length
     LidarObstacle(double min_wall_length);
 
     /**
@@ -63,23 +61,25 @@ public:
     /**
      * Creates a LidarObstacle with a given distance and angle
      *
-     * @param min_wall_length the minimum length for the obstacle to be considered a wall
+     * @param min_wall_length the minimum length for the obstacle to be
+     * considered a wall
      * @param distance The distance to the obstacle
      * @param angle The angle to the obstacle
      */
     LidarObstacle(double min_wall_length, angle_t angle, distance_t distance);
 
     /**
-     * Creates a LidarObstacle from a given set of readings 
+     * Creates a LidarObstacle from a given set of readings
      *
      * @param readings readings to initialize the obstacle with
      */
     LidarObstacle(std::vector<Reading> readings);
 
     /**
-     * Creates a LidarObstacle from a given set of readings 
+     * Creates a LidarObstacle from a given set of readings
      *
-     * @param min_wall_length the minimum length for the obstacle to be considered a wall
+     * @param min_wall_length the minimum length for the obstacle to be
+     * considered a wall
      * @param readings readings to initialize the obstacle with
      */
     LidarObstacle(double min_wall_length, std::vector<Reading> readings);
@@ -144,7 +144,6 @@ public:
      */
     double getMaxDistance();
 
-
     /**
      * Gets all laser readings comprising the obstacle
      *
@@ -169,7 +168,7 @@ public:
      */
     ObstacleType getObstacleType();
 
-    /** 
+    /**
      * Determines and sets what the obstacle type should be
      */
     void determineObstacleType();
@@ -178,11 +177,12 @@ public:
      * Returns the length of the obstacle
      *
      * Obstacle length is in this case defined as the distance between
-     * the leftmost and rightmost readings  
+     * the leftmost and rightmost readings
      *
      * @return the length of the obstacle
      */
-     // TODO: This is a terrible definition. A reading slightly to the right of the leftmost reading could have infited range
+    // TODO: This is a terrible definition. A reading slightly to the right of
+    // the leftmost reading could have infited range
     double getLength();
 
     /**
@@ -213,21 +213,23 @@ public:
      */
     Point getCenter();
 
-    // TODO: Write functions for modeling obstacles as circles and squares to reduce comparison times
-private:
+    // TODO: Write functions for modeling obstacles as circles and squares to
+    // reduce comparison times
+  private:
     /**
      * Merges a given set of readings into the obstacle
      *
      * @param readings the readings to be merged in
      */
-    void mergeInReadings(std::vector<Reading> &new_readings);
+    void mergeInReadings(std::vector<Reading>& new_readings);
 
     /**
      * Updates the center of the obstacle based on our current readings
      */
     void updateCenter();
     // TODO: we should maybe consider moving to storing obstacles as points
-    // The distances and angles of all the laser scan hits that comprise the object.
+    // The distances and angles of all the laser scan hits that comprise the
+    // object.
     // readings are stored in sorted order, from min to max angle.
     std::vector<Reading> readings;
 
@@ -240,4 +242,4 @@ private:
     double min_wall_length;
 };
 
-#endif //LIDAROBSTACLE_H
+#endif // LIDAROBSTACLE_H

@@ -18,9 +18,9 @@
 #include <LidarObstacle.h>
 
 class SlopeInterceptLine {
-public:
-    SlopeInterceptLine(double slope, double y_intercept) :
-            slope(slope), y_intercept(y_intercept) {}
+  public:
+    SlopeInterceptLine(double slope, double y_intercept)
+      : slope(slope), y_intercept(y_intercept) {}
 
     // TODO: DOC functions
     inline double getSlope() { return slope; }
@@ -38,7 +38,7 @@ public:
 
     inline double getYCoorAtX(double x) { return slope * x + y_intercept; }
 
-protected:
+  protected:
     double slope;
     double y_intercept;
 };
@@ -47,9 +47,9 @@ protected:
  * A line with a Correlation Coefficient
  */
 class LineOfBestFit : public SlopeInterceptLine {
-public:
-    LineOfBestFit(double slope, double y_intercept, double correlation) :
-            SlopeInterceptLine(slope, y_intercept), correlation(correlation) {}
+  public:
+    LineOfBestFit(double slope, double y_intercept, double correlation)
+      : SlopeInterceptLine(slope, y_intercept), correlation(correlation) {}
 
     // TODO: Add getter function and make private
     double correlation;
@@ -63,15 +63,19 @@ struct FiniteLine {
 };
 
 class LidarObstacleManager {
-public:
+  public:
     LidarObstacleManager();
 
-    LidarObstacleManager(double max_obstacle_merging_distance, double cone_grouping_tolerance,
-                         double max_distance_from_robot_accepted, double min_wall_length,
-                         double collision_distance, double front_angle,
-                         double side_angle_max, double side_angle_min,
-                         double region_fill_percentage, bool front_collision_only
-    );
+    LidarObstacleManager(double max_obstacle_merging_distance,
+                         double cone_grouping_tolerance,
+                         double max_distance_from_robot_accepted,
+                         double min_wall_length,
+                         double collision_distance,
+                         double front_angle,
+                         double side_angle_max,
+                         double side_angle_min,
+                         double region_fill_percentage,
+                         bool front_collision_only);
 
     /**
      * Merges or adds the given obstacle to the already saved ones
@@ -88,7 +92,7 @@ public:
      *
      * @param scan the scan to be merged in
      */
-    void addLaserScan(const sensor_msgs::LaserScan &scan);
+    void addLaserScan(const sensor_msgs::LaserScan& scan);
 
     /**
      * Determines whether there is an obstacle in front of the robot
@@ -96,7 +100,8 @@ public:
      * @param min_obstacle_distance the distance of obstacle in front to compare
      * @return true if there is an obstancle in front, false otherwise
      */
-    bool obstacleInFront(const sensor_msgs::LaserScan &scan, double min_obstacle_distance);
+    bool obstacleInFront(const sensor_msgs::LaserScan& scan,
+                         double min_obstacle_distance);
 
     /**
      * Clears all saved obstacles
@@ -120,7 +125,7 @@ public:
      *
      * @param points the points to fit the line to
      */
-    static LineOfBestFit getLineOfBestFit(const std::vector<Point> &points);
+    static LineOfBestFit getLineOfBestFit(const std::vector<Point>& points);
 
     LineOfBestFit getBestLine(bool lineToTheRight);
 
@@ -132,7 +137,8 @@ public:
      *
      * @return a vector of groups of points (as vectors)
      */
-    std::vector<std::vector<Point>> getPointGroupings(std::vector<Point> points, double tolerance);
+    std::vector<std::vector<Point>> getPointGroupings(std::vector<Point> points,
+                                                      double tolerance);
 
     /**
      * Determines the minimum distance between two obstacles
@@ -141,42 +147,49 @@ public:
      * @param obstacle2
      * @return the minimum distance between obstacle1 and obstacle2
      */
-    static double minDistanceBetweenObstacles(LidarObstacle obstacle1, LidarObstacle obstacle2);
+    static double minDistanceBetweenObstacles(LidarObstacle obstacle1,
+                                              LidarObstacle obstacle2);
 
     /**
-     * Gets all stored obstacles as a marker of points that can be rendered in RViz
+     * Gets all stored obstacles as a marker of points that can be rendered in
+     * RViz
      *
-     * @return all stored obstacles as a marker of points that can be rendered in RViz
+     * @return all stored obstacles as a marker of points that can be rendered
+     * in RViz
      */
-    // TODO: when we update lidarObstacle to be a bit more obstract, improve this as well
+    // TODO: when we update lidarObstacle to be a bit more obstract, improve
+    // this as well
     // TODO: to represent things like radius
     // TODO: TEST ME
     visualization_msgs::Marker getConeRVizMarker();
 
     /**
-     * Gets the lines determined from cones as a marker of lines that can be rendered in RViz
+     * Gets the lines determined from cones as a marker of lines that can be
+     * rendered in RViz
      *
-     * @return the lines determined from cones as a marker of lines that can be rendered in RViz
+     * @return the lines determined from cones as a marker of lines that can be
+     * rendered in RViz
      */
     // TODO: Can we add line endings?
     // TODO: TEST ME
     visualization_msgs::Marker getConeLinesRVizMarker();
 
     /**
-     * Gets the "best" line from all the cone lines as a marker we can visualize in RViz
+     * Gets the "best" line from all the cone lines as a marker we can visualize
+     * in RViz
      *
-     * @return the lines determined from cones as a marker that can be rendered in RViz
+     * @return the lines determined from cones as a marker that can be rendered
+     * in RViz
      */
     // TODO: Can we add line endings?
     // TODO: TEST ME
     // TODO: Add line_to_the_right to the constructor
-    visualization_msgs::Marker getBestConeLineRVizMarker(bool line_to_the_right);
+    visualization_msgs::Marker
+    getBestConeLineRVizMarker(bool line_to_the_right);
 
     bool collisionDetected();
 
-
-private:
-
+  private:
     // **** END ZONE COLLISION DETECTION ****
     // TODO: Move this to its own node later.
 
@@ -186,8 +199,10 @@ private:
     // If True, only uses front collision detection
     bool front_collision_only;
 
-    // The angle which defines the front region relative to the front of the robot
-    // e.g. If set to PI/2, the region extends from PI/4 to -PI/4 relative to a line
+    // The angle which defines the front region relative to the front of the
+    // robot
+    // e.g. If set to PI/2, the region extends from PI/4 to -PI/4 relative to a
+    // line
     //      extending from the front of the robot.
     double front_angle;
 
@@ -196,7 +211,8 @@ private:
     double side_angle_max;
     double side_angle_min;
 
-    // The percentage of the region to be filled before we consider it a collision
+    // The percentage of the region to be filled before we consider it a
+    // collision
     double region_fill_percentage;
 
     // ******************************
@@ -204,10 +220,12 @@ private:
     // All the obstacles we currently have
     std::vector<LidarObstacle> obstacles;
 
-    // The maximum distance between two obstacles for them to be considered the same
+    // The maximum distance between two obstacles for them to be considered the
+    // same
     double max_obstacle_merging_distance;
 
-    // The maximum distance a line can have from the robot on the y-axis before being thrown out
+    // The maximum distance a line can have from the robot on the y-axis before
+    // being thrown out
     double max_distance_from_robot_accepted;
 
     // The maximum permitted distance between cones in the same group
@@ -218,7 +236,6 @@ private:
 
     // True if there is an obstacle within collision_distance away
     bool collision_detected;
-
 };
 
-#endif //DRAG_RACE_LIDAROBSTACLEMANAGER_H
+#endif // DRAG_RACE_LIDAROBSTACLEMANAGER_H

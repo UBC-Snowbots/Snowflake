@@ -15,7 +15,7 @@
 #include <LidarObstacleManager.h>
 
 class DragRaceController {
-public:
+  public:
     /**
      * Empty Constructor
      */
@@ -33,9 +33,12 @@ public:
      * @param linear_vel_cap
      */
     DragRaceController(double targetDistance,
-                       bool lineToTheRight, double theta_scaling_multiplier,
-                       double angular_speed_multiplier, double linear_speed_multiplier,
-                       double angular_vel_cap, double linear_vel_cap);
+                       bool lineToTheRight,
+                       double theta_scaling_multiplier,
+                       double angular_speed_multiplier,
+                       double linear_speed_multiplier,
+                       double angular_vel_cap,
+                       double linear_vel_cap);
 
     /**
      * Determines the optimal movement to stay within target distance of
@@ -44,10 +47,10 @@ public:
      * @param longestConeLine
      * @return the optimal angular and linear acceleration.
      */
-    geometry_msgs::Twist determineDesiredMotion(LineOfBestFit longestConeLine, bool no_line_on_expected_side);
+    geometry_msgs::Twist determineDesiredMotion(LineOfBestFit longestConeLine,
+                                                bool no_line_on_expected_side);
 
-private:
-
+  private:
     /**
      * Finds the minimum distance from given line and the origin.
      *
@@ -70,8 +73,6 @@ private:
     double theta_scaling_multiplier;
     double angular_speed_multiplier;
     double linear_speed_multiplier;
-
 };
-
 
 #endif // DRAG_RACE_CONTROLLER_H

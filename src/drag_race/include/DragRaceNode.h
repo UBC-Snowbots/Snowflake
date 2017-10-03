@@ -15,33 +15,32 @@
 
 // ROS Includes
 // TODO: Sort me for neatness
-#include <ros/ros.h>
-#include <std_msgs/String.h>
-#include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Twist.h>
+#include <ros/ros.h>
+#include <sensor_msgs/LaserScan.h>
 #include <std_msgs/Bool.h>
+#include <std_msgs/String.h>
 
 // SB Includes
-#include <sb_utils.h>
-#include <LidarObstacleManager.h>
 #include <DragRaceController.h>
+#include <LidarObstacleManager.h>
+#include <sb_utils.h>
 
 class DragRaceNode {
-public:
-    DragRaceNode(int argc, char **argv, std::string node_name);
+  public:
+    DragRaceNode(int argc, char** argv, std::string node_name);
 
-private:
+  private:
     // TODO: Doc comment
-    void scanCallBack(const sensor_msgs::LaserScan::ConstPtr &scan);
+    void scanCallBack(const sensor_msgs::LaserScan::ConstPtr& scan);
 
-    void greenLightCallBack(const std_msgs::Bool &green_light_detected);
+    void greenLightCallBack(const std_msgs::Bool& green_light_detected);
 
     // Manages obstacles, including the cones and wall
     LidarObstacleManager obstacle_manager;
 
     // Manages line handling and movement
     DragRaceController drag_race_controller;
-
 
     // How far lines can be before being considered invalid
     double max_distance_from_robot_accepted;
@@ -95,4 +94,4 @@ private:
     ros::Publisher best_line_debug_publisher;
 };
 
-#endif //DRAG_RACE_NODE_DRAG_RACE_H
+#endif // DRAG_RACE_NODE_DRAG_RACE_H
