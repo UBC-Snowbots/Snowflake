@@ -1,8 +1,7 @@
 /*
  * Created By: Robyn Castro
  * Created On: June 15, 2017
- * Description: Anything green is mapped to white, everything
- *              else is mapped to black.
+ * Description: Filters an image in the HSV colourspace to a binary image
  *
  */
 

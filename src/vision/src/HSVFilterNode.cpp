@@ -1,7 +1,7 @@
 /*
  * Created By: Robyn Castro
  * Created On: June 17, 2017
- * Description: Filters out everything but green.
+ * Description: Filters an image in the HSV colourspace to a binary image
  *
  */
 
