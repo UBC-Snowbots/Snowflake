@@ -1,9 +1,9 @@
 /*
  * Created By: Gareth Ellis
- * Created On: July 16th, 2016
- * Description: An example node that subscribes to a topic publishing strings,
- *              and re-publishes everything it receives to another topic with
- *              a "!" at the end
+ * Created On: July ??, 2017
+ * Description: A node that runs a drag race outlined with cones,
+ *              starting when the green light is detected (a boolean topic)
+ *              stopping before the wall at the end of the drag strip
  */
 
 #include <DragRaceNode.h>
