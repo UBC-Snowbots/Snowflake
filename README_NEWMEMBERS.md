@@ -1,5 +1,5 @@
-# Tips and advice 
-for new members to help them get started.
+# Tips for New Software Members
+Tutorials and advice to help them get started.
 
 ## Terminal
 
