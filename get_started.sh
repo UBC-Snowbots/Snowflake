@@ -110,7 +110,7 @@ cd $DIR
 # Setup Snowbots Udev Rules  #
 ##############################
 cd $DIR
-./setup_udev_rules.sh
+./src/firmware/setup_udev_rules.sh
 
 echo "================================================================"
 echo "Finished first time installation and setup; you're good to go!"
