@@ -57,7 +57,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 ## Conventions
 
 ### Github Conventions
-- We follow the ["Feature Branch Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+- We follow the Forking Workflow: know what it is [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
     - To check that things are formatted properly, from the `Snowflake` folder run `./clang_format/check_formatting.sh`
