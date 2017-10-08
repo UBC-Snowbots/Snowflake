@@ -5,8 +5,6 @@
 Udev assigns the names specified in the rule file to the devices, which helps matching dev files with devices. More simply, udev rules allow us to guarantee that no matter what order we plug USB devices in, they will always be accessible at the same path in software.
 
 - Rule Writing Guideline
-	- Create file: `/etc/udev/rules.d/10-snowbots.rules` (where xx represent the priority; Here 10 is higher than 50, the default).
-	    - Note: this is done in the bash file already
 	- Write rules with match keys (helps identify devices) and assignment keys (assigns names/symlinks to identified devices)
 	    - common match keys: 
 	    	KERNEL - match against the kernel name for the device
