@@ -37,6 +37,12 @@ add_executable(ros_vision
 
 add_executable(camera src/camera_init.cpp)
 
+add_executable(circle_detection
+        src/circle_detection.cpp
+        src/CircleDetection.cpp
+        include/CircleDetection.h
+        )
+
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(drivers_node
 #   ${catkin_LIBRARIES}
@@ -46,6 +52,13 @@ target_link_libraries(ros_vision
     ${OpenCV_LIBS}
     ${sb_utils_LIBRARIES}
     )
+
+target_link_libraries(circle_detection
+        ${catkin_LIBRARIES}
+        ${OpenCV_LIBS}
+        ${sb_utils_LIBRARIES}
+        )
+
 target_link_libraries(camera ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 
@@ -53,8 +66,11 @@ target_link_libraries(camera ${catkin_LIBRARIES} ${OpenCV_LIBS})
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_utils_lib.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+if (CATKIN_ENABLE_TESTING)
+
+    # GTest
+    catkin_add_gtest(green-recognition-test test/green-recognition-test.cpp src/HSVFilter.cpp src/HSVFilterNode.cpp src/CircleDetection.cpp WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
+    target_link_libraries(green-recognition-test ${catkin_LIBRARIES})
+
+endif()
+
