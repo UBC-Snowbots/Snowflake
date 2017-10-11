@@ -18,6 +18,3 @@ cmake-build-debug
 *_REMOTE_*.txt
 *.orig
 
-# Symbols database for stuff like autocomplete in Vim
-compile_commands.json
-
