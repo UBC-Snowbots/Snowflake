@@ -57,11 +57,10 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 ## Conventions
 
 ### Github Conventions
-- We follow the ["Feature Branch Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+- We follow the Forking Workflow: know what it is [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
-    - To check that things are formatted properly, from the `Snowflake` folder run `./clang_format/check_formatting.sh`
-    - To reformat your code so that it's formatted properly, from the `Snowflake` folder run `./clang_format/fix_formatting.sh` (note that you may have to stage or commit any changes before this will work, this is to prevent you accidentally losing work)
+    - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
