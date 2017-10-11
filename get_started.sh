@@ -87,7 +87,7 @@ sudo apt-get install -y openjdk-8-jdk
 
 # Fetch and extract CLion
 echo "Fetching and extracting CLion"
-wget https://download.jetbrains.com/cpp/CLion-2017.1.1.tar.gz
+wget https://download.jetbrains.com/cpp/CLion-2017.2.3.tar.gz
 sudo tar xzf CLion*.tar.gz -C /usr/share
 rm CLion*.tar.gz
 
