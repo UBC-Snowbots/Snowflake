@@ -23,7 +23,7 @@ then
 fi
 
 # Copy the new snowbots udev rules to the rule folder
-sudo cp $CURR_DIR/src/firmware/10-snowbots.rules /etc/udev/rules.d/10-snowbots.rules
+sudo cp $CURR_DIR/10-snowbots.rules /etc/udev/rules.d/10-snowbots.rules
 
 echo "================================================================"
 echo "Finished Installing snowbots udev rules"
