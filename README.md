@@ -40,10 +40,11 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
     you will use this account to set up CLion later on_
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
-6. Clone this repository by running `git clone --recursive https://github.com/UBC-Snowbots/Snowflake.git ~/Snowflake`
-7. To start set-up run `cd ~/Snowflake && ./get_started.sh` **(Do not run this script as root)**
+6. Fork this repository by heading over to the GitHub page and click the fork button on the top right
+7. Clone your server-side repository from the terminal by running `git clone github.com:YOUR_USERNAME/Snowflake.git` **(YOUR_USERNAME is your github username)**
+8. To start set-up run `cd ~/Snowflake && ./get_started.sh` **(Do not run this script as root)**
     - _Just choose yes and enter your password when the terminal prompts you_ 
-8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/Snowflake && catkin_make` 
+9. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/Snowflake && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ### Important Notes:
