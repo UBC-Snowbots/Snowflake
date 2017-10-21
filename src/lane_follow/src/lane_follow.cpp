@@ -20,4 +20,3 @@ int main(int argc, char** argv) {
     // Once the node stops, return 0
     return 0;
 }
-

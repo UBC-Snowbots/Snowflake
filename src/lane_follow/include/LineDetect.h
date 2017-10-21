@@ -8,11 +8,11 @@
 #ifndef LANE_FOLLOW_LINEDETECT_H
 #define LANE_FOLLOW_LINEDETECT_H
 
-#include <opencv2/core/core.hpp>
 #include <iostream>
-#include <vector>
-#include <string>
+#include <opencv2/core/core.hpp>
 #include <stdio.h>
+#include <string>
+#include <vector>
 
 using namespace cv;
 
@@ -27,22 +27,16 @@ struct Polynomial {
 typedef std::vector<int> intVec;
 
 class Window {
-
-public:
+  public:
     int center;
     int width;
 
-    int getLeftSide() {
-        return (center - width/2);
-    }
-    int getRightSide() {
-        return (center + width/2);
-    }
+    int getLeftSide() { return (center - width / 2); }
+    int getRightSide() { return (center + width / 2); }
 };
 
 class LineDetect {
-
-public:
+  public:
     /**
      * Constructor
      */
@@ -56,25 +50,32 @@ public:
 
     std::pair<int, int> getBaseHistogramPeakPosition(intVec histogram);
 
-    std::vector <std::vector<cv::Point2d>> getLanePoints(cv::Mat& filteredImage, std::vector<Window> windows);
+    std::vector<std::vector<cv::Point2d>>
+    getLanePoints(cv::Mat& filteredImage, std::vector<Window> windows);
 
-    cv::Mat getWindowSlice(cv::Mat& filteredImage, Window window, int verticalSliceIndex);
+    cv::Mat getWindowSlice(cv::Mat& filteredImage,
+                           Window window,
+                           int verticalSliceIndex);
 
     int getWindowHistogramPeakPosition(intVec histogram);
 
-    std::vector<Polynomial> getLaneLines(std::vector <std::vector<cv::Point2d>> lanePoints);
+    std::vector<Polynomial>
+    getLaneLines(std::vector<std::vector<cv::Point2d>> lanePoints);
 
     Polynomial fitPolyLine(std::vector<cv::Point2d> points, int order);
 
-    static cv::Point2d getIntersection(Polynomial leftLine, Polynomial rightLine);
+    static cv::Point2d getIntersection(Polynomial leftLine,
+                                       Polynomial rightLine);
 
     static cv::Point2d getPerpendicularIntersection(Polynomial line);
 
     static double getAngleFromOriginToPoint(cv::Point2d point);
 
-    static cv::Point2d moveAwayFromLine(Polynomial line, double targetXDistance, double targetYDistance);
+    static cv::Point2d moveAwayFromLine(Polynomial line,
+                                        double targetXDistance,
+                                        double targetYDistance);
 
-private:
+  private:
     int white;
 
     int windowWidth;

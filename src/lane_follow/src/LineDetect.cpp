@@ -5,18 +5,16 @@
  * Usage: LaneFollow node instantiates this class to generate lane lines
  */
 
-#include <LineDetect.h>
 #include <Eigen/QR>
+#include <LineDetect.h>
 #include <opencv2/objdetect/objdetect.hpp>
 
 using namespace cv;
 
-LineDetect::LineDetect() : white(250),
-                           numVerticalSlice(10),
-                           degree(1) { }
+LineDetect::LineDetect() : white(250), numVerticalSlice(10), degree(1) {}
 
-std::vector<Polynomial> LineDetect::getLaneLines(std::vector <std::vector<cv::Point2d>> lanePoints) {
-
+std::vector<Polynomial>
+LineDetect::getLaneLines(std::vector<std::vector<cv::Point2d>> lanePoints) {
     std::vector<Polynomial> laneLines;
     Polynomial polyPoints;
 
@@ -29,11 +27,11 @@ std::vector<Polynomial> LineDetect::getLaneLines(std::vector <std::vector<cv::Po
 }
 
 std::vector<Window> LineDetect::getBaseWindows(cv::Mat& filteredImage) {
-
     windowWidth = filteredImage.cols / 4;
 
     intVec baseHistogram = this->getHistogram(filteredImage);
-    std::pair<int, int> peak = this->getBaseHistogramPeakPosition(baseHistogram);
+    std::pair<int, int> peak =
+    this->getBaseHistogramPeakPosition(baseHistogram);
 
     std::vector<Window> baseWindows;
     Window windowLeft{peak.first, windowWidth};
@@ -44,16 +42,13 @@ std::vector<Window> LineDetect::getBaseWindows(cv::Mat& filteredImage) {
     return baseWindows;
 }
 
-intVec LineDetect::getHistogram(cv::Mat &image) {
-
+intVec LineDetect::getHistogram(cv::Mat& image) {
     intVec histogram(image.cols, 0);
 
     for (int j = 0; j < image.rows; j++) {
         for (int i = 0; i < image.cols; i++) {
             int pixelValue = image.at<uchar>(j, i);
-            if (pixelValue >= white) {
-                histogram[i]++;
-            }
+            if (pixelValue >= white) { histogram[i]++; }
         }
     }
 
@@ -61,13 +56,12 @@ intVec LineDetect::getHistogram(cv::Mat &image) {
 }
 
 std::pair<int, int> LineDetect::getBaseHistogramPeakPosition(intVec histogram) {
-
     std::pair<int, int> peak(0, 0);
     int peakValue = 0;
 
     for (int i = 0; i < (int) (histogram.size() / 2.0); i++) {
         if (histogram[i] > peakValue) {
-            peakValue = histogram[i];
+            peakValue  = histogram[i];
             peak.first = i;
         }
     }
@@ -76,7 +70,7 @@ std::pair<int, int> LineDetect::getBaseHistogramPeakPosition(intVec histogram) {
 
     for (int i = (int) (histogram.size() / 2.0); i < histogram.size(); i++) {
         if (histogram[i] > peakValue) {
-            peakValue = histogram[i];
+            peakValue   = histogram[i];
             peak.second = i;
         }
     }
@@ -84,21 +78,23 @@ std::pair<int, int> LineDetect::getBaseHistogramPeakPosition(intVec histogram) {
     return peak;
 }
 
-std::vector <std::vector<cv::Point2d>> LineDetect::getLanePoints(cv::Mat &filteredImage, std::vector<Window> windows) {
+std::vector<std::vector<cv::Point2d>>
+LineDetect::getLanePoints(cv::Mat& filteredImage, std::vector<Window> windows) {
+    std::vector<std::vector<cv::Point2d>> lanePoints(
+    windows.size(), std::vector<cv::Point2d>());
 
-    std::vector <std::vector<cv::Point2d>> lanePoints(windows.size(), std::vector<cv::Point2d>());
-
-    for (int verticalSliceIndex = 0; verticalSliceIndex < numVerticalSlice; verticalSliceIndex++) {
+    for (int verticalSliceIndex = 0; verticalSliceIndex < numVerticalSlice;
+         verticalSliceIndex++) {
         for (int windowIndex = 0; windowIndex < windows.size(); windowIndex++) {
             Window window = windows.at(windowIndex);
-            cv::Mat windowSlice = this->getWindowSlice(filteredImage, window, verticalSliceIndex);
+            cv::Mat windowSlice =
+            this->getWindowSlice(filteredImage, window, verticalSliceIndex);
             intVec windowHistogram = this->getHistogram(windowSlice);
             int peak = this->getWindowHistogramPeakPosition(windowHistogram);
-            window.center = peak - windowSlice.cols/2 + window.center;
-            cv::Point2d point{
-                    (double) window.center,
-                    (double) (verticalSliceIndex * filteredImage.rows / numVerticalSlice)
-            };
+            window.center = peak - windowSlice.cols / 2 + window.center;
+            cv::Point2d point{(double) window.center,
+                              (double) (verticalSliceIndex *
+                                        filteredImage.rows / numVerticalSlice)};
             lanePoints[windowIndex].push_back(point);
         }
     }
@@ -106,25 +102,25 @@ std::vector <std::vector<cv::Point2d>> LineDetect::getLanePoints(cv::Mat &filter
     return lanePoints;
 }
 
-cv::Mat LineDetect::getWindowSlice(cv::Mat& filteredImage, Window window, int verticalSliceIndex) {
-
+cv::Mat LineDetect::getWindowSlice(cv::Mat& filteredImage,
+                                   Window window,
+                                   int verticalSliceIndex) {
     cv::Mat windowSlice = filteredImage(
-            Range(verticalSliceIndex * filteredImage.rows / numVerticalSlice,
-                  (verticalSliceIndex + 1) * filteredImage.rows / numVerticalSlice),
-            Range(window.getLeftSide(), window.getRightSide()));
+    Range(verticalSliceIndex * filteredImage.rows / numVerticalSlice,
+          (verticalSliceIndex + 1) * filteredImage.rows / numVerticalSlice),
+    Range(window.getLeftSide(), window.getRightSide()));
 
     return windowSlice;
 }
 
 int LineDetect::getWindowHistogramPeakPosition(intVec histogram) {
-
-    int peak = 0;
+    int peak      = 0;
     int peakValue = 0;
 
     for (int i = 0; i < (int) histogram.size(); i++) {
         if (histogram[i] > peakValue) {
             peakValue = histogram[i];
-            peak = i;
+            peak      = i;
         }
     }
 
@@ -132,7 +128,6 @@ int LineDetect::getWindowHistogramPeakPosition(intVec histogram) {
 }
 
 Polynomial LineDetect::fitPolyLine(std::vector<cv::Point2d> points, int order) {
-
     int moreOrder = order + 1;
     assert(points.size() >= moreOrder);
     assert(order <= 3);
@@ -151,8 +146,7 @@ Polynomial LineDetect::fitPolyLine(std::vector<cv::Point2d> points, int order) {
 
     // create matrix
     for (size_t i = 0; i < points.size(); i++)
-        for (size_t j = 0; j < moreOrder; j++)
-            A(i, j) = pow((xv.at(i)), j);
+        for (size_t j = 0; j < moreOrder; j++) A(i, j) = pow((xv.at(i)), j);
 
     // solve for linear least squares fit
     result = A.householderQr().solve(yvMapped);
@@ -168,8 +162,8 @@ Polynomial LineDetect::fitPolyLine(std::vector<cv::Point2d> points, int order) {
         return Polynomial{0, 0, result[1], result[0]};
 }
 
-cv::Point2d LineDetect::getIntersection(Polynomial leftLine, Polynomial rightLine) {
-
+cv::Point2d LineDetect::getIntersection(Polynomial leftLine,
+                                        Polynomial rightLine) {
     // Isolate slopes
     double combinedSlope = leftLine.c - rightLine.c;
 
@@ -190,43 +184,48 @@ cv::Point2d LineDetect::getIntersection(Polynomial leftLine, Polynomial rightLin
 }
 
 double LineDetect::getAngleFromOriginToPoint(cv::Point2d point) {
-
     double dy = point.y;
     double dx = point.x;
 
     double angle = atan(dy / dx);
 
-
     // If the endpoint is behind and to the left
     if (dx < 0 && dy > 0) angle += M_PI;
-        // If the endpoint is behind and to the right
-    else if (dx < 0 && dy < 0) angle -= M_PI;
+    // If the endpoint is behind and to the right
+    else if (dx < 0 && dy < 0)
+        angle -= M_PI;
 
     return angle;
 }
 
-cv::Point2d LineDetect::moveAwayFromLine(Polynomial line, double distanceAwayFromRobot, double distanceAwayFromLine) {
-
+cv::Point2d LineDetect::moveAwayFromLine(Polynomial line,
+                                         double distanceAwayFromRobot,
+                                         double distanceAwayFromLine) {
     cv::Point2d targetPoint;
 
     // Get parallel line closer to the middle of the course.
     Polynomial targetParallelLine;
     targetParallelLine.c = line.c;
-    targetParallelLine.d = line.d - distanceAwayFromLine * line.d / fabs(line.d);
+    targetParallelLine.d =
+    line.d - distanceAwayFromLine * line.d / fabs(line.d);
 
-    cv::Point2d perpendicularIntersection = getPerpendicularIntersection(targetParallelLine);
+    cv::Point2d perpendicularIntersection =
+    getPerpendicularIntersection(targetParallelLine);
 
     double distanceToPerpendicularIntersection = sqrt(
-            pow(perpendicularIntersection.x, 2) + pow(perpendicularIntersection.y, 2));
+    pow(perpendicularIntersection.x, 2) + pow(perpendicularIntersection.y, 2));
 
     // cos(theta) = A/H
-    double scalarProjectionAngle = acos(distanceToPerpendicularIntersection / distanceAwayFromRobot);
+    double scalarProjectionAngle =
+    acos(distanceToPerpendicularIntersection / distanceAwayFromRobot);
 
     // tan(theta) = O/A
-    double anglePerpendicularIntersection = atan(perpendicularIntersection.x / perpendicularIntersection.y);
+    double anglePerpendicularIntersection =
+    atan(perpendicularIntersection.x / perpendicularIntersection.y);
 
     // anglePerpendicularIntersection + angleHeading = scalarProjectionAngle
-    double angleHeading = scalarProjectionAngle - anglePerpendicularIntersection;
+    double angleHeading =
+    scalarProjectionAngle - anglePerpendicularIntersection;
 
     // Polar coordinates
     targetPoint.x = distanceAwayFromRobot * cos(angleHeading);
@@ -236,7 +235,6 @@ cv::Point2d LineDetect::moveAwayFromLine(Polynomial line, double distanceAwayFro
 }
 
 cv::Point2d LineDetect::getPerpendicularIntersection(Polynomial line) {
-
     cv::Point2d perpendicularIntersection;
 
     double negReciprocal = -1.0 / line.c;
