@@ -106,6 +106,12 @@ sudo ln -s -f /usr/share/clion*/bin/clion.sh /usr/local/bin/clion
 cd $DIR
 ./install_dependencies.sh
 
+##############################
+# Setup Snowbots Udev Rules  #
+##############################
+cd $DIR
+./src/firmware/setup_udev_rules.sh
+
 echo "================================================================"
 echo "Finished first time installation and setup; you're good to go!"
 echo "If you're working with arduino, or any usb devices, please log"
