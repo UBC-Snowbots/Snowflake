@@ -1,0 +1,24 @@
+
+<launch>
+
+    <!-- Start the camera -->
+    <node name="camera" pkg="vision" type="camera" output="screen"/>
+
+    <!-- Start lane detection -->
+    <include file="$(find vision)/launch/lane_detection.launch"/>
+
+    <!-- Start the steering driver to control the robot -->
+    <include file="$(find drivers)/launch/steering_driver.launch"/>
+
+    <!-- Start the drag race controller -->
+    <node name="lane_follow" type="lane_follow" pkg="lane_follow" output="screen">
+        <!-- The number of consecutive frames that must contain a green
+            light before we start sending commands to the wheels -->
+        <rosparam param="target_x_distance"> 0.5 </rosparam>
+        <rosparam param="target_y_distance"> 0.5 </rosparam>
+        <rosparam param="angular_speed_multiplier"> 1 </rosparam>
+        <rosparam param="linear_speed_multiplier"> 1 </rosparam>
+        <rosparam param="angular_vel_cap"> 0.75 </rosparam>
+        <rosparam param="linear_vel_cap"> 1 </rosparam>
+    </node>
+</launch>
