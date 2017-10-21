@@ -49,6 +49,7 @@ add_executable(lane_follow
         src/LaneFollow.cpp
         include/LineDetect.h
         include/LaneFollow.h
+        ../vision/include/IPM.h
         )
 
 ## Specify libraries to link a library or executable target against

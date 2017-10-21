@@ -19,7 +19,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 
-#include <IPM.h>
+#include "../../vision/include/IPM.h"
 #include <sb_utils.h>
 
 #include <cv_bridge/cv_bridge.h>

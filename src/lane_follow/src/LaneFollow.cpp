@@ -70,8 +70,6 @@ void LaneFollow::subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg) {
     stayInLane.angular.x = 0;
     stayInLane.angular.y = 0;
 
-    LineDetect ld;
-
     cv::Mat filteredImage = this->rosToMat(msg);
 
     // Initialize ipm filter
