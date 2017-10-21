@@ -13,14 +13,22 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(OpenCV REQUIRED)
 find_package(sb_utils REQUIRED)
 find_package(vision REQUIRED)
+<<<<<<< HEAD
 find_package(Eigen3 REQUIRED)
+=======
+find_package(Eigen REQUIRED)
+>>>>>>> 879dde7403c75518c95f5ac6b990cda0d678f8dd
 
 add_definitions(-std=c++14)
 
 catkin_package(
         #  INCLUDE_DIRS include
         DEPENDS
+<<<<<<< HEAD
         EIGEN3
+=======
+        eigen
+>>>>>>> 879dde7403c75518c95f5ac6b990cda0d678f8dd
 )
 
 
