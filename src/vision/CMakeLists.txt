@@ -29,7 +29,7 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(drivers_node src/drivers_node.cpp)
-add_executable(HSVFilter
+add_executable(hsv_filter
         src/HSVFilter.cpp
         src/hsv_filter.cpp
         src/HSVFilterNode.cpp
@@ -37,7 +37,7 @@ add_executable(HSVFilter
         include/HSVFilterNode.h
         )
 
-add_executable(IPMFilter
+add_executable(ipm_filter
         src/IPMFilter.cpp
         src/ipm_filter.cpp
         src/IPMFilterNode.cpp
@@ -53,13 +53,13 @@ add_executable(camera src/camera_init.cpp)
 # target_link_libraries(drivers_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(HSVFilter
+target_link_libraries(hsv_filter
         ${catkin_LIBRARIES}
         ${OpenCV_LIBS}
         ${sb_utils_LIBRARIES}
         )
 
-target_link_libraries(IPMFilter
+target_link_libraries(ipm_filter
         ${catkin_LIBRARIES}
         ${OpenCV_LIBS}
         ${sb_utils_LIBRARIES}

@@ -10,7 +10,7 @@
 
 int main(int argc, char** argv) {
     // Setup your ROS node
-    std::string node_name = "IPMFilter";
+    std::string node_name = "ipm_filter";
     // Create an instance of your class
     IPMFilterNode ipm_filter(argc, argv, node_name);
     // Start up ROS, this will continue to run until the node is killed
