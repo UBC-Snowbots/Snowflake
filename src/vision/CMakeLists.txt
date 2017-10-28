@@ -9,7 +9,9 @@ find_package(sb_utils REQUIRED)
 add_definitions(-std=c++14)
 
 catkin_package(
-    #  INCLUDE_DIRS include
+    INCLUDE_DIRS include
+    LIBRARIES ipm
+    CATKIN_DEPENDS roscpp
 )
 
 
@@ -26,6 +28,11 @@ include_directories(
     ${sb_utils_INCLUDE_DIRS}
     ./include
 )
+
+## Declare a C++ library
+add_library(ipm
+        src/IPM.cpp src/IPMFilter.cpp
+        )
 
 ## Declare a C++ executable
 # add_executable(drivers_node src/drivers_node.cpp)
