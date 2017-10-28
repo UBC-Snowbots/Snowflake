@@ -1,0 +1,11 @@
+<launch>
+
+    <!-- Launch Steering Driver -->
+    <node name="steering_driver" pkg="drivers" type="steering_driver" output="screen">
+        <!-- TODO: Descriptive COmments -->
+        <rosparam param="port"> "/dev/ttyACM1" </rosparam>
+        <rosparam param="max_abs_linear_speed"> 2 </rosparam>
+        <rosparam param="max_abs_angular_speed"> 2 </rosparam>
+    </node>
+
+</launch>
