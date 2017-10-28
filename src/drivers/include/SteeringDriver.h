@@ -23,10 +23,10 @@
 #include <SerialStream.h>
 
 class SteeringDriver {
-public:
-    SteeringDriver(int argc, char **argv, std::string node_name);
+  public:
+    SteeringDriver(int argc, char** argv, std::string node_name);
 
-private:
+  private:
     void twistCallback(geometry_msgs::Twist::ConstPtr twist_msg);
 
     ros::Subscriber twist_subscriber;
@@ -42,4 +42,4 @@ private:
     // arduino (integer values between 0 and 255)
     double max_abs_linear_speed, max_abs_angular_speed;
 };
-#endif //DRIVERS_STEERING_DRIVER_H
+#endif // DRIVERS_STEERING_DRIVER_H
