@@ -40,10 +40,11 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
     you will use this account to set up CLion later on_
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
-6. Clone this repository by running `git clone --recursive https://github.com/UBC-Snowbots/Snowflake.git ~/Snowflake`
-7. To start set-up run `cd ~/Snowflake && ./get_started.sh` **(Do not run this script as root)**
+6. Fork this repository by heading over to the GitHub page and click the fork button on the top right
+7. Clone your server-side repository from the terminal by running `git clone github.com:YOUR_USERNAME/Snowflake.git` **(YOUR_USERNAME is your github username)**
+8. To start set-up run `cd ~/Snowflake && ./get_started.sh` **(Do not run this script as root)**
     - _Just choose yes and enter your password when the terminal prompts you_ 
-8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/Snowflake && catkin_make` 
+9. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/Snowflake && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ### Important Notes:
@@ -57,11 +58,10 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 ## Conventions
 
 ### Github Conventions
-- We follow the ["Feature Branch Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+- We follow the Forking Workflow: know what it is [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
-    - To check that things are formatted properly, from the `Snowflake` folder run `./clang_format/check_formatting.sh`
-    - To reformat your code so that it's formatted properly, from the `Snowflake` folder run `./clang_format/fix_formatting.sh` (note that you may have to stage or commit any changes before this will work, this is to prevent you accidentally losing work)
+    - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
