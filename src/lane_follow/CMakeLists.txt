@@ -70,12 +70,12 @@ target_link_libraries(lane_follow
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-if (CATKIN_ENABLE_TESTING)
-
-    # Adding gtests to the package
-    catkin_add_gtest(line-detect-test test/line-detect-test.cpp src/LineDetect.cpp src/LaneFollow.cpp ../vision/src/IPM.cpp)
-    catkin_add_gtest(lane-follow-test test/lane-follow-test.cpp src/LaneFollow.cpp src/LineDetect.cpp ../vision/src/IPM.cpp)
-    target_link_libraries(lane-follow-test ${catkin_LIBRARIES})
-    target_link_libraries(line-detect-test ${catkin_LIBRARIES})
-
-endif ()
+#if (CATKIN_ENABLE_TESTING)
+#
+#    # Adding gtests to the package
+#    catkin_add_gtest(line-detect-test test/line-detect-test.cpp src/LineDetect.cpp src/LaneFollow.cpp ../vision/src/IPM.cpp)
+#    catkin_add_gtest(lane-follow-test test/lane-follow-test.cpp src/LaneFollow.cpp src/LineDetect.cpp ../vision/src/IPM.cpp)
+#    target_link_libraries(lane-follow-test ${catkin_LIBRARIES})
+#    target_link_libraries(line-detect-test ${catkin_LIBRARIES})
+#
+#endif ()
