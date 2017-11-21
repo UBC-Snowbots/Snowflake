@@ -20,6 +20,8 @@ public:
      *  @param color the color of the points
      *  @param frame_id the frame id
      *  @param ns the namespace
+     *
+     *  @return an rviz marker
      */
     static visualization_msgs::Marker displayPoints(std::vector<geometry_msgs::Point> points,
                                                     visualization_msgs::Marker::_color_type color,
@@ -72,8 +74,6 @@ private:
      *  @param marker the marker that will have its header initialised
      *  @param frame_id the frame id that the marker will get
      *  @param ns the name space that the marker will get
-     *
-     *  @return nothing
      */
     static void initialiseMarkerHeader(visualization_msgs::Marker &marker, std::string frame_id, std::string ns);
 
