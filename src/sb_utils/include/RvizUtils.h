@@ -69,6 +69,11 @@ public:
 private:
 
     /**
+     *  Private constructor (No reason for someone to make an instance of this class).
+     */
+    RvizUtils();
+
+    /**
      *  Sets the header information value
      *
      *  @param marker the marker that will have its header initialised
@@ -76,7 +81,6 @@ private:
      *  @param ns the name space that the marker will get
      */
     static void initialiseMarkerHeader(visualization_msgs::Marker &marker, std::string frame_id, std::string ns);
-
 };
 
 
