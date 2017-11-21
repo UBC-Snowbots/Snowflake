@@ -11,28 +11,35 @@
 #include <geometry_msgs/Point.h>
 #include <visualization_msgs/Marker.h>
 
-using namespace std;
-using namespace visualization_msgs;
-
 class RvizUtils {
 public:
     /**
-     * Turn the points into a marker for rviz
+     *  Turn points into a marker for rviz
      *
-     * @param points the points to be converted
-     * @param color the color of the points
+     *  @param points the points to be converted
+     *  @param color the color of the points
+     *  @param frame_id the frame id
+     *  @param ns the namespace
      */
-    static Marker displayPoints(vector<geometry_msgs::Point> points, Marker::_color_type color,
-                                Marker::_scale_type scale, string frame_id, string ns);
+    static visualization_msgs::Marker displayPoints(std::vector<geometry_msgs::Point> points,
+                                                    visualization_msgs::Marker::_color_type color,
+                                                    visualization_msgs::Marker::_scale_type scale, std::string frame_id,
+                                                    std::string ns);
 
     /**
-     * Turn the point into a marker for rviz
+     *  Turn a point into a marker for rviz
      *
-     * @param point the points to be converted
-     * @param color the color of the point
+     *  @param point the point to be converted
+     *  @param color the color of the point
+     *  @param frame_id the frame id
+     *  @param ns the namespace
+     * 
+     *  @return an rviz marker
      */
-    static Marker displayPoint(geometry_msgs::Point point, Marker::_color_type color, Marker::_scale_type scale,
-                               string frame_id, string ns);
+    static visualization_msgs::Marker displayPoint(geometry_msgs::Point point,
+                                                   visualization_msgs::Marker::_color_type color,
+                                                   visualization_msgs::Marker::_scale_type scale,
+                                                   std::string frame_id, std::string ns);
 
     /**
      *  Create a marker color type based on given red, green, blue, alpha values.
@@ -41,23 +48,34 @@ public:
      *  @param g green
      *  @param b blue
      *  @param a alpha
+     *
+     *  @return a marker color type
      */
-    static Marker::_color_type createMarkerColor(float r, float g, float b, float a);
+    static visualization_msgs::Marker::_color_type createMarkerColor(float r, float g, float b, float a);
 
     /**
      *  Create a marker scale type based on given x, y, and z scales.
      *
+     *  @param x the x scale
+     *  @param y the y scale
+     *  @param z the z scale
+     *
+     *  @return a marker scale type
      */
-    static Marker::_scale_type createrMarkerScale(float x, float y, float z);
+    static visualization_msgs::Marker::_scale_type createrMarkerScale(float x, float y, float z);
+
 private:
 
     /**
-     * Sets the header information value
+     *  Sets the header information value
      *
-     * @param marker
-     * @param color
+     *  @param marker the marker that will have its header initialised
+     *  @param frame_id the frame id that the marker will get
+     *  @param ns the name space that the marker will get
+     *
+     *  @return nothing
      */
-    static void initialiseMarkerHeader(Marker &marker, string frame_id, string ns);
+    static void initialiseMarkerHeader(visualization_msgs::Marker &marker, std::string frame_id, std::string ns);
 
 };
 

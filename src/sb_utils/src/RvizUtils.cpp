@@ -6,6 +6,7 @@
  */
 #include <RvizUtils.h>
 
+using namespace std;
 using namespace visualization_msgs;
 
 Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points, Marker::_color_type color,
@@ -59,6 +60,7 @@ Marker::_scale_type RvizUtils::createrMarkerScale(float x, float y, float z) {
     return scale;
 
 }
+
 void RvizUtils::initialiseMarkerHeader(Marker &marker, string frame_id, string ns) {
     // Set up frame id and namespace
     marker.header.frame_id = frame_id;
