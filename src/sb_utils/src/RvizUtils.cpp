@@ -8,6 +8,7 @@
 
 using namespace std;
 using namespace visualization_msgs;
+using namespace snowbots;
 
 Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points, Marker::_color_type color,
                                 Marker::_scale_type scale, string frame_id, string ns) {
