@@ -10,8 +10,11 @@ using namespace std;
 using namespace visualization_msgs;
 using namespace snowbots;
 
-Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points, Marker::_color_type color,
-                                Marker::_scale_type scale, string frame_id, string ns) {
+Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points,
+                                Marker::_color_type color,
+                                Marker::_scale_type scale,
+                                string frame_id,
+                                string ns) {
     Marker marker;
 
     initialiseMarkerHeader(marker, frame_id, ns);
@@ -26,8 +29,11 @@ Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points, Marker::_co
     return marker;
 }
 
-Marker RvizUtils::displayPoint(geometry_msgs::Point point, Marker::_color_type color,
-                               Marker::_scale_type scale, string frame_id, string ns) {
+Marker RvizUtils::displayPoint(geometry_msgs::Point point,
+                               Marker::_color_type color,
+                               Marker::_scale_type scale,
+                               string frame_id,
+                               string ns) {
     Marker marker;
 
     initialiseMarkerHeader(marker, frame_id, ns);
@@ -42,7 +48,8 @@ Marker RvizUtils::displayPoint(geometry_msgs::Point point, Marker::_color_type c
     return marker;
 }
 
-Marker::_color_type RvizUtils::createMarkerColor(float r, float g, float b, float a) {
+Marker::_color_type
+RvizUtils::createMarkerColor(float r, float g, float b, float a) {
     Marker::_color_type color;
     color.r = r;
     color.g = g;
@@ -59,18 +66,19 @@ Marker::_scale_type RvizUtils::createrMarkerScale(float x, float y, float z) {
     scale.z = z;
 
     return scale;
-
 }
 
-void RvizUtils::initialiseMarkerHeader(Marker &marker, string frame_id, string ns) {
+void RvizUtils::initialiseMarkerHeader(Marker& marker,
+                                       string frame_id,
+                                       string ns) {
     // Set up frame id and namespace
     marker.header.frame_id = frame_id;
-    marker.ns = ns;
+    marker.ns              = ns;
 
     // Set up other values (TODO: Find out what these values do)
-    marker.type = Marker::POINTS;
-    marker.header.stamp = ros::Time::now();
-    marker.action = Marker::ADD;
+    marker.type               = Marker::POINTS;
+    marker.header.stamp       = ros::Time::now();
+    marker.action             = Marker::ADD;
     marker.pose.orientation.w = 1.0;
-    marker.id = 0;
+    marker.id                 = 0;
 }
