@@ -11,9 +11,8 @@
 #include <geometry_msgs/Point.h>
 #include <visualization_msgs/Marker.h>
 
-namespace snowbots {
-class RvizUtils {
-  public:
+
+namespace RvizUtils {
     /**
      *  Turn points into a marker for rviz
      *
@@ -24,7 +23,7 @@ class RvizUtils {
      *
      *  @return an rviz marker
      */
-    static visualization_msgs::Marker
+    visualization_msgs::Marker
     displayPoints(std::vector<geometry_msgs::Point> points,
                   visualization_msgs::Marker::_color_type color,
                   visualization_msgs::Marker::_scale_type scale,
@@ -41,7 +40,7 @@ class RvizUtils {
      *
      *  @return an rviz marker
      */
-    static visualization_msgs::Marker
+    visualization_msgs::Marker
     displayPoint(geometry_msgs::Point point,
                  visualization_msgs::Marker::_color_type color,
                  visualization_msgs::Marker::_scale_type scale,
@@ -59,7 +58,7 @@ class RvizUtils {
      *
      *  @return a marker color type
      */
-    static visualization_msgs::Marker::_color_type
+    visualization_msgs::Marker::_color_type
     createMarkerColor(float r, float g, float b, float a);
 
     /**
@@ -71,15 +70,12 @@ class RvizUtils {
      *
      *  @return a marker scale type
      */
-    static visualization_msgs::Marker::_scale_type
+    visualization_msgs::Marker::_scale_type
     createrMarkerScale(float x, float y, float z);
 
-  private:
-    /**
-     *  Private constructor (No reason for someone to make an instance of this
-     * class).
-     */
-    RvizUtils();
+
+
+    /* HELPER FUNCTIONS */
 
     /**
      *  Sets the header information value
@@ -88,9 +84,8 @@ class RvizUtils {
      *  @param frame_id the frame id that the marker will get
      *  @param ns the name space that the marker will get
      */
-    static void initialiseMarkerHeader(visualization_msgs::Marker& marker,
+    void initialiseMarkerHeader(visualization_msgs::Marker& marker,
                                        std::string frame_id,
                                        std::string ns);
-};
 };
 #endif // HOLE_TRACKER_RVIZUTILS_H
