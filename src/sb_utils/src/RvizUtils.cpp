@@ -71,7 +71,6 @@ snowbots::rviz_utils::createrMarkerScale(float x, float y, float z) {
 void snowbots::rviz_utils::initialiseMarkerHeader(Marker& marker,
                                                   string frame_id,
                                                   string ns) {
-
     // Set up frame id and namespace
     marker.header.frame_id = frame_id;
     marker.ns              = ns;
