@@ -6,8 +6,11 @@ project(sb_gazebo)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
+  tf2
   tf2_ros
+  tf2_msgs
   tf2_sensor_msgs
+  geometry_msgs
 )
 
 find_package(sb_utils REQUIRED)
