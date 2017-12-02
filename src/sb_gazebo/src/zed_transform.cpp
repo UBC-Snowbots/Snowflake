@@ -5,9 +5,9 @@
  *              it's current frame to a given frame
  */
 
+#include <geometry_msgs/TransformStamped.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <geometry_msgs/TransformStamped.h>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_sensor_msgs/tf2_sensor_msgs.h>
 
@@ -23,8 +23,7 @@ void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
         sensor_msgs::PointCloud2 output;
         // Transform the pointcloud to the requested frame
         geometry_msgs::TransformStamped tf_stamped = tf_buffer.lookupTransform(
-               msg->header.frame_id, output_frame, ros::Time(0), ros::Duration(1.0)
-        );
+        msg->header.frame_id, output_frame, ros::Time(0), ros::Duration(1.0));
         tf2::doTransform(*msg, output, tf_stamped);
 
         // Publish the transformed pointcloud
