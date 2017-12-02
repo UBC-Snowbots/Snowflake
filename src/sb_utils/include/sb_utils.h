@@ -69,21 +69,4 @@ bool SB_getParam(ros::NodeHandle& nh, const std::string& param_name, T& param_va
     return true;
 }
 
-/**
- * Transforms a given message from it's current frame to another frame
- *
- * @param input the message to be transformed
- * @param output the transformed message will be placed in this
- * @param output_frame the frame to transform the input to
- */
-template <typename T>
-void SB_doTransform(const T& input, T& output, std::string output_frame){
-    tf2_ros::Buffer tfBuffer;
-    tf2_ros::TransformListener tfListener(tfBuffer);
-    geometry_msgs::TransformStamped transformStamped = tfBuffer.lookupTransform(
-            input.header.frame_id, output_frame, ros::Time(0), ros::Duration(1.0)
-    );
-    tf2::doTransform(input, output, transformStamped);
-}
-
 #endif //UTILS_UTILS_H
