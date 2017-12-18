@@ -1,7 +1,7 @@
 /*
  * Created By: Marcus Swift
  * Created On: November 20th, 2017
- * Description: Tests for EKF
+ * Description: Unit tests for EKF
  */
 
 #include <EKF.h>
