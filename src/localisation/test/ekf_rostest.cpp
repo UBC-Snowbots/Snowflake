@@ -107,8 +107,8 @@ TEST_F(EKFTest, testEKF) {
         ros::spinOnce();
     }
 
-    EXPECT_NEAR(x, pose_data.position.x, 150);
-    EXPECT_NEAR(y, pose_data.position.y, 150);
+    EXPECT_NEAR(x, pose_data.position.x, 200);
+    EXPECT_NEAR(y, pose_data.position.y, 200);
 
     // rotate to the East
     ang_vel          = -(1. / 16.) * M_PI;
@@ -146,8 +146,8 @@ TEST_F(EKFTest, testEKF) {
         ros::spinOnce();
     }
 
-    EXPECT_NEAR(x, pose_data.position.x, 150);
-    EXPECT_NEAR(y, pose_data.position.y, 150);
+    EXPECT_NEAR(x, pose_data.position.x, 200);
+    EXPECT_NEAR(y, pose_data.position.y, 200);
 
     // travel east for 30 seconds
     ang_vel          = 0;
@@ -185,8 +185,8 @@ TEST_F(EKFTest, testEKF) {
         ros::spinOnce();
     }
 
-    EXPECT_NEAR(x, pose_data.position.x, 150);
-    EXPECT_NEAR(y, pose_data.position.y, 150);
+    EXPECT_NEAR(x, pose_data.position.x, 200);
+    EXPECT_NEAR(y, pose_data.position.y, 200);
 
     // rotate to face the south west
     ang_vel          = (1. / 8.) * M_PI;
@@ -224,8 +224,8 @@ TEST_F(EKFTest, testEKF) {
         ros::spinOnce();
     }
 
-    EXPECT_NEAR(x, pose_data.position.x, 150);
-    EXPECT_NEAR(y, pose_data.position.y, 150);
+    EXPECT_NEAR(x, pose_data.position.x, 200);
+    EXPECT_NEAR(y, pose_data.position.y, 200);
 
     // travel south west for 40 seconds
     ang_vel          = 0;

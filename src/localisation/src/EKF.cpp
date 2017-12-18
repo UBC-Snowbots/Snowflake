@@ -74,8 +74,7 @@ void EKF::encoderCallBack(const nav_msgs::Odometry::ConstPtr& encoder_message) {
     double angle =
     quaternionToAngle(bot_position.orientation);      // bot's current angle
     double speed = encoder_data.twist.twist.linear.x; // bot's current speed
-    double dt = 1;
-    // double dt = ros::Time::now().toSec() - time; //set change in time to 1
+    double dt = ros::Time::now().toSec() - time; //set change in time to 1
     // for rostest
     time += dt;
 

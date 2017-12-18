@@ -80,7 +80,7 @@ class EKF {
     Matrix2d pu{
     (Matrix2d() << sdev_speed * sdev_speed, 0, 0, sdev_gyro* sdev_gyro)
     .finished()};
-    // find out!!!
+    // observation matrix
     Matrix3d h{(Matrix3d() << 1, 0, 0, 0, 1, 0, 0, 0, 1).finished()};
     // covariance of the gps position measurements and the imu orientation
     // measurement
