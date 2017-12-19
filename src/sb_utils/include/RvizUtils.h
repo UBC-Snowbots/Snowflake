@@ -42,7 +42,6 @@ namespace rviz_utils {
      *  @return an rviz marker
      */
     visualization_msgs::Marker
-
     displayPoint(geometry_msgs::Point point,
                  visualization_msgs::Marker::_color_type color,
                  visualization_msgs::Marker::_scale_type scale,

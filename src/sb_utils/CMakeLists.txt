@@ -65,6 +65,6 @@ if (CATKIN_ENABLE_TESTING)
     find_package(rostest REQUIRED)
     # name the test and link it to the .test file and the .cpp file itself, this will allow
     # "catkin_make run_tests" to be able to find and run this rostest
-    add_rostest_gtest(rviz_utils_rostest test/rviz_utils_test.test test/rviz-utils-rostest.cpp src/RvizUtils.cpp)
+    add_rostest_gtest(rviz_utils_rostest test/rviz_utils_rostest.test test/rviz-utils-rostest.cpp src/RvizUtils.cpp)
     target_link_libraries(rviz_utils_rostest ${catkin_LIBRARIES})
 endif()
