@@ -8,13 +8,12 @@
 
 using namespace std;
 using namespace visualization_msgs;
-using namespace snowbots;
 
-Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points,
-                                Marker::_color_type color,
-                                Marker::_scale_type scale,
-                                string frame_id,
-                                string ns) {
+Marker snowbots::rviz_utils::displayPoints(vector<geometry_msgs::Point> points,
+                                           Marker::_color_type color,
+                                           Marker::_scale_type scale,
+                                           string frame_id,
+                                           string ns) {
     Marker marker;
 
     initialiseMarkerHeader(marker, frame_id, ns);
@@ -29,11 +28,11 @@ Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points,
     return marker;
 }
 
-Marker RvizUtils::displayPoint(geometry_msgs::Point point,
-                               Marker::_color_type color,
-                               Marker::_scale_type scale,
-                               string frame_id,
-                               string ns) {
+Marker snowbots::rviz_utils::displayPoint(geometry_msgs::Point point,
+                                          Marker::_color_type color,
+                                          Marker::_scale_type scale,
+                                          string frame_id,
+                                          string ns) {
     Marker marker;
 
     initialiseMarkerHeader(marker, frame_id, ns);
@@ -49,7 +48,7 @@ Marker RvizUtils::displayPoint(geometry_msgs::Point point,
 }
 
 Marker::_color_type
-RvizUtils::createMarkerColor(float r, float g, float b, float a) {
+snowbots::rviz_utils::createMarkerColor(float r, float g, float b, float a) {
     Marker::_color_type color;
     color.r = r;
     color.g = g;
@@ -59,7 +58,8 @@ RvizUtils::createMarkerColor(float r, float g, float b, float a) {
     return color;
 }
 
-Marker::_scale_type RvizUtils::createrMarkerScale(float x, float y, float z) {
+Marker::_scale_type
+snowbots::rviz_utils::createrMarkerScale(float x, float y, float z) {
     Marker::_scale_type scale;
     scale.x = x;
     scale.y = y;
@@ -68,9 +68,9 @@ Marker::_scale_type RvizUtils::createrMarkerScale(float x, float y, float z) {
     return scale;
 }
 
-void RvizUtils::initialiseMarkerHeader(Marker& marker,
-                                       string frame_id,
-                                       string ns) {
+void snowbots::rviz_utils::initialiseMarkerHeader(Marker& marker,
+                                                  string frame_id,
+                                                  string ns) {
     // Set up frame id and namespace
     marker.header.frame_id = frame_id;
     marker.ns              = ns;

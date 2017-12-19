@@ -60,7 +60,11 @@ target_link_libraries(sb_utils ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_utils_lib.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+if (CATKIN_ENABLE_TESTING)
+    # Adding rostest to the package
+    find_package(rostest REQUIRED)
+    # name the test and link it to the .test file and the .cpp file itself, this will allow
+    # "catkin_make run_tests" to be able to find and run this rostest
+    add_rostest_gtest(rviz_utils_rostest test/rviz_utils_rostest.test test/rviz-utils-rostest.cpp src/RvizUtils.cpp)
+    target_link_libraries(rviz_utils_rostest ${catkin_LIBRARIES})
+endif()
