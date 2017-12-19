@@ -1,0 +1,60 @@
+<launch>
+
+    <!-- Start the Lidar -->
+    <node name="lidar" pkg="urg_node" type="urg_node" output="screen"/>
+
+    <!-- Start the camera -->
+    <node name="camera" pkg="vision" type="camera" output="screen"/>
+
+    <!-- Start green light detection -->
+    <include file="$(find vision)/launch/stoplight_detection.launch"/>
+
+    <!-- Start the steering driver to control the robot -->
+    <include file="$(find drivers)/launch/steering_driver.launch"/> 
+
+    <!-- Start the drag race controller -->
+    <node name="drag_race_node" type="drag_race_node" pkg="drag_race" output="screen">
+        <!-- Green Light Detection Params  -->
+            <!-- The number of consecutive frames that must contain a green
+                light before we start sending commands to the wheels -->
+            <rosparam param="minimum_green_count_recognised"> -1 </rosparam>
+
+        <!-- Obstacle Detection Params -->
+            <!-- The maximum distance between obstacles for them to be 
+                considered the same obstacle -->
+            <rosparam param="max_obstacle_merging_distance"> 0.3 </rosparam>
+            <!-- The minimum length an obstacle must be to be considered a wall -->
+            <rosparam param="min_wall_length"> 0.4 </rosparam>
+            <rosparam param="obstacle_ticks_threshold">10</rosparam>
+
+        <!-- Stop zone detection param -->
+            <rosparam param="collision_distance">3.0</rosparam>
+            <rosparam param="front_angle">3.1415</rosparam>
+            <rosparam param="side_angle_max">1.57</rosparam>
+            <rosparam param="side_angle_min">1.30</rosparam>
+            <rosparam param="region_fill_percentage">0.5</rosparam>
+            <rosparam param="front_collision_only">true</rosparam>
+
+
+        <!-- Line Detection Params -->
+            <!-- The maximum distance between cones in the same group
+                (we get one best fit line per group) -->
+            <rosparam param="cone_grouping_tolerance"> 1.8 </rosparam>
+            <!-- Whether or not we will prioritise lines found to the right
+                (otherwise will proritise lines on the left) -->
+            <rosparam param="line_to_the_right"> true </rosparam>
+            <!-- The maximum distance from the robot we will look for a line -->
+            <rosparam param="max_distance_from_robot"> 2 </rosparam>
+            
+        <!-- Twist Message Creation Params -->
+            <!-- How far from the line we want to stay at -->
+            <rosparam param="target_distance"> 0.75 </rosparam>
+            <rosparam param="angular_speed_multiplier"> 1 </rosparam>
+            <rosparam param="linear_speed_multiplier"> 1 </rosparam>
+            <rosparam param="theta_scaling_multiplier"> 1.75 </rosparam>
+            <rosparam param="angular_vel_cap"> 0.75 </rosparam>
+            <rosparam param="linear_vel_cap"> 1 </rosparam>
+            
+    </node>
+
+</launch>
