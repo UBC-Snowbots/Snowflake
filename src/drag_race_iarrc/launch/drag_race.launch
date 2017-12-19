@@ -4,7 +4,7 @@
     <node name="lidar" pkg="urg_node" type="urg_node" output="screen"/>
 
     <!-- Start the camera -->
-    <node name="camera" pkg="vision" type="camera" output="screen"/>
+    <node name="camera" pkg="sb_vision" type="camera" output="screen"/>
 
     <!-- Start green light detection -->
     <include file="$(find vision)/launch/stoplight_detection.launch"/>
@@ -13,7 +13,7 @@
     <include file="$(find drivers)/launch/steering_driver.launch"/> 
 
     <!-- Start the drag race controller -->
-    <node name="drag_race_node" type="drag_race_node" pkg="drag_race" output="screen">
+    <node name="drag_race_node" type="drag_race_node" pkg="drag_race_iarrc" output="screen">
         <!-- Green Light Detection Params  -->
             <!-- The number of consecutive frames that must contain a green
                 light before we start sending commands to the wheels -->

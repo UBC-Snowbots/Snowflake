@@ -1,7 +1,7 @@
 <launch>
 
     <!-- Launch GPS Manager -->
-    <node name="gps_manager" pkg="decision" type="gps_manager" output="screen">
+    <node name="gps_manager" pkg="decision_igvc" type="gps_manager" output="screen">
         <rosparam param="at_goal_tolerance">0.5</rosparam>
         <rosparam param="waypoints">
         [

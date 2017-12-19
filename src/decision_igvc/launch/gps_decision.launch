@@ -1,7 +1,7 @@
 <launch>
 
     <!-- Launch GPS Decision -->
-    <node name="gps_decision" pkg="decision" type="gps_decision" output="screen">
+    <node name="gps_decision" pkg="decision_igvc" type="gps_decision" output="screen">
         <!-- The max linear (forward) speed -->
         <rosparam param="max_linear_speed">1.0</rosparam>
 
