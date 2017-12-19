@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(drag_race)
+project(drag_race_iarrc)
 
 # This exports the compile commands so people using Vim with YouCompleteMe
 # can have easy autocompletion

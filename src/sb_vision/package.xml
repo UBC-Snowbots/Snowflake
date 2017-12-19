@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>vision</name>
+  <name>sb_vision</name>
   <version>0.0.0</version>
   <description>Branch dedicated to analyzing images and transforming them into maps</description>
 

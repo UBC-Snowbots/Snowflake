@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(vision)
+project(sb_vision)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS roscpp rospy cv_bridge image_transport )
