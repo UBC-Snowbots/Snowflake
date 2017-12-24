@@ -1,5 +1,5 @@
 <launch>
-    <node name="ekf" pkg="localisation" type="ekf" output="screen">
+    <node name="a_star" pkg="path_finding" type="a_star" output="screen">
         <param name="character" value="?" />
     </node>
 </launch>

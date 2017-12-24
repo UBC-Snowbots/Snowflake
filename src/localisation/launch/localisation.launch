@@ -10,7 +10,7 @@
         Start the EKF (Extended Kalman Filter) to translate all the sensor
         data into a estimate of our current state (an Odometry message)
     -->
-    <include file="$(find localisation)/launch/ekf.launch"/>
+    <include file="$(find localisation)/launch/ekf_node.launch"/>
 
 </launch>
 

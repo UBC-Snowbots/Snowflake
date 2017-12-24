@@ -1,0 +1,4 @@
+<launch>
+    <node name="ekf_node" pkg="localisation" type="ekf_node" output="screen">
+    </node>
+</launch>

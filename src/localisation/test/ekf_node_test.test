@@ -1,0 +1,6 @@
+<!-- A .test file which launches the node and its corresponding rostest -->
+
+<launch>
+    <node name="ekf_node" pkg="localisation" type="ekf_node" />
+    <test test-name="ekf_node_rostest" pkg="localisation" type="ekf_node_rostest" />
+</launch>

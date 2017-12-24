@@ -1,7 +1,7 @@
 /*
  * Created By: Marcus Swift
- * Created On: November 20th, 2017
- * Description: An extended kalman filter node that takes in sensor data from
+ * Created On: December 23th, 2017
+ * Description: An extended kalman filter class that takes in sensor data from
  * the GPS, encoders and IMU and returns the bots estimated postion and
  * orientation
  */
@@ -18,6 +18,7 @@
 #include <cmath>
 #include <iostream>
 #include <ros/ros.h>
+#include <tf/tf.h>
 #include <sb_utils.h>
 #include <std_msgs/String.h>
 
@@ -28,32 +29,12 @@ using Eigen::Vector3d;
 
 class EKF {
   private:
-    // subscriber and publisher data types
-    geometry_msgs::Pose bot_position;
-    sensor_msgs::Imu imu_data;
-    nav_msgs::Odometry gps_data;
-    nav_msgs::Odometry encoder_data;
-    // subscribers and publisher
-    ros::Subscriber gps_sub;
-    ros::Subscriber encoder_sub;
-    ros::Subscriber imu_sub;
-    ros::Publisher pose_pub;
-    // how much time has past since the ekf started
-    double time;
     // standard deviation of the bot's sensor's measurements
     const double sdev_gyro              = 2. * M_PI / 180.;
     const double sdev_speed             = 0.15;
     const double sdev_gps_x_measurement = 5;
     const double sdev_gps_y_measurement = 5;
     const double sdev_angle_measurement = 10. * M_PI / 180.;
-    // initial bot position (current values are for rosbag files)
-    const double intial_pos_x = 481917;         // rostest initial values 482003
-    const double intial_pos_y = 5456662;        // 5456550
-    const double intial_pos_z = 0;              // 0
-    const double intial_ori_x = 0;              // 0
-    const double intial_ori_y = 0;              // 0
-    const double intial_ori_z = sin(M_PI / .4); // 0
-    const double intial_ori_w = cos(M_PI / .4); // 1
     // matrices
     Matrix3d p; // covariance matrix
     Matrix3d j; // jacobian matrix (differentiate angle)
@@ -97,70 +78,45 @@ class EKF {
     // covariance for initial position currently assume it's perfect
     Matrix3d intial_p{(Matrix3d() << 0, 0, 0, 0, 0, 0, 0, 0, 0).finished()};
 
-    /**
-     * Callback function for when new GPS data is received
-     *
-     * @param The GPS data received in the callback in the form of an odometry
-     * msg
-     */
-    void gpsCallBack(const nav_msgs::Odometry::ConstPtr& gps_message);
-
-    /**
-     * Callback function for when new encoder data is received
-     *
-     * @param The encoder data received in the callback in the form of an
-     * odometry msg
-     */
-    void encoderCallBack(const nav_msgs::Odometry::ConstPtr& encoder_message);
-
-    /**
-     * Callback function for when new IMU data is received
-     *
-     * @param The IMU data received in the callback in the form of an IMU msg
-     */
-    void imuCallBack(const sensor_msgs::Imu::ConstPtr& imu_message);
-
-    /**
-     * Publishes the estimated postion calculated from the EKF
-     *
-     * @param Takes in a geometry_msgs/Pose message
-     */
-    void publishPose(geometry_msgs::Pose pose_msg);
-
-  public:
+public:
+	// ros's specific position data type
+    geometry_msgs::Pose bot_position;
+	
+	//Default Constructor
+	EKF();
+	
     // Constructor
-    EKF(int argc, char** argv, std::string node_name);
+    EKF(double pos_x, double pos_y, double pos_z, double ori_x, double ori_y, 
+	 double ori_z, double ori_w);
 
     /**
      * Takes an angle and adjusts it if necessary so that it says within the
-     * bounds of -pi and +pi currently an angle that equals to pi, -pi, 3pi,
-     * -3pi, etc will be rebound to pi
+     * bounds of -pi and +pi
      *
      * @param an angle in radians
      *
      * @return a rebounded angle in radians
      */
     static double defineAngleInBounds(double angle);
-
-    /**
-     * Takes in an angle of orientation on the z axis and converts it to
-     * quaternion form
+	
+	/**
+     * Takes in encoder and imu measurements to perform the process model of the
+     * kalman filter.
      *
-     * @param angle of orientation on the z axis in radians
-     *
-     * @return angle in quaternion form
+     * @param ros specific data types for encoder and imu measurement data
      */
-    static geometry_msgs::Quaternion angleToQuaternion(double angle);
-
-    /**
-     * Takes in angle of orientation in quaternion form and converts it to
-     * an angle of orientation on the z axis
+	void processModel(nav_msgs::Odometry encoder, sensor_msgs::Imu imu, double dt);
+	
+	/**
+     * Takes in gps and imu measurements to perform the measurement model of the
+     * kalman filter.
      *
-     * @param angle in quaternion form
+     * @param ros specific data types for gps and imu measurement data
      *
-     * @return angle of orientation on the z axis in radians
+     * @return ros specific data type of the bot's position
      */
-    static double quaternionToAngle(geometry_msgs::Quaternion quat_angle);
+	geometry_msgs::Pose measurementModel(nav_msgs::Odometry gps, sensor_msgs::Imu imu);
+
 };
 
 #endif // EKF_EKFNODE_H
