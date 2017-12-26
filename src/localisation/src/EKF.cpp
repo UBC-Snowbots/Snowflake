@@ -84,3 +84,4 @@ double EKF::defineAngleInBounds(double angle) {
 
     return rebounded_angle;
 }
+

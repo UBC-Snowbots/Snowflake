@@ -64,5 +64,15 @@ void EKFNode::imuCallBack(const sensor_msgs::Imu::ConstPtr& imu_message) {
 
 void EKFNode::publishPose(geometry_msgs::Pose pose_msg) {
     // publish bot's position
+	geometry_msgs::Pose test_position;
+	test_position.position.x    = 99;
+    test_position.position.y    = 99;
+    test_position.position.z    = 99;
+    test_position.orientation.x = 0;
+    test_position.orientation.y = 0;
+    test_position.orientation.z = 0;
+    test_position.orientation.w = 1;
+	std::cout << "published msg " << pose_msg << std::endl;
+
     pose_pub.publish(pose_msg);
 }

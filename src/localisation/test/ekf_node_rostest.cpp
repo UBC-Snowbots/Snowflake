@@ -30,7 +30,6 @@ class EKFNodeTest : public testing::Test {
         test_imu_publisher     = nh_.advertise<sensor_msgs::Imu>("/imu", 10);
         test_pose_subscriber =
         nh_.subscribe("/cmd_pose", 10, &EKFNodeTest::poseCallback, this);
-
         // Let the publishers and subscribers set itself up timely
         ros::Rate loop_rate(10);
         loop_rate.sleep();
@@ -79,7 +78,7 @@ class EKFNodeTest : public testing::Test {
 
 			measured_speed += noise(e2);   // add some random noise
 			measured_ang_vel += noise(e2); // add some random noise
-			
+
 			//publish IMU
 			test_imu.angular_velocity.z       = measured_ang_vel;
 			test_imu.orientation = tf::createQuaternionMsgFromYaw(measured_angle);
@@ -87,22 +86,21 @@ class EKFNodeTest : public testing::Test {
 			ros::Rate loop_rate(10);
 			loop_rate.sleep();
 			ros::spinOnce();
-			
+
 			//publish encoder
 			test_encoder.twist.twist.linear.x = measured_speed;
 			test_encoder_publisher.publish(test_encoder);
 			loop_rate.sleep();
 			ros::spinOnce();
-			
+		
 			//publish GPS
 			test_gps.pose.pose.position.x     = measured_x;
 			test_gps.pose.pose.position.y     = measured_y;
-			test_gps_publisher.publish(test_gps);
+			//test_gps_publisher.publish(test_gps);
 			loop_rate.sleep();
 			ros::spinOnce();
 			
-
-		} 
+		}
 	}
 };
 
@@ -124,7 +122,12 @@ TEST_F(EKFNodeTest, testEKFNode) {
 
     EXPECT_NEAR(x, pose_data.position.x, 200);
     EXPECT_NEAR(y, pose_data.position.y, 200);
-
+	EXPECT_NEAR(y, pose_data.position.z, 200);
+	EXPECT_NEAR(y, pose_data.orientation.x, 200);
+	EXPECT_NEAR(y, pose_data.orientation.y, 200);
+	EXPECT_NEAR(y, pose_data.orientation.z, 200);
+	EXPECT_NEAR(y, pose_data.orientation.w, 200);
+	/*
     // rotate to the East
     ang_vel          = -(1. / 16.) * M_PI;
     speed            = 0;
@@ -156,6 +159,7 @@ TEST_F(EKFNodeTest, testEKFNode) {
 
     EXPECT_NEAR(x, pose_data.position.x, 200);
     EXPECT_NEAR(y, pose_data.position.y, 200);
+	*/
 }
 
 int main(int argc, char** argv) {

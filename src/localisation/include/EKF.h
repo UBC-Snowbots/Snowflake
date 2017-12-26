@@ -81,7 +81,6 @@ class EKF {
 public:
 	// ros's specific position data type
     geometry_msgs::Pose bot_position;
-	
 	//Default Constructor
 	EKF();
 	
