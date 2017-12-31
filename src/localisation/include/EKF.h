@@ -18,9 +18,9 @@
 #include <cmath>
 #include <iostream>
 #include <ros/ros.h>
-#include <tf/tf.h>
 #include <sb_utils.h>
 #include <std_msgs/String.h>
+#include <tf/tf.h>
 
 using Eigen::Matrix2d;
 using Eigen::Matrix3d;
@@ -78,15 +78,14 @@ class EKF {
     // covariance for initial position currently assume it's perfect
     Matrix3d intial_p{(Matrix3d() << 0, 0, 0, 0, 0, 0, 0, 0, 0).finished()};
 
-public:
-	// ros's specific position data type
+  public:
+    // ros's specific position data type
     geometry_msgs::Pose bot_position;
-	//Default Constructor
-	EKF();
-	
+    // Default Constructor
+    EKF();
+
     // Constructor
-    EKF(double pos_x, double pos_y, double pos_z, double ori_x, double ori_y, 
-	 double ori_z, double ori_w);
+    EKF(double pos_x, double pos_y, double pos_z, double yaw_angle);
 
     /**
      * Takes an angle and adjusts it if necessary so that it says within the
@@ -97,16 +96,17 @@ public:
      * @return a rebounded angle in radians
      */
     static double defineAngleInBounds(double angle);
-	
-	/**
+
+    /**
      * Takes in encoder and imu measurements to perform the process model of the
      * kalman filter.
      *
      * @param ros specific data types for encoder and imu measurement data
      */
-	void processModel(nav_msgs::Odometry encoder, sensor_msgs::Imu imu, double dt);
-	
-	/**
+    void
+    processModel(nav_msgs::Odometry encoder, sensor_msgs::Imu imu, double dt);
+
+    /**
      * Takes in gps and imu measurements to perform the measurement model of the
      * kalman filter.
      *
@@ -114,8 +114,8 @@ public:
      *
      * @return ros specific data type of the bot's position
      */
-	geometry_msgs::Pose measurementModel(nav_msgs::Odometry gps, sensor_msgs::Imu imu);
-
+    geometry_msgs::Pose measurementModel(nav_msgs::Odometry gps,
+                                         sensor_msgs::Imu imu);
 };
 
 #endif // EKF_EKFNODE_H

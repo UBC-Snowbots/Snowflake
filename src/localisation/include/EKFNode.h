@@ -12,14 +12,14 @@
 #include "geometry_msgs/Pose.h"
 #include "nav_msgs/Odometry.h"
 #include "sensor_msgs/Imu.h"
-#include <cmath>
 #include <EKF.h>
+#include <cmath>
 #include <iostream>
 #include <ros/ros.h>
 #include <sb_utils.h>
 #include <std_msgs/String.h>
 
-class EKFNode: public EKF {
+class EKFNode : public EKF {
   private:
     // subscriber and publisher data types
     sensor_msgs::Imu imu_data;
@@ -32,15 +32,12 @@ class EKFNode: public EKF {
     ros::Publisher pose_pub;
     // how much time has past since the ekf started
     double time;
-    // initial bot position (current values are for rosbag files)
-    const double intial_pos_x = 481917;         // rostest initial values 482003
-    const double intial_pos_y = 5456662;        // 5456550
-    const double intial_pos_z = 0;              // 0
-    const double intial_ori_x = 0;              // 0
-    const double intial_ori_y = 0;              // 0
-    const double intial_ori_z = sin(M_PI / .4); // 0
-    const double intial_ori_w = cos(M_PI / .4); // 1
-    
+    // initial bot position (current values are for rostest files)
+    const double initial_pos_x = 481917;
+    const double initial_pos_y = 5456662;
+    const double initial_pos_z = 0;
+    const double initial_yaw_angle = 0; // change to M_PI/2 for rosbag files
+
     /**
      * Callback function for when new GPS data is received
      *
@@ -74,7 +71,6 @@ class EKFNode: public EKF {
   public:
     // Constructor
     EKFNode(int argc, char** argv, std::string node_name);
-
 };
 
 #endif // EKFNODE_EKFNODE_H
