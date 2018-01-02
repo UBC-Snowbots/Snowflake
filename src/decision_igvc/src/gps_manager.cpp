@@ -8,8 +8,7 @@
 
 #include <GpsManager.h>
 
-
-int main(int argc, char **argv){
+int main(int argc, char** argv) {
     // Setup your ROS node
     std::string node_name = "gps_manager";
 

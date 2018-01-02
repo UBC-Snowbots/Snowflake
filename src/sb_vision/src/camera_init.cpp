@@ -4,19 +4,19 @@
  * Description: A node which acts as a camera publisher for testing purposes
  */
 
-#include <ros/ros.h>
+#include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <opencv2/highgui/highgui.hpp>
-#include <cv_bridge/cv_bridge.h>
+#include <ros/ros.h>
 
 using namespace cv;
 using namespace std;
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     string inputWindow = "Camera";
     namedWindow(inputWindow, CV_WINDOW_AUTOSIZE);
 
-    VideoCapture cap(0); //captures the first camera
+    VideoCapture cap(0); // captures the first camera
     if (!cap.isOpened()) {
         cout << "Camera cannot be opened" << endl;
         return -1;
@@ -25,7 +25,8 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "camera_publisher");
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
-    image_transport::Publisher pub = it.advertise("/robot/camera1/image_raw", 1);
+    image_transport::Publisher pub =
+    it.advertise("/robot/camera1/image_raw", 1);
 
     Mat inputImage;
 
@@ -38,7 +39,8 @@ int main(int argc, char **argv) {
             break;
         }
         imshow(inputWindow, inputImage);
-        sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", inputImage).toImageMsg();
+        sensor_msgs::ImagePtr msg =
+        cv_bridge::CvImage(std_msgs::Header(), "bgr8", inputImage).toImageMsg();
         pub.publish(msg);
         waitKey(1);
         ros::spinOnce();

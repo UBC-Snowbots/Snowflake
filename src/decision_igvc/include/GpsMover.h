@@ -14,7 +14,7 @@
 #include <geometry_msgs/Twist.h>
 
 class GpsMover {
-public:
+  public:
     /**
      * A constructor for a GpsMover object
      *
@@ -25,41 +25,53 @@ public:
      * @param angular_distance_factor
      * @param angular_heading_factor
      */
-    GpsMover(double linear_distance_factor, double linear_heading_factor,
-          double angular_distance_factor, double angular_heading_factor);
+    GpsMover(double linear_distance_factor,
+             double linear_heading_factor,
+             double angular_distance_factor,
+             double angular_heading_factor);
 
     /**
      * An empty constructor will default to factors of 1
      */
-    GpsMover() : GpsMover(1,1,1,1) {};
+    GpsMover() : GpsMover(1, 1, 1, 1){};
 
     /**
-     * Sets relations between distance/angle to object, and linear/angular speeds
+     * Sets relations between distance/angle to object, and linear/angular
+     * speeds
      *
-     * @param linear_distance_factor how much distance from the obstacle influence
+     * @param linear_distance_factor how much distance from the obstacle
+     * influence
      * linear speed
-     * @param linear_heading_factor how much the angle between the current heading and
+     * @param linear_heading_factor how much the angle between the current
+     * heading and
      * the angle to the obstacle influence the linear speed
      * linear speed
-     * @param angular_distance_factor how much distance from the obstacle influence
+     * @param angular_distance_factor how much distance from the obstacle
+     * influence
      * angular speed
-     * @param angular_heading_factor how much the angle between the current heading and
+     * @param angular_heading_factor how much the angle between the current
+     * heading and
      * the angle to the obstacle influence the angular speed
      * angular speed
      */
-    void setFactors(double linear_distance_factor, double linear_heading_factor,
-                    double angular_distance_factor, double angular_heading_factor);
+    void setFactors(double linear_distance_factor,
+                    double linear_heading_factor,
+                    double angular_distance_factor,
+                    double angular_heading_factor);
 
     /**
      * Sets the caps for linear and angular speed
      *
-     * @param max_linear_speed the max linear speed for any command this mover returns
-     * @param max_angular_speed the max angular speed for any command this mover returns
+     * @param max_linear_speed the max linear speed for any command this mover
+     * returns
+     * @param max_angular_speed the max angular speed for any command this mover
+     * returns
      */
     void setMaxSpeeds(double max_linear_speed, double max_angular_speed);
 
     /**
-     * Creates a recommended twist command, based on the robots current heading, location, and dest. waypoint
+     * Creates a recommended twist command, based on the robots current heading,
+     * location, and dest. waypoint
      *
      * @param current_location the current location of the robot
      * @param current_heading the current heading of the robot
@@ -67,11 +79,13 @@ public:
      *
      * @return a twist message that moves the robot towards the waypoint
      */
-    geometry_msgs::Twist createTwistMessage(geometry_msgs::Point current_location,
-                                            double current_heading,
-                                            geometry_msgs::Point waypoint);
+    geometry_msgs::Twist
+    createTwistMessage(geometry_msgs::Point current_location,
+                       double current_heading,
+                       geometry_msgs::Point waypoint);
     /**
-     * Computes the average of 1/x and sqrt(y), multiplied by their respective scaling factors
+     * Computes the average of 1/x and sqrt(y), multiplied by their respective
+     * scaling factors
      *
      * @param x
      * @param y
@@ -83,7 +97,8 @@ public:
     double magicFunction(double x, double y, double x_scale, double y_scale);
 
     /**
-     * Finds the minimum angular change required to turn from one heading to another
+     * Finds the minimum angular change required to turn from one heading to
+     * another
      *
      * @param from_heading the heading we're going from (in radians)
      * @param to_heading the heading we're going to (in radians)
@@ -93,17 +108,18 @@ public:
     double minAngularChange(double from_heading, double to_heading);
 
     /**
-     * Find the angle between two points, based on the ROS coordinate system (see main README)
+     * Find the angle between two points, based on the ROS coordinate system
+     * (see main README)
      *
      * @param startPoint
      * @param endPoint
      *
      * @return the angle FROM startPoint TO endPoint
      */
-    double angleBetweenPoints(geometry_msgs::Point startPoint, geometry_msgs::Point endPoint);
+    double angleBetweenPoints(geometry_msgs::Point startPoint,
+                              geometry_msgs::Point endPoint);
 
-private:
-
+  private:
     /**
      * Reduces a value to an specified absolute maximum
      *
@@ -129,4 +145,4 @@ private:
     double max_angular_speed;
 };
 
-#endif //MOVER_H
+#endif // MOVER_H

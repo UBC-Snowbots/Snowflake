@@ -23,18 +23,26 @@ GpsDecision::GpsDecision(int argc, char** argv, std::string node_name) {
 
     // Setup Publisher(s)
     std::string twist_publisher_topic = private_nh.resolveName("twist");
-    twist_publisher = private_nh.advertise<geometry_msgs::Twist>(twist_publisher_topic, queue_size);
+    twist_publisher = private_nh.advertise<geometry_msgs::Twist>(
+    twist_publisher_topic, queue_size);
 
-    // Setup the GpsMover class, which will figure out what command to send to the robot
+    // Setup the GpsMover class, which will figure out what command to send to
+    // the robot
     // based on our distance and heading to the destination GPS waypoint
     double linear_heading_factor, linear_distance_factor,
-            angular_heading_factor, angular_distance_factor;
-    SB_getParam(private_nh, "linear_heading_factor", linear_heading_factor, 1.0);
-    SB_getParam(private_nh, "linear_distance_factor", linear_distance_factor, 1.0);
-    SB_getParam(private_nh, "angular_heading_factor", angular_heading_factor, 1.0);
-    SB_getParam(private_nh, "angular_distance_factor", angular_distance_factor, 1.0);
-    mover.setFactors(linear_distance_factor, linear_heading_factor,
-                    angular_distance_factor, angular_heading_factor);
+    angular_heading_factor, angular_distance_factor;
+    SB_getParam(
+    private_nh, "linear_heading_factor", linear_heading_factor, 1.0);
+    SB_getParam(
+    private_nh, "linear_distance_factor", linear_distance_factor, 1.0);
+    SB_getParam(
+    private_nh, "angular_heading_factor", angular_heading_factor, 1.0);
+    SB_getParam(
+    private_nh, "angular_distance_factor", angular_distance_factor, 1.0);
+    mover.setFactors(linear_distance_factor,
+                     linear_heading_factor,
+                     angular_distance_factor,
+                     angular_heading_factor);
 
     double linear_cap, angular_cap;
     SB_getParam(private_nh, "max_linear_speed", linear_cap, 1.0);
@@ -79,4 +87,3 @@ const geometry_msgs::PointStamped::ConstPtr& waypoint) {
         twist_publisher.publish(allZeroTwist);
     }
 }
-

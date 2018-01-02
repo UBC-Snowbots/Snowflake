@@ -8,7 +8,7 @@
 
 #include <GpsManager.h>
 
-GpsManager::GpsManager(int argc, char **argv, std::string node_name){
+GpsManager::GpsManager(int argc, char** argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
@@ -21,7 +21,8 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     nh.subscribe(tf_topic_name, queue_size, &GpsManager::tfCallBack, this);
 
     // Setup Publishers
-    std::string current_waypoint_topic = private_nh.resolveName("current_waypoint");
+    std::string current_waypoint_topic =
+    private_nh.resolveName("current_waypoint");
     current_waypoint_publisher = nh.advertise<geometry_msgs::PointStamped>(
     current_waypoint_topic, queue_size);
 
@@ -30,11 +31,13 @@ GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     private_nh, "base_frame", base_frame, (std::string) "base_link");
     SB_getParam(
     private_nh, "global_frame", global_frame, (std::string) "odom_combined");
-    SB_getParam(private_nh, "at_goal_tolerance", at_goal_tolerance, (float)1.0);
+    SB_getParam(
+    private_nh, "at_goal_tolerance", at_goal_tolerance, (float) 1.0);
     std::vector<double>
     waypoints_raw; // The raw list of waypoints retrieved from the param server
     if (!SB_getParam(private_nh, "waypoints", waypoints_raw)) {
-        ROS_ERROR("Waypoints should be a list in the form [lat, lon, lat, lon, ...]");
+        ROS_ERROR(
+        "Waypoints should be a list in the form [lat, lon, lat, lon, ...]");
         ros::shutdown();
     } else {
         std::vector<Waypoint> waypoint_list = parseWaypoints(waypoints_raw);
@@ -74,8 +77,9 @@ void GpsManager::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
     }
 }
 
-std::vector<Waypoint> GpsManager::parseWaypoints(std::vector<double> waypoints_raw){
-    if (waypoints_raw.size() % 2 != 0){
+std::vector<Waypoint>
+GpsManager::parseWaypoints(std::vector<double> waypoints_raw) {
+    if (waypoints_raw.size() % 2 != 0) {
         ROS_ERROR(
         "Given odd length list of waypoints, check that \"waypoints\" "
         "parameter "
@@ -87,10 +91,10 @@ std::vector<Waypoint> GpsManager::parseWaypoints(std::vector<double> waypoints_r
     }
 
     std::vector<Waypoint> waypoints;
-    for (int i = 0; i < waypoints_raw.size(); i += 2){
+    for (int i = 0; i < waypoints_raw.size(); i += 2) {
         Waypoint curr_waypoint;
         curr_waypoint.lat = waypoints_raw[i];
-        curr_waypoint.lon = waypoints_raw[i+1];
+        curr_waypoint.lon = waypoints_raw[i + 1];
         waypoints.push_back(curr_waypoint);
     }
 
@@ -98,7 +102,7 @@ std::vector<Waypoint> GpsManager::parseWaypoints(std::vector<double> waypoints_r
 }
 
 void GpsManager::populateWaypointStack(std::vector<Waypoint> waypoint_list) {
-    for (int i = (int)waypoint_list.size() - 1; i >= 0; i--){
+    for (int i = (int) waypoint_list.size() - 1; i >= 0; i--) {
         // Convert the waypoint to UTM
         double northing, easting;
         std::string zone_throwaway;

@@ -8,10 +8,10 @@
 #include <gtest/gtest.h>
 
 class LidarObstacleTest : public testing::Test {
-protected:
-    virtual void SetUp(){
-        readings1 = {{4,44}, {3,99}, {6,2}};
-        readings2 = {{-1,2}, {10,4}, {-15,6}};
+  protected:
+    virtual void SetUp() {
+        readings1 = {{4, 44}, {3, 99}, {6, 2}};
+        readings2 = {{-1, 2}, {10, 4}, {-15, 6}};
 
         obstacle1 = LidarObstacle(0.1, 10);
         obstacle2 = LidarObstacle(0.2, 20);
@@ -24,14 +24,14 @@ protected:
     LidarObstacle obstacle1, obstacle2, obstacle3, obstacle4, obstacle5;
 };
 
-TEST_F(LidarObstacleTest, ConstructorTest1){
+TEST_F(LidarObstacleTest, ConstructorTest1) {
     auto readings = obstacle1.getAllLaserReadings();
     EXPECT_EQ(1, readings.size());
     EXPECT_EQ(10, readings[0].range);
     EXPECT_NEAR(0.1, readings[0].angle, 0.000001);
 }
 
-TEST_F(LidarObstacleTest, ConstructorTest2){
+TEST_F(LidarObstacleTest, ConstructorTest2) {
     auto readings = obstacle4.getAllLaserReadings();
     // Check that the correct number of readings were input
     EXPECT_EQ(3, readings.size());
@@ -42,13 +42,13 @@ TEST_F(LidarObstacleTest, ConstructorTest2){
     EXPECT_EQ(6, readings[2].angle);
 }
 
-TEST_F(LidarObstacleTest, getAvgAngleTest){
+TEST_F(LidarObstacleTest, getAvgAngleTest) {
     EXPECT_NEAR(0.1, obstacle1.getAvgAngle(), 0.00001);
     EXPECT_NEAR(4.333333333, obstacle4.getAvgAngle(), 0.00001);
     EXPECT_NEAR(-2, obstacle5.getAvgAngle(), 0.00001);
 }
 
-TEST_F(LidarObstacleTest, mergeInReadingsTest){
+TEST_F(LidarObstacleTest, mergeInReadingsTest) {
     obstacle1.mergeInLidarObstacle(obstacle2);
     obstacle1.mergeInLidarObstacle(obstacle3);
     auto readings = obstacle1.getAllLaserReadings();
@@ -61,13 +61,14 @@ TEST_F(LidarObstacleTest, mergeInReadingsTest){
     EXPECT_NEAR(0.2, readings[2].angle, 0.000001);
 }
 
-TEST_F(LidarObstacleTest, dangerScoreTest){
-    EXPECT_NEAR((cos(0.1) + 1.0/10), obstacle1.dangerScore(), 0.000001);
-    EXPECT_NEAR((cos(0.2) + 1.0/20), obstacle2.dangerScore(), 0.000001);
-    EXPECT_NEAR((cos(4.333333333) + 1.0/2), obstacle4.dangerScore(), 0.000001);
+TEST_F(LidarObstacleTest, dangerScoreTest) {
+    EXPECT_NEAR((cos(0.1) + 1.0 / 10), obstacle1.dangerScore(), 0.000001);
+    EXPECT_NEAR((cos(0.2) + 1.0 / 20), obstacle2.dangerScore(), 0.000001);
+    EXPECT_NEAR(
+    (cos(4.333333333) + 1.0 / 2), obstacle4.dangerScore(), 0.000001);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

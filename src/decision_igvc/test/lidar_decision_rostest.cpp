@@ -8,19 +8,22 @@
 #include <gtest/gtest.h>
 #include <ros/ros.h>
 
-class LidarDecisionTest : public testing::Test{
-protected:
-    virtual void SetUp(){
-        laser_scan_publisher = nh_.advertise<sensor_msgs::LaserScan>("/robot/laser/scan", 1);
-        twist_subscriber = nh_.subscribe("/lidar_decision/command", 1, &LidarDecisionTest::callback, this);
+class LidarDecisionTest : public testing::Test {
+  protected:
+    virtual void SetUp() {
+        laser_scan_publisher =
+        nh_.advertise<sensor_msgs::LaserScan>("/robot/laser/scan", 1);
+        twist_subscriber = nh_.subscribe(
+        "/lidar_decision/command", 1, &LidarDecisionTest::callback, this);
 
         // Create a fake laserscan
-        ulong num_rays = 360;
-        test_scan.angle_min = (float)(-M_PI/2);
-        test_scan.angle_max = (float)(M_PI/2);
-        test_scan.angle_increment = (test_scan.angle_max - test_scan.angle_min)/num_rays;
+        ulong num_rays      = 360;
+        test_scan.angle_min = (float) (-M_PI / 2);
+        test_scan.angle_max = (float) (M_PI / 2);
+        test_scan.angle_increment =
+        (test_scan.angle_max - test_scan.angle_min) / num_rays;
         // Set all the ranges to 0 initially
-        test_scan.ranges = std::vector<float>(num_rays, 0);
+        test_scan.ranges    = std::vector<float>(num_rays, 0);
         test_scan.range_min = 2;
         test_scan.range_max = 40;
 
@@ -37,15 +40,14 @@ protected:
 
     sensor_msgs::LaserScan test_scan;
 
-public:
-    void callback(const geometry_msgs::Twist::ConstPtr msg){
-        command = *msg;
-    }
+  public:
+    void callback(const geometry_msgs::Twist::ConstPtr msg) { command = *msg; }
 };
 
-TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
+TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest) {
     // Add a large obstacle directly in front
-    std::fill(test_scan.ranges.begin()+140, test_scan.ranges.begin()+220, 3);
+    std::fill(
+    test_scan.ranges.begin() + 140, test_scan.ranges.begin() + 220, 3);
 
     laser_scan_publisher.publish(test_scan);
 
@@ -66,7 +68,7 @@ TEST_F(LidarDecisionTest, oneObstacleStraightAheadTest){
     EXPECT_EQ(0, command.angular.y);
 }
 
-TEST_F(LidarDecisionTest, noObstacles){
+TEST_F(LidarDecisionTest, noObstacles) {
     laser_scan_publisher.publish(test_scan);
 
     ros::Rate loop_rate(1);
@@ -83,9 +85,10 @@ TEST_F(LidarDecisionTest, noObstacles){
     EXPECT_EQ(0, command.angular.z);
 }
 
-TEST_F(LidarDecisionTest, obstacleToRight){
+TEST_F(LidarDecisionTest, obstacleToRight) {
     // Add a large obstacle to the right of the robot
-    std::fill(test_scan.ranges.begin()+100, test_scan.ranges.begin()+140, 3);
+    std::fill(
+    test_scan.ranges.begin() + 100, test_scan.ranges.begin() + 140, 3);
 
     laser_scan_publisher.publish(test_scan);
 
@@ -106,9 +109,10 @@ TEST_F(LidarDecisionTest, obstacleToRight){
     EXPECT_EQ(0, command.angular.y);
 }
 
-TEST_F(LidarDecisionTest, obstacleToLeft){
+TEST_F(LidarDecisionTest, obstacleToLeft) {
     // Add a large obstacle to the left of the robot
-    std::fill(test_scan.ranges.begin()+220, test_scan.ranges.begin()+260, 3);
+    std::fill(
+    test_scan.ranges.begin() + 220, test_scan.ranges.begin() + 260, 3);
 
     laser_scan_publisher.publish(test_scan);
 
@@ -129,7 +133,7 @@ TEST_F(LidarDecisionTest, obstacleToLeft){
     EXPECT_EQ(0, command.angular.y);
 }
 
-int main(int argc, char **argv){
+int main(int argc, char** argv) {
     ros::init(argc, argv, "lidar_decision_rostest");
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

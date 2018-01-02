@@ -7,11 +7,11 @@
 
 #include <VisionDecision.h>
 
-int main(int argc, char **argv){
+int main(int argc, char** argv) {
     // Setup your ROS node
     std::string node_name = "vision_decision";
 
-    //ros::init(argc, argv, node_name);
+    // ros::init(argc, argv, node_name);
 
     // Create an instance of your class
     VisionDecision vision_decision(argc, argv, node_name);

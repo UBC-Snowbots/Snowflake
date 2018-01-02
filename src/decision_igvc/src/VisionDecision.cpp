@@ -7,7 +7,7 @@
 #include <VisionDecision.h>
 
 // The constructor
-VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
+VisionDecision::VisionDecision(int argc, char** argv, std::string node_name) {
     ros::init(argc, argv, node_name);
 
     // Setup NodeHandles
@@ -22,7 +22,8 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
 
     // Setup Publisher(s)
     std::string twist_topic = private_nh.resolveName("twist");
-    twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
+    twist_publisher =
+    nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 
     // Get Param(s)
     SB_getParam(
@@ -41,7 +42,8 @@ VisionDecision::VisionDecision(int argc, char **argv, std::string node_name) {
 }
 
 // This is called whenever a new message is received
-void VisionDecision::imageCallBack(const sensor_msgs::Image::ConstPtr &image_scan) {
+void VisionDecision::imageCallBack(
+const sensor_msgs::Image::ConstPtr& image_scan) {
     // Deal with new messages here
     geometry_msgs::Twist twistMsg;
 
@@ -194,7 +196,8 @@ double& validSamples) {
 
     double currentAngle = 0;
 
-    // Finds slopes (corresponding to number of samples given) then returns the sum of all slopes
+    // Finds slopes (corresponding to number of samples given) then returns the
+    // sum of all slopes
     // also counts how many of them are valid.
     for (double division = 1;
          (division < numSamples) && (bottomRow - division > 0);
@@ -264,12 +267,12 @@ double VisionDecision::getDesiredLinearSpeed(double desiredAngle) {
     return 1 - mapRange(speedToMap, 0, 90, 0, 1);
 }
 
-
 /* Helper functions for functions that determine robot movement. */
 
-int VisionDecision::getMiddle(int startingPos, int row, bool rightSide,
-                              const sensor_msgs::Image::ConstPtr &image_scan) {
-
+int VisionDecision::getMiddle(int startingPos,
+                              int row,
+                              bool rightSide,
+                              const sensor_msgs::Image::ConstPtr& image_scan) {
     int incrementer;
     int startPixel, endPixel;
 
@@ -281,20 +284,24 @@ int VisionDecision::getMiddle(int startingPos, int row, bool rightSide,
         incrementer = 1;
 
     // Find first pixel of the white line in a certain row.
-    startPixel = VisionDecision::getEdgePixel(startingPos, incrementer, row, image_scan, 1);
+    startPixel =
+    VisionDecision::getEdgePixel(startingPos, incrementer, row, image_scan, 1);
 
     // Find last pixel of the white line in a certain row.
-    endPixel = VisionDecision::getEdgePixel(startPixel, incrementer, row, image_scan, 0);
+    endPixel =
+    VisionDecision::getEdgePixel(startPixel, incrementer, row, image_scan, 0);
 
     // Return average of the two pixels.
     return (startPixel + endPixel) / 2;
-
 }
 
-int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
-                                 const sensor_msgs::Image::ConstPtr &image_scan, bool isStartPixel) {
+int VisionDecision::getEdgePixel(int startingPos,
+                                 int incrementer,
+                                 int row,
+                                 const sensor_msgs::Image::ConstPtr& image_scan,
+                                 bool isStartPixel) {
     // Initialization of local variables
-    int column = startingPos;
+    int column                 = startingPos;
     int whiteVerificationCount = 0;
     int blackVerificationCount = 0;
 
@@ -318,7 +325,8 @@ int VisionDecision::getEdgePixel(int startingPos, int incrementer, int row,
         } else {
             blackVerificationCount++;
             if (blackVerificationCount >= NOISE_MAX) {
-                whiteVerificationCount = 0; // Reset verification if black pixel.
+                whiteVerificationCount =
+                0; // Reset verification if black pixel.
                 toBeChecked = -1;
             }
         }
@@ -426,8 +434,8 @@ const sensor_msgs::Image::ConstPtr& image_scan) {
         return -45;
 }
 
-
-double VisionDecision::mapRange(double x, double inMin, double inMax, double outMin, double outMax) {
+double VisionDecision::mapRange(
+double x, double inMin, double inMax, double outMin, double outMax) {
     return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
 

@@ -9,12 +9,11 @@
 #define LIDAROBSTACLE_H
 
 // STD
-#include <vector>
 #include <algorithm>
-
+#include <vector>
 
 using distance_t = float;
-using angle_t = float;
+using angle_t    = float;
 
 struct Reading {
     angle_t angle;
@@ -22,7 +21,7 @@ struct Reading {
 };
 
 class LidarObstacle {
-public:
+  public:
     /**
      * Creates a LidarObstacle with no readings
      */
@@ -37,7 +36,8 @@ public:
     LidarObstacle(angle_t angle, distance_t distance);
 
     /**
-     * Creates a LidarObstacle from a given set of readings (pair<angle, distance>)
+     * Creates a LidarObstacle from a given set of readings (pair<angle,
+     * distance>)
      *
      * @param readings a vector of pairs of the form pair<angle, distance>
      */
@@ -129,17 +129,18 @@ public:
      */
     void mergeInLidarObstacle(LidarObstacle obstacle);
 
-private:
+  private:
     /**
      * Merges a given set of readings into the obstacle
      *
      * @param readings the readings to be merged in
      */
-    void mergeInReadings(std::vector<Reading> &new_readings);
+    void mergeInReadings(std::vector<Reading>& new_readings);
 
-    // The distances and angles of all the laser scan hits that comprise the object.
+    // The distances and angles of all the laser scan hits that comprise the
+    // object.
     // pairs are stored in sorted order, from min to max angle.
     std::vector<Reading> readings;
 };
 
-#endif //LIDAROBSTACLE_H
+#endif // LIDAROBSTACLE_H

@@ -9,15 +9,15 @@
 #ifndef DECISION_GPSManager_H
 #define DECISION_GPSManager_H
 
-#include <geometry_msgs/Point.h>
-#include <ros/ros.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <std_msgs/Float32.h>
 #include <algorithm>
+#include <geometry_msgs/Point.h>
 #include <gps_common/conversions.h>
+#include <ros/ros.h>
 #include <sb_utils.h>
 #include <sensor_msgs/Imu.h>
+#include <sensor_msgs/NavSatFix.h>
 #include <stack>
+#include <std_msgs/Float32.h>
 #include <tf/transform_datatypes.h>
 #include <vector>
 
@@ -29,15 +29,18 @@ struct Waypoint {
 };
 
 class GpsManager {
-public:
-    GpsManager(int argc, char **argv, std::string node_name);
+  public:
+    GpsManager(int argc, char** argv, std::string node_name);
     /**
-     * Parses a raw list of waypoints (in order lat,lon,lat,lon,...) into a vector of pairs
+     * Parses a raw list of waypoints (in order lat,lon,lat,lon,...) into a
+     * vector of pairs
      *
      * @param waypoints_raw the raw waypoints to be parsed
-     * @return a vector of pairs of lat/lon coordinates parsed from raw_waypoints
+     * @return a vector of pairs of lat/lon coordinates parsed from
+     * raw_waypoints
      */
-    static std::vector<Waypoint> parseWaypoints(std::vector<double> raw_waypoints);
+    static std::vector<Waypoint>
+    parseWaypoints(std::vector<double> raw_waypoints);
 
   private:
     /**

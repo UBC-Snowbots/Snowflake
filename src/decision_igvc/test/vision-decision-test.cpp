@@ -5,10 +5,10 @@
  */
 
 #include <VisionDecision.h>
+#include <cv_bridge/cv_bridge.h>
 #include <gtest/gtest.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <cv_bridge/cv_bridge.h>
 
 using namespace cv;
 using namespace std;
@@ -41,7 +41,7 @@ const double error_margin = 20;
 
 TEST(imageTest, moveAwayFromLineAndTurnRight) {
     string filename = "imageTests/testStraightImage.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -61,7 +61,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRight) {
 
 TEST(imageTest, angleLeft) {
     string filename = "imageTests/testLeftImage.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -81,7 +81,7 @@ TEST(imageTest, angleLeft) {
 
 TEST(imageTest, angleRight) {
     string filename = "imageTests/testNoisyRightImage.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -101,7 +101,7 @@ TEST(imageTest, angleRight) {
 
 TEST(imageTest, moveAwayFromLineAndTurnRightTwo) {
     string filename = "imageTests/testVeryNoisyStraightImage.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -121,7 +121,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRightTwo) {
 
 TEST(imageTest, moveAwayFromLineAndTurnLeft) {
     string filename = "imageTests/testStraightOnRightSide.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -166,7 +166,7 @@ TEST(imageTest, noisyLeft) {
  */
 TEST(imageTest, elevatedLeftLine) {
     string filename = "imageTests/testElevatedLeftLine.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -231,7 +231,7 @@ TEST(imageTest, straightButLineNearEdge) {
 
 TEST(imageTest, perpendicular) {
     string filename = "imageTests/testPerpendicular.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -251,7 +251,7 @@ TEST(imageTest, perpendicular) {
 
 TEST(imageTest, curved) {
     string filename = "imageTests/testCurvedLine.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -271,7 +271,7 @@ TEST(imageTest, curved) {
 
 TEST(imageTest, multiLineLeft) {
     string filename = "imageTests/testMultipleLinesLeft.jpg";
-    Mat image = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -529,7 +529,7 @@ TEST(imageTest, avoidConeRight) {
                 error_margin);
 }
 
-TEST(speedTest, linear){
+TEST(speedTest, linear) {
     EXPECT_EQ(1, VisionDecision::getDesiredLinearSpeed(0));
     EXPECT_EQ(0, VisionDecision::getDesiredLinearSpeed(90));
     EXPECT_EQ(0, VisionDecision::getDesiredLinearSpeed(-90));
@@ -558,11 +558,10 @@ sensor_msgs::Image convertToSensorMsg(Mat cvMatImage) {
             img_msg.data.push_back(255);
     }
 
-
     return img_msg;
 }
 
-int main(int aimageTests, char **argv) {
+int main(int aimageTests, char** argv) {
     std::cout << argv[0] << std::endl;
     testing::InitGoogleTest(&aimageTests, argv);
     return RUN_ALL_TESTS();

@@ -8,7 +8,7 @@
 
 #include <FinalDecision.h>
 
-FinalDecision::FinalDecision(int argc, char **argv, std::string node_name) {
+FinalDecision::FinalDecision(int argc, char** argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle public_nh;
@@ -35,27 +35,32 @@ FinalDecision::FinalDecision(int argc, char **argv, std::string node_name) {
     public_nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
 }
 
-
-void FinalDecision::lidarCallBack(const geometry_msgs::Twist::ConstPtr& lidar_decision) {
+void FinalDecision::lidarCallBack(
+const geometry_msgs::Twist::ConstPtr& lidar_decision) {
     recent_lidar = *lidar_decision;
     publishTwist(arbitrator(recent_lidar, recent_vision, recent_gps));
 }
 
-void FinalDecision::visionCallBack(const geometry_msgs::Twist::ConstPtr& vision_decision) {
+void FinalDecision::visionCallBack(
+const geometry_msgs::Twist::ConstPtr& vision_decision) {
     recent_vision = *vision_decision;
     publishTwist(arbitrator(recent_lidar, recent_vision, recent_gps));
 }
 
-void FinalDecision::gpsCallBack(const geometry_msgs::Twist::ConstPtr& gps_decision) {
+void FinalDecision::gpsCallBack(
+const geometry_msgs::Twist::ConstPtr& gps_decision) {
     recent_gps = *gps_decision;
     publishTwist(arbitrator(recent_lidar, recent_vision, recent_gps));
 }
 
-void FinalDecision::publishTwist(geometry_msgs::Twist twist){
+void FinalDecision::publishTwist(geometry_msgs::Twist twist) {
     twist_publisher.publish(twist);
 }
 
-geometry_msgs::Twist FinalDecision::arbitrator(geometry_msgs::Twist recent_lidar, geometry_msgs::Twist recent_vision, geometry_msgs::Twist recent_gps){
+geometry_msgs::Twist
+FinalDecision::arbitrator(geometry_msgs::Twist recent_lidar,
+                          geometry_msgs::Twist recent_vision,
+                          geometry_msgs::Twist recent_gps) {
     if (recent_lidar.angular.z != 0) {
         return recent_lidar;
     } else if (fabs(recent_vision.angular.z) != 0) {
@@ -64,4 +69,3 @@ geometry_msgs::Twist FinalDecision::arbitrator(geometry_msgs::Twist recent_lidar
         return recent_gps;
     }
 }
-
