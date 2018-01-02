@@ -5,8 +5,8 @@
  *              and provides various utilities for working with obstacles
  */
 
-#ifndef LIDAROBSTACLE_H
-#define LIDAROBSTACLE_H
+#ifndef DRAG_RACE_IARRC_LIDAROBSTACLE_H
+#define DRAG_RACE_IARRC_LIDAROBSTACLE_H
 
 // STD
 #include <algorithm>
@@ -242,4 +242,4 @@ class LidarObstacle {
     double min_wall_length;
 };
 
-#endif // LIDAROBSTACLE_H
+#endif // DRAG_RACE_IARRC_LIDAROBSTACLE_H

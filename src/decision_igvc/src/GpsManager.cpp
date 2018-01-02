@@ -6,7 +6,7 @@
  *              at the current one)
  */
 
-#include "GpsManager.h"
+#include <GpsManager.h>
 
 GpsManager::GpsManager(int argc, char **argv, std::string node_name){
     // Setup NodeHandles

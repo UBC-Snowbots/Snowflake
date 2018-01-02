@@ -8,7 +8,7 @@
  *			http://opencv-srf.blogspot.ca/2010/09/object-detection-using-color-seperation.html
  */
 
-#include "../include/HSVFilter.h"
+#include <HSVFilter.h>
 
 // Two different constructors
 HSVFilter::HSVFilter() {

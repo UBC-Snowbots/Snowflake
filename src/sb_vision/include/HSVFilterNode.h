@@ -37,7 +37,7 @@
 #include <stdio.h>
 
 // Snowbots
-#include "HSVFilter.h"
+#include <HSVFilter.h>
 #include <sb_utils.h>
 
 using namespace cv;

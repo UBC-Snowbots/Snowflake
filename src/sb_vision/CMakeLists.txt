@@ -65,7 +65,10 @@ target_link_libraries(ipm_filter
         ${sb_utils_LIBRARIES}
         )
 
-target_link_libraries(camera ${catkin_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(camera
+        ${catkin_LIBRARIES}
+        ${OpenCV_LIBS}
+        )
 
 
 #############

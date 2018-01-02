@@ -5,7 +5,7 @@
  *              then publishes the new filtered image.
  */
 
-#include "../include/IPMFilterNode.h"
+#include <IPMFilterNode.h>
 #include <ros/ros.h>
 
 int main(int argc, char** argv) {

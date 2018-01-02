@@ -5,7 +5,7 @@
  *
  */
 
-#include "../include/HSVFilterNode.h"
+#include <HSVFilterNode.h>
 
 using namespace cv;
 using namespace cv_bridge;

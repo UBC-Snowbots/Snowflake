@@ -5,7 +5,7 @@
  *
  */
 
-#include "IPMFilterNode.h"
+#include <IPMFilterNode.h>
 
 using namespace cv;
 using namespace cv_bridge;

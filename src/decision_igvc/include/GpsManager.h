@@ -9,10 +9,10 @@
 #ifndef DECISION_GPSManager_H
 #define DECISION_GPSManager_H
 
-#include "geometry_msgs/Point.h"
-#include "ros/ros.h"
-#include "sensor_msgs/NavSatFix.h"
-#include "std_msgs/Float32.h"
+#include <geometry_msgs/Point.h>
+#include <ros/ros.h>
+#include <sensor_msgs/NavSatFix.h>
+#include <std_msgs/Float32.h>
 #include <algorithm>
 #include <gps_common/conversions.h>
 #include <sb_utils.h>
