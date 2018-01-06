@@ -99,6 +99,54 @@ cd /usr/share/clion*
 echo "Linking CLion"
 sudo ln -s -f /usr/share/clion*/bin/clion.sh /usr/local/bin/clion
 
+###################
+# Install Arduino #
+###################
+
+echo "================================================================"
+echo "Installing Arduino"
+echo "================================================================"
+echo "Downloading Arduino"
+sudo rm -rf /tmp/arduino
+sudo rm -rf /tmp/arduino.tar.xz
+wget http://downloads.arduino.cc/arduino-1.8.5-linux64.tar.xz -O /tmp/arduino.tar.xz
+
+echo "Extracting Arduino"
+mkdir /tmp/arduino
+tar xpvf /tmp/arduino.tar.xz -C /tmp/arduino --strip-components 1
+sudo rm -rf /usr/share/arduino
+sudo mv /tmp/arduino /usr/share
+
+echo "Running the Arduino install script"
+/usr/share/arduino/install.sh
+
+echo "Linking Arduino"
+sudo rm /usr/local/bin/arduino
+sudo ln -s -f /usr/share/arduino/arduino /usr/local/bin/arduino
+
+echo "Applying Snowbots modifications to core Arduino files"
+
+## Add the `flushRX` function. For context, see issue #176
+
+# Add the implementation to the `.cpp` file
+# Remove the last line (the final `#endif`) so we're inside the guards
+sed -i '$ d' /usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial.cpp
+sudo tee -a /usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial.cpp > /dev/null <<'TXT'
+void HardwareSerial::flushRX()
+{
+  _rx_buffer->head = _rx_buffer->tail;
+}
+#endif
+TXT
+
+# Add the declaration to the `.h` file 
+# Remove the last line (the final `#endif`) so we're inside the guards
+sed -i '$ d' /usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial.h
+sudo tee -a /usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial.h > /dev/null <<'TXT'
+virtual void flushRX(void);
+#endif
+TXT
+
 
 ##############################
 # Install Other Dependencies #
