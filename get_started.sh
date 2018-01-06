@@ -109,10 +109,13 @@ ARDUINO_INSTALL_DIR=/usr/share
 ARDUINO_DIR_NAME=arduino
 ARDUINO_ARCHIVE_NAME=$ARDUINO_DIR_NAME.tar.xz
 
-#echo "Downloading Arduino"
-#sudo rm -rf /tmp/$ARDUINO_DIR_NAME
-#sudo rm -rf /tmp/$ARDUINO_ARCHIVE_NAME
-#wget http://downloads.arduino.cc/arduino-1.8.5-linux64.tar.xz -O /tmp/$ARDUINO_ARCHIVE_NAME
+echo "Removing system version of arduino"
+sudo apt-get remove arduino
+
+echo "Downloading Arduino"
+sudo rm -rf /tmp/$ARDUINO_DIR_NAME
+sudo rm -rf /tmp/$ARDUINO_ARCHIVE_NAME
+wget http://downloads.arduino.cc/arduino-1.8.5-linux64.tar.xz -O /tmp/$ARDUINO_ARCHIVE_NAME
 
 echo "Extracting Arduino"
 mkdir /tmp/$ARDUINO_DIR_NAME
