@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>mapping</name>
+  <name>mapping_igvc</name>
   <version>0.0.0</version>
-  <description>UBC Snowbots Mapping Package</description>
+  <description>UBC Snowbots Mapping Package for IGVC</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
