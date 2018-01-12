@@ -3,20 +3,20 @@
  * Created On: November 20th, 2017
  * Description: An extended kalman filter node that takes in sensor data from
  * the GPS, encoders and IMU and returns the bots estimated postion and
- * orientation usng the ekf class
+ * orientation using the ekf class
  */
 
-#ifndef EKFNODE_EKFNODE_H
-#define EKFNODE_EKFNODE_H
+#ifndef LOCALISATION_EKFNODE_H
+#define LOCALISATION_EKFNODE_H
 
-#include "geometry_msgs/Pose.h"
-#include "nav_msgs/Odometry.h"
-#include "sensor_msgs/Imu.h"
 #include <EKF.h>
 #include <cmath>
+#include <geometry_msgs/Pose.h>
 #include <iostream>
+#include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <sb_utils.h>
+#include <sensor_msgs/Imu.h>
 #include <std_msgs/String.h>
 
 class EKFNode : public EKF {
@@ -32,11 +32,6 @@ class EKFNode : public EKF {
     ros::Publisher pose_pub;
     // how much time has past since the ekf started
     double time;
-    // initial bot position (current values are for rostest files)
-    const double initial_pos_x = 481917;
-    const double initial_pos_y = 5456662;
-    const double initial_pos_z = 0;
-    const double initial_yaw_angle = 0; // change to M_PI/2 for rosbag files
 
     /**
      * Callback function for when new GPS data is received
@@ -71,6 +66,8 @@ class EKFNode : public EKF {
   public:
     // Constructor
     EKFNode(int argc, char** argv, std::string node_name);
+
+    // EKFNode(int argc, char** argv, std::string node_name);
 };
 
-#endif // EKFNODE_EKFNODE_H
+#endif // LOCALISATION_EKFNODE_H

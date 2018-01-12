@@ -25,13 +25,14 @@ class EKFNodeTest : public testing::Test {
     virtual void SetUp() {
         // set up publsihers and subscribers
         test_gps_publisher =
-        nh_.advertise<nav_msgs::Odometry>("/gps_driver/odom", 10);
-        test_encoder_publisher = nh_.advertise<nav_msgs::Odometry>("/odom", 10);
-        test_imu_publisher     = nh_.advertise<sensor_msgs::Imu>("/imu", 10);
+        nh_.advertise<nav_msgs::Odometry>("/gps_driver/odom", 1000);
+        test_encoder_publisher =
+        nh_.advertise<nav_msgs::Odometry>("/odom", 1000);
+        test_imu_publisher = nh_.advertise<sensor_msgs::Imu>("/imu", 1000);
         test_pose_subscriber =
-        nh_.subscribe("/cmd_pose", 10, &EKFNodeTest::poseCallback, this);
+        nh_.subscribe("/cmd_pose", 1, &EKFNodeTest::poseCallback, this);
         // Let the publishers and subscribers set itself up timely
-        ros::Rate loop_rate(10);
+        ros::Rate loop_rate(100);
         loop_rate.sleep();
     }
 
@@ -73,31 +74,32 @@ class EKFNodeTest : public testing::Test {
             x += sin(angle) * speed;
             y += cos(angle) * speed;
             angle += ang_vel;
-            angle = EKF::defineAngleInBounds(angle);
+            angle = EKF::constrainAngleInBounds(angle);
 
             // save every generated values as measured position
-            measured_x += sin(angle) * speed + noise(e2);  // add some noise
-            measured_y += cos(angle) * speed + noise(e2);  // add some noise
-            measured_angle += ang_vel + (noise(e2) / 400); // add some noise
-            measured_angle = EKF::defineAngleInBounds(measured_angle);
+            measured_x += sin(angle) * speed; //+ noise(e2);  // add some noise
+            measured_y += cos(angle) * speed; //+ noise(e2);  // add some noise
+            measured_angle += ang_vel; //+ (noise(e2) / 400); // add some noise
+            measured_angle = EKF::constrainAngleInBounds(measured_angle);
 
-            measured_speed += noise(e2);           // add some random noise
-            measured_ang_vel += (noise(e2) / 200); // add some random noise
+            measured_speed += 0; // noise(e2);           // add some random
+                                 // noise
+            measured_ang_vel += 0; //(noise(e2) / 200); // add some random noise
 
             // publish IMU
             test_imu.angular_velocity.z = measured_ang_vel;
             test_imu.orientation =
             tf::createQuaternionMsgFromYaw(measured_angle);
             test_imu_publisher.publish(test_imu);
-            ros::Rate loop_rate(10);
-            loop_rate.sleep();
-            ros::spinOnce();
+            ros::Rate loop_rate(100);
+            // loop_rate.sleep();
+            // ros::spinOnce();
 
             // publish encoder
             test_encoder.twist.twist.linear.x = measured_speed;
             test_encoder_publisher.publish(test_encoder);
-            loop_rate.sleep();
-            ros::spinOnce();
+            // loop_rate.sleep();
+            // ros::spinOnce();
 
             // publish GPS
             test_gps.pose.pose.position.x = measured_x;
@@ -124,10 +126,11 @@ TEST_F(EKFNodeTest, testEKFNode) {
     // all sections of the rostest assume a dt of 1 second remember to
     // change dt in EKFNode.cpp to reflect that
     // travel north for 50 seconds
+
     driveSimulator(x, y, angle, speed, ang_vel, seconds_traveling, e2);
 
-    EXPECT_NEAR(x, pose_data.position.x, 200);
-    EXPECT_NEAR(y, pose_data.position.y, 200);
+    EXPECT_NEAR(x, pose_data.position.x, 150);
+    EXPECT_NEAR(y, pose_data.position.y, 150);
 
     x += seconds_traveling * sin(angle) * speed;
     y += seconds_traveling * cos(angle) * speed;
@@ -139,8 +142,8 @@ TEST_F(EKFNodeTest, testEKFNode) {
     seconds_traveling = 8;
     driveSimulator(x, y, angle, speed, ang_vel, seconds_traveling, e2);
 
-    EXPECT_NEAR(x, pose_data.position.x, 200);
-    EXPECT_NEAR(y, pose_data.position.y, 200);
+    EXPECT_NEAR(x, pose_data.position.x, 150);
+    EXPECT_NEAR(y, pose_data.position.y, 150);
 
     x += seconds_traveling * sin(angle) * speed;
     y += seconds_traveling * cos(angle) * speed;
@@ -152,8 +155,8 @@ TEST_F(EKFNodeTest, testEKFNode) {
     seconds_traveling = 30;
     driveSimulator(x, y, angle, speed, ang_vel, seconds_traveling, e2);
 
-    EXPECT_NEAR(x, pose_data.position.x, 200);
-    EXPECT_NEAR(y, pose_data.position.y, 200);
+    EXPECT_NEAR(x, pose_data.position.x, 150);
+    EXPECT_NEAR(y, pose_data.position.y, 150);
 
     x += seconds_traveling * sin(angle) * speed;
     y += seconds_traveling * cos(angle) * speed;
@@ -165,8 +168,8 @@ TEST_F(EKFNodeTest, testEKFNode) {
     seconds_traveling = 10;
     driveSimulator(x, y, angle, speed, ang_vel, seconds_traveling, e2);
 
-    EXPECT_NEAR(x, pose_data.position.x, 200);
-    EXPECT_NEAR(y, pose_data.position.y, 200);
+    EXPECT_NEAR(x, pose_data.position.x, 150);
+    EXPECT_NEAR(y, pose_data.position.y, 150);
 
     x += seconds_traveling * sin(angle) * speed;
     y += seconds_traveling * cos(angle) * speed;
@@ -178,8 +181,8 @@ TEST_F(EKFNodeTest, testEKFNode) {
     seconds_traveling = 40;
     driveSimulator(x, y, angle, speed, ang_vel, seconds_traveling, e2);
 
-    EXPECT_NEAR(x, pose_data.position.x, 200);
-    EXPECT_NEAR(y, pose_data.position.y, 200);
+    EXPECT_NEAR(x, pose_data.position.x, 150);
+    EXPECT_NEAR(y, pose_data.position.y, 150);
 }
 
 int main(int argc, char** argv) {

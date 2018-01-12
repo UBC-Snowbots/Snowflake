@@ -1,6 +1,0 @@
-<!-- A .test file which launches the node and its corresponding rostest -->
-
-<launch>
-    <node name="a_star" pkg="path_finding" type="a_star" />
-    <test test-name="a_star_rostest" pkg="path_finding" type="a_star_rostest" />
-</launch>

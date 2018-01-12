@@ -15,19 +15,50 @@ EKFNode::EKFNode(int argc, char** argv, std::string node_name) {
     ros::NodeHandle nh;
 
     // Setup Subscribers
-    gps_sub = nh.subscribe("/gps_driver/odom", 10, &EKFNode::gpsCallBack, this);
-    encoder_sub = nh.subscribe("/odom", 10, &EKFNode::encoderCallBack, this);
-    imu_sub     = nh.subscribe("/imu", 10, &EKFNode::imuCallBack, this);
+    gps_sub = nh.subscribe("/gps_driver/odom", 1, &EKFNode::gpsCallBack, this);
+    encoder_sub = nh.subscribe("/odom", 1, &EKFNode::encoderCallBack, this);
+    imu_sub     = nh.subscribe("/imu", 1, &EKFNode::imuCallBack, this);
 
     // Setup Publisher
-    pose_pub = nh.advertise<geometry_msgs::Pose>("/cmd_pose", 10);
+    pose_pub = nh.advertise<geometry_msgs::Pose>("/cmd_pose", 1000);
+
+    // Get Parameters
+    double sdev_gyro, sdev_speed, sdev_gps_x_measurement,
+    sdev_gps_y_measurement, sdev_angle_measurement, initial_pos_x,
+    initial_pos_y, initial_yaw_angle;
+    std::vector<double> initial_p(9);
+    std::vector<double> q1_const(9);
+    std::vector<double> h_const(9);
+    nh.param<double>("ekf_node/sdev_gyro", sdev_gyro, M_PI / 180.);
+    nh.param<double>("ekf_node/sdev_speed", sdev_speed, 0.15);
+    nh.param<double>(
+    "ekf_node/sdev_gps_x_measurement", sdev_gps_x_measurement, 5.);
+    nh.param<double>(
+    "ekf_node/sdev_gps_y_measurement", sdev_gps_y_measurement, 5.);
+    nh.param<double>(
+    "ekf_node/sdev_angle_measurement", sdev_angle_measurement, M_PI / 180.);
+    nh.param<std::vector<double>>(
+    "ekf_node/p", initial_p, {0., 0., 0., 0., 0., 0., 0., 0., 0.});
+    nh.param<std::vector<double>>(
+    "ekf_node/q1",
+    q1_const,
+    {0.01 * 0.01,
+     0.,
+     0.,
+     0.,
+     0.01 * 0.01,
+     0.,
+     0.,
+     0.,
+     (1. * (M_PI / 180.)) * (1. * (M_PI / 180.))});
+    nh.param<std::vector<double>>(
+    "ekf_node/h", h_const, {1., 0., 0., 0., 1., 0., 0., 0., 1.});
+    nh.param<double>("ekf_node/initial_pos_x", initial_pos_x, 481917.);
+    nh.param<double>("ekf_node/initial_pos_y", initial_pos_y, 5456662.);
+    nh.param<double>("ekf_node/initial_yaw_angle", initial_yaw_angle, 0.);
 
     // set initial position
-    bot_position.position.x = initial_pos_x;
-    bot_position.position.y = initial_pos_y;
-    bot_position.position.z = initial_pos_z;
-    bot_position.orientation =
-    tf::createQuaternionMsgFromYaw(defineAngleInBounds(initial_yaw_angle));
+    setInitialPosition(initial_pos_x, initial_pos_y, initial_yaw_angle);
 
     // initialise out measurements
     imu_data.angular_velocity.z = 0;
@@ -35,6 +66,16 @@ EKFNode::EKFNode(int argc, char** argv, std::string node_name) {
     gps_data.pose.pose.position.x     = initial_pos_x;
     gps_data.pose.pose.position.y     = initial_pos_y;
     encoder_data.twist.twist.linear.x = 0;
+
+    // set constant matrices
+    setConstants(sdev_gyro,
+                 sdev_speed,
+                 sdev_gps_x_measurement,
+                 sdev_gps_y_measurement,
+                 sdev_angle_measurement,
+                 initial_p,
+                 q1_const,
+                 h_const);
 
     // initial time
     time = ros::Time::now().toSec();
@@ -45,7 +86,7 @@ void EKFNode::gpsCallBack(const nav_msgs::Odometry::ConstPtr& gps_message) {
     gps_data.pose  = gps_message->pose;
     gps_data.twist = gps_message->twist;
 
-    publishPose(measurementModel(gps_data, imu_data));
+    publishPose(updateState(gps_data, imu_data));
 }
 
 void EKFNode::encoderCallBack(
@@ -54,11 +95,11 @@ const nav_msgs::Odometry::ConstPtr& encoder_message) {
     encoder_data.pose  = encoder_message->pose;
     encoder_data.twist = encoder_message->twist;
 
-    double dt = ros::Time::now().toSec() - time; // set change in time to 1
-    // for rostest
+    double dt = ros::Time::now().toSec() -
+                time; // set change in time to 1 second if running the rostest
     time += dt;
 
-    processModel(encoder_data, imu_data, dt);
+    predictState(encoder_data, imu_data, dt);
 }
 
 void EKFNode::imuCallBack(const sensor_msgs::Imu::ConstPtr& imu_message) {
