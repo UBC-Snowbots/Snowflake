@@ -2,7 +2,7 @@
 Header header
 
 # The coefficients representing a polynomial line
-# The degree of the polynomial is determined by the number of coefficient
+# The degree of the polynomial is determined by the number of coefficients
 float64[] coefficients
 
 # The min and max x values for the polynomial line
