@@ -82,13 +82,6 @@ include_directories(
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
     #gTest
-        catkin_add_gtest(obstacle-manager-test
-            test/obstacle-manager-test.cpp
-            include/ObstacleManager.h
-            src/ObstacleManager.cpp
-            )
-        target_link_libraries(obstacle-manager-test ${catkin_LIBRARIES})
-
     # rostest
     # TODO: Maybe? Not sure if we need rostests for the ObstacleManager
 
