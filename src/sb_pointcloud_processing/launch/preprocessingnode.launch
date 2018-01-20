@@ -1,0 +1,13 @@
+<launch>
+    <node pkg="nodelet"
+          type="nodelet"
+          name="standalone_nodelet"
+          args="manager"
+          output="screen" />
+    <node pkg="nodelet"
+          type="nodelet"
+          name="preprocessing_node"
+          args="load sb_pointcloud_processing/preprocessing_node standalone_nodelet" output="screen">
+
+    </node>
+</launch>
