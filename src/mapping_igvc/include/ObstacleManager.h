@@ -7,7 +7,7 @@
 #ifndef MAPPING_IGVC_OBSTACLEMANAGER_H
 #define MAPPING_IGVC_OBSTACLEMANAGER_H
 
-#include <ConeObstacle.h>
+#include <mapping_igvc_msgs/ConeObstacle.h>
 
 class ObstacleManager {
     // Add obstacle (should have versions for polynomial line and cone)

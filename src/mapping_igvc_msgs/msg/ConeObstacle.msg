@@ -2,7 +2,7 @@
 Header header
 
 # The center point of the cone
-mapping_igvc/Point2d center
+Point2D center
 
 # The radius of the cone (in meters)
 float64 radius

@@ -6,45 +6,7 @@ add_definitions(--std=c++14)
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
     roscpp
-    message_generation
-    std_msgs
-)
-
-################################################
-## Declare ROS messages, services and actions ##
-################################################
-
-## To declare and build messages, services or actions from within this
-## package, follow these steps:
-## * Let MSG_DEP_SET be the set of packages whose message types you use in
-##   your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).
-## * In the file package.xml:
-##   * add a build_depend tag for "message_generation"
-##   * add a build_depend and a run_depend tag for each package in MSG_DEP_SET
-##   * If MSG_DEP_SET isn't empty the following dependency has been pulled in
-##     but can be declared for certainty nonetheless:
-##     * add a run_depend tag for "message_runtime"
-## * In this file (CMakeLists.txt):
-##   * add "message_generation" and every package in MSG_DEP_SET to
-##     find_package(catkin REQUIRED COMPONENTS ...)
-##   * add "message_runtime" and every package in MSG_DEP_SET to
-##     catkin_package(CATKIN_DEPENDS ...)
-##   * uncomment the add_*_files sections below as needed
-##     and list every .msg/.srv/.action file to be processed
-##   * uncomment the generate_messages entry below
-##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
-
-## Generate messages in the 'msg' folder
-add_message_files(
-    FILES
-    ConeObstacle.msg
-    LineObstacle.msg
-)
-
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
+    mapping_igvc_msgs
 )
 
 ###################################
@@ -54,7 +16,7 @@ generate_messages(
 ## Declare things to be passed to dependent projects
 catkin_package(
     INCLUDE_DIRS include
-    CATKIN_DEPENDS message_runtime std_msgs
+    CATKIN_DEPENDS mapping_igvc_msgs
 )
 
 ###########
@@ -90,9 +52,6 @@ if (CATKIN_ENABLE_TESTING)
             src/ObstacleManager.cpp
             )
         target_link_libraries(obstacle-manager-test ${catkin_LIBRARIES})
-        # We need to declare a dependency on generated headers (`gencpp`)
-        # for custom messages that this executable depends on
-        add_dependencies(obstacle-manager-test mapping_igvc_messages)
 
     # rostest
     # TODO: Maybe? Not sure if we need rostests for the ObstacleManager
