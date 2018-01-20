@@ -1,0 +1,11 @@
+<launch>
+    
+    <!-- Launch our IPM Filter -->
+    <node name="ipm_filter" pkg="sb_vision" type="ipm_filter" output="screen">
+            <param name="ipm_base_width" value=" 1" />
+            <param name="ipm_top_width" value=" 0.5" />
+            <param name="ipm_base_displacement" value=" 0" />
+            <param name="ipm_top_displacement" value=" 0.25" />
+    </node>
+
+</launch>

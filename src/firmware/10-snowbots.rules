@@ -1,0 +1,5 @@
+# Snowbots udev Rules 
+
+# Examples:
+# SUBSYSTEMS=="usb", ATTRS{serial}=="95635333430351116140", MODE="0666", SYMLINK+="ttyACM999", GROUP="dialout"
+# SUBSYSTEMS=="usb", ATTRS{serial}=="956353337303514032E1", MODE="0666", SYMLINK+="ttyACM998", GROUP="dialout"
