@@ -33,7 +33,9 @@ rosrun nodelet nodelet load package_name/registered_nodelet_name name_of_nodelet
 </launch>
 ```
 
+# to show nodelets runnign
 
+rosnode list
 
 
 

@@ -16,28 +16,35 @@ include_directories(
     ${catkin_INCLUDE_DIRS}
     ${sb_utils_INCLUDE_DIRS}
     ${PCL_INCLUDE_DIRS}
-    ./include
+    include
 )
 
-add_library(preprocessing_node
-                src/PreprocessingNode.cpp
-                include/PreprocessingNode.h
-                include/ColourspaceConverter.h
-                src/ColourspaceConverter.cpp
+add_library(sb_pointcloud_processing
+    include/rgb_to_hsv.h
+    src/rgb_to_hsv.cpp
+    include/frame_transform.h
+    src/frame_transform.cpp
+    include/ColourspaceConverter.h
+    src/ColourspaceConverter.cpp
 )
 
-target_link_libraries(preprocessing_node ${catkin_LIBRARIES}
-                                         ${sb_utils_LIBRARIES}
-                                         ${PCL_LIBRARIES})
+target_link_libraries(sb_pointcloud_processing
+    ${catkin_LIBRARIES}
+    ${sb_utils_LIBRARIES}
+    ${PCL_LIBRARIES}
+)
 
+## TODO: Needed?
 if(catkin_EXPORTED_LIBRARIES)
     add_dependencies(preprocessing_node ${catkin_EXPORTED_LIBRARIES})
 endif()
 
-install(TARGETS preprocessing_node
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+install(
+    TARGETS
+        sb_pointcloud_processing
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 if (CATKIN_ENABLE_TESTING)
