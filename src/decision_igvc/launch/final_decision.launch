@@ -1,0 +1,8 @@
+<launch>
+
+    <!-- Launch Final Decision -->
+    <node name="final_decision" pkg="decision_igvc" type="final_decision" output="screen">
+        <remap from="/final_decision/twist" to="/cmd_vel"/>
+    </node>
+
+</launch>
