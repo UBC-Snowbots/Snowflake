@@ -88,10 +88,17 @@ target_link_libraries(camera
 #############
 
 if (CATKIN_ENABLE_TESTING)
-
     # GTest
-    catkin_add_gtest(green-recognition-test test/green-recognition-test.cpp src/HSVFilter.cpp src/HSVFilterNode.cpp src/CircleDetection.cpp WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test)
-    target_link_libraries(green-recognition-test ${catkin_LIBRARIES})
+    catkin_add_gtest(green-recognition-test 
+        test/green-recognition-test.cpp 
+        src/HSVFilter.cpp 
+        src/HSVFilterNode.cpp 
+        src/CircleDetection.cpp 
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
+        )
+    target_link_libraries(green-recognition-test
+        ${catkin_LIBRARIES}
+        )
 
 endif()
 
