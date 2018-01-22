@@ -11,7 +11,8 @@ CLANG_VERSION=4.0
 # The default branch to compare against
 DEFAULT_BRANCH="master"
 
-# The current directory
+# The directory that this script is in (NOT the directory that this script is run from)
+# This allows us to find files relative to this script
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Check for arguments
