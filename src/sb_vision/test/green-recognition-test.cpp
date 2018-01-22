@@ -8,13 +8,13 @@ TEST(realImage, GreenLight) {
     cv::Mat bgr_image = imread(image_path);
     Mat filtered_image;
 
-    HSVFilter testFilter = HSVFilter();
-    testFilter.filterImage(bgr_image, filtered_image);
+    HSVFilter test_filter = HSVFilter();
+    test_filter.filterImage(bgr_image, filtered_image);
 
-    CircleDetection *circleDetection = new CircleDetection();
-    int numCircles = circleDetection->countCircles(filtered_image, false);
+    CircleDetection *circle_detection = new CircleDetection();
+    int num_circles = circle_detection->countCircles(filtered_image, false);
 
-    EXPECT_EQ(1, numCircles);
+    EXPECT_EQ(1, num_circles);
 }
 
 TEST(realImage, noCircle) {
@@ -26,10 +26,10 @@ TEST(realImage, noCircle) {
     HSVFilter testFilter = HSVFilter();
     testFilter.filterImage(bgr_image, filtered_image);
 
-    CircleDetection *circleDetection = new CircleDetection();
-    int numCircles = circleDetection->countCircles(filtered_image, false);
+    CircleDetection *circle_detection = new CircleDetection();
+    int num_circles = circle_detection->countCircles(filtered_image, false);
 
-    EXPECT_EQ(0, numCircles);
+    EXPECT_EQ(0, num_circles);
 }
 
 TEST(filteredImage, oneCircle) {
@@ -37,14 +37,14 @@ TEST(filteredImage, oneCircle) {
 
     cv::Mat bgr_image = imread(image_path);
     
-    CircleDetection *circleDetection = new CircleDetection();
-    int numCircles = circleDetection->countCircles(bgr_image, false);
+    CircleDetection *circle_detection = new CircleDetection();
+    int num_circles = circle_detection->countCircles(bgr_image, false);
 
-    EXPECT_EQ(1, numCircles);
+    EXPECT_EQ(1, num_circles);
 }
 
 
-int main(int aimageTests, char **argv) {
-    testing::InitGoogleTest(&aimageTests, argv);
+int main(int imageTests, char **argv) {
+    testing::InitGoogleTest(&imageTests, argv);
     return RUN_ALL_TESTS();
 }

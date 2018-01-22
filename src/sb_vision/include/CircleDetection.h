@@ -54,7 +54,7 @@ public:
      *
      * @param image to be parsed
      */
-    int countCircles(const Mat &filtered_image, bool displayCircles = true);
+    int countCircles(const Mat &filtered_image, bool display_circles = true);
 
 private:
 
@@ -82,7 +82,7 @@ private:
      * Determines whether path contains an image.
      *
      */
-    void check_if_image_exist(const cv::Mat &img, const std::string &path);
+    void checkIfImageExists(const cv::Mat &img, const std::string &path);
 
     /**
      * Subscribes to the filtered camera image topic
@@ -95,10 +95,10 @@ private:
     ros::Publisher activity_publisher;
 
     // Minimum radius needed to be considered an object
-    int minTargetRadius;
+    int min_target_radius;
 
     // Show window for debugging purposes
-    bool showWindow;
+    bool show_window;
 
 };
 

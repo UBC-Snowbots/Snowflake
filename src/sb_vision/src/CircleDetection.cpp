@@ -19,9 +19,9 @@ CircleDetection::CircleDetection(std::string &image_path) {
     cv::Mat bgr_image = imread(image_path);
 
     // Check if the image can be loaded
-    check_if_image_exist(bgr_image, image_path);
+    checkIfImageExists(bgr_image, image_path);
 
-    minTargetRadius = 20;
+    min_target_radius = 20;
     countCircles(bgr_image);
 
     waitKey(0);
@@ -29,7 +29,7 @@ CircleDetection::CircleDetection(std::string &image_path) {
 }
 
 CircleDetection::CircleDetection() {
-    minTargetRadius = 20;
+    min_target_radius = 20;
 }
 
 CircleDetection::CircleDetection(int argc, char **argv, std::string node_name) {
@@ -51,30 +51,30 @@ CircleDetection::CircleDetection(int argc, char **argv, std::string node_name) {
     // Setup publishers
     std::string output_topic = "/robot/vision/activity_detected";
     uint32_t queue_size = 1;
-    activity_publisher = private_nh.advertise<std_msgs::Bool>(output_topic, queue_size);
+    activity_publisher = nh.advertise<std_msgs::Bool>(output_topic, queue_size);
 
     // Get some params
-    SB_getParam(private_nh, "minimum_target_radius", minTargetRadius, 50);
-    SB_getParam(private_nh, "show_image_window", showWindow, true);
+    SB_getParam(private_nh, "minimum_target_radius", min_target_radius, 50);
+    SB_getParam(private_nh, "show_image_window", show_window, true);
 
 }
 
 void CircleDetection::filteredImageCallBack(const sensor_msgs::Image::ConstPtr &image) {
 
     // If something is seen tell the robot to move
-    int numCircles = countCircles(rosToMat(image));
+    int num_circles = countCircles(rosToMat(image));
     std_msgs::Bool circle_detected;
-    circle_detected.data = numCircles > 0;
+    circle_detected.data = num_circles > 0;
     activity_publisher.publish(circle_detected);
 }
 
 Mat CircleDetection::rosToMat(const sensor_msgs::Image::ConstPtr &image) {
-    CvImagePtr imagePtr;
-    imagePtr = toCvCopy(image, image->encoding);
-    return imagePtr->image;
+    CvImagePtr image_ptr;
+    image_ptr = toCvCopy(image, image->encoding);
+    return image_ptr->image;
 }
 
-int CircleDetection::countCircles(const Mat &filtered_image, bool displayCircles) {
+int CircleDetection::countCircles(const Mat &filtered_image, bool display_circles) {
 
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
@@ -95,13 +95,13 @@ int CircleDetection::countCircles(const Mat &filtered_image, bool displayCircles
         cv::minEnclosingCircle(contours[i], c, r);
 
         // Only count circles with large enough radius
-        if (r >= minTargetRadius) {
+        if (r >= min_target_radius) {
             center.push_back(c);
             radii.push_back(r);
         }
     }
 
-    if (displayCircles) {
+    if (display_circles) {
         // Displays a window with the detected objects being circled
 //        showFilteredObjectsWindow(filtered_image, center, radii);
     }
@@ -115,21 +115,21 @@ void CircleDetection::showFilteredObjectsWindow(const Mat &filtered_image, std::
                                                  std::vector<float> radii) {
     size_t center_count = center.size();
     cv::Scalar green(0, 255, 0);
-    cv::Mat colorImage;
-    cv::cvtColor(filtered_image, colorImage, CV_GRAY2BGR);
+    cv::Mat color_image;
+    cv::cvtColor(filtered_image, color_image, CV_GRAY2BGR);
 
     // Draw green circles around object
     for (int i = 0; i < center_count; i++) {
-        cv::circle(colorImage, center[i], (int) radii[i], green, 3);
+        cv::circle(color_image, center[i], (int) radii[i], green, 3);
     }
 
     namedWindow("Filtered Objects", WINDOW_AUTOSIZE);
-    imshow("Filtered Objects", colorImage);
+    imshow("Filtered Objects", color_image);
     waitKey(20);
 
 }
 
-void CircleDetection::check_if_image_exist(const cv::Mat &img, const std::string &path) {
+void CircleDetection::checkIfImageExists(const cv::Mat &img, const std::string &path) {
     if (img.empty()) {
         std::cout << "Error! Unable to load image: " << path << std::endl;
         std::exit(-1);
