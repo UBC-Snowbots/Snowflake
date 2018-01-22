@@ -97,6 +97,7 @@ if (CATKIN_ENABLE_TESTING)
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
         )
     target_link_libraries(green-recognition-test
+        ${OpenCV_LIBS}
         ${catkin_LIBRARIES}
         )
 

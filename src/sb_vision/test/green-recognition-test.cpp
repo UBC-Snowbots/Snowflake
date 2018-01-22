@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <CircleDetection.h>
-#include "../../vision/include/HSVFilterNode.h"
+#include <HSVFilterNode.h>
 
 TEST(realImage, GreenLight) {
     std::string image_path = "images/GreenLight.jpg";
