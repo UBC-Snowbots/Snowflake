@@ -1,26 +1,25 @@
-# This config file for Travis CI utilizes https://github.com/UBC-Snowbots/moveit_ci/ package.
-sudo: required
-dist: trusty
+# This config file for Travis CI utilizes ros-industrial/industrial_ci package.
+# For more info for the package, see https://github.com/ros-industrial/industrial_ci/blob/master/README.rst
+sudo: required 
+dist: trusty 
 services:
   - docker
-language: generic
+language: generic 
 compiler:
   - gcc
 notifications:
   email:
-    recipients:
-
+#    recipients:
+#      - jane@doe
 env:
   matrix:
-    - ROS_DISTRO=kinetic ROS_REPO=ros UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-    - ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-    - TEST_CLANG_FORMAT=TRUE ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
+    - ROS_DISTRO="kinetic"  ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu NOT_TEST_INSTALL=true
+    - ROS_DISTRO="kinetic"  ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu NOT_TEST_INSTALL=true
+    - ROS_DISTRO="kinetic"  PRERELEASE=true
 matrix:
   allow_failures:
-      - env: ROS_DISTRO=kinetic ROS_REPO=ros UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-
-before_script:
-    # Below line is not being used, as we are using a forked version
-    - git clone -q https://github.com/UBC-Snowbots/moveit_ci .moveit_ci
+install:
+  - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
 script:
-  - source .moveit_ci/travis.sh
+  - source .ci_config/travis.sh
+#  - source ./travis.sh  # Enable this when you have a package-local script 
