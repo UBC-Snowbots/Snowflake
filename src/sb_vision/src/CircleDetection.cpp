@@ -84,7 +84,7 @@ int CircleDetection::countCircles(const Mat &filtered_image, bool display_circle
     // Convert to a grayscale image, if channels do not match.
     cv::Mat bwImage;
     switch(filtered_image.channels()) {
-        // TODO: Find out the range of channel numbers
+        // 4 channel and 3 channel conversion should cover all our use cases.
         case 4:
             cvtColor(filtered_image, bwImage, CV_BGRA2GRAY);
             break;
@@ -114,7 +114,7 @@ int CircleDetection::countCircles(const Mat &filtered_image, bool display_circle
 
     if (display_circles) {
         // Displays a window with the detected objects being circled
-        showFilteredObjectsWindow(filtered_image, center, radii);
+        showFilteredObjectsWindow(bwImage, center, radii);
     }
 
     // Complains about fitting a long to an int
@@ -136,7 +136,7 @@ void CircleDetection::showFilteredObjectsWindow(const Mat &filtered_image, std::
 
     namedWindow("Filtered Objects", WINDOW_AUTOSIZE);
     imshow("Filtered Objects", color_image);
-    waitKey(20);
+    waitKey(0);
 
 }
 
