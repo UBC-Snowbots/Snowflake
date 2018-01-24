@@ -1,8 +1,9 @@
 /*
  * Created By: Raad Khan
  * Created On: April 23, 2017
- * Description: Gets angle of point of intersection of lane lines
- *              and broadcasts a recommended Twist message.
+ * Description: Takes in an image feed and uses LineDetect to generate
+ * lane lines, lane intersection point, and destination point, then
+ * broadcasts a recommended Twist message to stay within the lanes.
  */
 
 #ifndef LANE_FOLLOW_H
@@ -37,7 +38,7 @@ class LaneFollow {
     /**
      * Callback for the filtered image
      *
-     * @param address of filtered image matrix
+     * @param pointer to image received from ROS
      */
     void subscriberCallBack(const sensor_msgs::ImageConstPtr& msg);
 
@@ -45,7 +46,7 @@ class LaneFollow {
     int angle_theta;
 
     /**
-     * Initializator
+     * Initializes filter parameters
      *
      * @params image information and where to apply the IPM
      */
@@ -95,9 +96,10 @@ class LaneFollow {
     ros::Publisher twist_pub;
 
     /**
-     * Converts ros::sensor_msgs::Image into a cv::Mat
+     * Converts ros::sensor_msgs::Image to cv::Mat
      *
-     * @param message to be converted
+     * @param sensor_msgs image to be converted
+     * @return converted matrix image
      */
     cv::Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
 

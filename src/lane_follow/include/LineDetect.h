@@ -1,88 +1,143 @@
 /*
  * Created by: Raad Khan
  * Created On: July 1, 2017
- * Description: Takes in an image feed and generates lane lines.
- * Usage: LaneFollow node instantiates this class to generate lane lines
+ * Description: Header for LineDetect
  */
 
 #ifndef LANE_FOLLOW_LINEDETECT_H
 #define LANE_FOLLOW_LINEDETECT_H
 
-#include <iostream>
-#include <opencv2/core/core.hpp>
-#include <stdio.h>
-#include <string>
-#include <vector>
+#include <opencv2/core.hpp>
 
 using namespace cv;
 
+// Stores polynomial coefficients in increasing order
+// eg: for ax^3 + bx^2 + cx + d, coefficients[0] = d, ... coefficients[3] = a
 struct Polynomial {
-    // ax^3 + bx^2 + cx + d
-    double a;
-    double b;
-    double c;
-    double d;
-};
+     std::vector<double> coefficients;
+ };
 
+// Defines a vector of integer type
 typedef std::vector<int> intVec;
 
+// Defines a window slice
 class Window {
-  public:
+    public:
+    // window parameters
     int center;
     int width;
-
-    int getLeftSide() { return (center - width / 2); }
-    int getRightSide() { return (center + width / 2); }
+    // window methods
+    int getLeftSide() { return (center - width/2); }
+    int getRightSide() { return (center + width/2); }
 };
 
 class LineDetect {
-  public:
-    /**
-     * Constructor
-     */
+public:
+    // Constructor
     LineDetect();
 
-    // TODO: doc functions
-
-    std::vector<Window> getBaseWindows(cv::Mat& filteredImage);
-
-    intVec getHistogram(cv::Mat& image);
-
-    std::pair<int, int> getBaseHistogramPeakPosition(intVec histogram);
-
-    std::vector<std::vector<cv::Point2d>>
-    getLanePoints(cv::Mat& filteredImage, std::vector<Window> windows);
-
-    cv::Mat getWindowSlice(cv::Mat& filteredImage,
-                           Window window,
-                           int verticalSliceIndex);
-
-    int getWindowHistogramPeakPosition(intVec histogram);
-
+    /**
+     * Creates lane lines from lane points
+     *
+     * @param_one left and right lane points
+     *
+     * @return left and right lane polynomials
+     *
+     */
     std::vector<Polynomial>
     getLaneLines(std::vector<std::vector<cv::Point2d>> lanePoints);
 
-    Polynomial fitPolyLine(std::vector<cv::Point2d> points, int order);
+    /**
+     * Creates base windows to contain left and right lanes
+     *
+     * @param_one filtered image
+     *
+     * @return left and right base windows
+     */
+    std::vector<Window> getBaseWindows(cv::Mat &filteredImage);
 
-    static cv::Point2d getIntersection(Polynomial leftLine,
-                                       Polynomial rightLine);
+    /**
+     * Creates histogram of ROI/window
+     *
+     * @param_one ROI (by reference)
+     *
+     * @return histogram
+     */
+    intVec getHistogram(cv::Mat &ROI);
 
-    static cv::Point2d getPerpendicularIntersection(Polynomial line);
+    /**
+     * Finds base histogram's peak positions
+     *
+     * This is a good indication of where the lanes are located
+     *
+     * @param base histogram
+     * @return peak location indices
+     */
+    std::pair<int, int> getBaseHistogramPeakPositions(intVec baseHistogram);
 
-    static double getAngleFromOriginToPoint(cv::Point2d point);
+    /**
+     * Creates a window by slicing the left/right base window vertically upwards
+     *
+     * @param_one filtered image
+     * @param_two left/right base window
+     * @param_three window slice index
+     *
+     * @return window slice
+     */
 
-    static cv::Point2d moveAwayFromLine(Polynomial line,
-                                        double targetXDistance,
-                                        double targetYDistance);
+    cv::Mat getWindowSlice(cv::Mat &filteredImage,
+                          Window baseWindow,
+                          int verticalSliceIndex);
 
-  private:
+    /**
+     * Finds peak position of lane segment in window
+     *
+     * @param_one window histogram
+     *
+     * @return peak location index
+     */
+    int getWindowHistogramPeakPosition(intVec windowHistogram);
+
+    /**
+     * Creates lane points
+     *
+     * @param_one filtered image
+     * @param_two left and right base windows
+     *
+     * @return left and right lane points
+     */
+    std::vector<std::vector<cv::Point2d>>
+    getLanePoints(cv::Mat &filteredImage, std::vector<Window> baseWindows);
+
+    /**
+     * Generates polynomial coefficients representing left/right lane line
+     *
+     * @param_one left/right lane points
+     * @param_two desired order of polynomial
+     *
+     * @return left/right lane polynomial coefficients
+     */
+    Polynomial fitPolyToLine(std::vector<cv::Point2d> points, int order);
+
+    /**
+     * Gets intersection point of lane lines
+     *
+     * @param_one left and right lane polynomials
+     * @param_two desired order of polynomial
+     *
+     * @return intersection point
+     */
+    cv::Point2d getIntersectionPoint(std::vector<Polynomial> laneLines, int order);
+
+private:
+    // white color value
     int white;
-
-    int windowWidth;
-
-    int numVerticalSlice;
-
+    // number of window slices
+    int numVerticalSlices;
+    // lane polynomial degree
     int degree;
+    // window width
+    int windowWidth;
 };
 
 #endif

@@ -14,7 +14,6 @@ catkin_package(
     CATKIN_DEPENDS roscpp
 )
 
-
 ###########
 ## Build ##
 ###########
@@ -31,28 +30,28 @@ include_directories(
 
 ## Declare a C++ library
 add_library(ipm
-        src/IPM.cpp src/IPMFilter.cpp
-        )
+    src/IPM.cpp src/IPMFilter.cpp
+    )
 
 ## Declare a C++ executable
 # add_executable(drivers_node src/drivers_node.cpp)
 add_executable(hsv_filter
-        src/HSVFilter.cpp
-        src/hsv_filter.cpp
-        src/HSVFilterNode.cpp
-        include/HSVFilter.h
-        include/HSVFilterNode.h
-        )
+    src/HSVFilter.cpp
+    src/hsv_filter.cpp
+    src/HSVFilterNode.cpp
+    include/HSVFilter.h
+    include/HSVFilterNode.h
+    )
 
 add_executable(ipm_filter
-        src/IPMFilter.cpp
-        src/ipm_filter.cpp
-        src/IPMFilterNode.cpp
-        src/IPM.cpp
-        include/IPMFilter.h
-        include/IPMFilterNode.h
-        include/IPM.h
-        )
+    src/IPMFilter.cpp
+    src/ipm_filter.cpp
+    src/IPMFilterNode.cpp
+    src/IPM.cpp
+    include/IPMFilter.h
+    include/IPMFilterNode.h
+    include/IPM.h
+    )
 
 add_executable(camera src/camera_init.cpp)
 
@@ -61,19 +60,18 @@ add_executable(camera src/camera_init.cpp)
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(hsv_filter
-        ${catkin_LIBRARIES}
-        ${OpenCV_LIBS}
-        ${sb_utils_LIBRARIES}
-        )
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${sb_utils_LIBRARIES}
+    )
 
 target_link_libraries(ipm_filter
-        ${catkin_LIBRARIES}
-        ${OpenCV_LIBS}
-        ${sb_utils_LIBRARIES}
-        )
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${sb_utils_LIBRARIES}
+    )
 
 target_link_libraries(camera ${catkin_LIBRARIES} ${OpenCV_LIBS})
-
 
 #############
 ## Testing ##
