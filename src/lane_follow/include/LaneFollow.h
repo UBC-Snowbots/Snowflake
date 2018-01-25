@@ -1,8 +1,9 @@
 /*
  * Created By: Raad Khan
  * Created On: April 23, 2017
- * Description: Gets angle of point of intersection of lane lines
- *              and broadcasts a recommended Twist message.
+ * Description: Takes in an image feed and uses LineDetect to generate
+ * lane lines and destination point, then broadcasts a recommended
+ * Twist message to stay within the lanes.
  */
 
 #ifndef LANE_FOLLOW_H
@@ -10,9 +11,9 @@
 
 #include <LineDetect.h>
 
+#include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <geometry_msgs/Twist.h>
@@ -28,24 +29,19 @@
 
 class LaneFollow {
   public:
-    /**
-     * Constructor
-     */
+    // Constructor
     LaneFollow(int argc, char** argv, std::string node_name);
 
   private:
     /**
      * Callback for the filtered image
      *
-     * @param address of filtered image matrix
+     * @param_one pointer to image received from ROS
      */
     void subscriberCallBack(const sensor_msgs::ImageConstPtr& msg);
 
-    // Angle of POI of detected lane lines relative to the robot
-    int angle_theta;
-
     /**
-     * Initializator
+     * Initializes filter parameters
      *
      * @params image information and where to apply the IPM
      */
@@ -79,27 +75,27 @@ class LaneFollow {
     // Whether or not we've received the first image
     bool receivedFirstImage;
 
-    /**
-     * Subscribes to the raw camera image node
-     */
+    // Angle of POI of lane lines relative to the robot
+    int angle_theta;
+
+    // Subscribes to the raw image node
     image_transport::Subscriber image_sub;
 
-    /**
-     * Publishes the filtered image
-     */
+    // Publishes the filtered image
     image_transport::Publisher filter_pub;
 
-    /**
-     * Publishes the recommended twist message
-     */
+    // Publishes the recommended twist message
     ros::Publisher twist_pub;
 
     /**
-     * Converts ros::sensor_msgs::Image into a cv::Mat
+     * Converts ros::sensor_msgs::Image to cv::Mat
      *
-     * @param message to be converted
+     * @param_one sensor_msgs image to be converted
+     *
+     * @return converted matrix image
      */
     cv::Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
+
 
     std::vector<std::vector<cv::Point2d>>
     transformPoints(std::vector<std::vector<cv::Point2d>> filteredPoints);
