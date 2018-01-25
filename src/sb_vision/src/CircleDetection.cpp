@@ -81,9 +81,20 @@ int CircleDetection::countCircles(const Mat &filtered_image, bool display_circle
     vector<cv::Point2i> center;
     vector<float> radii;
 
-    // Convert grayscale image to black and white image
+    // Convert to a grayscale image, if channels do not match.
     cv::Mat bwImage;
-        bwImage = filtered_image;
+    switch(filtered_image.channels()) {
+        // 4 channel and 3 channel conversion should cover all our use cases.
+        case 4:
+            cvtColor(filtered_image, bwImage, CV_BGRA2GRAY);
+            break;
+        case 3:
+            cvtColor(filtered_image, bwImage, CV_BGR2GRAY);
+            break;
+        default:
+            bwImage = filtered_image;
+    }
+
     // Find contours of the black and white image
     cv::findContours(bwImage.clone(), contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
 
@@ -103,7 +114,7 @@ int CircleDetection::countCircles(const Mat &filtered_image, bool display_circle
 
     if (display_circles) {
         // Displays a window with the detected objects being circled
-//        showFilteredObjectsWindow(filtered_image, center, radii);
+        showFilteredObjectsWindow(bwImage, center, radii);
     }
 
     // Complains about fitting a long to an int
@@ -125,7 +136,7 @@ void CircleDetection::showFilteredObjectsWindow(const Mat &filtered_image, std::
 
     namedWindow("Filtered Objects", WINDOW_AUTOSIZE);
     imshow("Filtered Objects", color_image);
-    waitKey(20);
+    waitKey(0);
 
 }
 
