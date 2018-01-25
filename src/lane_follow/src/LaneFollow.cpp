@@ -96,20 +96,7 @@ void LaneFollow::subscriberCallBack(const sensor_msgs::Image::ConstPtr &msg) {
 
     double angle_heading = 0;
 
-    /*
-     * // Head to the middle of the line if 2 lines exist
-    if (realBoundaryLines.size() >= 2) {
-        cv::Point intersectionPoint =
-        ld.getIntersectionPoint(realBoundaryLines[0], realBoundaryLines[1]);
-        angle_heading = ld.getAngleFromOriginToPoint(intersectionPoint);
-    } // Head to a point a certain distance away from the line
-    else if (realBoundaryLines.size() == 1) {
-        cv::Point targetPoint = ld.moveAwayFromLine(
-        filteredBoundaryLines[0], target_x_distance, target_y_distance);
-        angle_heading = ld.getAngleFromOriginToPoint(targetPoint);
-    }
-    // If no lines are seen go straight (see initialization)
-     */
+
 
     // Figure out how fast we should turn
     stayInLane.angular.z = pow(angle_heading, 2.0) * angular_speed_multiplier;
@@ -181,8 +168,8 @@ cv::Mat LaneFollow::rosToMat(const sensor_msgs::Image::ConstPtr &image) {
     return imagePtr->image;
 }
 
-std::vector<std::vector<Point2d>> LaneFollow::transformPoints(
-        std::vector<std::vector<cv::Point2d>> filteredPoints) {
+std::vector<std::vector<Point2d>>
+LaneFollow::transformPoints(std::vector<std::vector<cv::Point2d>> filteredPoints) {
 
     std::vector<std::vector<Point2d>> realPoints;
 

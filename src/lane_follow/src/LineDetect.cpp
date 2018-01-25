@@ -166,7 +166,7 @@ Polynomial LineDetect::fitPolyToLine(std::vector<cv::Point2d> points, int order)
 
     int orderPLusOne = order + 1;
     assert(points.size() >= orderPLusOne);
-    assert(order <= 30);
+    assert(order <= 3);
 
     std::vector<double> xv(points.size(), 0);
     std::vector<double> yv(points.size(), 0);
@@ -189,7 +189,7 @@ Polynomial LineDetect::fitPolyToLine(std::vector<cv::Point2d> points, int order)
     // solve for linear least squares fit
     result = A.householderQr().solve(yvMapped);
 
-    for (auto i = static_cast<size_t>(result.size()); i < result.size(); i++) {
+    for (size_t i = 0; i < result.size(); i++) {
         // append coefficients to end of coefficients vector from least to greatest order
         polyLine.coefficients.emplace_back((result[i]));
     }

@@ -12,18 +12,16 @@ using namespace cv;
 TEST(LineDetect, straightLaneFollowTest) {
 
     std::string image_path = "images/straightImage.jpg";
-    cv::Mat testColor      = imread(image_path);
-    cv::Mat testGray;
-    cv::cvtColor(testColor, testGray, CV_BGR2GRAY);
+    cv::Mat testColorImage = imread(image_path);
+    cv::Mat testGrayImage;
+    if (testColorImage.empty()) {
+        printf("cannot access frame");
+        return;
+    }
+    cv::cvtColor(testColorImage, testGrayImage, CV_BGR2GRAY);
 
     LineDetect testLineDetect;
 
-    std::vector<Window> testBaseWindows =
-    testLineDetect.getBaseWindows(testGray);
-    std::vector<std::vector<cv::Point2d>> testFilteredLanePoints =
-    testLineDetect.getLanePoints(testGray, testBaseWindows);
-    std::vector<Polynomial> testFilteredLaneLines =
-    testLineDetect.getLaneLines(testFilteredLanePoints);
 }
 
 int main(int argc, char** argv) {

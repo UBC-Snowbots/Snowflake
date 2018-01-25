@@ -137,7 +137,7 @@ TEST(LineDetect, getWindowSliceRightTest) {
     EXPECT_EQ(false, equal);
 }
 
-TEST(LineDetect, fitPolyLineFirstOrderTest) {
+TEST(LineDetect, fitPolyToLineFirstOrderTest) {
 
     cv::Point2d testPoint1{2.0, 0.0};
     cv::Point2d testPoint2{2.0, 2.0};
@@ -153,6 +153,7 @@ TEST(LineDetect, fitPolyLineFirstOrderTest) {
 
     Polynomial testPolynomial =
     testLineDetect.fitPolyToLine(testPoints, testOrder);
+
     Polynomial expectedPolynomial;
     expectedPolynomial.coefficients = {-5.00000, 3.00000, 0, 0};
 
@@ -160,7 +161,7 @@ TEST(LineDetect, fitPolyLineFirstOrderTest) {
     EXPECT_NEAR(expectedPolynomial.coefficients[0], testPolynomial.coefficients[0], 0.00001);
 }
 
-TEST(LineDetect, fitPolyLineThirdOrderTest) {
+TEST(LineDetect, fitPolyToLineThirdOrderTest) {
 
     cv::Point2d testPoint1{5.0, 0.0};
     cv::Point2d testPoint2{6.0, 1.0};
@@ -177,6 +178,7 @@ TEST(LineDetect, fitPolyLineThirdOrderTest) {
 
     Polynomial testPolynomial =
     testLineDetect.fitPolyToLine(testPoints, testOrder);
+
     Polynomial expectedPolynomial;
     expectedPolynomial.coefficients = {-34.99999, 14.08333, -1.83333, 0.08333};
 
