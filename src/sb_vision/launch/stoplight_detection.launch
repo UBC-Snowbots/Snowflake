@@ -1,0 +1,38 @@
+<launch>
+
+    <!-- Initialise the HSV filter -->
+    <node name="HSVFilter_green_light" pkg="vision" type="HSVFilter" output="screen">
+        
+        <!-- Input --> 
+        <remap from="/robot/vision/raw_image" to="/vision/input_image"/>
+
+        <!-- Output -->
+        <remap from="/vision/hsv_filtered_image" to="/vision/green_filtered_image" />
+
+        <!-- Node parameters -->
+        <rosparam param="update_frequency">5.0</rosparam>
+        <rosparam param="config_file" subst_value="true">$(find vision)/launch/green_light_filter.conf</rosparam>
+        <rosparam param="show_image_window">true</rosparam>
+        <rosparam param="show_calibration_window">true</rosparam>
+
+        <!-- Input image parameters if set manually -->
+        <!--
+        <rosparam param="image_width"></rosparam>
+        <rosparam param="image_height"></rosparam>
+        --> 
+    </node>
+
+    <!-- Initialise stoplight detection node  -->
+    <node name="stoplight_detection" pkg="vision" type="circle_detection" output="screen">
+        <!-- Input -->
+        <remap from="/robot/vision/filtered_image" to="/vision/green_filtered_image" />
+
+        <!-- Output -->
+        <remap from="/robot/vision/activity_detected" to="/robot/vision/activity_detected" />
+
+        <!-- Configuration parameters -->
+        <rosparam param="minimum_target_radius">50</rosparam>
+        <rosparam param="show_image_window">false</rosparam>
+    </node>
+
+</launch>
