@@ -11,34 +11,79 @@ PathFinding::PathFinding(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
+    ros::NodeHandle private_nh("~");
+    uint32_t queue_size = 1;
 
-    // *** Change to subscribe to path message
     // Setup Subscriber to path
-    std::string topic_to_subscribe_to = "/CHANGE";
-    int refresh_rate = 10;
-    ros::Subscriber path_subscriber = nh.subscribe(topic_to_subscribe_to, refresh_rate, &PathFinding::pathCallBack, this);
+    std::string path_subscribe_topic = "/CHANGE";
+    path_subscriber = nh.subscribe(path_subscribe_topic, queue_size, &PathFinding::pathCallBack, this);
+
+    std::string tf_subscribe_topic = "/tf";
+    tf_subscriber = nh.subscribe(tf_subscribe_topic, queue_size, &PathFinding::tfCallBack, this);
 
     // Setup Publisher to twist
-    std::string topic_to_publish_to = "/cmd_vel";
-    int queue_size = 1;
-    ros::Publisher twist_publisher = nh.advertise<geometry_msgs::Twist>(topic_to_publish_to, queue_size);
+    std::string twist_publish_topic = private_nh.resolveName("/cmd_vel");
+    twist_publisher = nh.advertise<geometry_msgs::Twist>(twist_publish_topic, queue_size);
+
+    // Get Params
+    SB_getParam(private_nh, "base_frame", base_frame, (std::string) "base_link");
+    SB_getParam(private_nh, "global_frame", global_frame, (std::string) "odom_combined");
 }
 
 
-//Subscriber callback
+/*
+ * Path call back. Produces twist msg and publishes it
+ */
 void PathFinding::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
     nav_msgs::Path path_msg = *path_ptr; //Take required information from received message
     geometry_msgs::Twist twist_msg = pathToTwist(path_msg);
-
-
+    twist_publisher.publish(twist_msg);
 }
 
-//Algorithm for processing path message and producing to twist message
+/**
+ * Stores the current position and orientation of the robot in the global frame
+ */
+void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
+    // Check if the tf_message contains the transform we're looking for
+    for (geometry_msgs::TransformStamped tf_stamped : tf_message->transforms) {
+
+        //header frame might be base
+        if (tf_stamped.header.frame_id == global_frame && tf_stamped.child_frame_id == base_frame) {
+            // We've found the transform we're looking for, so see how close we
+            // are to the waypoint
+            double xPos = tf_stamped.transform.translation.x;
+            double yPos = tf_stamped.transform.translation.y;
+
+            double quatx = tf_stamped.transform.rotation.x;
+            double quaty = tf_stamped.transform.rotation.y;
+            double quatz = tf_stamped.transform.rotation.z;
+            double quatw = tf_stamped.transform.rotation.w;
+            tf::Quaternion q(quatx, quaty, quatz, quatw);
+            tf::Matrix3x3 m(q);
+            double roll, pitch, yaw;
+            m.getRPY(roll, pitch, yaw);
+
+            //Set member variables
+            robotXPos = xPos;
+            robotYPos = yPos;
+            robotOrientation = yaw; //Orientation = rotation about z axis
+        }
+    }
+}
+
+/**
+ * Processes path msg and produces corresponding twist msg
+ * @param path_msg
+ * @return a twist msg
+ */
 geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg) {
     geometry_msgs::Twist twist_msg; //Initialize velocity message
     const int NUM_VECTORS = 50;
 
     std::vector<geometry_msgs::PoseStamped> inc_poses = path_msg.poses;
+
+    //Rework below to use quats:
+    /**/
     std::vector<float> x_vectors; //holds x values for vectors
     std::vector<float> y_vectors; //holds y values for vectors
     calcVectors(inc_poses, x_vectors, y_vectors, NUM_VECTORS); //x_vectors and y_vectors now updated
@@ -47,10 +92,12 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg) {
     float y_sum = weightedYSum(y_vectors,NUM_VECTORS);
 
     float desired_angle = atan(y_sum/x_sum);
-    float current_angle; //Get orientation of robot somehow
+    float current_angle = robotOrientation; //Get orientation of robot somehow
+
+    /**/
 
     float turn_rate = desired_angle - current_angle;
-    float speed; //The higher the needed turn rate, the lower the speed (for tight turns)
+    float speed = 1.0 - (abs(fmod(turn_rate,2*M_PI)))/(2*M_PI); //The higher the needed turn rate, the lower the speed (for tight turns)
 
     twist_msg.linear.x = speed;
     twist_msg.angular.z = turn_rate;
@@ -103,6 +150,3 @@ float PathFinding::weightedYSum (std::vector<float> &y_vectors, int num_to_sum) 
     }
     return weighted_y_sum;
 }
-
-//https://answers.ros.org/question/58742/quaternion-to-roll-pitch-yaw/
-//https://stackoverflow.com/questions/1568568/how-to-convert-euler-angles-to-directional-vector Pitch/Yaw/
