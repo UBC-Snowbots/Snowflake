@@ -78,12 +78,13 @@ void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
  */
 geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg) {
     geometry_msgs::Twist twist_msg; //Initialize velocity message
-    const int NUM_VECTORS = 50;
+    const int NUM_VECTORS = 10; //Number of vectors to process including initial robot position
 
     std::vector<geometry_msgs::PoseStamped> inc_poses = path_msg.poses;
 
-    //Rework below to use quats:
-    /**/
+    //If we can assume poses are in order of priority then we don't need position?
+    //***May need curr position of robot as a starting "pose"
+    //Are poses frequently updated? Can we always assume the head of the poses array contains relevant data?
     std::vector<float> x_vectors; //holds x values for vectors
     std::vector<float> y_vectors; //holds y values for vectors
     calcVectors(inc_poses, x_vectors, y_vectors, NUM_VECTORS); //x_vectors and y_vectors now updated
@@ -92,9 +93,7 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg) {
     float y_sum = weightedYSum(y_vectors,NUM_VECTORS);
 
     float desired_angle = atan(y_sum/x_sum);
-    float current_angle = robotOrientation; //Get orientation of robot somehow
-
-    /**/
+    float current_angle = robotOrientation;
 
     float turn_rate = desired_angle - current_angle;
     float speed = 1.0 - (abs(fmod(turn_rate,2*M_PI)))/(2*M_PI); //The higher the needed turn rate, the lower the speed (for tight turns)
@@ -110,13 +109,14 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg) {
  * @param poses : Array of pose messages, containing x and y positions to move to
  * @param x_vectors : Empty vector to represent x values of multiple geometric vectors
  * @param y_vectors : Empty vector to represent y values of multiple geometric vectors
- * @param num_vectors : Number of vectors to calculate
+ * @param num_vectors : Number of vectors to calculate (including initial robot position), must be >=1
  */
 void PathFinding::calcVectors(const std::vector<geometry_msgs::PoseStamped> &poses, std::vector<float> &x_vectors, std::vector<float> &y_vectors, int num_vectors) {
-
-    for (int i = 0; i < num_vectors; i++){
-        x_vectors.push_back(poses[1].pose.position.x - poses[0].pose.position.x);
-        y_vectors.push_back(poses[1].pose.position.y - poses[0].pose.position.y);
+    x_vectors.push_back(poses[0].pose.position.x - robotXPos);
+    x_vectors.push_back(poses[0].pose.position.x - robotXPos);
+    for (int i = 1; i < num_vectors; i++){
+        x_vectors.push_back(poses[i].pose.position.x - poses[i-1].pose.position.x);
+        y_vectors.push_back(poses[i].pose.position.y - poses[i-1].pose.position.y);
     }
 }
 
@@ -131,7 +131,7 @@ void PathFinding::calcVectors(const std::vector<geometry_msgs::PoseStamped> &pos
 float PathFinding::weightedXSum (std::vector<float> &x_vectors, int num_to_sum) {
     float weighted_x_sum = 0;
     for (int i = 0; i < num_to_sum; i++){
-        weighted_x_sum += x_vectors[i] * ((num_to_sum-i)/num_to_sum);
+        weighted_x_sum += x_vectors[i] * ((num_to_sum-i)/(num_to_sum));
     }
     return weighted_x_sum;
 }
@@ -145,8 +145,8 @@ float PathFinding::weightedXSum (std::vector<float> &x_vectors, int num_to_sum) 
  */
 float PathFinding::weightedYSum (std::vector<float> &y_vectors, int num_to_sum) {
     float weighted_y_sum = 0;
-    for (int i = 0; i < num_to_sum; i++){
-        weighted_y_sum += y_vectors[i] * ((num_to_sum-i)/num_to_sum);
+    for (int i = 0; i < num_to_sum+1; i++){
+        weighted_y_sum += y_vectors[i] * ((num_to_sum-i)/(num_to_sum));
     }
     return weighted_y_sum;
 }
