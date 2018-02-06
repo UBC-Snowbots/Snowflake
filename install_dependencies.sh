@@ -32,14 +32,21 @@ echo "Installing Misc. Utilities"
 echo "================================================================"
 
 sudo apt-get install -y\
-    clang-format
+    clang-format\
+    python-rosinstall
+
+
+echo "================================================================"
+echo "Installing Project Dependent ROS packages."
+echo "================================================================"
+
+# Setup rosinstall
+sudo mkdir -p /usr/share/ros/
+sudo chmod a+rwx /usr/share/ros
+rosinstall .
+echo "bash $CURR_DIR/setup.sh" >> ~/.bashrc
 
 echo "================================================================"
 echo "Finished Installing Utilities"
 echo "================================================================"
 
-
-#Setup Rosinstall
-sudo mkdir -p /usr/share/ros
-sudo chmod a+rwx /usr/share/ros
-rosinstall .
