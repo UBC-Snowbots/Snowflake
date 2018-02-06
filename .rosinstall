@@ -8,7 +8,7 @@
     version: release/kinetic/phidgets_api/0.7.5-0}
 - git: {local-name: /usr/share/ros/sicktoolbox, uri: 'https://github.com/ros-drivers/sicktoolbox.git'}
 - git: {local-name: /usr/share/ros/sicktoolbox_wrapper, uri: 'https://github.com/ros-drivers/sicktoolbox_wrapper.git'}
-- git: {local-name: /usr/share/ros/zed-ros-wrapper, uri: 'https://github.com/stereolabs/zed-ros-wrapper.git'}
-- git: {local-name: /usr/share/ros/ros_arduino_bridge, uri: 'https://github.com/hbrobotics/ros_arduino_bridge.git'}
-- git: {local-name: /usr/share/ros/razor_imu_9dof, uri: 'https://github.com/KristofRobot/razor_imu_9dof.git'}
-- git: {local-name: /usr/share/ros/nmea_navsat_driver, uri: 'https://github.com/ros-drivers/nmea_navsat_driver.git'}
+- git: {local-name: /usr/share/ros/zed-ros-wrapper, uri: 'https://github.com/UBC-Snowbots/zed-ros-wrapper.git'}
+- git: {local-name: /usr/share/ros/ros_arduino_bridge, uri: 'https://github.com/UBC-Snowbots/ros_arduino_bridge.git'}
+#- git: {local-name: /usr/share/ros/razor_imu_9dof, uri: 'https://github.com/KristofRobot/razor_imu_9dof.git'}
+- git: {local-name: /usr/share/ros/nmea_navsat_driver, uri: 'https://github.com/UBC-Snowbots/nmea_navsat_driver.git'}

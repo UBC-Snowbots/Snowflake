@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #######################################################################
-# STOP: If the dependency you want to add is required for the project # 
+# STOP: If the dependency you want to add is required for the project #
 #       to build, it should be added as a rosdep. This script should  #
 #       only contain other dependecies, like those required for gazebo#
 #######################################################################
@@ -38,3 +38,8 @@ echo "================================================================"
 echo "Finished Installing Utilities"
 echo "================================================================"
 
+
+#Setup Rosinstall
+sudo mkdir -p /usr/share/ros
+sudo chmod a+rwx /usr/share/ros
+rosinstall .
