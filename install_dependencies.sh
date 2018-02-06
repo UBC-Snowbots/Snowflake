@@ -47,7 +47,7 @@ rosinstall .
 echo "bash $CURR_DIR/setup.sh" >> ~/.bashrc
 
 echo "================================================================"
-echo "Installing Project Dependent ROS packages."
+echo "Installing Udev rules for phidgets"
 echo "================================================================"
 
 # Setup udev rules
