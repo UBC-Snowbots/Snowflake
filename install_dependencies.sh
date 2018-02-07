@@ -44,7 +44,6 @@ echo "================================================================"
 sudo mkdir -p /usr/share/ros/
 sudo chmod a+rwx /usr/share/ros
 rosinstall .
-echo "bash $CURR_DIR/setup.sh" >> ~/.bashrc
 
 echo "================================================================"
 echo "Installing Udev rules for phidgets"

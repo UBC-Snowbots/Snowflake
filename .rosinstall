@@ -3,7 +3,13 @@
 # IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
 # USE THE rosinstall TOOL INSTEAD.
 # IF YOU CHANGE IT, USE rosinstall FOR THE CHANGES TO TAKE EFFECT
+# Docs: http://docs.ros.org/independent/api/rosinstall/html/rosinstall_file_format.html
+##############################################################
+# Setup-file specified where rosinstall can find information on your local ros installation
+# Installation does succeed without it, but not sure if env vars will have problems being set 
 - setup-file: {local-name: /opt/ros/kinetic/setup.sh}
+# The key used at the beginning (ie. git) specfies the vc being used. In our case, most of the packages are on github
+# therefore we use github
 - git: {local-name: /usr/share/ros/phidgets_api, uri: 'https://github.com/ros-drivers-gbp/phidgets_drivers-release.git',
     version: release/kinetic/phidgets_api/0.7.5-0}
 - git: {local-name: /usr/share/ros/sicktoolbox, uri: 'https://github.com/ros-drivers/sicktoolbox.git'}
