@@ -1,28 +1,59 @@
 <launch>
     <node name="ekf_node" pkg="localisation" type="ekf_node" output="screen">
-	<!-- The error of the IMU angular velocity measurement -->
+	<!-- The standard deviation of the IMU angular velocity measurement -->
+	<!-- Put in the error of the IMU (angular velocity) -->
         <rosparam param="sdev_gyro">0.017453292519943295</rosparam>
 
-	<!-- The error of the linear (forward) speed encoder measurement-->
+	<!-- The standard deviation of the linear (forward) speed encoder measurement ->>
+	<!-- Put in the error of the encoder -->
         <rosparam param="sdev_speed">0.15</rosparam>
 
-	<!-- The error of the gps x coordinate measurement -->
-        <rosparam param="sdev_gps_x_measurement">5.0</rosparam>
+	<!-- The standard deviation of the gps x coordinate measurement -->
+	<!-- Put in the error of the gps -->
+        <rosparam param="sdev_gps_x_measurement">0.5</rosparam>
 
-	<!-- The error of the gps y coordinate measurement -->
-        <rosparam param="sdev_gps_y_measurement">5.0</rosparam>
+	<!-- The standard deviation of the gps y coordinate measurement -->
+	<!-- Put in the error of the gps -->
+        <rosparam param="sdev_gps_y_measurement">0.5</rosparam>
 
-	<!-- The error of the IMU orientation measurement -->
+	<!-- The standard deviation of the IMU orientation measurement -->
+	<!-- Put in the error of the IMU (orientation) -->
         <rosparam param="sdev_angle_measurement">0.017453292519943295</rosparam>
 
-	<!-- initialise covariance matrix -->
-        <rosparam param="p">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
+	<!-- observation matrix intilisation keep as an identity matrix as-->
+	<!-- the observations from the gps are in UTM cartesian coordinates -->
+	<!-- used in the EKF and no additional conversion is required -->
+	<rosparam param="h">
+        [
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+	0.0, 0.0, 1.0
+        ]
+        </rosparam>
 
-	<!-- matrix to account for unknown external influences -->
-        <rosparam param="q1">[0.0001, 0.0, 0.0, 0.0, 0.0001, 0.0, 0.0, 0.0, 0.000304617419786708]</rosparam>
+	<!-- The standard deviation in intial x position -->
+	<!-- Put in the error of the intial x position -->
+        <rosparam param="sdev_initial_x">0.0</rosparam>
 
-	<!-- observation matrix -->
-        <rosparam param="h">[1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]</rosparam>
+	<!-- The standard deviation in intial y position -->
+	<!-- Put in the error of the intial y position -->
+        <rosparam param="sdev_initial_y">0.0</rosparam>
+
+	<!-- The standard deviation in bot orientation -->
+	<!-- Put in the error of the bot's orientation -->
+        <rosparam param="sdev_initial_ori">0.0</rosparam>
+
+	<!-- standard deviation of the state equation producing your expected x value -->
+	<!-- Put in the error expected from modeling x position using the unicycle model -->
+        <rosparam param="sdev_modeling_x">0.0001</rosparam>
+
+	<!-- standard deviation of the state equation producing your expected y value -->
+	<!-- Put in the error expected from modeling y position using the unicycle model -->
+        <rosparam param="sdev_modeling_y">0.0001</rosparam>
+
+	<!-- standard deviation of the state equation producing your expected orientation value -->
+	<!-- Put in the error expected from modeling bot orientation using the unicycle model -->
+        <rosparam param="sdev_modeling_rot">0.017453292519943295</rosparam>
 
 	<!-- initial bot x position -->
         <rosparam param="initial_pos_x">481917.0</rosparam>
@@ -32,5 +63,6 @@
 
 	<!-- initial bot orientation -->
         <rosparam param="initial_yaw_angle">0.0</rosparam>
+
     </node>
 </launch>

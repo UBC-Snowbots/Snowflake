@@ -19,7 +19,7 @@
 #include <sensor_msgs/Imu.h>
 #include <std_msgs/String.h>
 
-class EKFNode : public EKF {
+class EKFNode {
   private:
     // subscriber and publisher data types
     sensor_msgs::Imu imu_data;
@@ -32,6 +32,7 @@ class EKFNode : public EKF {
     ros::Publisher pose_pub;
     // how much time has past since the ekf started
     double time;
+    EKF ekf;
 
     /**
      * Callback function for when new GPS data is received

@@ -67,28 +67,28 @@ double EKF::constrainAngleInBounds(double angle) {
     return constrained_angle;
 }
 
-void EKF::setConstants(double g_sdev,
-                       double s_sdev,
-                       double x_sdev,
-                       double y_sdev,
-                       double a_sdev,
-                       std::vector<double> initial_p,
-                       std::vector<double> q1_const,
+void EKF::setConstants(double sdev_gyro,
+                       double sdev_speed,
+                       double sdev_gps_x_measurement,
+                       double sdev_gps_y_measurement,
+                       double sdev_angle_measurement,
+                       double uncertainty_x,
+                       double uncertainty_y,
+                       double uncertainty_ori,
+                       double uncertainty_x_travel,
+                       double uncertainty_y_travel,
+                       double uncertainty_rot,
                        std::vector<double> h_const) {
-    double sdev_gyro              = g_sdev;
-    double sdev_speed             = s_sdev;
-    double sdev_gps_x_measurement = x_sdev;
-    double sdev_gps_y_measurement = y_sdev;
-    double sdev_angle_measurement = a_sdev;
-    for (int i = 0; i < 9; i++) {
-        p(i)  = initial_p[i];
-        q1(i) = q1_const[i];
-        h(i)  = h_const[i];
-    }
+    for (int i = 0; i < 9; i++) { h(i) = h_const[i]; }
     pu << sdev_speed * sdev_speed, 0, 0, sdev_gyro * sdev_gyro;
     r << sdev_gps_x_measurement * sdev_gps_x_measurement, 0, 0, 0,
     sdev_gps_y_measurement * sdev_gps_y_measurement, 0, 0, 0,
     sdev_angle_measurement * sdev_angle_measurement;
+    p << uncertainty_x * uncertainty_x, 0, 0, 0, uncertainty_y * uncertainty_y,
+    0, 0, 0, uncertainty_ori * uncertainty_ori;
+    q1 << uncertainty_x_travel * uncertainty_x_travel, 0, 0, 0,
+    uncertainty_y_travel * uncertainty_y_travel, 0, 0, 0,
+    uncertainty_rot * uncertainty_rot;
 }
 
 void EKF::setInitialPosition(double pos_x, double pos_y, double yaw_angle) {
