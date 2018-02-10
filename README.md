@@ -38,11 +38,11 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
     you will use this account to set up CLion later on_
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
-6. Clone this repository by running `git clone --recursive https://github.com/UBC-Snowbots/Snowflake.git ~/Snowflake`
-7. To start set-up run `cd ~/Snowflake && ./get_started.sh` **(Do not run this script as root)**
-    - _Just choose yes and enter your password when the terminal prompts you_ 
-8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/Snowflake && catkin_make` 
-    - If everything compiles correctly and you don't get any errors, then you're good to go!
+6. Fork this repository by heading over to the GitHub page and click the fork button on the top right
+7. Clone your server-side repository from the terminal by running git clone https://github.com/YOUR_USERNAME/Snowflake.git (YOUR_USERNAME is your github username)
+8. To start the setup run `cd ~/Snowflake && ./get_started.sh` (Do not run this script as root).
+    - *Just choose yes and enter your password when the terminal prompts you*
+9. If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ### Important Notes:
 - To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/Snowflake`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
@@ -62,6 +62,7 @@ We've put together a seperate `README` file that should help to get you up and r
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
     - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
+- Once your pull request has been reviewed and revised until it looks good from both your and the reviewers' sides, go ahead and Squash and Merge it, which will squash all the commits on your pull request into one and merge it to the target branch.
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
