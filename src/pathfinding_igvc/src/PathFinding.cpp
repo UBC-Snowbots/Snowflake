@@ -14,8 +14,13 @@ PathFinding::PathFinding(int argc, char **argv, std::string node_name) {
     ros::NodeHandle private_nh("~");
     uint32_t queue_size = 1;
 
+    /*Assume initial coordinates: may need to change later*/
+    robotXPos = 0;
+    robotYPos = 0;
+    robotOrientation = 0;
+
     // Setup Subscriber to path
-    std::string path_subscribe_topic = "/CHANGE";
+    std::string path_subscribe_topic = "/path";
     path_subscriber = nh.subscribe(path_subscribe_topic, queue_size, &PathFinding::pathCallBack, this);
 
     std::string tf_subscribe_topic = "/tf";
@@ -96,7 +101,7 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg) {
     float current_angle = robotOrientation;
 
     float turn_rate = desired_angle - current_angle;
-    float speed = 1.0 - (abs(fmod(turn_rate,2*M_PI)))/(2*M_PI); //The higher the needed turn rate, the lower the speed (for tight turns)
+    float speed = 1.0 - fabs(fmod(turn_rate,2*M_PI)/(2*M_PI));
 
     twist_msg.linear.x = speed;
     twist_msg.angular.z = turn_rate;
@@ -109,11 +114,11 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg) {
  * @param poses : Array of pose messages, containing x and y positions to move to
  * @param x_vectors : Empty vector to represent x values of multiple geometric vectors
  * @param y_vectors : Empty vector to represent y values of multiple geometric vectors
- * @param num_vectors : Number of vectors to calculate (including initial robot position), must be >=1
+ * @param num_vectors : Number of vectors to calculate (including initial robot position), must be >=1 but <=size(x_vectors)-1
  */
 void PathFinding::calcVectors(const std::vector<geometry_msgs::PoseStamped> &poses, std::vector<float> &x_vectors, std::vector<float> &y_vectors, int num_vectors) {
     x_vectors.push_back(poses[0].pose.position.x - robotXPos);
-    x_vectors.push_back(poses[0].pose.position.x - robotXPos);
+    y_vectors.push_back(poses[0].pose.position.y - robotYPos);
     for (int i = 1; i < num_vectors; i++){
         x_vectors.push_back(poses[i].pose.position.x - poses[i-1].pose.position.x);
         y_vectors.push_back(poses[i].pose.position.y - poses[i-1].pose.position.y);
@@ -128,10 +133,10 @@ void PathFinding::calcVectors(const std::vector<geometry_msgs::PoseStamped> &pos
  * @param numToSum number of x vectors to sum, should be less than or equal to NUM_VECTORS
  * @return weighted X values of given vectors
  */
-float PathFinding::weightedXSum (std::vector<float> &x_vectors, int num_to_sum) {
+float PathFinding::weightedXSum (const std::vector<float> &x_vectors, int num_to_sum) {
     float weighted_x_sum = 0;
     for (int i = 0; i < num_to_sum; i++){
-        weighted_x_sum += x_vectors[i] * ((num_to_sum-i)/(num_to_sum));
+        weighted_x_sum += x_vectors[i] * ((float)(num_to_sum-i)/(num_to_sum));
     }
     return weighted_x_sum;
 }
@@ -143,10 +148,10 @@ float PathFinding::weightedXSum (std::vector<float> &x_vectors, int num_to_sum) 
  * @param numToSum number of y vectors to sum, should be less than or equal to NUM_VECTORS
  * @return weighted Y values of given vectors
  */
-float PathFinding::weightedYSum (std::vector<float> &y_vectors, int num_to_sum) {
+float PathFinding::weightedYSum (const std::vector<float> &y_vectors, int num_to_sum) {
     float weighted_y_sum = 0;
-    for (int i = 0; i < num_to_sum+1; i++){
-        weighted_y_sum += y_vectors[i] * ((num_to_sum-i)/(num_to_sum));
+    for (int i = 0; i < num_to_sum; i++){
+        weighted_y_sum += y_vectors[i] * ((float)(num_to_sum-i)/(num_to_sum));
     }
     return weighted_y_sum;
 }

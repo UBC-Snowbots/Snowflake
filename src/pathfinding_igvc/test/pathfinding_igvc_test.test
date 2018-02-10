@@ -1,0 +1,6 @@
+<!-- A .test file which launches the node and its corresponding rostest -->
+
+<launch>
+    <node name="path_finding" pkg="pathfinding_igvc" type="path_finding" />
+    <test test-name="path_finding_rostest" pkg="pathfinding_igvc" type="path_finding_rostest" />
+</launch>

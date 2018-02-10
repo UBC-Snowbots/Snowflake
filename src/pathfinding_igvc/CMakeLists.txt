@@ -192,6 +192,19 @@ target_link_libraries(path_finding ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
+if (CATKIN_ENABLE_TESTING)
+
+    # Adding gtests to the package
+    catkin_add_gtest(path-finding-test test/path-finding-test.cpp src/PathFinding.cpp)
+    target_link_libraries(path-finding-test ${catkin_LIBRARIES})
+
+    # Adding rostest to the package
+    find_package(rostest REQUIRED)
+    # name the test and link it to the .test file and the .cpp file itself, this will allow
+    # "catkin_make run_tests" to be able to find and run this rostest
+    add_rostest_gtest(path_finding_rostest test/pathfinding_igvc_test.test test/path_finding_rostest.cpp)
+    target_link_libraries(path_finding_rostest ${catkin_LIBRARIES})
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
