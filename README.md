@@ -1,12 +1,12 @@
 # Snowflake
 UBC Snowbots Repository for competitions.
+
 ![alt tag](https://travis-ci.org/UBC-Snowbots/Snowflake.svg?branch=core)
 
 ## Table of Contents
 - [Installation and Setup](#installation-and-setup)
   - [Important Notes](#important-notes)
   - [Zed Configuration](#zed-configuration)
-  - [Catkin Migration](#catkin-migration)
 - [New Members](#new-members)
 - [Conventions](#conventions)
   - [Github](#github-conventions)
