@@ -1,8 +1,5 @@
 # Snowflake
 UBC Snowbots Repository for competitions.
-- IGVC - International Ground Vehicle Competition
-- IARRC - International Autonomous Robot Racing Competition
-
 ![alt tag](https://travis-ci.org/UBC-Snowbots/Snowflake.svg?branch=core)
 
 ## Table of Contents
@@ -10,6 +7,7 @@ UBC Snowbots Repository for competitions.
   - [Important Notes](#important-notes)
   - [Zed Configuration](#zed-configuration)
   - [Catkin Migration](#catkin-migration)
+- [New Members](#new-members)
 - [Conventions](#conventions)
   - [Github](#github-conventions)
   - [Coding Conventions](#coding-conventions)
@@ -53,6 +51,9 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 ### Zed Configuration
 - Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
+
+## New Members
+We've put together a seperate `README` file that should help to get you up and running. You can find it here: [README_NEWMEMBERS.md](README_NEWMEMBERS.md)
 
 ## Conventions
 
