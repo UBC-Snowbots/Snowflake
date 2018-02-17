@@ -86,27 +86,27 @@ void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
  */
 geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg, double x_pos, double y_pos, double orientation) {
     geometry_msgs::Twist twist_msg; //Initialize velocity message
-    const int NUM_VECTORS = 10; //Number of vectors to process including initial robot position
+    const int NUM_POSES = 10; //Number of pose points to process including initial robot position
 
     std::vector<geometry_msgs::PoseStamped> inc_poses = path_msg.poses;
 
     std::vector<float> x_vectors; //holds x values for vectors
     std::vector<float> y_vectors; //holds y values for vectors
-    calcVectors(inc_poses, x_vectors, y_vectors, NUM_VECTORS, x_pos, y_pos); //x_vectors and y_vectors now updated
+    calcVectors(inc_poses, x_vectors, y_vectors, NUM_POSES, x_pos, y_pos); //x_vectors and y_vectors now updated
 
-    float x_sum = weightedSum(x_vectors, NUM_VECTORS);
-    float y_sum = weightedSum(y_vectors, NUM_VECTORS);
+    float x_sum = weightedSum(x_vectors, NUM_POSES);
+    float y_sum = weightedSum(y_vectors, NUM_POSES);
 
     float desired_angle = atan(y_sum/x_sum);
     float current_angle = orientation;
 
-    float turn_rate = fmod(desired_angle - current_angle, 2*M_PI);
+    float turn_rate = fmod(desired_angle - current_angle, 2*M_PI); //Keep turn_rate between -2pi and 2pi
     if (turn_rate > M_PI)
-        turn_rate -= 2 * M_PI;
+        turn_rate -= 2*M_PI;
     else if (turn_rate < -M_PI)
-        turn_rate += 2 * M_PI;
+        turn_rate += 2*M_PI;
 
-    float speed = 1.0 - fabs(fmod(turn_rate,2*M_PI)/(2*M_PI));
+    float speed = 1.0 - fabs(fmod(turn_rate,2*M_PI)/(2*M_PI)); //Could multiply this by some factor to scale speed
 
     twist_msg.linear.x = speed;
     twist_msg.angular.z = turn_rate;
@@ -119,12 +119,12 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg, double x_
  * @param poses : Array of pose messages, containing x and y positions to move to
  * @param x_vectors : Empty vector to represent x values of multiple geometric vectors
  * @param y_vectors : Empty vector to represent y values of multiple geometric vectors
- * @param num_vectors : Number of vectors to calculate (including initial robot position), must be >=1 but <=size(x_vectors)-1
+ * @param NUM_POSES : Number of poses to process (including initial robot position), must be >=1 but <=size(x_vectors)-1
  */
-void PathFinding::calcVectors(const std::vector<geometry_msgs::PoseStamped> &poses, std::vector<float> &x_vectors, std::vector<float> &y_vectors, int num_vectors, double x_pos, double y_pos) {
+void PathFinding::calcVectors(const std::vector<geometry_msgs::PoseStamped> &poses, std::vector<float> &x_vectors, std::vector<float> &y_vectors, int NUM_POSES, double x_pos, double y_pos) {
     x_vectors.push_back(poses[0].pose.position.x - x_pos);
     y_vectors.push_back(poses[0].pose.position.y - y_pos);
-    for (int i = 1; i < num_vectors; i++){
+    for (int i = 1; i < NUM_POSES; i++){
         x_vectors.push_back(poses[i].pose.position.x - poses[i-1].pose.position.x);
         y_vectors.push_back(poses[i].pose.position.y - poses[i-1].pose.position.y);
     }
@@ -133,7 +133,7 @@ void PathFinding::calcVectors(const std::vector<geometry_msgs::PoseStamped> &pos
 /**
  * Calculates a weighted value given a std::vector of geometric vectors
  * The values near the front of the list are given a higher weight (since they are imminent)
- * Currently the scaling for the weights are LINEAR
+ * Currently the scaling for the weights are INVERSE
  * @param vectors (represents geometric vector values for one dimension, i.e. x values in some geometric vectors)
  * @param numToSum number of elements to sum, should be less than or equal to size of vectors
  * @return weighted values of given geometric vectors
