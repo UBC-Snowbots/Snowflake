@@ -1,7 +1,6 @@
-/*
 #include <PathFinding.h>
 #include <gtest/gtest.h>
-
+/*
 class PathFindingTest : public testing::Test{
 protected:
     virtual void SetUp(){
@@ -123,12 +122,11 @@ http://answers.ros.org/question/11887/significance-of-rosspinonce/
 
     EXPECT_FLOAT_EQ(0.875, speed);
     EXPECT_FLOAT_EQ(M_PI/4, turn_rate);
-}
+}*/
 
 int main(int argc, char **argv) {
-    // !! Don't forget to initialize ROS, since this is a test within the ros
-framework !!
+    // !! Don't forget to initialize ROS, since this is a test within the ros framework !!
     ros::init(argc, argv, "path_finding_rostest");
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
-}*/
+}
