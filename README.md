@@ -12,6 +12,7 @@ UBC Snowbots Repository for competitions.
   - [Catkin Migration](#catkin-migration)
 - [Conventions](#conventions)
   - [Github](#github-conventions)
+  - [Pull Requests](#pull-requests)
   - [Coding Conventions](#coding-conventions)
   - [Coordinate Systems](#coordinate-systems)
 - [Creating a New Node](#creating-a-new-node)
@@ -61,6 +62,12 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
     - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
+
+### Pull Requests
+Below are some notes we would like to highlight about pull requests: 
+- When your pull requests receive comments, please reply to each comment individually. 
+- Once your branch has been merged, please delete the branch. 
+- If there were any fixes that were specific to resources you found (eg. stackoverflow thread), please comment them into the PR for future reference. 
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
