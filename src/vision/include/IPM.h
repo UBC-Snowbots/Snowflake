@@ -1,12 +1,11 @@
 /*
- * Inverse Perspective Mapping header file
+ * Description: Inverse Perspective Mapping header file
  * Modified by: Valerian Ratu
- * 	- Added an empty constructor
+ *              - Added an empty constructor
  */
 
-
-#ifndef __IPM_H__
-#define __IPM_H__
+#ifndef IPM_IPM_H
+#define IPM_IPM_H
 
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>

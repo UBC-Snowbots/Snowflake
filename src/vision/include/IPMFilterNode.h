@@ -2,11 +2,10 @@
  * Created By: Robyn Castro
  * Created On: July 1, 2017
  * Description: Applies an IPM Filter to input, and publishes it.
- *
  */
 
-#ifndef IPM_FILTER_H
-#define IPM_FILTER_H
+#ifndef IPM_FILTER_IPMFILTER_H
+#define IPM_FILTER_IPMFILTER_H
 
 // OpenCV
 #include <opencv2/core/core.hpp>

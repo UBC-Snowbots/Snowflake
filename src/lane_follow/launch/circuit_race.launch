@@ -1,8 +1,34 @@
-
 <launch>
 
     <!-- Start the camera -->
     <node name="camera" pkg="vision" type="camera" output="screen"/>
+
+    <!-- Launch our HSV Filter -->
+    <node name="hsv_filter" pkg="vision" type="hsv_filter" output="screen"/>
+        <rosparam param="update_frequency"> 5 </rosparam>
+        <rosparam param="show_image_window"> true </rosparam>
+        <rosparam param="show_calibration_window"> true </rosparam>
+    </node>
+
+        <!-- Input -->
+        <remap from="/robot/vision/raw_image" to="/vision/hsv_input_image"/>
+
+        <!-- Output -->
+        <remap from="/vision/hsv_filtered_image" to="/vision/hsv_output_image"/>
+
+    <!-- Launch our IPM Filter -->
+    <node name="ipm_filter" pkg="vision" type="ipm_filter" output="screen"/>
+         <param name="ipm_base_width" value="1"/>
+         <param name="ipm_top_width" value="0.5"/>
+         <param name="ipm_base_displacement" value="0"/>
+         <param name="ipm_top_displacement" value="0.25"/>
+    </node>
+
+        <!-- Input -->
+        <remap from="/vision/hsv_output_image" to="/vision/ipm_input_image"/>
+
+        <!-- Output -->
+        <remap from="/vision/ipm_filtered_image" to="/vision/ipm_output_image"/>
 
     <!-- Start lane detection -->
     <include file="$(find vision)/launch/lane_detection.launch"/>
@@ -10,15 +36,15 @@
     <!-- Start the steering driver to control the robot -->
     <include file="$(find drivers)/launch/steering_driver.launch"/>
 
-    <!-- Start the drag race controller -->
-    <node name="lane_follow" type="lane_follow" pkg="lane_follow" output="screen">
-        <!-- The number of consecutive frames that must contain a green
-            light before we start sending commands to the wheels -->
+    <!-- Start the circuit race controller -->
+    <node name="lane_follow" pkg="lane_follow" type="lane_follow" output="screen"/>
         <rosparam param="target_x_distance"> 0.5 </rosparam>
         <rosparam param="target_y_distance"> 0.5 </rosparam>
         <rosparam param="angular_speed_multiplier"> 1 </rosparam>
         <rosparam param="linear_speed_multiplier"> 1 </rosparam>
+        <rosparam param="theta_multiplier"> 1.75 </rosparam>
         <rosparam param="angular_vel_cap"> 0.75 </rosparam>
         <rosparam param="linear_vel_cap"> 1 </rosparam>
     </node>
+
 </launch>
