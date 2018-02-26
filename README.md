@@ -51,7 +51,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
 
 ### Zed Configuration
-- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
+- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) This repository already contains `zed_ros_wrapper` as a ~~submodule~~ standalone package in `/usr/share/ros/zed_ros_wrapper`(As of 2/25/2018 submodules have been migrated to rosinstall)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
 
 ## Conventions
