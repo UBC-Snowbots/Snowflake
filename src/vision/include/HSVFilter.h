@@ -1,11 +1,11 @@
 /*
- * Takes in an image and transforms it into a binary image
- * given some color specification.
- * Author: Valerian Ratu
- * Ref: 	Color Picker
- *			https://raw.githubusercontent.com/kylehounslow/opencv-tuts/master/auto-colour-filter/AutoColourFilter.cpp
- *			Color Bar:
- *			http://opencv-srf.blogspot.ca/2010/09/object-detection-using-color-seperation.html
+ * Created By: Valerian Ratu
+ * Description: Takes in an image and transforms it into a binary image
+ *              given some color specification.
+ * Ref: Color Picker
+ *		https://raw.githubusercontent.com/kylehounslow/opencv-tuts/master/auto-colour-filter/AutoColourFilter.cpp
+ *		Color Bar:
+ *		http://opencv-srf.blogspot.ca/2010/09/object-detection-using-color-seperation.html
  */
 
 #include <iostream>

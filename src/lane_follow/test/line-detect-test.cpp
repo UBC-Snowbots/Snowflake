@@ -1,7 +1,7 @@
 /*
  * Created By: Raad Khan
  * Created On: July 9, 2017
- * Description: Tests LineDetect class
+ * Description: Tests LineDetect
  */
 
 #include <LineDetect.h>
@@ -9,183 +9,404 @@
 
 using namespace cv;
 
-TEST(LineDetect, getHistogramSmallTest) {
+TEST(LineDetect, getHistogramSmallSizeTest) {
 
-    cv::Mat testImage(Size(4, 4), CV_8UC1, Scalar(0));
+    cv::Mat test_image(Size(4, 4), CV_8UC1, Scalar::all(0));
 
-    testImage.at<uchar>(2, 1) = 255;
+    test_image.at<uchar>(2, 1) = 255;
 
-    LineDetect testLineDetect;
+    LineDetect TestLineDetect;
 
-    intVec testHistogram     = testLineDetect.getHistogram(testImage);
-    intVec expectedHistogram = {0, 1, 0, 0};
+    intvec test_histogram = TestLineDetect.getHistogram(test_image);
+    intvec expected_histogram = {0, 1, 0, 0};
 
-    EXPECT_EQ(expectedHistogram, testHistogram);
+    EXPECT_EQ(expected_histogram, test_histogram);
 }
 
-TEST(LineDetect, getHistogramLargeTest) {
+TEST(LineDetect, getHistogramLargeSizeTest) {
 
-    cv::Mat testImage(Size(10, 10), CV_8UC1, Scalar(0));
-    testImage.at<uchar>(0, 2) = 255;
-    testImage.at<uchar>(4, 2) = 255;
-    testImage.at<uchar>(8, 2) = 255;
-    testImage.at<uchar>(7, 2) = 255;
-    testImage.at<uchar>(3, 4) = 255;
-    testImage.at<uchar>(4, 4) = 255;
-    testImage.at<uchar>(9, 8) = 255;
-    testImage.at<uchar>(2, 8) = 255;
-    testImage.at<uchar>(3, 8) = 255;
-    testImage.at<uchar>(7, 9) = 255;
+    cv::Mat test_image(Size(10, 10), CV_8UC1, Scalar::all(0));
+    test_image.at<uchar>(0, 2) = 255;
+    test_image.at<uchar>(4, 2) = 255;
+    test_image.at<uchar>(8, 2) = 255;
+    test_image.at<uchar>(7, 2) = 255;
+    test_image.at<uchar>(3, 4) = 255;
+    test_image.at<uchar>(4, 4) = 255;
+    test_image.at<uchar>(9, 8) = 255;
+    test_image.at<uchar>(2, 8) = 255;
+    test_image.at<uchar>(3, 8) = 255;
+    test_image.at<uchar>(7, 9) = 255;
 
-    LineDetect testLineDetect;
+    LineDetect TestLineDetect;
 
-    intVec testHistogram     = testLineDetect.getHistogram(testImage);
-    intVec expectedHistogram = {0, 0, 4, 0, 2, 0, 0, 0, 3, 1};
+    intvec test_histogram = TestLineDetect.getHistogram(test_image);
+    intvec expected_histogram = {0, 0, 4, 0, 2, 0, 0, 0, 3, 1};
 
-    EXPECT_EQ(expectedHistogram, testHistogram);
+    EXPECT_EQ(expected_histogram, test_histogram);
 }
 
-TEST(LineDetect, getBaseHistogramPeakPositionLargeTest) {
+TEST(LineDetect, getBaseHistogramPeakPositionSmallSizeTest) {
 
-    intVec testHistogram = {0, 1, 3, 5, 2, 1, 1, 2, 6, 2, 0, 3};
+    intvec test_histogram = {2, 1, 7, 6, 2, 1, 6, 6, 0};
 
-    LineDetect testLineDetect;
+    LineDetect TestLineDetect;
 
-    std::pair<int, int> testPeak =
-    testLineDetect.getBaseHistogramPeakPositions(testHistogram);
-    std::pair<int, int> expectedPeak(3, 8);
+    std::pair<int, int> test_peak =
+            TestLineDetect.getBaseHistogramPeakPositions(test_histogram);
+    std::pair<int, int> expected_peak(2, 6);
 
-    EXPECT_EQ(expectedPeak, testPeak);
+    EXPECT_EQ(expected_peak, test_peak);
 }
 
-TEST(LineDetect, getBaseHistogramPeakPositionSmallTest) {
+TEST(LineDetect, getBaseHistogramPeakPositionLargeSizeTest) {
 
-    intVec testHistogram = {2, 1, 7, 6, 2, 1, 6, 6, 0};
+    intvec test_histogram = {0, 1, 3, 5, 2, 1, 1, 2, 6, 2, 0, 3};
 
-    LineDetect testLineDetect;
+    LineDetect TestLineDetect;
 
-    std::pair<int, int> testPeak =
-    testLineDetect.getBaseHistogramPeakPositions(testHistogram);
-    std::pair<int, int> expectedPeak(2, 6);
+    std::pair<int, int> test_peak =
+    TestLineDetect.getBaseHistogramPeakPositions(test_histogram);
+    std::pair<int, int> expected_peak(3, 8);
 
-    EXPECT_EQ(expectedPeak, testPeak);
+    EXPECT_EQ(expected_peak, test_peak);
 }
 
-TEST(LineDetect, getWindowSliceLeftTest) {
+TEST(LineDetect, getWindowSliceLeftWindowTest) {
 
-    cv::Mat testImage(Size(10, 10), CV_8UC1, Scalar(0));
-    testImage.at<uchar>(0, 2) = 255;
-    testImage.at<uchar>(4, 2) = 255;
-    testImage.at<uchar>(8, 2) = 255;
-    testImage.at<uchar>(7, 2) = 255;
-    testImage.at<uchar>(3, 4) = 255;
-    testImage.at<uchar>(4, 4) = 255;
-    testImage.at<uchar>(9, 8) = 255;
-    testImage.at<uchar>(2, 8) = 255;
-    testImage.at<uchar>(3, 8) = 255;
-    testImage.at<uchar>(7, 9) = 255;
+    cv::Mat test_image(Size(10, 10), CV_8UC1, Scalar::all(0));
+    test_image.at<uchar>(0, 2) = 255;
+    test_image.at<uchar>(4, 2) = 255;
+    test_image.at<uchar>(8, 2) = 255;
+    test_image.at<uchar>(7, 2) = 255;
+    test_image.at<uchar>(3, 4) = 255;
+    test_image.at<uchar>(4, 4) = 255;
+    test_image.at<uchar>(9, 8) = 255;
+    test_image.at<uchar>(2, 8) = 255;
+    test_image.at<uchar>(3, 8) = 255;
+    test_image.at<uchar>(7, 9) = 255;
 
-    // let initialLineDetectThreshold and windowWidth be 2
-    Window testWindow{2, 2};
+    Window test_window{2, 2};
 
-    int verticalSliceIndex = 2;
+    int vertical_slice_index = 2;
 
-    LineDetect testLineDetect;
+    LineDetect TestLineDetect;
 
-    cv::Mat testWindowSlice =
-    testLineDetect.getWindowSlice(testImage, testWindow, verticalSliceIndex);
-    cv::Mat expectedWindowSlice = testImage(Range(2, 3), Range(1, 3));
-    // Get a matrix with non-zero values at points where the two matrices have
+    cv::Mat test_window_slice =
+    TestLineDetect.getWindowSlice(test_image, test_window, vertical_slice_index);
+    cv::Mat expected_window_slice = test_image(Range(2, 3), Range(1, 3));
+    // get a matrix with non-zero values at points where the two matrices have
     // different values
-    cv::Mat diff = (testWindowSlice != expectedWindowSlice);
-    // Equal if no matrix elements disagree
+    cv::Mat diff = (test_window_slice != expected_window_slice);
+    // equal if no matrix elements disagree
     bool equal = countNonZero(diff);
 
     EXPECT_EQ(false, equal);
 }
 
-TEST(LineDetect, getWindowSliceRightTest) {
+TEST(LineDetect, getWindowSliceRightWindowTest) {
 
-    cv::Mat testImage(Size(10, 10), CV_8UC1, Scalar(0));
-    testImage.at<uchar>(0, 2) = 255;
-    testImage.at<uchar>(4, 2) = 255;
-    testImage.at<uchar>(8, 2) = 255;
-    testImage.at<uchar>(7, 2) = 255;
-    testImage.at<uchar>(3, 4) = 255;
-    testImage.at<uchar>(4, 4) = 255;
-    testImage.at<uchar>(9, 8) = 255;
-    testImage.at<uchar>(2, 8) = 255;
-    testImage.at<uchar>(3, 8) = 255;
-    testImage.at<uchar>(7, 9) = 255;
+    cv::Mat test_image(Size(10, 10), CV_8UC1, Scalar::all(0));
+    test_image.at<uchar>(0, 2) = 255;
+    test_image.at<uchar>(4, 2) = 255;
+    test_image.at<uchar>(8, 2) = 255;
+    test_image.at<uchar>(7, 2) = 255;
+    test_image.at<uchar>(3, 4) = 255;
+    test_image.at<uchar>(4, 4) = 255;
+    test_image.at<uchar>(9, 8) = 255;
+    test_image.at<uchar>(2, 8) = 255;
+    test_image.at<uchar>(3, 8) = 255;
+    test_image.at<uchar>(7, 9) = 255;
 
-    // let initialLineDetectThreshold and windowWidth be 2
-    Window testWindow{8, 2};
+    Window test_window{8, 2};
 
-    int verticalSliceIndex = 3;
+    int vertical_slice_index = 3;
 
-    LineDetect testLineDetect;
+    LineDetect TestLineDetect;
 
-    cv::Mat testWindowSlice =
-    testLineDetect.getWindowSlice(testImage, testWindow, verticalSliceIndex);
-    cv::Mat expectedWindowSlice = testImage(Range(2, 3), Range(7, 9));
-    // Get a matrix with non-zero values at points where the two matrices have
+    cv::Mat test_window_slice =
+    TestLineDetect.getWindowSlice(test_image, test_window, vertical_slice_index);
+    cv::Mat expectedWindowSlice = test_image(Range(2, 3), Range(7, 9));
+    // get a matrix with non-zero values at points where the two matrices have
     // different values
-    cv::Mat diff = (testWindowSlice != expectedWindowSlice);
-    // Equal if no matrix elements disagree
+    cv::Mat diff = (test_window_slice != expectedWindowSlice);
+    // equal if no matrix elements disagree
     bool equal = countNonZero(diff);
 
     EXPECT_EQ(false, equal);
 }
 
-TEST(LineDetect, fitPolyToLineFirstOrderTest) {
+// lane curving straight
+TEST(LineDetect, fitPolyToLineLeftLineCurveStraightTest) {
 
-    cv::Point2d testPoint1{2.0, 0.0};
-    cv::Point2d testPoint2{2.0, 2.0};
-    cv::Point2d testPoint3{3.0, 4.0};
-    cv::Point2d testPoint4{4.0, 7.0};
+    cv::Point2d test_point_1{1.0, 0.0};
+    cv::Point2d test_point_2{1.0, 1.0};
+    cv::Point2d test_point_3{2.0, 3.0};
+    cv::Point2d test_point_4{2.5, 4.0};
+    cv::Point2d test_point_5{3.0, 5.0};
 
-    std::vector<cv::Point2d> testPoints = {
-    testPoint1, testPoint2, testPoint3, testPoint4};
+    std::vector<cv::Point2d> test_points = {
+            test_point_1, test_point_2, test_point_3, test_point_4, test_point_5};
 
-    int testOrder = 1;
+    int test_order = 3;
 
-    LineDetect testLineDetect;
+    LineDetect TestLineDetect;
 
-    Polynomial testPolynomial =
-    testLineDetect.fitPolyToLine(testPoints, testOrder);
+    Polynomial TestPolynomial =
+            TestLineDetect.fitPolyToLine(test_points, test_order);
 
-    Polynomial expectedPolynomial;
-    expectedPolynomial.coefficients = {-5.00000, 3.00000, 0, 0};
+    Polynomial ExpectedPolynomial;
+    ExpectedPolynomial.coefficients = {-3.50000, 5.08333, -1.25000, 0.16667};
 
-    EXPECT_NEAR(expectedPolynomial.coefficients[1], testPolynomial.coefficients[1], 0.00001);
-    EXPECT_NEAR(expectedPolynomial.coefficients[0], testPolynomial.coefficients[0], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[3], TestPolynomial.coefficients[3], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[2], TestPolynomial.coefficients[2], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[1], TestPolynomial.coefficients[1], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[0], TestPolynomial.coefficients[0], 0.00001);
 }
 
-TEST(LineDetect, fitPolyToLineThirdOrderTest) {
+TEST(LineDetect, fitPolyToLineRightLineCurveStraightTest) {
 
-    cv::Point2d testPoint1{5.0, 0.0};
-    cv::Point2d testPoint2{6.0, 1.0};
-    cv::Point2d testPoint3{6.0, 2.0};
-    cv::Point2d testPoint4{8.0, 3.0};
-    cv::Point2d testPoint5{9.0, 4.0};
+    cv::Point2d test_point_1{6.5, 0.0};
+    cv::Point2d test_point_2{6.0, 1.0};
+    cv::Point2d test_point_3{6.0, 2.0};
+    cv::Point2d test_point_4{5.5, 3.0};
+    cv::Point2d test_point_5{5.0, 5.0};
 
-    std::vector<cv::Point2d> testPoints = {
-    testPoint1, testPoint2, testPoint3, testPoint4, testPoint5};
+    std::vector<cv::Point2d> test_points = {
+            test_point_1, test_point_2, test_point_3, test_point_4, test_point_5};
 
-    int testOrder = 3;
+    int test_order = 3;
 
-    LineDetect testLineDetect;
+    LineDetect TestLineDetect;
 
-    Polynomial testPolynomial =
-    testLineDetect.fitPolyToLine(testPoints, testOrder);
+    Polynomial TestPolynomial =
+            TestLineDetect.fitPolyToLine(test_points, test_order);
 
-    Polynomial expectedPolynomial;
-    expectedPolynomial.coefficients = {-34.99999, 14.08333, -1.83333, 0.08333};
+    Polynomial ExpectedPolynomial;
+    ExpectedPolynomial.coefficients = {162.50000, -74.83333, 12.00000, -0.66667};
 
-    EXPECT_NEAR(expectedPolynomial.coefficients[3], testPolynomial.coefficients[3], 0.00001);
-    EXPECT_NEAR(expectedPolynomial.coefficients[2], testPolynomial.coefficients[2], 0.00001);
-    EXPECT_NEAR(expectedPolynomial.coefficients[1], testPolynomial.coefficients[1], 0.00001);
-    EXPECT_NEAR(expectedPolynomial.coefficients[0], testPolynomial.coefficients[0], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[3], TestPolynomial.coefficients[3], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[2], TestPolynomial.coefficients[2], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[1], TestPolynomial.coefficients[1], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[0], TestPolynomial.coefficients[0], 0.00001);
+}
+
+TEST(LineDetect, getIntersectionPointCenterTest) {
+
+    std::vector<Polynomial> test_lane_lines;
+
+    Polynomial TestLeftLinePolynomial;
+    Polynomial TestRightLinePolynomial;
+
+    TestLeftLinePolynomial.coefficients = {-3.50000, 5.08333, -1.25000, 0.16667};
+    TestRightLinePolynomial.coefficients = {162.50000, -74.83333, 12.00000, -0.66667};
+
+    test_lane_lines = {TestLeftLinePolynomial, TestRightLinePolynomial};
+
+    int test_order = 3;
+
+    LineDetect TestLineDetect;
+
+    cv::Point2d test_intersection_point = TestLineDetect.getIntersectionPoint(test_lane_lines, test_order);
+
+    cv::Point2d expected_intersection_point = {4.39143, 8.83210};
+
+    EXPECT_NEAR(expected_intersection_point.x, test_intersection_point.x, 0.00001);
+    EXPECT_NEAR(expected_intersection_point.y, test_intersection_point.y, 0.00001);
+}
+
+// lane curving right
+TEST(LineDetect, fitPolyToLineLeftLineCurveRightTest) {
+
+    cv::Point2d test_point_1{5.0, 0.0};
+    cv::Point2d test_point_2{5.2, 1.0};
+    cv::Point2d test_point_3{6.0, 2.0};
+    cv::Point2d test_point_4{6.5, 3.0};
+    cv::Point2d test_point_5{7.4, 4.0};
+    cv::Point2d test_point_6{8.7, 5.0};
+
+    std::vector<cv::Point2d> test_points = {
+            test_point_1, test_point_2, test_point_3, test_point_4, test_point_5, test_point_6};
+
+    int test_order = 3;
+
+    LineDetect TestLineDetect;
+
+    Polynomial TestPolynomial =
+            TestLineDetect.fitPolyToLine(test_points, test_order);
+
+    Polynomial ExpectedPolynomial;
+    ExpectedPolynomial.coefficients = {-24.04865, 8.06960, -0.77742, 0.02687};
+
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[3], TestPolynomial.coefficients[3], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[2], TestPolynomial.coefficients[2], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[1], TestPolynomial.coefficients[1], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[0], TestPolynomial.coefficients[0], 0.00001);
+}
+
+TEST(LineDetect, fitPolyToLineRightLineCurveRightTest) {
+
+    cv::Point2d test_point_1{12.3, 0.0};
+    cv::Point2d test_point_2{11.9, 1.0};
+    cv::Point2d test_point_3{11.6, 2.0};
+    cv::Point2d test_point_4{11.3, 3.0};
+    cv::Point2d test_point_5{11.2, 4.0};
+    cv::Point2d test_point_6{11.1, 5.0};
+
+    std::vector<cv::Point2d> test_points = {
+            test_point_1, test_point_2, test_point_3, test_point_4, test_point_5, test_point_6};
+
+    int test_order = 3;
+
+    LineDetect TestLineDetect;
+
+    Polynomial TestPolynomial =
+            TestLineDetect.fitPolyToLine(test_points, test_order);
+
+    Polynomial ExpectedPolynomial;
+    ExpectedPolynomial.coefficients = {8234.90373, -2075.85198, 174.61119, -4.90033};
+
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[3], TestPolynomial.coefficients[3], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[2], TestPolynomial.coefficients[2], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[1], TestPolynomial.coefficients[1], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[0], TestPolynomial.coefficients[0], 0.00001);
+}
+
+TEST(LineDetect, getIntersectionPointRightTest) {
+
+    std::vector<Polynomial> test_lane_lines;
+
+    Polynomial TestLeftLanePolynomial;
+    Polynomial TestRightLanePolynomial;
+
+    TestLeftLanePolynomial.coefficients = {-24.04865, 8.06960, -0.77742, 0.02687};
+    TestRightLanePolynomial.coefficients = {-11930.72079, 3176.10932, -281.06283, 8.26972};
+
+    test_lane_lines = {TestLeftLanePolynomial, TestRightLanePolynomial};
+
+    int test_order = 3;
+
+    LineDetect TestLineDetect;
+
+    cv::Point2d test_intersection_point = TestLineDetect.getIntersectionPoint(test_lane_lines, test_order);
+
+    cv::Point2d expected_intersection_point = {12.55519, 7.89850};
+
+    EXPECT_NEAR(expected_intersection_point.x, test_intersection_point.x, 0.00001);
+    EXPECT_NEAR(expected_intersection_point.y, test_intersection_point.y, 0.00001);
+}
+
+// lane curving left in normal perspective view
+TEST(LineDetect, fitPolyToLineLeftLineCurveLeftTest) {
+
+    cv::Point2d test_point_1{19.6, 0.0};
+    cv::Point2d test_point_2{20.4, 2.0};
+    cv::Point2d test_point_3{21.2, 4.0};
+    cv::Point2d test_point_4{21.6, 6.0};
+    cv::Point2d test_point_5{22.1, 8.0};
+    cv::Point2d test_point_6{22.7, 12.0};
+    cv::Point2d test_point_7{23.3, 16.0};
+    cv::Point2d test_point_8{23.5, 18.0};
+
+    std::vector<cv::Point2d> test_points = {
+            test_point_1, test_point_2, test_point_3, test_point_4,
+            test_point_5, test_point_6, test_point_7, test_point_8};
+
+    int test_order = 3;
+
+    LineDetect TestLineDetect;
+
+    Polynomial TestPolynomial =
+            TestLineDetect.fitPolyToLine(test_points, test_order);
+
+    Polynomial ExpectedPolynomial;
+    ExpectedPolynomial.coefficients = {-774.72144, 119.41203, -6.23463, 0.11015};
+
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[3], TestPolynomial.coefficients[3], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[2], TestPolynomial.coefficients[2], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[1], TestPolynomial.coefficients[1], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[0], TestPolynomial.coefficients[0], 0.00001);
+}
+
+TEST(LineDetect, fitPolyToLineRightLineCurveLeftTest) {
+
+    cv::Point2d test_point_1{34.7, 2.0};
+    cv::Point2d test_point_2{34.3, 4.0};
+    cv::Point2d test_point_3{32.8, 6.0};
+    cv::Point2d test_point_4{32.0, 10.0};
+    cv::Point2d test_point_5{31.0, 12.0};
+    cv::Point2d test_point_6{30.0, 14.0};
+    cv::Point2d test_point_7{28.0, 16.0};
+    cv::Point2d test_point_8{27.0, 18.0};
+
+    std::vector<cv::Point2d> test_points = {
+            test_point_1, test_point_2, test_point_3, test_point_4,
+            test_point_5, test_point_6, test_point_7, test_point_8};
+
+    int test_order = 3;
+
+    LineDetect TestLineDetect;
+
+    Polynomial TestPolynomial =
+            TestLineDetect.fitPolyToLine(test_points, test_order);
+
+    // we know that a polynomial function of degree n will have at most n-1 relative extrema
+    // and we observe in this test how this property can give an undesired best fit polynomial
+    Polynomial ExpectedPolynomial;
+    ExpectedPolynomial.coefficients = {-371.68524, 37.32498, -1.14044, 0.01082};
+
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[3], TestPolynomial.coefficients[3], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[2], TestPolynomial.coefficients[2], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[1], TestPolynomial.coefficients[1], 0.00001);
+    EXPECT_NEAR(ExpectedPolynomial.coefficients[0], TestPolynomial.coefficients[0], 0.00001);
+}
+
+
+TEST(LineDetect, getIntersectionPointLeftTest) {
+
+    std::vector<Polynomial> test_lane_lines;
+
+    Polynomial TestLeftLanePolynomial;
+    Polynomial TestRightLanePolynomial;
+
+    TestLeftLanePolynomial.coefficients = {-774.72144, 119.41203, -6.23463, 0.11015};
+    TestRightLanePolynomial.coefficients = {-371.68524, 37.32498, -1.14044, 0.01082};
+
+    test_lane_lines = {TestLeftLanePolynomial, TestRightLanePolynomial};
+
+    int test_order = 3;
+
+    LineDetect TestLineDetect;
+
+    cv::Point2d test_intersection_point = TestLineDetect.getIntersectionPoint(test_lane_lines, test_order);
+
+    cv::Point2d expected_intersection_point = {23.22649, 15.58456};
+
+    EXPECT_NEAR(expected_intersection_point.x, test_intersection_point.x, 0.00001);
+    EXPECT_NEAR(expected_intersection_point.y, test_intersection_point.y, 0.00001);
+}
+
+TEST(LineDetect, getIntersectionPointNoneTest) {
+
+    std::vector<Polynomial> test_lane_lines;
+
+    Polynomial TestLeftLanePolynomial;
+    Polynomial TestRightLanePolynomial;
+
+    TestLeftLanePolynomial.coefficients = {0, 0, 0, 1};
+    TestRightLanePolynomial.coefficients = {-27, 27, -9, 1};
+
+    test_lane_lines = {TestLeftLanePolynomial, TestRightLanePolynomial};
+
+    int test_order = 3;
+
+    LineDetect TestLineDetect;
+
+    try {
+        cv::Point2d test_intersection_point = TestLineDetect.getIntersectionPoint(test_lane_lines, test_order);
+    }
+    catch (std::exception &error) {
+        EXPECT_EQ(error.what(), std::string("no lane intersects found - frame discarded"));
+    }
 }
 
 int main(int argc, char** argv) {

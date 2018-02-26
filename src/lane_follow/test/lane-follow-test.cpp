@@ -1,7 +1,7 @@
 /*
  * Created By: Raad Khan
  * Created On: July 9, 2017
- * Description: Tests LaneFollow node
+ * Description: Tests LaneFollow
  */
 
 #include <LaneFollow.h>
