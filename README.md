@@ -67,7 +67,6 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 Below are some notes we would like to highlight about pull requests: 
 - Once your pull request has been approved, please proceed to merge and close the pull request yourself
 - When your pull requests receive comments, please reply to each comment individually. 
-- Once your branch has been merged, please delete the branch. 
 - If there were any fixes that were specific to resources you found (eg. stackoverflow thread), please comment them into the PR for future reference. 
 
 ### Coding Conventions
