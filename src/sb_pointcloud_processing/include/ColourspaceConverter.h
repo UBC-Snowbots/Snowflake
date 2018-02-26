@@ -12,6 +12,7 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include <pcl/PCLPointCloud2.h>
 
 using namespace pcl;
 
@@ -21,11 +22,13 @@ public:
 
     ColourspaceConverter();
 
-    static PointCloud<PointXYZHSV>::Ptr Process(PointCloud<PointXYZRGB>::ConstPtr& input);
-    static void PointXYZRGBAtoXYZHSV(const PointXYZRGB& in, PointXYZHSV& out);
+    void filter(PointCloud<PointXYZHSV> &output);
+
+    void setInputCloud(PointCloud<PointXYZRGB>::Ptr input);
 
 private:
-
+    PointCloud<PointXYZRGB>::Ptr cloud_;
+    void PointXYZRGBAtoXYZHSV(const PointXYZRGB& in, PointXYZHSV& out);
 };
 
 

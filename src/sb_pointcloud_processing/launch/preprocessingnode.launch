@@ -8,11 +8,6 @@
 
     <node pkg="nodelet"
           type="nodelet"
-          name="frame_transform"
-          args="load sb_pointcloud_processing/frame_transform standalone_nodelet" output="screen"/>
-
-    <node pkg="nodelet"
-          type="nodelet"
           name="rgb_to_hsv"
           args="load sb_pointcloud_processing/rgb_to_hsv standalone_nodelet" output="screen"/>
 

@@ -13,21 +13,25 @@ ColourspaceConverter::ColourspaceConverter()
 
 }
 
-PointCloud<PointXYZHSV>::Ptr ColourspaceConverter::Process(PointCloud<PointXYZRGB>::ConstPtr& input) {
-    PointCloud<PointXYZHSV>::Ptr output(new PointCloud<PointXYZHSV>());
+void ColourspaceConverter::setInputCloud(PointCloud<PointXYZRGB>::Ptr input)
+{
+    cloud_ = input;
+}
+
+void ColourspaceConverter::filter(PointCloud<PointXYZHSV> &output) {
     // Do processing here rather than using:
     // PointCloudXYZRGBtoXYZHSV(*input, *output);
     // since above does not like constant inputs
     // Test speed
-    output->width = input->width;
-    output->height = input->width;
-    for (size_t i = 0; i < input->points.size(); i++)
+    output.width = cloud_->width;
+    output.height = cloud_->height;
+    output.header = cloud_->header;
+    for (size_t i = 0; i < cloud_->size(); i++)
     {
         PointXYZHSV p;
-        ColourspaceConverter::PointXYZRGBAtoXYZHSV(input->points[i], p);
-        output->points.push_back(p);
+        ColourspaceConverter::PointXYZRGBAtoXYZHSV(cloud_->points[i], p);
+        output.points.push_back(p);
     }
-    return output;
 }
 
 void ColourspaceConverter::PointXYZRGBAtoXYZHSV(const PointXYZRGB &in, PointXYZHSV &out) {

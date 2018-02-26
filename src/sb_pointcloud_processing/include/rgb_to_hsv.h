@@ -10,6 +10,7 @@
 // ROS Includes
 #include <nodelet/nodelet.h>
 #include <ros/ros.h>
+#include <sensor_msgs/PointCloud2.h>
 
 // PCL Includes
 #include <pcl/point_cloud.h>
@@ -24,16 +25,40 @@ using namespace pcl_ros;
 namespace sb_pointcloud_processing {
 
     class RGBtoHSV : public nodelet::Nodelet {
+
     public:
         RGBtoHSV();
+
+    protected:
+        
+
+        //bool child_init(ros::NodeHandle &nh, bool &has_service);
+
+        //void config_callback(FilterConfig &config, uint32_t level);
+
     private:
-
         virtual void onInit();
-        void callback(PointCloud<PointXYZRGB>::ConstPtr& input);
-        ColourspaceConverter converter;
 
+        inline void
+        filter (const sensor_msgs::PointCloud2::ConstPtr &input, sensor_msgs::PointCloud2 &output)
+        {
+            pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
+            pcl_conversions::toPCL (*(input), *(pcl_input));
+            pcl::PointCloud<PointXYZRGB>::Ptr pcl_rgb(new pcl::PointCloud<PointXYZRGB>());
+            pcl::fromPCLPointCloud2(*pcl_input, *pcl_rgb);
+            impl_.setInputCloud (pcl_rgb);
+            pcl::PointCloud<PointXYZHSV>::Ptr pcl_output(new pcl::PointCloud<PointXYZHSV>());
+            impl_.filter (*pcl_output);
+            pcl::toROSMsg(*pcl_output, output);
+        }
+
+        void callback(const sensor_msgs::PointCloud2::ConstPtr &input);
+
+        ColourspaceConverter impl_;
+        
         ros::Publisher pub;
         ros::Subscriber sub;
+
     };
 
 }

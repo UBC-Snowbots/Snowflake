@@ -1,0 +1,18 @@
+<launch>
+    <!-- Toggle if using simulation data -->
+    <param name="/use_sim_time" value="true"/>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="h"
+          args="load pcl/PassThrough nm" output="screen">
+        <remap from="~input" to="rgb_to_hsv/output" />
+        <rosparam>
+            filter_field_name: h
+            filter_limit_min: 1.0
+            filter_limit_max: 1.25
+            filter_limit_negative: False
+        </rosparam>
+    </node>
+
+</launch>

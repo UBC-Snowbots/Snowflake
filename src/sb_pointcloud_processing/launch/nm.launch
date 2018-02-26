@@ -1,0 +1,10 @@
+<launch>
+    <!-- Toggle if using simulation data -->
+    <param name="/use_sim_time" value="true"/>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="nm"
+          args="manager"
+          output="screen" />
+</launch>

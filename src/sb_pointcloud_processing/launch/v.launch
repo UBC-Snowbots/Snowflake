@@ -1,0 +1,16 @@
+<launch>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="v"
+          args="load pcl/PassThrough nm" output="screen">
+        <remap from="~input" to="/s/output" />
+        <rosparam>
+            filter_field_name: v
+            filter_limit_min: 1.0
+            filter_limit_max: 1.25
+            filter_limit_negative: False
+        </rosparam>
+    </node>
+
+</launch>

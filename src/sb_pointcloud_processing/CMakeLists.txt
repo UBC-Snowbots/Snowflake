@@ -1,22 +1,31 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sb_pointcloud_processing)
 
-find_package(catkin REQUIRED COMPONENTS nodelet roscpp std_msgs)
+find_package(catkin REQUIRED COMPONENTS 
+    nodelet 
+    roscpp 
+    std_msgs 
+    pcl_ros 
+    pcl_msgs
+    sensor_msgs
+)
 find_package(sb_utils REQUIRED)
 find_package(PCL REQUIRED)
 
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES sb_vision_pointcloud
-   CATKIN_DEPENDS nodelet roscpp std_msgs
-#  DEPENDS system_lib
-)
 
 include_directories(
     ${catkin_INCLUDE_DIRS}
     ${sb_utils_INCLUDE_DIRS}
     ${PCL_INCLUDE_DIRS}
     include
+)
+
+
+catkin_package(
+#  INCLUDE_DIRS include
+   LIBRARIES sb_vision_pointcloud
+   CATKIN_DEPENDS nodelet roscpp std_msgs pcl_ros
+#  DEPENDS system_lib
 )
 
 add_library(sb_pointcloud_processing
@@ -27,7 +36,6 @@ add_library(sb_pointcloud_processing
     include/ColourspaceConverter.h
     src/ColourspaceConverter.cpp
 )
-
 target_link_libraries(sb_pointcloud_processing
     ${catkin_LIBRARIES}
     ${sb_utils_LIBRARIES}
