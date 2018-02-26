@@ -43,7 +43,7 @@ echo "================================================================"
 # Setup rosinstall
 sudo mkdir -p /usr/share/ros/
 sudo chmod a+rwx /usr/share/ros
-rosinstall .
+rosinstall /usr/share/ros /opt/ros/kinetic .rosinstall
 
 echo "================================================================"
 echo "Installing Udev rules for phidgets"
