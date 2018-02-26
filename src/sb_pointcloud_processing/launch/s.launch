@@ -1,7 +1,6 @@
 <launch>
     <!-- Toggle if using simulation data -->
     <param name="/use_sim_time" value="true"/>
-   </node>
 
     <node pkg="nodelet"
           type="nodelet"

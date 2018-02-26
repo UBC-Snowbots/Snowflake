@@ -15,8 +15,8 @@ void RGBtoHSV::onInit()
 {
     NODELET_DEBUG("Initializing Nodelet...");
     ros::NodeHandle& private_nh = getPrivateNodeHandle();
-    pub = private_nh.advertise<pcl::PointCloud<pcl::PointXYZHSV> >("input", 1);
-    sub = private_nh.subscribe("output", 1, &RGBtoHSV::callback, this);
+    sub = private_nh.subscribe("input", 1, &RGBtoHSV::callback, this);
+    pub = private_nh.advertise<pcl::PointCloud<pcl::PointXYZHSV> >("output", 1);
     NODELET_DEBUG("Nodelet Initialized");
 }
 
