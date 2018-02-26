@@ -60,7 +60,7 @@ This is due to the removal of the ros installation directory from the .rosinstal
 Therefore to correctly manually install dependent packages using rosinstall, run `rosinstall INSTALL_PATH PRE-EXISTING_ROS_DIR CUSTOM_ROSINSTALL_FILE` 
 i.e on most systems, it will be `rosinstall /usr/share/ros /opt/ros/kinetic .rosinstall` 
  
-Rosinstall should be run after all steps from installation and setup has been completed. 
+Rostinstall is addressed and run in `install_dependencies.sh`, should there be any need to run manual, rosinstall should be run after all steps from installation and setup has been completed. 
 
 
 ## New Members
