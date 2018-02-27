@@ -70,6 +70,7 @@ Below are some notes we would like to highlight about pull requests:
 - Once your pull request has been approved, please proceed to merge and close the pull request yourself
 - When your pull requests receive comments, please reply to each comment individually. 
 - If there were any fixes that were specific to resources you found (eg. stackoverflow thread), please comment them into the PR for future reference. 
+- On a similar note, if you made design decisions, please document them in the comments of the PR. We often go back to close PRs to look at why things were done a certain way. It is very helpful for us to know how you came up with your brilliant solution. 
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
