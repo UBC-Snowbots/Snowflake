@@ -69,7 +69,7 @@ We've put together a seperate `README` file that should help to get you up and r
 ## Conventions
 
 ### Github Conventions
-- We follow the Forking Workflow: know what it is [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
+- We follow the Forking Workflow: here is what it is [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
     - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
@@ -107,6 +107,8 @@ We've put together a seperate `README` file that should help to get you up and r
 - Constants are **ALL_CAPS_WITH_UNDERSCORES**
 - Functions are **camelCase**
 - Indentations are 4 spaces
+
+- `CMakeLists.txt` files should be reduced to only contain the minimum amount of comments. The version in `sample_package` has all the comments left in (for the sake of verbosity), so for a more representative example of what yours should look like, see `sb_vision/CMakeLists.txt` (or really any package aside from `sample_package`)
 
 ### Coordinate Systems
 - We try to follow ROS standards, which can be found [here](http://www.ros.org/reps/rep-0103.html)
