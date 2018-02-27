@@ -19,7 +19,5 @@ cmake-build-debug
 *_REMOTE_*.txt
 *.orig
 
-setup.bash 
-setup.sh 
-setup.zsh
+extended_pkg/
 .rosinstall.bak

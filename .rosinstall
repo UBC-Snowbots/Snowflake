@@ -3,22 +3,10 @@
 # IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
 # USE THE rosinstall TOOL INSTEAD.
 # IF YOU CHANGE IT, USE rosinstall FOR THE CHANGES TO TAKE EFFECT
-# Docs: http://docs.ros.org/independent/api/rosinstall/html/rosinstall_file_format.html
-##############################################################
-# Setup-file specified where rosinstall can find information on your local ros installation
-# Installation does succeed without it, but not sure if env vars will have problems being set 
-#- setup-file: {local-name: /opt/ros/kinetic/setup.sh}
-#
-# The correct way is to run: rosinstall INSTALL_PATH PRE-EXISTING_ROS_INSTALL_DIR CUSTOM_ROSINSTALL_FILE
-# i.e: rosinstall /usr/share/ros /opt/ros/kinetic .rosinstall 
-# Refer to: http://wiki.ros.org/rosinstall/Troubleshooting
-#
-# The key used at the beginning (ie. git) specfies the vc being used. In our case, most of the packages are on github
-# therefore we use github
-- git: {local-name: /usr/share/ros/phidgets_api, uri: 'https://github.com/ros-drivers-gbp/phidgets_drivers-release.git',
+- git: {local-name: extended_pkg/phidgets_api, uri: 'https://github.com/ros-drivers-gbp/phidgets_drivers-release.git',
     version: release/kinetic/phidgets_api/0.7.5-0}
-- git: {local-name: /usr/share/ros/sicktoolbox, uri: 'https://github.com/ros-drivers/sicktoolbox.git'}
-- git: {local-name: /usr/share/ros/sicktoolbox_wrapper, uri: 'https://github.com/ros-drivers/sicktoolbox_wrapper.git'}
-- git: {local-name: /usr/share/ros/zed-ros-wrapper, uri: 'https://github.com/UBC-Snowbots/zed-ros-wrapper.git'}
-- git: {local-name: /usr/share/ros/ros_arduino_bridge, uri: 'https://github.com/UBC-Snowbots/ros_arduino_bridge.git'}
-- git: {local-name: /usr/share/ros/nmea_navsat_driver, uri: 'https://github.com/UBC-Snowbots/nmea_navsat_driver.git'}
+- git: {local-name: extended_pkg/sicktoolbox, uri: 'https://github.com/ros-drivers/sicktoolbox.git'}
+- git: {local-name: extended_pkg/sicktoolbox_wrapper, uri: 'https://github.com/ros-drivers/sicktoolbox_wrapper.git'}
+- git: {local-name: extended_pkg/zed-ros-wrapper, uri: 'https://github.com/UBC-Snowbots/zed-ros-wrapper.git'}
+- git: {local-name: extended_pkg/ros_arduino_bridge, uri: 'https://github.com/UBC-Snowbots/ros_arduino_bridge.git'}
+- git: {local-name: extended_pkg/nmea_navsat_driver, uri: 'https://github.com/UBC-Snowbots/nmea_navsat_driver.git'}

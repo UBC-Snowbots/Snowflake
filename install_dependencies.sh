@@ -41,9 +41,9 @@ echo "Installing Project Dependent ROS packages."
 echo "================================================================"
 
 # Setup rosinstall
-sudo mkdir -p /usr/share/ros/
-sudo chmod a+rwx /usr/share/ros
-rosinstall /usr/share/ros /opt/ros/kinetic .rosinstall
+mkdir -p extended_pkg
+rosinstall extended_pkg /opt/ros/kinetic .rosinstall
+rosinstall .
 
 echo "================================================================"
 echo "Installing Udev rules for phidgets"
