@@ -41,7 +41,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
 6. Clone this repository by running `git clone --recursive https://github.com/UBC-Snowbots/Snowflake.git ~/Snowflake`
-7. To start set-up run `cd ~/Snowflake && ./get_started.sh` **(Do not run this script as root)**
+7. To start set-up run `cd ~/Snowflake && ./setup_scripts/install_tools.sh` **(Do not run this script as root)**
     - _Just choose yes and enter your password when the terminal prompts you_ 
 8. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/Snowflake && catkin_make` 
     - If everything compiles correctly and you don't get any errors, then you're good to go!
