@@ -11,6 +11,7 @@ UBC Snowbots Repository for competitions.
 - [New Members](#new-members)
 - [Conventions](#conventions)
   - [Github](#github-conventions)
+  - [Pull Requests](#pull-requests)
   - [Coding Conventions](#coding-conventions)
   - [Coordinate Systems](#coordinate-systems)
 - [Creating a New Node](#creating-a-new-node)
@@ -74,6 +75,13 @@ We've put together a seperate `README` file that should help to get you up and r
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
     - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
 - Once your pull request has been reviewed and revised until it looks good from both your and the reviewers' sides, go ahead and Squash and Merge it, which will squash all the commits on your pull request into one and merge it to the target branch.
+
+### Pull Requests
+Below are some notes we would like to highlight about pull requests: 
+- Once your pull request has been approved, please proceed to merge and close the pull request yourself
+- When your pull requests receive comments, please reply to each comment individually. 
+- If there were any fixes that were specific to resources you found (eg. stackoverflow thread), please comment them into the PR for future reference. 
+- On a similar note, if you made design decisions, please document them in the comments of the PR. We often go back to close PRs to look at why things were done a certain way. It is very helpful for us to know how you came up with your brilliant solution. 
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
