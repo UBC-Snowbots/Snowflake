@@ -13,11 +13,14 @@ notifications:
 
 install:
     # Pull in MoveIt's ROS Docker CI image (piping to `/dev/null` to hide output)
-    - echo "REPOSITORY NAME $REPOSITORY_NAME"
     - DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
     - echo "Pulling in Docker Image \"$DOCKER_IMAGE\""
     - docker pull $DOCKER_IMAGE > /dev/null
     # Setup up the Docker image 
+    - docker run \
+      -e $REPOSITORY_NAME \
+      -v $(pwd):/root/$REPOSITORY_NAME $DOCKER_IMAGE \
+      /bin/bash -c "echo $REPOSITORY_NAME"
     - docker run -e $REPOSITORY_NAME /bin/bash -c "cd /root/$REPOSITORY_NAME; ./setup_scripts/install_dependencies.sh"
 
 env:
