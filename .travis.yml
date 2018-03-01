@@ -29,7 +29,7 @@ script:
     --env $TRAVIS_PULL_REQUEST
     --env $TRAVIS_BRANCH
     --volume $(pwd):/root/$REPOSITORY_NAME
-    moveit/moveit:kinetic-ci
+    $DOCKER_IMAGE
     /bin/bash -c "cd /root/$REPOSITORY_NAME; ./run_ci.sh"
 
 env:
