@@ -24,6 +24,3 @@ env:
     - TEST_CLANG_FORMAT=TRUE 
       ROS_DISTRO=kinetic 
       UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-
-script:
-  - source .moveit_ci/travis.sh
