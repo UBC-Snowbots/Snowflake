@@ -8,19 +8,22 @@ notifications:
     recipients:
 
 before_install:
-    # Pull in MoveIt's ROS Docker CI image (piping to `/dev/null` to hide output)
-    - DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
-    - docker pull $DOCKER_IMAGE > /dev/null
-    # Setup up the Docker image 
-    - docker run -e $REPOSITORY_NAME /bin/bash -c "cd /root/$REPOSITORY_NAME; ./setup_scripts/install_dependencies.sh"
+    ## Pull in MoveIt's ROS Docker CI image (piping to `/dev/null` to hide output)
+    #- DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
+    #- echo "Pulling in Docker Image: $DOCKER_IMAGE"
+    #- docker pull $DOCKER_IMAGE > /dev/null
+    ## Setup up the Docker image 
+    #- docker run -e $REPOSITORY_NAME /bin/bash -c "cd /root/$REPOSITORY_NAME; ./setup_scripts/install_dependencies.sh"
+    - docker pull moveit/moveit:kinetic-ci
+    - docker run -e moveit/moveit:kinetic-ci /bin/bash -c "cd /root/$REPOSITORY_NAME; ./setup_scripts/install_dependencies.sh"
 
-env:
-  matrix:
-    - ROS_DISTRO=kinetic 
-      ROS_REPO=ros 
-      UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-    - ROS_DISTRO=kinetic 
-      UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-    - TEST_CLANG_FORMAT=TRUE 
-      ROS_DISTRO=kinetic 
-      UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
+#env:
+#  matrix:
+#    - ROS_DISTRO=kinetic 
+#      ROS_REPO=ros 
+#      UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
+#    - ROS_DISTRO=kinetic 
+#      UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
+#    - TEST_CLANG_FORMAT=TRUE 
+#      ROS_DISTRO=kinetic 
+#      UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
