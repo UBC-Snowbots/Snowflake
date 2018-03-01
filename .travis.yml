@@ -8,12 +8,20 @@ notifications:
   email:
     recipients:
 
-before_install:
+# Global Variables
+
+
+install:
     # Pull in MoveIt's ROS Docker CI image (piping to `/dev/null` to hide output)
     - DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
+    - echo "==========================================================="
     - echo "Pulling in Docker Image \"$DOCKER_IMAGE\""
+    - echo "==========================================================="
     - docker pull $DOCKER_IMAGE > /dev/null
     # Setup up the Docker image 
+    - echo "==========================================================="
+    - echo " Setting up the Docker Image and Installing Dependencies"
+    - echo "==========================================================="
     - docker run -e $REPOSITORY_NAME /bin/bash -c "cd /root/$REPOSITORY_NAME; ./setup_scripts/install_dependencies.sh"
 
 env:
