@@ -17,20 +17,19 @@ install:
 
 script:
   # Run everything within the docker container we installed
-  - |
-    docker run \
-    # Pass in Environment Variables we need to the container
+  - docker run \
+    \# Pass in Environment Variables we need to the container
     --env $REPOSITORY_NAME \
     --env $RUN_BUILD \
     --env $RUN_TESTS \
     --env $RUN_FORMATTING_CHECKS \
     --env $TRAVIS_PULL_REQUEST \
     --env $TRAVIS_BRANCH \
-    # Bind the location of the Repo to a set location in the Docker image
-    --volume $(pwd):/root/$REPOSITORY_NAME  \
-    # Use the Docker Image we just pulled
+    \# Bind the location of the Repo to a set location in the Docker image
+    --volume $(pwd):/root/$REPOSITORY_NAME \
+    \# Use the Docker Image we just pulled
     moveit/moveit:kinetic-ci \
-    # Once in the docker container, run the the CI script
+    \# Once in the docker container, run the the CI script
     /bin/bash -c "cd /root/$REPOSITORY_NAME; ./run_ci.sh"
 
 env:
