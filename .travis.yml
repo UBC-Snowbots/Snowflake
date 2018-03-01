@@ -1,4 +1,5 @@
-sudo: required
+# Note: Setting this to `required` will add 20-50s to CI image boot time
+sudo: false
 dist: trusty
 services:
   - docker
@@ -10,7 +11,7 @@ notifications:
 before_install:
     # Pull in MoveIt's ROS Docker CI image (piping to `/dev/null` to hide output)
     - DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
-    - echo "Pulling in Docker Image\: $DOCKER_IMAGE"
+    - echo "Pulling in Docker Image \"$DOCKER_IMAGE\""
     - docker pull $DOCKER_IMAGE > /dev/null
     # Setup up the Docker image 
     - docker run -e $REPOSITORY_NAME /bin/bash -c "cd /root/$REPOSITORY_NAME; ./setup_scripts/install_dependencies.sh"
