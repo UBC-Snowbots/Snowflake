@@ -17,6 +17,8 @@ install:
     - docker run
       --volume $(pwd):/root/cloned_repo 
       $DOCKER_IMAGE
+      /bin/bash -c "cd /root/cloned_repo; ./setup_scripts/install_dependencies.sh"
+
 
 script:
   # Run everything within the docker container we installed
