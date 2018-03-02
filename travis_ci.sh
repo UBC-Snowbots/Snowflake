@@ -24,6 +24,11 @@ function travis_run() {
 # Change to the directory this script is in
 cd $CURR_DIR
 
+# TODO: DELETE ME
+echo "RUN_BUILD: $RUN_BUILD"
+echo "RUN_TESTS: $RUN_TESTS"
+echo "RUN_FORMATTING_CHECKS: $RUN_FORMATTING_CHECKS"
+
 # Note that we must build the codebase in order to run tests
 if [ "$RUN_BUILD" == "true" ] || [ "$RUN_TESTS" == "true" ]; then
     # Install all required dependecies
