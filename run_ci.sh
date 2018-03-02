@@ -16,9 +16,12 @@ function travis_run() {
   let "TRAVIS_FOLD_COUNTER += 1"
 }
 
+
+# Change to the directory this script is in
+cd $CURR_DIR
+
 # Note that we must build the codebase in order to run tests
 if [ "$RUN_BUILD"=="true" || "$RUN_TESTS"=="true"]; then
-
     # Install all required dependecies
     travis_run ./setup_scripts/install_dependencies.sh
 
@@ -27,10 +30,8 @@ if [ "$RUN_BUILD"=="true" || "$RUN_TESTS"=="true"]; then
 fi
 
 if [ "$RUN_TESTS"=="true" ]; then
-
     # Run all the tests
     travis_run catkin_make run_tests
-
 fi
 
 if [ "$RUN_FORMATTING_CHECKS"=="true" ]; then
