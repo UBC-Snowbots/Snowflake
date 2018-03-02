@@ -48,18 +48,20 @@ if [ "$RUN_FORMATTING_CHECKS" == "true" ]; then
     # files were changed
     if [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
       # Not in a pull request, so compare against parent commit
-      base_commit="HEAD^"
-      echo "Running clang-format against parent commit $(git rev-parse $base_commit)"
+      BASE_COMMIT="HEAD^"
+      echo "Running clang-format against parent commit $(git rev-parse $BASE_COMMIT)"
       echo "=================================================="
     else
       # In a pull request so compare against branch we're trying to merge into
-      base_commit="$TRAVIS_PULL_REQUEST_BRANCH"
+      # (ex. "master")
+      BASE_COMMIT="$TRAVIS_BRANCH"
       # Make sure we pull the branches we're trying to merge against
-      git fetch origin $base_commit:$base_commit
-      echo "Running clang-format against branch $base_commit, with hash $(git rev-parse $base_commit)"
+      git fetch origin $BASE_COMMIT:$BASE_COMMIT
+      echo "Running clang-format against branch $BASE_COMMIT, with hash $(git rev-parse $BASE_COMMIT)"
     fi
+
     # Check if we need to change any files
-    output="$(./clang-format/git-clang-format --binary ./clang-format/clang-format-$CLANG_VERSION --commit $base_commit --diff)"
+    output="$(./clang-format/git-clang-format --binary ./clang-format/clang-format-$CLANG_VERSION --commit $BASE_COMMIT --diff)"
     if [[ $output == *"no modified files to format"* ]] || [[ $output == *"clang-format did not modify any files"* ]] ; then
         echo "clang-format passed :D"
         exit 0
