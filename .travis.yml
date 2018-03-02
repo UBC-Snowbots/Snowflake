@@ -4,29 +4,22 @@ dist: trusty
 services:
   - docker
 language: generic
+notifications:
+  email:
+    recipients:
 
 install:
     # Pull in MoveIt's ROS Docker CI image (piping to `/dev/null` to hide output)
     - DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
     - echo "Pulling in Docker Image \"$DOCKER_IMAGE\""
     - docker pull $DOCKER_IMAGE > /dev/null
-    # Run everything within the docker container we installed
-    # - Pass in Environment Variables we need to the container
-    # - Bind the location of the Repo to a set location in the Docker image
-    # - Use the Docker Image we just pulled
-    # - Once in the docker container, run the the CI script
-    - echo "$DOCKER_IMAGE"
-    - docker run $DOCKER_IMAGE "echo \"Hello world!\""
-    - docker run
-      --env $REPOSITORY_NAME
-      --env $RUN_BUILD
-      --env $RUN_TESTS
-      --env $RUN_FORMATTING_CHECKS
-      --env $TRAVIS_PULL_REQUEST
-      --env $TRAVIS_BRANCH
-      --volume $(pwd):/root/$REPOSITORY_NAME
-      $DOCKER_IMAGE
-      /bin/bash -c "cd /root/$REPOSITORY_NAME; ./run_ci.sh"
+
+    # Setup up the Docker image 
+    - docker run 
+      -e $REPOSITORY_NAME
+      -v $(pwd):/root/$REPOSITORY_NAME 
+      moveit/moveit:kinetic-ci
+      /bin/bash -c "echo $REPOSITORY_NAME; /root/$REPOSITORY_NAME/setup_scripts/install_dependencies.sh"
 
 env:
   # Global Variables that are set at the start of every CI run
@@ -36,13 +29,13 @@ env:
     - REPOSITORY_NAME=$(basename $TRAVIS_REPO_SLUG)
     - ROS_DISTRO=kinetic 
 
-  # Each entry here (every section starting with a `-`) represents a
-  # different CI test
+  # Each entry here represents a different CI run
   # The variables here are uniquely set at the start of each different test
   matrix:
-    # Test building the repo and running tests
-    # NOTE: this is a single test
-    - RUN_BUILD="true"
-      RUN_TESTS="true"
-    # Test Formatting
-    - RUN_FORMATTING_CHECKS="true"
+    - docker run -e $REPOSITORY_NAME /bin/bash -c "cd /root/$REPOSITORY_NAME; catkin_make"
+
+#- ROS_DISTRO=kinetic 
+#- UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
+#- TEST_CLANG_FORMAT=TRUE 
+#- ROS_DISTRO=kinetic 
+#- UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
