@@ -24,7 +24,6 @@ install:
       --env $TRAVIS_BRANCH
       --volume $(pwd):/root/$REPOSITORY_NAME
       $DOCKER_IMAGE
-      moveit/moveit:kinetic-ci
       /bin/bash -c "/root/$REPOSITORY_NAME/setup_scripts/install_dependencies.sh"
 
 env:
