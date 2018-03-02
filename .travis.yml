@@ -36,9 +36,9 @@ env:
     - ROS_DISTRO=kinetic 
     # Set variables selecting tests to default values
     # (if they are not given one it causes issues with the `--env` flag for `docker run`)
-    - RUN_BUILD=""
-    - RUN_TESTS=""
-    - RUN_FORMATTING_CHECKS=""
+    - RUN_BUILD="false"
+    - RUN_TESTS="false"
+    - RUN_FORMATTING_CHECKS="false"
 
   # Each entry here represents a different CI run
   # The variables here are uniquely set at the start of each different test
