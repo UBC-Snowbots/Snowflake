@@ -2,6 +2,10 @@
 
 # TODO: A nice comment here explaining what this file is
 
+# The current directory
+CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# This variable is used to let us show nice folds in travis
 export TRAVIS_FOLD_COUNTER=1
 
 # Display command in Travis console and fold output in dropdown section
@@ -21,7 +25,7 @@ function travis_run() {
 cd $CURR_DIR
 
 # Note that we must build the codebase in order to run tests
-if [ "$RUN_BUILD"=="true" || "$RUN_TESTS"=="true"]; then
+if [ "$RUN_BUILD"=="true" ] || [ "$RUN_TESTS"=="true"]; then
     # Install all required dependecies
     travis_run ./setup_scripts/install_dependencies.sh
 

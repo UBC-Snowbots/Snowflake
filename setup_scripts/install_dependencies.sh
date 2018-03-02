@@ -8,6 +8,9 @@
 #       external packages or utilities                                  # 
 #########################################################################
 
+# The current directory
+CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 echo "================================================================"
 echo "Installing ROS Kinetic"
 echo "================================================================"
@@ -23,9 +26,6 @@ echo "================================================================"
 
 # Update Rosdeps
 rosdep update
-
-# The current directory
-CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Install all required dependencies to build this repo
 rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic -y
