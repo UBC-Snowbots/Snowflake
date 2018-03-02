@@ -15,7 +15,8 @@ install:
     - docker pull $DOCKER_IMAGE > /dev/null
     # Bind the repo to a set location in the docker container
     - docker run
-      --volume $(pwd):/root/cloned_repo
+      --volume $(pwd):/root/cloned_repo 
+      $DOCKER_IMAGE
 
 script:
   # Run everything within the docker container we installed
