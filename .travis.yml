@@ -17,6 +17,8 @@ install:
     # Setup up the Docker image 
     - docker run 
       --env $REPOSITORY_NAME
+      --env $RUN_BUILD
+      --env $RUN_TESTS
       --volume $(pwd):/root/$REPOSITORY_NAME
       moveit/moveit:kinetic-ci
       /bin/bash -c "echo $REPOSITORY_NAME; /root/$REPOSITORY_NAME/setup_scripts/install_dependencies.sh"
@@ -32,7 +34,8 @@ env:
   # Each entry here represents a different CI run
   # The variables here are uniquely set at the start of each different test
   matrix:
-    - docker run -e $REPOSITORY_NAME /bin/bash -c "cd /root/$REPOSITORY_NAME; catkin_make"
+    - RUN_BUILD="true"
+      RUN_TESTS="true"
 
 #- ROS_DISTRO=kinetic 
 #- UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
