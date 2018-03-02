@@ -20,12 +20,12 @@ install:
     # Run the CI script inside the docker container
     # (set tests/checks to false by default)
     - docker run 
-      --env $RUN_BUILD
-      --env $RUN_TESTS
+      --env RUN_BUILD
+      --env RUN_TESTS
       --env RUN_FORMATTING_CHECKS
-      --env $REPOSITORY_NAME
-      --env $TRAVIS_PULL_REQUEST
-      --env $TRAVIS_PULL_REQUEST_BRANCH
+      --env REPOSITORY_NAME
+      --env TRAVIS_PULL_REQUEST
+      --env TRAVIS_PULL_REQUEST_BRANCH
       --volume $(pwd):/root/$REPOSITORY_NAME
       $DOCKER_IMAGE
       /bin/bash -c "/root/$REPOSITORY_NAME/travis_ci.sh"
