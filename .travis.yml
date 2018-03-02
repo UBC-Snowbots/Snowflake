@@ -15,6 +15,7 @@ install:
     # - Bind the location of the Repo to a set location in the Docker image
     # - Use the Docker Image we just pulled
     # - Once in the docker container, run the the CI script
+    - echo "$DOCKER_IMAGE"
     - docker run
       --env $REPOSITORY_NAME
       --env $RUN_BUILD
