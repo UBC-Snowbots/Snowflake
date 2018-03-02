@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# TODO: A nice comment here explaining what this file is
+#############################################################################
+# This script is what will run in CI (Continuous Integration) to make sure  #
+# the code base is building, tests are passing, and formatting is correct   #
+#                                                                           #
+# It relies on certain bash variables being set by CI before this script is #
+# called. This setup is dictated in the `.travis.yml` file                  # 
+#############################################################################
 
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -23,11 +29,6 @@ function travis_run() {
 
 # Change to the directory this script is in
 cd $CURR_DIR
-
-# TODO: DELETE ME
-echo "RUN_BUILD: $RUN_BUILD"
-echo "RUN_TESTS: $RUN_TESTS"
-echo "RUN_FORMATTING_CHECKS: $RUN_FORMATTING_CHECKS"
 
 # Note that we must build the codebase in order to run tests
 if [ "$RUN_BUILD" == "true" ] || [ "$RUN_TESTS" == "true" ]; then

@@ -1,4 +1,12 @@
-# Note: Setting this to `required` will add 20-50s to CI image boot time
+#########################################################################
+# Note: The main reason for the complexity of this file is that because #
+#       Travis does not yet support ubuntu 16, we must create a docker  #
+#       container within Travis to build and test the repo. When Travis #
+#       does eventually add support, this should be changed, as it will #
+#       significantly speed up CI times.                                #
+#########################################################################
+
+# Note: Setting `sudo` to `required` will add 20-50s to CI image boot time
 sudo: false
 dist: trusty
 services:
