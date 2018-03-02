@@ -13,11 +13,6 @@ install:
     - DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
     - echo "Pulling in Docker Image \"$DOCKER_IMAGE\""
     - docker pull $DOCKER_IMAGE > /dev/null
-    # Bind the repo to a set location in the docker container
-    - docker run
-      --volume $(pwd):/root/cloned_repo 
-      $DOCKER_IMAGE
-      /bin/bash -c "cd /root/cloned_repo; ./setup_scripts/install_dependencies.sh"
 
 
 script:
@@ -26,39 +21,16 @@ script:
   # - Bind the location of the Repo to a set location in the Docker image
   # - Use the Docker Image we just pulled
   # - Once in the docker container, run the the CI script
-  # TODO: DELETE ME
-  #- docker run
-  #  --env $REPOSITORY_NAME
-  #  --env $RUN_BUILD
-  #  --env $RUN_TESTS
-  #  --env $RUN_FORMATTING_CHECKS
-  #  --env $TRAVIS_PULL_REQUEST
-  #  --env $TRAVIS_BRANCH
-  #  --volume $(pwd):/root/$REPOSITORY_NAME
-  #  $DOCKER_IMAGE
-  #  /bin/bash -c "cd /root/$REPOSITORY_NAME; ./run_ci.sh"
-  #  TODO: These seem similar? Make them into function calls?
-  - |
-    if [ "$RUN_BUILD"=="true" ] || [ "$RUN_TESTS"=="true" ]; then 
-        # Build the repo in the docker container
-        docker run \
-          --volume $(pwd):/root/cloned_repo  \
-          $DOCKER_IMAGE \
-          /bin/bash -c "cd /root/cloned_repo; catkin_make"
-    fi
-  - |
-    if [ "$RUN_TESTS"=="true" ]; then
-        # Run the tests in the docker container
-        docker run \
-          --volume $(pwd):/root/cloned_repo  \
-          $DOCKER_IMAGE \
-          /bin/bash -c "cd /root/cloned_repo; catkin_make run_tests"
-    fi
-  - |
-    if [ "$RUN_FORMATTING_CHECKS"=="true" ]; then
-        # Check formatting in the docker container
-        # TODO
-    fi
+  - docker run
+    --env $REPOSITORY_NAME
+    --env $RUN_BUILD
+    --env $RUN_TESTS
+    --env $RUN_FORMATTING_CHECKS
+    --env $TRAVIS_PULL_REQUEST
+    --env $TRAVIS_BRANCH
+    --volume $(pwd):/root/$REPOSITORY_NAME
+    $DOCKER_IMAGE
+    /bin/bash -c "cd /root/$REPOSITORY_NAME; ./run_ci.sh"
 
 env:
   # Global Variables that are set at the start of every CI run
