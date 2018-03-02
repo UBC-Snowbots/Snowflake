@@ -21,7 +21,7 @@ install:
       --env $RUN_TESTS 
       --env $RUN_FORMATTING_CHECKS
       --env $TRAVIS_PULL_REQUEST
-      --env $TRAVIS_BRANCH
+      --env $TRAVIS_PULL_REQUEST_BRANCH
       --volume $(pwd):/root/$REPOSITORY_NAME
       $DOCKER_IMAGE
       /bin/bash -c "/root/$REPOSITORY_NAME/travis_ci.sh"
