@@ -14,9 +14,9 @@ install:
     - echo "Pulling in Docker Image \"$DOCKER_IMAGE\""
     - docker pull $DOCKER_IMAGE > /dev/null
     # Tests default to false if not set
-    RUN_BUILD=${RUN_BUILD:-"false"}
-    RUN_TESTS=${RUN_TESTS:-"false"}
-    RUN_FORMATTING_CHECKS=${RUN_FORMATTING_CHECKS:-"false"}
+    - RUN_BUILD=${RUN_BUILD:-"false"}
+    - RUN_TESTS=${RUN_TESTS:-"false"}
+    - RUN_FORMATTING_CHECKS=${RUN_FORMATTING_CHECKS:-"false"}
     # Run the CI script inside the docker container
     # (set tests/checks to false by default)
     - docker run 
