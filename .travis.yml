@@ -14,7 +14,7 @@ install:
     - echo "Pulling in Docker Image \"$DOCKER_IMAGE\""
     - docker pull $DOCKER_IMAGE > /dev/null
 
-    # Setup up the Docker image 
+    # Run the CI script inside the docker container
     - docker run 
       --env $REPOSITORY_NAME
       --env $RUN_BUILD
@@ -25,7 +25,7 @@ install:
       --volume $(pwd):/root/$REPOSITORY_NAME
       $DOCKER_IMAGE
       moveit/moveit:kinetic-ci
-      /bin/bash -c "/root/$REPOSITORY_NAME/travis_ci.sh"
+      /bin/bash -c "/root/$REPOSITORY_NAME/setup_scripts/install_dependencies.sh"
 
 env:
   # Global Variables that are set at the start of every CI run
@@ -44,11 +44,9 @@ env:
   # Each entry here represents a different CI run
   # The variables here are uniquely set at the start of each different test
   matrix:
+  # Test building the repo and running tests
+    # NOTE: this is a single test
     - RUN_BUILD="true"
       RUN_TESTS="true"
-
-#- ROS_DISTRO=kinetic 
-#- UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-#- TEST_CLANG_FORMAT=TRUE 
-#- ROS_DISTRO=kinetic 
-#- UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
+    # Test Formatting
+    - RUN_FORMATTING_CHECKS="true"
