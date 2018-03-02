@@ -13,13 +13,16 @@ install:
     - DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
     - echo "Pulling in Docker Image \"$DOCKER_IMAGE\""
     - docker pull $DOCKER_IMAGE > /dev/null
-
+    # Tests default to false if not set
+    RUN_BUILD=${RUN_BUILD:-"false"}
+    RUN_TESTS=${RUN_TESTS:-"false"}
+    RUN_FORMATTING_CHECKS=${RUN_FORMATTING_CHECKS:-"false"}
     # Run the CI script inside the docker container
     # (set tests/checks to false by default)
     - docker run 
-      --env ${RUN_BUILD:-"false"}
-      --env ${RUN_TESTS:-"false"}
-      --env ${RUN_FORMATTING_CHECKS:-"false"}
+      --env $RUN_BUILD
+      --env $RUN_TESTS
+      --env RUN_FORMATTING_CHECKS
       --env $REPOSITORY_NAME
       --env $TRAVIS_PULL_REQUEST
       --env $TRAVIS_PULL_REQUEST_BRANCH
