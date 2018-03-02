@@ -39,17 +39,17 @@ script:
   - |
     if [ "$RUN_BUILD"=="true" ] || [ "$RUN_TESTS"=="true" ]; then 
         # Build the repo in the docker container
-        - docker run
-          --volume $(pwd):/root/cloned_repo 
-          $DOCKER_IMAGE
+        docker run \
+          --volume $(pwd):/root/cloned_repo  \
+          $DOCKER_IMAGE \
           /bin/bash -c "cd /root/cloned_repo; catkin_make"
     fi
   - |
     if [ "$RUN_TESTS"=="true" ]; then
         # Run the tests in the docker container
-        - docker run
-          --volume $(pwd):/root/cloned_repo 
-          $DOCKER_IMAGE
+        docker run \
+          --volume $(pwd):/root/cloned_repo  \
+          $DOCKER_IMAGE \
           /bin/bash -c "cd /root/cloned_repo; catkin_make run_tests"
     fi
   - |
