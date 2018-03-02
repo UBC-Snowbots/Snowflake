@@ -35,15 +35,22 @@ script:
   #  --volume $(pwd):/root/$REPOSITORY_NAME
   #  $DOCKER_IMAGE
   #  /bin/bash -c "cd /root/$REPOSITORY_NAME; ./run_ci.sh"
+  #  TODO: These seem similar? Make them into function calls?
   - |
     if [ "$RUN_BUILD"=="true" ] || [ "$RUN_TESTS"=="true" ]; then 
         # Build the repo in the docker container
-        docker run $DOCKER_IMAGE /bin/bash -c "cd /root/cloned_repo; catkin_make"
+        - docker run
+          --volume $(pwd):/root/cloned_repo 
+          $DOCKER_IMAGE
+          /bin/bash -c "cd /root/cloned_repo; catkin_make"
     fi
   - |
     if [ "$RUN_TESTS"=="true" ]; then
         # Run the tests in the docker container
-        docker run $DOCKER_IMAGE /bin/bash -c "cd /root/cloned_repo; catkin_make run_tests"
+        - docker run
+          --volume $(pwd):/root/cloned_repo 
+          $DOCKER_IMAGE
+          /bin/bash -c "cd /root/cloned_repo; catkin_make run_tests"
     fi
   - |
     if [ "$RUN_FORMATTING_CHECKS"=="true" ]; then
