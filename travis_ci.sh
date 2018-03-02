@@ -25,7 +25,7 @@ function travis_run() {
 cd $CURR_DIR
 
 # Note that we must build the codebase in order to run tests
-if [ "$RUN_BUILD"=="true" ] || [ "$RUN_TESTS"=="true"]; then
+if [ "$RUN_BUILD" == "true" ] || [ "$RUN_TESTS" == "true" ]; then
     # Install all required dependecies
     travis_run ./setup_scripts/install_dependencies.sh
 
@@ -33,12 +33,12 @@ if [ "$RUN_BUILD"=="true" ] || [ "$RUN_TESTS"=="true"]; then
     travis_run catkin_make
 fi
 
-if [ "$RUN_TESTS"=="true" ]; then
+if [ "$RUN_TESTS" == "true" ]; then
     # Run all the tests
     travis_run catkin_make run_tests
 fi
 
-if [ "$RUN_FORMATTING_CHECKS"=="true" ]; then
+if [ "$RUN_FORMATTING_CHECKS" == "true" ]; then
     # Determine what we should compare this branch against to figure out what 
     # files were changed
     if [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
@@ -48,7 +48,7 @@ if [ "$RUN_FORMATTING_CHECKS"=="true" ]; then
       echo "=================================================="
     else
       # In a pull request so compare against branch we're trying to merge into
-      base_commit="$TRAVIS_BRANCH"
+      base_commit="$TRAVIS_PULL_REQUEST_BRANCH"
       # Make sure we pull the branches we're trying to merge against
       git fetch origin $base_commit:$base_commit
       echo "Running clang-format against branch $base_commit, with hash $(git rev-parse $base_commit)"
