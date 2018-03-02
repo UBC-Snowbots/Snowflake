@@ -16,8 +16,13 @@ install:
 
     # Setup up the Docker image 
     - docker run 
-      -e $REPOSITORY_NAME
-      -v $(pwd):/root/$REPOSITORY_NAME 
+      --env $REPOSITORY_NAME
+      --env $RUN_BUILD
+      --env $RUN_TESTS
+      --env $RUN_FORMATTING_CHECKS
+      --env $TRAVIS_PULL_REQUEST
+      --env $TRAVIS_BRANCH
+      --volume $(pwd):/root/$REPOSITORY_NAME
       moveit/moveit:kinetic-ci
       /bin/bash -c "echo $REPOSITORY_NAME; /root/$REPOSITORY_NAME/setup_scripts/install_dependencies.sh"
 
