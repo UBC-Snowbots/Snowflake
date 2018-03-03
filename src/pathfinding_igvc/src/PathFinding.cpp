@@ -20,7 +20,7 @@ PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
     robotOrientation = 0;
 
     std::string path_subscribe_topic = "/path"; // Setup subscriber to path
-    path_subscriber = nh.subscribe(
+    path_subscriber                  = nh.subscribe(
     path_subscribe_topic, queue_size, &PathFinding::pathCallBack, this);
 
     std::string tf_subscribe_topic = "/tf"; // Setup subscriber to tf
