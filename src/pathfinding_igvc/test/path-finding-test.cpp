@@ -19,6 +19,15 @@ TEST(PathFinding, testWeightedSum2) {
     EXPECT_EQ(1.0, PathFinding::weightedSum(testVec, 1));
 }
 
+TEST(PathFinding, testWeightedSumNegative) {
+    std::vector<float> testVec;
+    testVec.push_back(1);
+    testVec.push_back(-2);
+    testVec.push_back(-3);
+
+    EXPECT_EQ(-1.0, PathFinding::weightedSum(testVec, 3));
+}
+
 // Case where robot starting orientation is forward and must travel a straight
 // path diagonal (along y=x line)
 TEST(PathFinding, testStraightPathToTwist) {
@@ -37,11 +46,7 @@ TEST(PathFinding, testStraightPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation);
-    std::cout << "Straight Path" << std::endl;
-    std::cout << twist_msg.linear.x << std::endl;
-    std::cout << twist_msg.angular.z << std::endl;
-    std::cout << std::endl;
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
     EXPECT_NEAR(0.875, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0.785, twist_msg.angular.z, 0.01);
 }
@@ -63,11 +68,7 @@ TEST(PathFinding, testPerpenPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation);
-    std::cout << "Perpen Path" << std::endl;
-    std::cout << twist_msg.linear.x << std::endl;
-    std::cout << twist_msg.angular.z << std::endl;
-    std::cout << std::endl;
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
     EXPECT_NEAR(0.750, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(-1.57, twist_msg.angular.z, 0.01);
 }
@@ -89,11 +90,7 @@ TEST(PathFinding, testOppPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation);
-    std::cout << "Opp Path" << std::endl;
-    std::cout << twist_msg.linear.x << std::endl;
-    std::cout << twist_msg.angular.z << std::endl;
-    std::cout << std::endl;
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
     EXPECT_NEAR(0.5, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(M_PI, twist_msg.angular.z, 0.01);
 }
@@ -115,11 +112,7 @@ TEST(PathFinding, testFarStartPos) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation);
-    std::cout << "Far Start Pos" << std::endl;
-    std::cout << twist_msg.linear.x << std::endl;
-    std::cout << twist_msg.angular.z << std::endl;
-    std::cout << std::endl;
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
     EXPECT_NEAR(0.63, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(2.36, twist_msg.angular.z, 0.01);
 }
@@ -147,11 +140,7 @@ TEST(PathFinding, testSharpTurns) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation);
-    std::cout << "Sharp turns" << std::endl;
-    std::cout << twist_msg.linear.x << std::endl;
-    std::cout << twist_msg.angular.z << std::endl;
-    std::cout << std::endl;
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
     EXPECT_NEAR(0.763, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(1.49, twist_msg.angular.z, 0.01);
 }
@@ -178,11 +167,7 @@ TEST(PathFinding, testErraticPath) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation);
-    std::cout << "Erratic Path" << std::endl;
-    std::cout << twist_msg.linear.x << std::endl;
-    std::cout << twist_msg.angular.z << std::endl;
-    std::cout << std::endl;
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
     EXPECT_NEAR(0.96, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0.25, twist_msg.angular.z, 0.01);
 }
@@ -204,11 +189,7 @@ TEST(PathFinding, testPathLag) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation);
-    std::cout << "Path Lag" << std::endl;
-    std::cout << twist_msg.linear.x << std::endl;
-    std::cout << twist_msg.angular.z << std::endl;
-    std::cout << std::endl;
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
     EXPECT_NEAR(1.0, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0, twist_msg.angular.z, 0.01);
 }

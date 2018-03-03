@@ -2,8 +2,7 @@
  * Created By: William Gu
  * Created On: Jan 20, 2018
  * Description: A path finding node which converts a given path into a Twist
- * message to
- *              send to the robot
+ * message to send to the robot
  */
 
 #include <PathFinding.h>
