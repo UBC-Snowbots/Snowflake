@@ -19,15 +19,16 @@ PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
     robot_y_pos      = 0;
     robotOrientation = 0;
 
-    std::string path_subscribe_topic = "/path"; //Setup subscriber to path
-    path_subscriber                  = nh.subscribe(
+    std::string path_subscribe_topic = "/path"; // Setup subscriber to path
+    path_subscriber = nh.subscribe(
     path_subscribe_topic, queue_size, &PathFinding::pathCallBack, this);
 
-    std::string tf_subscribe_topic = "/tf"; //Setup subscriber to tf
+    std::string tf_subscribe_topic = "/tf"; // Setup subscriber to tf
     tf_subscriber                  = nh.subscribe(
     tf_subscribe_topic, queue_size, &PathFinding::tfCallBack, this);
 
-    std::string twist_publish_topic = private_nh.resolveName("/cmd_vel"); // setup Publisher to twist
+    std::string twist_publish_topic =
+    private_nh.resolveName("/cmd_vel"); // setup Publisher to twist
     twist_publisher =
     nh.advertise<geometry_msgs::Twist>(twist_publish_topic, queue_size);
 
@@ -42,8 +43,8 @@ PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
 void PathFinding::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
     nav_msgs::Path path_msg =
     *path_ptr; // Take required information from received message
-    geometry_msgs::Twist twist_msg =
-    pathToTwist(path_msg, robot_x_pos, robot_y_pos, robotOrientation, num_poses);
+    geometry_msgs::Twist twist_msg = pathToTwist(
+    path_msg, robot_x_pos, robot_y_pos, robotOrientation, num_poses);
     twist_publisher.publish(twist_msg);
 }
 
@@ -100,7 +101,7 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg,
     float turn_rate = fmod(desired_angle - current_angle,
                            2 * M_PI); // Keep turn_rate between -2pi and 2pi
 
-    //If pi < turn < 2pi or -2pi < turn < -pi, turn in other direction instead
+    // If pi < turn < 2pi or -2pi < turn < -pi, turn in other direction instead
     if (turn_rate > M_PI)
         turn_rate -= 2 * M_PI;
     else if (turn_rate < -M_PI)

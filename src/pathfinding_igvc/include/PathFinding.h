@@ -9,7 +9,6 @@
 #define PATHFINDING_IGVC_PATHFINDING_H
 
 //#include "../../sb_utils/include/sb_utils.h"
-#include "sb_utils.h"
 #include "geometry_msgs/Point.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/PoseStamped.h"
@@ -17,6 +16,7 @@
 #include "geometry_msgs/Twist.h"
 #include "nav_msgs/Path.h"
 #include "ros/ros.h"
+#include "sb_utils.h"
 #include <tf/transform_datatypes.h>
 #include <tf2_msgs/TFMessage.h>
 
@@ -42,32 +42,35 @@ class PathFinding {
                                             int num_poses);
 
     /**
-     * Adds geometric vector values to two empty vectors, based on contents of an
-     * array of poses
+     * Adds geometric vector values to two empty vectors, based on contents of
+     * an array of poses
      * @param poses : Array of pose messages
      * @param x_vectors Empty vector to represent x values of geometric vectors
      * @param y_vectors Empty vector to represente y values of geometric vectors
-     * @param num_poses Number of poses to process (including initial robot position),
+     * @param num_poses Number of poses to process (including initial robot
+     * position),
      * must be >=1 but <=size(x_vectors)-1
      * @param x_pos Current robot x position in global system
      * @param y_pos Current robot y position in global system
      */
-    static void calcVectors(
-            const std::vector<geometry_msgs::PoseStamped>& poses,
-            std::vector<float>& x_vectors,
-            std::vector<float>& y_vectors,
-            int num_poses,
-            double x_pos,
-            double y_pos);
+    static void
+    calcVectors(const std::vector<geometry_msgs::PoseStamped>& poses,
+                std::vector<float>& x_vectors,
+                std::vector<float>& y_vectors,
+                int num_poses,
+                double x_pos,
+                double y_pos);
 
     /**
      * Calculates a weighted value given a std::vector of geometric vectors
-     * The values near the front of the list are given a higher weight (since they
-     * are imminent)
+     * The values near the front of the list are given a higher weight (since
+     * they are imminent)
      * Currently the scaling for the weights are INVERSE
-     * @param vectors represents geometric vector values for one dimension, i.e. x
+     * @param vectors represents geometric vector values for one dimension, i.e.
+     * x
      * values in some geometric vectors
-     * @param numToSum number of elements to sum, should be less than or equal to
+     * @param numToSum number of elements to sum, should be less than or equal
+     * to
      * size of vectors
      * @return weighted values of given geometric vectors
      */
@@ -81,7 +84,8 @@ class PathFinding {
     void pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr);
 
     /**
-     * Updates the current position and orientation of the robot in the global frame,
+     * Updates the current position and orientation of the robot in the global
+     * frame,
      * and stores in member variables
      * @param tf_message
      */
@@ -94,7 +98,7 @@ class PathFinding {
     std::string base_frame;   // The base frame of the robot ("base_link",
                               // "base_footprint", etc.)
     std::string global_frame; // The global frame ("map", "odom", etc.)
-    int num_poses; //Rosparam: number of poses to process
+    int num_poses;            // Rosparam: number of poses to process
 
     double robot_x_pos;
     double robot_y_pos;
