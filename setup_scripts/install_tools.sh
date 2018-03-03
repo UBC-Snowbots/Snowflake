@@ -51,14 +51,6 @@ do
     done
 done
 
-
-echo "================================================================"
-echo "Giving user correct permissions"
-echo "================================================================"
-
-# Add the user to the dialout so they can do arduino things
-sudo adduser $USER dialout
-
 #################
 # Install CLion #
 #################
@@ -94,7 +86,7 @@ cd $DIR
 # Setup Snowbots Udev Rules  #
 ##############################
 cd $DIR
-./../src/firmware/setup_udev_rules.sh
+./setup_udev_rules.sh
 
 echo "================================================================"
 echo "Finished first time installation and setup; you're good to go!"

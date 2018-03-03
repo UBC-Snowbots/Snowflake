@@ -28,3 +28,9 @@ $ARDUINO_INSTALL_DIR/$ARDUINO_DIR_NAME/install.sh
 echo "Linking Arduino"
 sudo rm /usr/local/bin/arduino
 sudo ln -s -f $ARDUINO_INSTALL_DIR/$ARDUINO_DIR_NAME/arduino /usr/local/bin/arduino
+
+echo "Giving user correct permissions"
+
+# Add the user to the dialout so they can do arduino things
+sudo adduser $USER dialout
+
