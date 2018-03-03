@@ -28,22 +28,3 @@ $ARDUINO_INSTALL_DIR/$ARDUINO_DIR_NAME/install.sh
 echo "Linking Arduino"
 sudo rm /usr/local/bin/arduino
 sudo ln -s -f $ARDUINO_INSTALL_DIR/$ARDUINO_DIR_NAME/arduino /usr/local/bin/arduino
-
-echo "Applying Snowbots modifications to core Arduino files"
-
-## Add the `flushRX` function. For context, see issue #176
-# Add the implementation to the `.cpp` file
-# Remove the last line (the final `#endif`) so we're inside the guards
-sed -i '$ d' $ARDUINO_INSTALL_DIR/$ARDUINO_DIR_NAME/hardware/arduino/avr/cores/arduino/HardwareSerial.cpp
-# Append the implementation (and the `#endif` we just removed)
-sudo tee -a $ARDUINO_INSTALL_DIR/$ARDUINO_DIR_NAME/hardware/arduino/avr/cores/arduino/HardwareSerial.cpp > /dev/null <<'TXT'
-void HardwareSerial::flushRX()
-{
-  _rx_buffer_head = _rx_buffer_tail;
-}
-#endif
-TXT
-# Add the declaration to the `.h` file 
-# Add it after the normal `flush` function in the `HardwareSerial` class
-sudo sed -i '/virtual void flush/a virtual void flushRX(void);' \
-/usr/share/arduino/hardware/arduino/avr/cores/arduino/HardwareSerial.h
