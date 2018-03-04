@@ -31,13 +31,13 @@
 #include <vector>
 
 // I/O
+#include <cstdio>
 #include <fstream>
 #include <iostream>
-#include <stdio.h>
 
 // Snowbots
 #include "IPMFilter.h"
-#include <sb_utils.h>
+#include "sb_utils.h"
 
 using namespace cv;
 
@@ -69,14 +69,14 @@ class IPMFilterNode {
     Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
 
     /**
-     * Subscribes to the raw camera image node
+     * Subscribes to the filtered image
      */
-    image_transport::Subscriber image_sub;
+    image_transport::Subscriber ipm_input_image_sub;
 
     /**
      * Publishes the filtered image
      */
-    image_transport::Publisher ipm_filter_pub;
+    image_transport::Publisher ipm_output_image_pub;
 
     // Whether or not we've received the first image
     bool receivedFirstImage;

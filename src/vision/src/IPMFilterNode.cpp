@@ -2,7 +2,6 @@
  * Created By: Robyn Castro
  * Created On: June 17, 2017
  * Description: Filters out everything but green.
- *
  */
 
 #include "IPMFilterNode.h"
@@ -27,11 +26,11 @@ IPMFilterNode::IPMFilterNode(int argc, char** argv, std::string node_name) {
 
     // Setup subscriber
     uint32_t queue_size = 1;
-    image_sub           = it.subscribe(
+    ipm_input_image_sub = it.subscribe(
     image_topic, queue_size, &IPMFilterNode::filteredImageCallBack, this);
 
     // Setup publisher
-    ipm_filter_pub = it.advertise(output_topic, queue_size);
+    ipm_output_image_pub = it.advertise(output_topic, queue_size);
 
     SB_getParam(private_nh, "ipm_base_width", ipm_base_width, (float) 1);
     SB_getParam(private_nh, "ipm_top_width", ipm_top_width, (float) 0.5);
@@ -71,7 +70,7 @@ const sensor_msgs::ImageConstPtr& msg) {
     sensor_msgs::ImagePtr output_message =
     cv_bridge::CvImage(std_msgs::Header(), "mono8", IPMFilteredImage)
     .toImageMsg();
-    ipm_filter_pub.publish(output_message);
+    ipm_output_image_pub.publish(output_message);
 }
 
 Mat IPMFilterNode::rosToMat(const sensor_msgs::Image::ConstPtr& image) {

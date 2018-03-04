@@ -4,7 +4,7 @@
  * Description: Tests LineDetect
  */
 
-#include <LineDetect.h>
+#include "LineDetect.h"
 #include <gtest/gtest.h>
 
 using namespace cv;

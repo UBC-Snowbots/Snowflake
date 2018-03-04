@@ -14,8 +14,8 @@
 #include <image_transport/image_transport.h>
 
 // I/O
+#include <cstdio>
 #include <iostream>
-#include <stdio.h>
 
 // ROS
 #include <ros/console.h>
@@ -25,7 +25,7 @@
 #include <sb_utils.h>
 
 // Objects
-#include <IPM.h>
+#include "IPM.h"
 
 class IPMFilter {
   public:

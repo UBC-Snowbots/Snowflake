@@ -2,7 +2,6 @@
  * Created by: Robyn Castro
  * Created On: July 1, 2017
  * Description: Takes in an image applies inverse perspective mapping to it
- *
  */
 
 #include <IPMFilter.h>

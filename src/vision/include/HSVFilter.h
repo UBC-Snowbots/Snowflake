@@ -8,11 +8,11 @@
  *		http://opencv-srf.blogspot.ca/2010/09/object-detection-using-color-seperation.html
  */
 
+#include <cstdio>
 #include <iostream>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <stdio.h>
 
 class HSVFilter {
     // Thresholds
@@ -26,7 +26,7 @@ class HSVFilter {
     cv::Mat rangeOutput;
     cv::Mat hsvOutput;
 
-    // Window Names
+    // Window names
     std::string manualCalibrationWindow;
 
   public:
