@@ -54,27 +54,14 @@ done
 #################
 # Install CLion #
 #################
+cd $DIR
+./install_clion.sh
 
-echo "================================================================"
-echo "Installing CLion"
-echo "================================================================"
-# Install dependencies
-sudo apt-get install -y openjdk-8-jdk
-
-# Fetch and extract CLion
-echo "Fetching and extracting CLion"
-wget https://download.jetbrains.com/cpp/CLion-2017.2.3.tar.gz
-sudo tar xzf CLion*.tar.gz -C /usr/share
-rm CLion*.tar.gz
-
-# Run CLion Setup
-cd /usr/share/clion*
-./bin/clion.sh
-
-# Make CLion globally accessible
-echo "Linking CLion"
-sudo ln -s -f /usr/share/clion*/bin/clion.sh /usr/local/bin/clion
-
+###################
+# Install Arduino #
+###################
+cd $DIR
+./install_arduino.sh
 
 ##############################
 # Install Other Dependencies #
