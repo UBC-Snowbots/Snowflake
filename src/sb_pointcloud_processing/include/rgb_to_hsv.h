@@ -1,8 +1,9 @@
-//
-// Created by valerian on 13/01/18.
-//
-// rgb_to_hsv
-// TFTransform
+/**
+ * created by: valerian ratu
+ * Created on: 2018/01/13
+ * Description: A ros nodelet which takes pointcloud input in RGB colourspace
+ *              and returns it in the HSV colourspace.
+ */
 
 #ifndef PROJECT_PREPROCESSINGNODE_H
 #define PROJECT_PREPROCESSINGNODE_H
@@ -28,13 +29,6 @@ namespace sb_pointcloud_processing {
 
     public:
         RGBtoHSV();
-
-    protected:
-        
-
-        //bool child_init(ros::NodeHandle &nh, bool &has_service);
-
-        //void config_callback(FilterConfig &config, uint32_t level);
 
     private:
         virtual void onInit();

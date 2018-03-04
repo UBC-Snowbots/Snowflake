@@ -1,6 +1,9 @@
-//
-// Created by valerian on 13/01/18.
-//
+/**
+ * created by: valerian ratu
+ * Created on: 2018/01/13
+ * Description: A ros nodelet which takes pointcloud input in RGB colourspace
+ *              and returns it in the HSV colourspace.
+ */
 
 
 #include <pluginlib/class_list_macros.h>
@@ -31,6 +34,6 @@ void RGBtoHSV::callback(const sensor_msgs::PointCloud2::ConstPtr &input)
     impl_.filter(*pcl_output);
     pub.publish(*pcl_output);
 }
-    
+
 
 PLUGINLIB_EXPORT_CLASS(RGBtoHSV, nodelet::Nodelet)

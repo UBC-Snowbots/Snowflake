@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sb_pointcloud_processing)
+add_definitions(-std=c++14)
 
 find_package(catkin REQUIRED COMPONENTS 
     nodelet 
@@ -31,9 +32,7 @@ catkin_package(
 add_library(sb_pointcloud_processing
     include/rgb_to_hsv.h
     src/rgb_to_hsv.cpp
-    include/frame_transform.h
-    src/frame_transform.cpp
-    include/ColourspaceConverter.h
+        include/ColourspaceConverter.h
     src/ColourspaceConverter.cpp
 )
 target_link_libraries(sb_pointcloud_processing
@@ -56,8 +55,13 @@ install(
 )
 
 if (CATKIN_ENABLE_TESTING)
-    catkin_add_gtest(preprocessing-filter-test test/preprocess-filter-test.cpp src/ColourspaceConverter.cpp include/ColourspaceConverter.h)
-    target_link_libraries(preprocessing-filter-test ${PCL_LIBRARIES})
+    catkin_add_gtest(colourspace-converter-test test/colourspace-converter-test.cpp include/ColourspaceConverter.h src/ColourspaceConverter.cpp)
+    target_link_libraries(colourspace-converter-test ${PCL_LIBRARIES})
+
+    find_package(rostest REQUIRED)
+    add_rostest_gtest(pointcloud_nodelet_filters_rostest test/pointcloud_nodelet_filters.test test/pointcloud_nodelet_filters_rostest.cpp)
+    target_link_libraries(pointcloud_nodelet_filters_rostest ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
 endif()
 
 

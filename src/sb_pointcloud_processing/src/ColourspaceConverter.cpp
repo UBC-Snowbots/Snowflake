@@ -1,12 +1,10 @@
 /**
  * Created by: Valerian Ratu
  * Created on: 2018/01/13
- * Description: A class which pre-processed pointcloud input from the zed
- *              into the right frame and colourspace
+ * Description: A class which converts RGB pointclouds to the HSV colourspace.
  */
 
 #include <ColourspaceConverter.h>
-#include <pcl/point_types_conversion.h>
 
 ColourspaceConverter::ColourspaceConverter()
 {
@@ -19,10 +17,6 @@ void ColourspaceConverter::setInputCloud(PointCloud<PointXYZRGB>::Ptr input)
 }
 
 void ColourspaceConverter::filter(PointCloud<PointXYZHSV> &output) {
-    // Do processing here rather than using:
-    // PointCloudXYZRGBtoXYZHSV(*input, *output);
-    // since above does not like constant inputs
-    // Test speed
     output.width = cloud_->width;
     output.height = cloud_->height;
     output.header = cloud_->header;
