@@ -5,20 +5,17 @@
  *              Used in the rgb_to_hsv nodelet.
  */
 
-
 #ifndef PROJECT_PREPROCESSFILTER_H
 #define PROJECT_PREPROCESSFILTER_H
 
+#include <pcl/PCLPointCloud2.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <pcl/PCLPointCloud2.h>
 
 using namespace pcl;
 
 class ColourspaceConverter {
-
-public:
-
+  public:
     ColourspaceConverter();
 
     /**
@@ -26,7 +23,7 @@ public:
      * HSV colourspace
      * @param output memory allocated to store hte output cloud
      */
-    void filter(PointCloud<PointXYZHSV> &output);
+    void filter(PointCloud<PointXYZHSV>& output);
 
     /**
      * Sets the input cloud to be processed
@@ -34,7 +31,7 @@ public:
      */
     void setInputCloud(PointCloud<PointXYZRGB>::Ptr input);
 
-private:
+  private:
     PointCloud<PointXYZRGB>::Ptr cloud_;
 
     /**
@@ -45,5 +42,4 @@ private:
     void PointXYZRGBAtoXYZHSV(const PointXYZRGB& in, PointXYZHSV& out);
 };
 
-
-#endif //PROJECT_PREPROCESSFILTER_H
+#endif // PROJECT_PREPROCESSFILTER_H

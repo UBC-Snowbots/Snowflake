@@ -1,13 +1,14 @@
+#include "rgb_to_hsv.h"
 #include <gtest/gtest.h>
 #include <ros/ros.h>
-#include "rgb_to_hsv.h"
 
-
-class PointCloudProcessingTest : public testing::Test{
-protected:
-    virtual void SetUp(){
-        test_publisher = nh_.advertise<pcl::PointCloud <pcl::PointXYZRGB> >("test_sub", 1);
-        test_subscriber = nh_.subscribe("/z/output", 1, &PointCloudProcessingTest::callback, this);
+class PointCloudProcessingTest : public testing::Test {
+  protected:
+    virtual void SetUp() {
+        test_publisher =
+        nh_.advertise<pcl::PointCloud<pcl::PointXYZRGB>>("test_sub", 1);
+        test_subscriber = nh_.subscribe(
+        "/z/output", 1, &PointCloudProcessingTest::callback, this);
 
         // Let the publishers and subscribers set itself up timely
         ros::Rate loop_rate(1);
@@ -19,29 +20,27 @@ protected:
     ros::Publisher test_publisher;
     ros::Subscriber test_subscriber;
 
-public:
-
+  public:
     /**
      * Helper function to compare floats
      * @param a
      * @param b
      * @return True if a and b are very close in value, false otherwise
      */
-    bool almostEquals(float a, float b) {
-        return fabs(a - b) < FLT_EPSILON;
-    }
+    bool almostEquals(float a, float b) { return fabs(a - b) < FLT_EPSILON; }
 
-    void callback(const pcl::PointCloud<pcl::PointXYZHSV>::Ptr  msg){
+    void callback(const pcl::PointCloud<pcl::PointXYZHSV>::Ptr msg) {
         message_output = *msg;
     }
 };
 
-TEST_F(PointCloudProcessingTest, transformsCloud){
+TEST_F(PointCloudProcessingTest, transformsCloud) {
     ros::Duration(5).sleep();
 
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr input(new pcl::PointCloud<pcl::PointXYZRGB>());
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr input(
+    new pcl::PointCloud<pcl::PointXYZRGB>());
     input->height = 1;
-    input->width = 2;
+    input->width  = 2;
     input->points.resize(input->height * input->width);
 
     pcl::PointXYZRGB p1;
@@ -51,6 +50,7 @@ TEST_F(PointCloudProcessingTest, transformsCloud){
     p1.r = 45;
     p1.g = 174;
     p1.b = 45;
+
     input->points[0] = p1;
 
     pcl::PointXYZRGB p2;
@@ -60,6 +60,7 @@ TEST_F(PointCloudProcessingTest, transformsCloud){
     p2.r = 45;
     p2.g = 174;
     p2.b = 45;
+
     input->points[1] = p2;
 
     input->header.frame_id = "input";
@@ -77,9 +78,10 @@ TEST_F(PointCloudProcessingTest, transformsCloud){
     // (0,0) -> (0,2)
     // (1,3) -> (3,1)
     int num_comparisons = 0;
-    for (auto &point: message_output.points) {
-        //std::cerr << "Point: y = " << point.y << " z = " << point.z << std::endl;
-        if (almostEquals(point.y, 0.f)){
+    for (auto& point : message_output.points) {
+        // std::cerr << "Point: y = " << point.y << " z = " << point.z <<
+        // std::endl;
+        if (almostEquals(point.y, 0.f)) {
             ASSERT_NEAR(2, point.z, 0.001);
             num_comparisons++;
         } else if (almostEquals(point.y, 3.f)) {
@@ -93,9 +95,10 @@ TEST_F(PointCloudProcessingTest, transformsCloud){
 TEST_F(PointCloudProcessingTest, filtersPointsOfInterest) {
     ros::Duration(5).sleep();
 
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr input(new pcl::PointCloud<pcl::PointXYZRGB>());
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr input(
+    new pcl::PointCloud<pcl::PointXYZRGB>());
     input->height = 1;
-    input->width = 9;
+    input->width  = 9;
     input->points.resize(input->height * input->width);
     int point_ind = 0;
     for (int i = 1; i <= 5; i++) {
@@ -111,7 +114,7 @@ TEST_F(PointCloudProcessingTest, filtersPointsOfInterest) {
         }
         input->points[point_ind++] = p;
     }
-    for (int i = 2; i <= 5; i++){
+    for (int i = 2; i <= 5; i++) {
         pcl::PointXYZRGB p;
         p.x = 0;
         p.y = i;
@@ -134,9 +137,10 @@ TEST_F(PointCloudProcessingTest, filtersPointsOfInterest) {
 
     EXPECT_EQ(3, message_output.points.size());
     int num_comparisons = 0;
-    for (auto &point: message_output.points) {
-        //std::cerr << "Point: y = " << point.y << " z = " << point.z << std::endl;
-        if (almostEquals(point.y, 2.f)){
+    for (auto& point : message_output.points) {
+        // std::cerr << "Point: y = " << point.y << " z = " << point.z <<
+        // std::endl;
+        if (almostEquals(point.y, 2.f)) {
             ASSERT_NEAR(1, point.z, 0.001);
             num_comparisons++;
         } else if (almostEquals(point.y, 3.f)) {
@@ -148,12 +152,11 @@ TEST_F(PointCloudProcessingTest, filtersPointsOfInterest) {
         }
     }
     EXPECT_EQ(3, num_comparisons);
-
 }
 
-
-int main(int argc, char **argv) {
-    // !! Don't forget to initialize ROS, since this is a test within the ros framework !!
+int main(int argc, char** argv) {
+    // !! Don't forget to initialize ROS, since this is a test within the ros
+    // framework !!
     ros::init(argc, argv, "pointcloud_filters_rostest");
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

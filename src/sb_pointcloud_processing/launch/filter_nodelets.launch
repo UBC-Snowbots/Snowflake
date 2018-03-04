@@ -52,13 +52,14 @@
           type="nodelet"
           name="z"
           args="load pcl/PassThrough nm" output="screen">
-        <!-- <remap from="~input" to="/v/output" /> -->
-        <remap from="~/input" to="/zed/point_cloud/cloud_registered" />
+        <remap from="~input" to="/v/output" />
         <rosparam>
             filter_field_name: z
             filter_limit_min: -10
             filter_limit_max: 10
             filter_limit_negative: False
+            input_frame: zed_left_camera
+            output_frame: zed_left_camera
         </rosparam>
     </node>
 

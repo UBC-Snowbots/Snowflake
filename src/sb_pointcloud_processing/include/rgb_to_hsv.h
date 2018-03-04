@@ -25,36 +25,34 @@ using namespace pcl_ros;
 
 namespace sb_pointcloud_processing {
 
-    class RGBtoHSV : public nodelet::Nodelet {
+class RGBtoHSV : public nodelet::Nodelet {
+  public:
+    RGBtoHSV();
 
-    public:
-        RGBtoHSV();
+  private:
+    virtual void onInit();
 
-    private:
-        virtual void onInit();
+    inline void filter(const sensor_msgs::PointCloud2::ConstPtr& input,
+                       sensor_msgs::PointCloud2& output) {
+        pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
+        pcl_conversions::toPCL(*(input), *(pcl_input));
+        pcl::PointCloud<PointXYZRGB>::Ptr pcl_rgb(
+        new pcl::PointCloud<PointXYZRGB>());
+        pcl::fromPCLPointCloud2(*pcl_input, *pcl_rgb);
+        impl_.setInputCloud(pcl_rgb);
+        pcl::PointCloud<PointXYZHSV>::Ptr pcl_output(
+        new pcl::PointCloud<PointXYZHSV>());
+        impl_.filter(*pcl_output);
+        pcl::toROSMsg(*pcl_output, output);
+    }
 
-        inline void
-        filter (const sensor_msgs::PointCloud2::ConstPtr &input, sensor_msgs::PointCloud2 &output)
-        {
-            pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
-            pcl_conversions::toPCL (*(input), *(pcl_input));
-            pcl::PointCloud<PointXYZRGB>::Ptr pcl_rgb(new pcl::PointCloud<PointXYZRGB>());
-            pcl::fromPCLPointCloud2(*pcl_input, *pcl_rgb);
-            impl_.setInputCloud (pcl_rgb);
-            pcl::PointCloud<PointXYZHSV>::Ptr pcl_output(new pcl::PointCloud<PointXYZHSV>());
-            impl_.filter (*pcl_output);
-            pcl::toROSMsg(*pcl_output, output);
-        }
+    void callback(const sensor_msgs::PointCloud2::ConstPtr& input);
 
-        void callback(const sensor_msgs::PointCloud2::ConstPtr &input);
+    ColourspaceConverter impl_;
 
-        ColourspaceConverter impl_;
-        
-        ros::Publisher pub;
-        ros::Subscriber sub;
-
-    };
-
+    ros::Publisher pub;
+    ros::Subscriber sub;
+};
 }
 
-#endif //PROJECT_PREPROCESSINGNODE_H
+#endif // PROJECT_PREPROCESSINGNODE_H

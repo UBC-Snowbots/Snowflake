@@ -4,43 +4,45 @@
 TEST(ColourspaceConverter, convertPointcloudsProperly) {
     ColourspaceConverter c = ColourspaceConverter();
 
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr input(new pcl::PointCloud<pcl::PointXYZRGB>());
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr input(
+    new pcl::PointCloud<pcl::PointXYZRGB>());
     input->height = 1;
-    input->width = 4;
+    input->width  = 4;
 
     input->points.resize(input->height * input->width);
 
     PointXYZRGB black;
     black.r = black.g = black.b = 0;
     black.x = black.y = black.z = 0;
-    input->points[0] = black;
+    input->points[0]            = black;
 
     PointXYZRGB white;
     black.r = black.g = black.b = 255;
     black.x = black.y = black.z = 1;
-    input->points[1] = white;
+    input->points[1]            = white;
 
     PointXYZRGB green;
     green.r = 45;
     green.g = 174;
     green.b = 45;
     green.x = green.y = green.z = 2;
-    input->points[2] = green;
+    input->points[2]            = green;
 
     PointXYZRGB orange;
     orange.r = 243;
     orange.g = 136;
     orange.b = 35;
     orange.x = orange.y = orange.z = 3;
-    input->points[3] = orange;
+    input->points[3]               = orange;
 
     c.setInputCloud(input);
 
-    pcl::PointCloud<pcl::PointXYZHSV>::Ptr output(new pcl::PointCloud<pcl::PointXYZHSV>());
+    pcl::PointCloud<pcl::PointXYZHSV>::Ptr output(
+    new pcl::PointCloud<pcl::PointXYZHSV>());
     c.filter(*output);
 
     int comparisons = 0;
-    for (auto &point : output->points){
+    for (auto& point : output->points) {
         if (point.z == 0) {
             // White
             ASSERT_EQ(0, point.h);
