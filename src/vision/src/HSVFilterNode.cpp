@@ -2,10 +2,9 @@
  * Created By: Robyn Castro
  * Created On: June 17, 2017
  * Description: Filters an image in the HSV colourspace to a binary image
- *
  */
 
-#include "../include/HSVFilterNode.h"
+#include "HSVFilterNode.h"
 
 using namespace cv;
 using namespace cv_bridge;
@@ -20,7 +19,7 @@ HSVFilterNode::HSVFilterNode(int argc, char** argv, std::string node_name) {
     ros::NodeHandle private_nh("~");
 
     // Set topics
-    std::string image_topic  = "/robot/vision/raw_image";
+    std::string image_topic  = "/robot/vision/raw_camera_image";
     std::string output_topic = "/vision/hsv_filtered_image";
 
     // Setup image transport
@@ -28,17 +27,17 @@ HSVFilterNode::HSVFilterNode(int argc, char** argv, std::string node_name) {
 
     // Setup subscriber
     uint32_t queue_size = 1;
-    image_sub           = it.subscribe(
+    hsv_input_image_sub = it.subscribe(
     image_topic, queue_size, &HSVFilterNode::rawImageCallBack, this);
     // Setup publisher
-    filter_pub = it.advertise(output_topic, queue_size);
+    hsv_output_image_pub = it.advertise(output_topic, queue_size);
 
     // Get some params (not all though, we wait until we have an image to get
     // the rest)
     SB_getParam(private_nh, "update_frequency", frequency, 5.0);
     SB_getParam(private_nh,
                 "config_file",
-                mfilter_file,
+                m_filter_file,
                 ros::package::getPath("vision") + "/launch/filter_init.txt");
     SB_getParam(private_nh, "show_image_window", showWindow, true);
     SB_getParam(
@@ -75,8 +74,8 @@ const sensor_msgs::Image::ConstPtr& image) {
     // Outputs the image
     sensor_msgs::ImagePtr output_message =
     cv_bridge::CvImage(std_msgs::Header(), "mono8", filteredImage).toImageMsg();
-    // Publish recommended Twist message
-    filter_pub.publish(output_message);
+    // Publish recommended image pointer message
+    hsv_output_image_pub.publish(output_message);
 }
 
 Mat HSVFilterNode::rosToMat(const sensor_msgs::Image::ConstPtr& image) {
@@ -91,8 +90,8 @@ void HSVFilterNode::setUpFilter() {
     last_published   = ros::Time::now();
 
     // Check for filter initialization file
-    ROS_INFO("Looking for filter file at: %s", mfilter_file.c_str());
-    std::fstream filter_file(mfilter_file, std::ios::in);
+    ROS_INFO("Looking for filter file at: %s", m_filter_file.c_str());
+    std::fstream filter_file(m_filter_file, std::ios::in);
     std::string line;
     bool filter_set = false;
     if (filter_file.is_open()) {
@@ -134,8 +133,8 @@ void HSVFilterNode::updateFilter() {
             ROS_INFO("Beginning manual calibration");
         } else {
             ROS_INFO("Ending manual calibration");
-            ROS_INFO("Saving filter state in %s", mfilter_file.c_str());
-            std::fstream filter_file(mfilter_file,
+            ROS_INFO("Saving filter state in %s", m_filter_file.c_str());
+            std::fstream filter_file(m_filter_file,
                                      std::ios::trunc | std::ios::out);
             filter_file << filter.getValues();
             std::cout << filter.getValues();

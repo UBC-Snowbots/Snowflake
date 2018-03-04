@@ -2,7 +2,7 @@
  * Created By: Raad Khan
  * Created On: April 23, 2017
  * Description: Takes in an image feed and uses LineDetect to generate
- *              lane lines and destination point, then broadcasts a
+ *              lane lines and a destination point, then broadcasts a
  *              Twist message to stay within the lanes.
  */
 
@@ -10,9 +10,9 @@
 #define LANE_FOLLOW_LANEFOLLOW_H
 
 // Snowbots
-#include <LineDetect.h>
-#include <HSVFilterNode.h>
-#include <IPMFilterNode.h>
+#include "HSVFilterNode.h"
+#include "IPMFilterNode.h"
+#include "LineDetect.h"
 
 // ROS
 #include <ros/ros.h>
@@ -22,20 +22,22 @@
 class LaneFollow {
     public:
     // Constructor
-    LaneFollow(int argc, char** argv, std::string node_name);
+      LaneFollow(int argc, char** argv, std::string node_name);
 
     private:
     // Instantiate LineDetect to generate the lane lines
     LineDetect ld;
 
-    // Raw camera image input subscriber node
-    image_transport::Subscriber image_sub;
+    // Angle of destination point to robot
+    double destination_angle;
 
-    // Filtered image publisher node
-    image_transport::Publisher filter_pub;
+    // Camera subscriber node
+    image_transport::Subscriber image_feed_sub;
 
-    // Steering driver output publisher node
-    ros::Publisher twist_pub;
+    // Steering publisher node
+    ros::Publisher stay_in_lane_pub;
+
+    void laneFollowCallback(const sensor_msgs::Image::ConstPtr& image);
 
     // Velocity limits
     double angular_vel_cap;

@@ -2,11 +2,10 @@
  * Created By: Robyn Castro
  * Created On: June 15, 2017
  * Description: Filters an image in the HSV colourspace to a binary image
- *
  */
 
-#ifndef GREEN_FILTER_GREENFILTER_H
-#define GREEN_FILTER_GREENFILTER_H
+#ifndef HSV_FILTER_HSVFILTER_H
+#define HSV_FILTER_HSVFILTER_H
 
 // OpenCV
 #include <opencv2/core/core.hpp>
@@ -38,7 +37,7 @@
 
 // Snowbots
 #include "HSVFilter.h"
-#include <sb_utils.h>
+#include "sb_utils.h"
 
 using namespace cv;
 
@@ -64,7 +63,6 @@ class HSVFilterNode {
 
     /**
      * Update filter values
-     *
      */
     void updateFilter();
 
@@ -81,14 +79,14 @@ class HSVFilterNode {
     Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
 
     /**
-     * Subscribes to the raw camera image node
+     * Subscribes to the raw camera image
      */
-    image_transport::Subscriber image_sub;
+    image_transport::Subscriber hsv_input_image_sub;
 
     /**
      * Publishes the filtered image
      */
-    image_transport::Publisher filter_pub;
+    image_transport::Publisher hsv_output_image_pub;
 
     // Frequency handling
     ros::Time last_published;
@@ -103,7 +101,7 @@ class HSVFilterNode {
 
     // Filters and their variables
     HSVFilter filter;
-    std::string mfilter_file;
+    std::string m_filter_file;
     double frequency;
 
     // Whether or not we've received the first image

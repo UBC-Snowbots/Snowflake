@@ -1,8 +1,9 @@
 /*
  * Created By: Raad Khan
  * Created On: April 23, 2017
- * Description: Gets angle of lane lines point of intersection
- *              and broadcasts a recommended Twist message.
+ * Description: Takes in an image feed and uses LineDetect to generate
+ *              lane lines and a destination point, then broadcasts a
+ *              Twist message to stay within the lanes.
  */
 
 #include <LaneFollow.h>

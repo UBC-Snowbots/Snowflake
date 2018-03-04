@@ -5,7 +5,7 @@
  * Usage: LaneFollow node instantiates this helper class.
  */
 
-#include <LineDetect.h>
+#include "LineDetect.h"
 #include <Eigen/QR>
 
 using namespace cv;
