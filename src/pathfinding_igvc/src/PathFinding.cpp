@@ -15,8 +15,8 @@ PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
     uint32_t queue_size = 1;
 
     /*Assume initial coordinates: may need to change later*/
-    robot_x_pos      = 0;
-    robot_y_pos      = 0;
+    robot_x_pos       = 0;
+    robot_y_pos       = 0;
     robot_orientation = 0;
 
     std::string path_subscribe_topic = "/path"; // Setup subscriber to path
@@ -66,9 +66,10 @@ void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
             rot_matrix.getRPY(roll, pitch, yaw);
 
             // Set member variables
-            robot_x_pos      = x_pos;
-            robot_y_pos      = y_pos;
-            robot_orientation = yaw; // Orientation = rotation about z axis (yaw)
+            robot_x_pos = x_pos;
+            robot_y_pos = y_pos;
+            robot_orientation =
+            yaw; // Orientation = rotation about z axis (yaw)
         }
     }
 }
@@ -91,8 +92,11 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg,
                 x_pos,
                 y_pos); // x_vectors and y_vectors now updated
 
-    float x_sum = weightedSum(x_vectors, num_poses-1); //-1 because number of vectors is one less than number of poses
-    float y_sum = weightedSum(y_vectors, num_poses-1);
+    float x_sum = weightedSum(
+    x_vectors,
+    num_poses -
+    1); //-1 because number of vectors is one less than number of poses
+    float y_sum = weightedSum(y_vectors, num_poses - 1);
 
     float desired_angle = atan(y_sum / x_sum);
 

@@ -4,8 +4,10 @@
 class PathFindingTest : public testing::Test {
   protected:
     virtual void SetUp() {
-        test_publisher_path = nh_.advertise<nav_msgs::Path>("/path", 1); //Path publisher
-        test_publisher_tf = nh_.advertise<tf2_msgs::TFMessage>("/tf", 1); //TF publisher
+        test_publisher_path =
+        nh_.advertise<nav_msgs::Path>("/path", 1); // Path publisher
+        test_publisher_tf =
+        nh_.advertise<tf2_msgs::TFMessage>("/tf", 1); // TF publisher
         test_subscriber =
         nh_.subscribe("/cmd_vel", 1, &PathFindingTest::callback, this);
 
@@ -33,14 +35,14 @@ TEST_F(PathFindingTest, testStraightPathFinding) {
     std::vector<geometry_msgs::TransformStamped> all_transforms;
     geometry_msgs::TransformStamped transform_stamped;
 
-    transform_stamped.header.frame_id = "GLOBAL_FRAME";
-    transform_stamped.child_frame_id = "BASE_FRAME";
+    transform_stamped.header.frame_id         = "GLOBAL_FRAME";
+    transform_stamped.child_frame_id          = "BASE_FRAME";
     transform_stamped.transform.translation.x = 0;
     transform_stamped.transform.translation.y = 0;
-    transform_stamped.transform.rotation.x = 0;
-    transform_stamped.transform.rotation.y = 0;
-    transform_stamped.transform.rotation.z = 0;
-    transform_stamped.transform.rotation.w = 1;
+    transform_stamped.transform.rotation.x    = 0;
+    transform_stamped.transform.rotation.y    = 0;
+    transform_stamped.transform.rotation.z    = 0;
+    transform_stamped.transform.rotation.w    = 1;
     all_transforms.push_back(transform_stamped);
     tf_msg.transforms = all_transforms;
     test_publisher_tf.publish(tf_msg);
@@ -77,14 +79,14 @@ TEST_F(PathFindingTest, testCurvedPathFinding) {
     std::vector<geometry_msgs::TransformStamped> all_transforms;
     geometry_msgs::TransformStamped transform_stamped;
 
-    transform_stamped.header.frame_id = "GLOBAL_FRAME";
-    transform_stamped.child_frame_id = "BASE_FRAME";
+    transform_stamped.header.frame_id         = "GLOBAL_FRAME";
+    transform_stamped.child_frame_id          = "BASE_FRAME";
     transform_stamped.transform.translation.x = 0;
     transform_stamped.transform.translation.y = 0;
-    transform_stamped.transform.rotation.x = 0;
-    transform_stamped.transform.rotation.y = 0;
-    transform_stamped.transform.rotation.z = 0;
-    transform_stamped.transform.rotation.w = 1;
+    transform_stamped.transform.rotation.x    = 0;
+    transform_stamped.transform.rotation.y    = 0;
+    transform_stamped.transform.rotation.z    = 0;
+    transform_stamped.transform.rotation.w    = 1;
     all_transforms.push_back(transform_stamped);
     tf_msg.transforms = all_transforms;
     test_publisher_tf.publish(tf_msg);
@@ -123,14 +125,14 @@ TEST_F(PathFindingTest, testSharpUTurn) {
     std::vector<geometry_msgs::TransformStamped> all_transforms;
     geometry_msgs::TransformStamped transform_stamped;
 
-    transform_stamped.header.frame_id = "GLOBAL_FRAME";
-    transform_stamped.child_frame_id = "BASE_FRAME";
+    transform_stamped.header.frame_id         = "GLOBAL_FRAME";
+    transform_stamped.child_frame_id          = "BASE_FRAME";
     transform_stamped.transform.translation.x = 0;
     transform_stamped.transform.translation.y = 0;
-    transform_stamped.transform.rotation.x = 0;
-    transform_stamped.transform.rotation.y = 0;
-    transform_stamped.transform.rotation.z = 0;
-    transform_stamped.transform.rotation.w = 1;
+    transform_stamped.transform.rotation.x    = 0;
+    transform_stamped.transform.rotation.y    = 0;
+    transform_stamped.transform.rotation.z    = 0;
+    transform_stamped.transform.rotation.w    = 1;
     all_transforms.push_back(transform_stamped);
     tf_msg.transforms = all_transforms;
     test_publisher_tf.publish(tf_msg);
@@ -165,22 +167,23 @@ TEST_F(PathFindingTest, testSharpUTurn) {
     EXPECT_NEAR(1.28, turn_rate, 0.1);
 }
 
-
 TEST_F(PathFindingTest, testReceiveTF1) {
-    // Send custom tf to update robot position to pos x=0, y=100, facing in pos x direction
-    // Then send a path msg (straight line) with the robot's new position in mind
+    // Send custom tf to update robot position to pos x=0, y=100, facing in pos
+    // x direction
+    // Then send a path msg (straight line) with the robot's new position in
+    // mind
     tf2_msgs::TFMessage tf_msg;
     std::vector<geometry_msgs::TransformStamped> all_transforms;
     geometry_msgs::TransformStamped transform_stamped;
 
-    transform_stamped.header.frame_id = "GLOBAL_FRAME";
-    transform_stamped.child_frame_id = "BASE_FRAME";
+    transform_stamped.header.frame_id         = "GLOBAL_FRAME";
+    transform_stamped.child_frame_id          = "BASE_FRAME";
     transform_stamped.transform.translation.x = 0;
     transform_stamped.transform.translation.y = 100;
-    transform_stamped.transform.rotation.x = 0;
-    transform_stamped.transform.rotation.y = 0;
-    transform_stamped.transform.rotation.z = 0;
-    transform_stamped.transform.rotation.w = 1;
+    transform_stamped.transform.rotation.x    = 0;
+    transform_stamped.transform.rotation.y    = 0;
+    transform_stamped.transform.rotation.z    = 0;
+    transform_stamped.transform.rotation.w    = 1;
     all_transforms.push_back(transform_stamped);
     tf_msg.transforms = all_transforms;
     test_publisher_tf.publish(tf_msg);
@@ -210,20 +213,22 @@ TEST_F(PathFindingTest, testReceiveTF1) {
 }
 
 TEST_F(PathFindingTest, testReceiveTF2) {
-    // Send custom tf to update robot position to pos x=50, y=50, facing in pos y direction
-    // Then send a path msg (straight line) with the robot's new position in mind
+    // Send custom tf to update robot position to pos x=50, y=50, facing in pos
+    // y direction
+    // Then send a path msg (straight line) with the robot's new position in
+    // mind
     tf2_msgs::TFMessage tf_msg;
     std::vector<geometry_msgs::TransformStamped> all_transforms;
     geometry_msgs::TransformStamped transform_stamped;
 
-    transform_stamped.header.frame_id = "GLOBAL_FRAME";
-    transform_stamped.child_frame_id = "BASE_FRAME";
+    transform_stamped.header.frame_id         = "GLOBAL_FRAME";
+    transform_stamped.child_frame_id          = "BASE_FRAME";
     transform_stamped.transform.translation.x = 50;
     transform_stamped.transform.translation.y = 50;
-    transform_stamped.transform.rotation.x = 0;
-    transform_stamped.transform.rotation.y = 0;
-    transform_stamped.transform.rotation.z = 0.707;
-    transform_stamped.transform.rotation.w = 0.707;
+    transform_stamped.transform.rotation.x    = 0;
+    transform_stamped.transform.rotation.y    = 0;
+    transform_stamped.transform.rotation.z    = 0.707;
+    transform_stamped.transform.rotation.w    = 0.707;
     all_transforms.push_back(transform_stamped);
     tf_msg.transforms = all_transforms;
     test_publisher_tf.publish(tf_msg);
