@@ -101,6 +101,18 @@ void LineExtractorNode::extractLines() {
 }
 
 void LineExtractorNode::visualizeLineObstacles(std::vector<mapping_igvc::LineObstacle> line_obstacles) {
+    std::vector<geometry_msgs::Point> points = convertLineObstaclesToPoints(line_obstacles);
+
+    visualization_msgs::Marker::_color_type green = snowbots::RvizUtils::createMarkerColor(0, 1.0, 0, 1.0);
+    visualization_msgs::Marker::_scale_type scale = snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
+
+    std::string frame_id = "line_obstacle";
+    std::string ns = "debug";
+
+    visualization_msgs::Marker marker = snowbots::RvizUtils::displayPoints(points, green, scale, frame_id, ns);
+}
+
+std::vector<geometry_msgs::Point> LineExtractorNode::convertLineObstaclesToPoints(std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     std::vector<geometry_msgs::Point> points;
 
     for (unsigned int i = 0; i < line_obstacles.size(); i++ ) {
@@ -113,21 +125,13 @@ void LineExtractorNode::visualizeLineObstacles(std::vector<mapping_igvc::LineObs
             for (unsigned int i = 0; i < line_obstacle.coefficients.size(); i++) {
                 p.y += line_obstacle.coefficients[i] * pow(x, i);
             }
-            
+
             points.push_back(p);
         }
     }
 
-    visualization_msgs::Marker::_color_type green = snowbots::RvizUtils::createMarkerColor(0, 1.0, 0, 1.0);
-    visualization_msgs::Marker::_scale_type scale = snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
-
-    std::string frame_id = "line_obstacle";
-    std::string ns = "debug";
-
-    visualization_msgs::Marker marker = snowbots::RvizUtils::displayPoints(points, green, scale, frame_id, ns);
+    return points;
 }
-
-geometry_msgs::Point LineExtractorNode::
 
 bool LineExtractorNode::areParamsInvalid() {
     return this->degreePoly < 0 || this->lambda < 0 ||

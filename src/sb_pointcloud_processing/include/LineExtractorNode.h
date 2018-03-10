@@ -99,9 +99,11 @@ class LineExtractorNode {
 
     void visualizeLineObstacles(std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
-    /*
-     * Convert a list of vectors to a list of LineObstacle message
-     */
+    std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(std::vector<mapping_igvc::LineObstacle> line_obstacles);
+
+        /*
+         * Convert a list of vectors to a list of LineObstacle message
+         */
     std::vector<mapping_igvc::LineObstacle>
     vectorsToMsgs(std::vector<Eigen::VectorXf> vectors);
 
