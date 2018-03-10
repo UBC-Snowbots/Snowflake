@@ -17,7 +17,7 @@ PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
     /*Assume initial coordinates: may need to change later*/
     robot_x_pos      = 0;
     robot_y_pos      = 0;
-    robotOrientation = 0;
+    robot_orientation = 0;
 
     std::string path_subscribe_topic = "/path"; // Setup subscriber to path
     path_subscriber                  = nh.subscribe(
@@ -44,14 +44,13 @@ void PathFinding::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
     nav_msgs::Path path_msg =
     *path_ptr; // Take required information from received message
     geometry_msgs::Twist twist_msg = pathToTwist(
-    path_msg, robot_x_pos, robot_y_pos, robotOrientation, num_poses);
+    path_msg, robot_x_pos, robot_y_pos, robot_orientation, num_poses);
     twist_publisher.publish(twist_msg);
 }
 
 void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
     // Check if the tf_message contains the transform we're looking for
     for (geometry_msgs::TransformStamped tf_stamped : tf_message->transforms) {
-        // header frame might be base
         if (tf_stamped.header.frame_id == global_frame &&
             tf_stamped.child_frame_id == base_frame) {
             double x_pos = tf_stamped.transform.translation.x;
@@ -69,7 +68,7 @@ void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
             // Set member variables
             robot_x_pos      = x_pos;
             robot_y_pos      = y_pos;
-            robotOrientation = yaw; // Orientation = rotation about z axis
+            robot_orientation = yaw; // Orientation = rotation about z axis (yaw)
         }
     }
 }
@@ -92,13 +91,12 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg,
                 x_pos,
                 y_pos); // x_vectors and y_vectors now updated
 
-    float x_sum = weightedSum(x_vectors, num_poses);
-    float y_sum = weightedSum(y_vectors, num_poses);
+    float x_sum = weightedSum(x_vectors, num_poses-1); //-1 because number of vectors is one less than number of poses
+    float y_sum = weightedSum(y_vectors, num_poses-1);
 
     float desired_angle = atan(y_sum / x_sum);
-    float current_angle = orientation;
 
-    float turn_rate = fmod(desired_angle - current_angle,
+    float turn_rate = fmod(desired_angle - orientation,
                            2 * M_PI); // Keep turn_rate between -2pi and 2pi
 
     // If pi < turn < 2pi or -2pi < turn < -pi, turn in other direction instead

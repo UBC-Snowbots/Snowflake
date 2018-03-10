@@ -8,7 +8,6 @@
 #ifndef PATHFINDING_IGVC_PATHFINDING_H
 #define PATHFINDING_IGVC_PATHFINDING_H
 
-//#include "../../sb_utils/include/sb_utils.h"
 #include "geometry_msgs/Point.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/PoseStamped.h"
@@ -46,7 +45,7 @@ class PathFinding {
      * an array of poses
      * @param poses : Array of pose messages
      * @param x_vectors Empty vector to represent x values of geometric vectors
-     * @param y_vectors Empty vector to represente y values of geometric vectors
+     * @param y_vectors Empty vector to represent y values of geometric vectors
      * @param num_poses Number of poses to process (including initial robot
      * position),
      * must be >=1 but <=size(x_vectors)-1
@@ -102,7 +101,7 @@ class PathFinding {
 
     double robot_x_pos;
     double robot_y_pos;
-    double robotOrientation;
+    double robot_orientation;
 };
 
 #endif // PATHFINDING_IGVC_PATHFINDING_H

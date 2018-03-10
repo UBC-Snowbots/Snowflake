@@ -141,8 +141,8 @@ TEST(PathFinding, testSharpTurns) {
 
     geometry_msgs::Twist twist_msg =
     PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
-    EXPECT_NEAR(0.763, twist_msg.linear.x, 0.01);
-    EXPECT_NEAR(1.49, twist_msg.angular.z, 0.01);
+    EXPECT_NEAR(0.787, twist_msg.linear.x, 0.01);
+    EXPECT_NEAR(1.336, twist_msg.angular.z, 0.01);
 }
 
 // Case where path consists of erratic direction and magnitude changes
@@ -168,8 +168,8 @@ TEST(PathFinding, testErraticPath) {
 
     geometry_msgs::Twist twist_msg =
     PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
-    EXPECT_NEAR(0.96, twist_msg.linear.x, 0.01);
-    EXPECT_NEAR(0.25, twist_msg.angular.z, 0.01);
+    EXPECT_NEAR(0.903, twist_msg.linear.x, 0.01);
+    EXPECT_NEAR(0.606, twist_msg.angular.z, 0.01);
 }
 
 // Case where position/orientation of robot is ahead of the path
