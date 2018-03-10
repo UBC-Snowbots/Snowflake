@@ -19,6 +19,7 @@
 #include <ros/ros.h>
 #include <sb_utils.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <RvizUtils.h>
 #include <string>
 
 class LineExtractorNode {
@@ -78,6 +79,12 @@ class LineExtractorNode {
     float radius;
 
     /*
+     * @delta_x is the parameter for visualizing LineObstacle. It
+     * determines the x interval between adjacent points in RViz.
+     */
+    float delta_x;
+
+    /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
      * been converted from sensor_msgs PointCloud2
      */
@@ -89,6 +96,8 @@ class LineExtractorNode {
      * to PCL PointCloud pointer and then extracts lines from the PointCloud
      */
     void pclCallBack(const sensor_msgs::PointCloud2ConstPtr processed_pcl);
+
+    void visualizeLineObstacles(std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
     /*
      * Convert a list of vectors to a list of LineObstacle message

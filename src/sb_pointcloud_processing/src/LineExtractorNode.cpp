@@ -35,6 +35,10 @@ LineExtractorNode::LineExtractorNode(int argc,
     float default_radius     = 0.1;
     SB_getParam(private_nh, radius_param, this->radius, default_radius);
 
+    std::string delta_x_param = "delta_x";
+    float default_delta_x     = 0.01;
+    SB_getParam(private_nh, delta_x_param, this->delta_x, default_delta_x);
+
     if (areParamsInvalid()) {
         ROS_DEBUG(
         "At least one of your parameters are negative; they should be "
@@ -91,7 +95,36 @@ void LineExtractorNode::extractLines() {
         publisher.publish(line_obstacles[i]);
     }
 
+    visualizeLineObstacles(line_obstacles);
+
     return;
+}
+
+void LineExtractorNode::visualizeLineObstacles(std::vector<mapping_igvc::LineObstacle> line_obstacles) {
+    std::vector<geometry_msgs::Point> points;
+
+    for (unsigned int i = 0; i < line_obstacles.size(); i++ ) {
+        mapping_igvc::LineObstacle line_obstacle = line_obstacles[i];
+
+        geometry_msgs::Point p;
+        for (float x = line_obstacle.x_min; x < line_obstacle.x_max; x += this->delta_x) {
+            p.x = x;
+
+            for (unsigned int i = 0; i < line_obstacle.coefficients.size(); i++) {
+                p.y += line_obstacle.coefficients[i] * pow(x, i);
+            }
+        }
+
+        points.push_back(p);
+    }
+
+    visualization_msgs::Marker::_color_type green = snowbots::RvizUtils::createMarkerColor(0, 1.0, 0, 1.0);
+    visualization_msgs::Marker::_scale_type scale = snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
+
+    std::string frame_id = "line_obstacle";
+    std::string ns = "debug";
+
+    visualization_msgs::Marker marker = snowbots::RvizUtils::displayPoints(points, green, scale, frame_id, ns);
 }
 
 bool LineExtractorNode::areParamsInvalid() {
