@@ -20,8 +20,6 @@
 
 #include <ColourspaceConverter.h>
 
-using namespace pcl;
-using namespace pcl_ros;
 
 namespace sb_pointcloud_processing {
 
@@ -31,20 +29,6 @@ class RGBtoHSV : public nodelet::Nodelet {
 
   private:
     virtual void onInit();
-
-    inline void filter(const sensor_msgs::PointCloud2::ConstPtr& input,
-                       sensor_msgs::PointCloud2& output) {
-        pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
-        pcl_conversions::toPCL(*(input), *(pcl_input));
-        pcl::PointCloud<PointXYZRGB>::Ptr pcl_rgb(
-        new pcl::PointCloud<PointXYZRGB>());
-        pcl::fromPCLPointCloud2(*pcl_input, *pcl_rgb);
-        converter.setInputCloud(pcl_rgb);
-        pcl::PointCloud<PointXYZHSV>::Ptr pcl_output(
-        new pcl::PointCloud<PointXYZHSV>());
-        converter.convert(*pcl_output);
-        pcl::toROSMsg(*pcl_output, output);
-    }
 
     void callback(const sensor_msgs::PointCloud2::ConstPtr& input);
 

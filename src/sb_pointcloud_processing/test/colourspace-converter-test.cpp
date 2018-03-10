@@ -1,6 +1,8 @@
 #include "ColourspaceConverter.h"
 #include <gtest/gtest.h>
 
+using namespace pcl;
+
 TEST(ColourspaceConverter, convertPointclouds) {
     ColourspaceConverter c = ColourspaceConverter();
 

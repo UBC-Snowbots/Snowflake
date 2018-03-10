@@ -12,8 +12,6 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
-using namespace pcl;
-
 class ColourspaceConverter {
   public:
     ColourspaceConverter();
@@ -23,16 +21,16 @@ class ColourspaceConverter {
      * HSV colourspace
      * @param output memory allocated to store hte output cloud
      */
-    void convert(PointCloud<PointXYZHSV>& output);
+    void convert(pcl::PointCloud<pcl::PointXYZHSV>& output);
 
     /**
      * Sets the input cloud to be processed
      * @param input
      */
-    void setInputCloud(PointCloud<PointXYZRGB>::Ptr input);
+    void setInputCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input);
 
   private:
-    PointCloud<PointXYZRGB>::Ptr cloud_;
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_;
 
     /**
      * Converts an RGB point to the HSV colourspace
@@ -41,7 +39,7 @@ class ColourspaceConverter {
      * @param in a PointXYZRGB
      * @param out the corresponding point in HSV colourspace
      */
-    void PointXYZRGBAtoXYZHSV(const PointXYZRGB& in, PointXYZHSV& out);
+    void PointXYZRGBAtoXYZHSV(const pcl::PointXYZRGB& in, pcl::PointXYZHSV& out);
 };
 
 #endif // PROJECT_PREPROCESSFILTER_H

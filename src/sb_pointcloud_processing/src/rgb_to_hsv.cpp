@@ -9,6 +9,8 @@
 #include <rgb_to_hsv.h>
 
 using namespace sb_pointcloud_processing;
+using namespace pcl_ros;
+using namespace pcl;
 
 RGBtoHSV::RGBtoHSV() {}
 

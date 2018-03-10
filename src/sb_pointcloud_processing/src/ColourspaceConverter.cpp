@@ -6,6 +6,8 @@
 
 #include <ColourspaceConverter.h>
 
+using namespace pcl;
+
 ColourspaceConverter::ColourspaceConverter() {}
 
 void ColourspaceConverter::setInputCloud(PointCloud<PointXYZRGB>::Ptr input) {
