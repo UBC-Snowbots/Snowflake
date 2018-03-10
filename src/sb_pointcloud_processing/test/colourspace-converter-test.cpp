@@ -17,8 +17,8 @@ TEST(ColourspaceConverter, convertPointcloudsProperly) {
     input->points[0]            = black;
 
     PointXYZRGB white;
-    black.r = black.g = black.b = 255;
-    black.x = black.y = black.z = 1;
+    white.r = white.g = white.b = 255;
+    white.x = white.y = white.z = 1;
     input->points[1]            = white;
 
     PointXYZRGB green;
@@ -39,7 +39,7 @@ TEST(ColourspaceConverter, convertPointcloudsProperly) {
 
     pcl::PointCloud<pcl::PointXYZHSV>::Ptr output(
     new pcl::PointCloud<pcl::PointXYZHSV>());
-    c.filter(*output);
+    c.convert(*output);
 
     int comparisons = 0;
     for (auto& point : output->points) {

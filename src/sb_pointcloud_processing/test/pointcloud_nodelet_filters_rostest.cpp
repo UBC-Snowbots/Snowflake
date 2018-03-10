@@ -22,10 +22,13 @@ class PointCloudProcessingTest : public testing::Test {
 
   public:
     /**
-     * Helper function to compare floats
+     * Helper function to compare floats. Defines the equality to be
+     * based on FLT_EPSILON: the value of the difference between one and
+     * the smallest value smallest from one in float representation.
      * @param a
      * @param b
-     * @return True if a and b are very close in value, false otherwise
+     * @return True if a and b very close in float representation,
+     *           false otherwise.
      */
     bool almostEquals(float a, float b) { return fabs(a - b) < FLT_EPSILON; }
 
@@ -34,6 +37,35 @@ class PointCloudProcessingTest : public testing::Test {
     }
 };
 
+/*
+ * Tests whether pointclouds in one frame are transformed
+ * to the output frame properly.
+ * @see the static transform publisher in the rostest
+ *
+ * The initial cloud should be:
+ *
+ *      z
+ *      ^
+ *      |    * (1,3)
+ *      |
+ *      |
+ *      | (0,0)
+ *      * -----------> y
+ *
+ * And after the transform (point kept in the same place in figure):
+ * 2 units in the y direction followed by a 45 deg positive rotation on the
+ * x-axis
+ *
+ *                ^ y
+ *                |
+ *           * (3,1)
+ *                |
+ *                |
+ * z      (0,2)   |
+ * <----*---------
+ *
+ *
+ */
 TEST_F(PointCloudProcessingTest, transformsCloud) {
     ros::Duration(5).sleep();
 
@@ -92,6 +124,10 @@ TEST_F(PointCloudProcessingTest, transformsCloud) {
     EXPECT_EQ(2, num_comparisons);
 }
 
+/*
+ * Filters for points of interests which are points within
+ * a certain boundary with a certain colour (GREEN)
+ */
 TEST_F(PointCloudProcessingTest, filtersPointsOfInterest) {
     ros::Duration(5).sleep();
 

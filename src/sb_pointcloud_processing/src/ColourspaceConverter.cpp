@@ -12,7 +12,7 @@ void ColourspaceConverter::setInputCloud(PointCloud<PointXYZRGB>::Ptr input) {
     cloud_ = input;
 }
 
-void ColourspaceConverter::filter(PointCloud<PointXYZHSV>& output) {
+void ColourspaceConverter::convert(PointCloud<PointXYZHSV>& output) {
     output.width  = cloud_->width;
     output.height = cloud_->height;
     output.header = cloud_->header;
@@ -25,7 +25,6 @@ void ColourspaceConverter::filter(PointCloud<PointXYZHSV>& output) {
 
 void ColourspaceConverter::PointXYZRGBAtoXYZHSV(const PointXYZRGB& in,
                                                 PointXYZHSV& out) {
-    // Bugfixin'
     out.x = in.x;
     out.y = in.y;
     out.z = in.z;
@@ -35,17 +34,17 @@ void ColourspaceConverter::PointXYZRGBAtoXYZHSV(const PointXYZRGB& in,
 
     out.v = static_cast<float>(max) / 255.f;
 
-    if (max == 0) // division by zero
+    if (max == 0) // rgb values of zero maps to hsv 0, 0, 0
     {
         out.s = 0.f;
-        out.h = 0.f; // h = -1.f;
+        out.h = 0.f;
         return;
     }
 
     const float diff = static_cast<float>(max - min);
     out.s            = diff / static_cast<float>(max);
 
-    if (min == max) // diff == 0 -> division by zero
+    if (min == max) // diff == 0 -> division by zero, set h to zero
     {
         out.h = 0;
         return;

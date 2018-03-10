@@ -23,7 +23,7 @@ class ColourspaceConverter {
      * HSV colourspace
      * @param output memory allocated to store hte output cloud
      */
-    void filter(PointCloud<PointXYZHSV>& output);
+    void convert(PointCloud<PointXYZHSV>& output);
 
     /**
      * Sets the input cloud to be processed
@@ -36,6 +36,8 @@ class ColourspaceConverter {
 
     /**
      * Converts an RGB point to the HSV colourspace
+     * Implementation taken from PCL
+     * @see pcl/point_types/conversion.h
      * @param in a PointXYZRGB
      * @param out the corresponding point in HSV colourspace
      */

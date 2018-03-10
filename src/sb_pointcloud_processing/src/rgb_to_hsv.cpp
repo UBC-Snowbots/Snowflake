@@ -26,10 +26,10 @@ void RGBtoHSV::callback(const sensor_msgs::PointCloud2::ConstPtr& input) {
     pcl::PointCloud<PointXYZRGB>::Ptr pcl_rgb(
     new pcl::PointCloud<PointXYZRGB>());
     pcl::fromPCLPointCloud2(*pcl_input, *pcl_rgb);
-    impl_.setInputCloud(pcl_rgb);
+    converter.setInputCloud(pcl_rgb);
     pcl::PointCloud<PointXYZHSV>::Ptr pcl_output(
     new pcl::PointCloud<PointXYZHSV>());
-    impl_.filter(*pcl_output);
+    converter.convert(*pcl_output);
     pub.publish(*pcl_output);
 }
 

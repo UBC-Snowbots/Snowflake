@@ -23,16 +23,14 @@ include_directories(
 
 
 catkin_package(
-#  INCLUDE_DIRS include
    LIBRARIES sb_vision_pointcloud
    CATKIN_DEPENDS nodelet roscpp std_msgs pcl_ros
-#  DEPENDS system_lib
 )
 
 add_library(sb_pointcloud_processing
     include/rgb_to_hsv.h
     src/rgb_to_hsv.cpp
-        include/ColourspaceConverter.h
+    include/ColourspaceConverter.h
     src/ColourspaceConverter.cpp
 )
 target_link_libraries(sb_pointcloud_processing
@@ -40,11 +38,6 @@ target_link_libraries(sb_pointcloud_processing
     ${sb_utils_LIBRARIES}
     ${PCL_LIBRARIES}
 )
-
-## TODO: Needed?
-if(catkin_EXPORTED_LIBRARIES)
-    add_dependencies(preprocessing_node ${catkin_EXPORTED_LIBRARIES})
-endif()
 
 install(
     TARGETS
