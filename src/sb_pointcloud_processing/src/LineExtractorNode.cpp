@@ -106,16 +106,16 @@ void LineExtractorNode::visualizeLineObstacles(std::vector<mapping_igvc::LineObs
     for (unsigned int i = 0; i < line_obstacles.size(); i++ ) {
         mapping_igvc::LineObstacle line_obstacle = line_obstacles[i];
 
-        geometry_msgs::Point p;
         for (float x = line_obstacle.x_min; x < line_obstacle.x_max; x += this->delta_x) {
+            geometry_msgs::Point p;
             p.x = x;
 
             for (unsigned int i = 0; i < line_obstacle.coefficients.size(); i++) {
                 p.y += line_obstacle.coefficients[i] * pow(x, i);
             }
+            
+            points.push_back(p);
         }
-
-        points.push_back(p);
     }
 
     visualization_msgs::Marker::_color_type green = snowbots::RvizUtils::createMarkerColor(0, 1.0, 0, 1.0);
@@ -126,6 +126,8 @@ void LineExtractorNode::visualizeLineObstacles(std::vector<mapping_igvc::LineObs
 
     visualization_msgs::Marker marker = snowbots::RvizUtils::displayPoints(points, green, scale, frame_id, ns);
 }
+
+geometry_msgs::Point LineExtractorNode::
 
 bool LineExtractorNode::areParamsInvalid() {
     return this->degreePoly < 0 || this->lambda < 0 ||
