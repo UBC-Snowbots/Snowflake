@@ -1,7 +1,7 @@
 #include "ColourspaceConverter.h"
 #include <gtest/gtest.h>
 
-TEST(ColourspaceConverter, convertPointcloudsProperly) {
+TEST(ColourspaceConverter, convertPointclouds) {
     ColourspaceConverter c = ColourspaceConverter();
 
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr input(
