@@ -30,6 +30,7 @@ HSVFilterNode::HSVFilterNode(int argc, char** argv, std::string node_name) {
     hsv_input_image_sub = it.subscribe(image_topic,
                                        queue_size,
                                        &HSVFilterNode::rawImageCallBack, this);
+
     // Setup publisher
     hsv_output_image_pub = it.advertise(output_topic, queue_size);
 
