@@ -61,9 +61,6 @@ LineExtractorNode::LineExtractorNode(int argc,
     std::string rviz_line_topic = "debug/output_line_obstacle";
     rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(rviz_line_topic, queue_size);
 
-    std::string rviz_pcl_topic = "debug/pcl";
-    rviz_pcl_publisher = private_nh.advertise<visualization_msgs::Marker>(rviz_pcl_topic, queue_size);
-
     this->dbscan.setRadius(this->radius);
     this->dbscan.setMinNeighbours(this->minNeighbours);
 }
@@ -113,7 +110,7 @@ void LineExtractorNode::visualizeLineObstacles(std::vector<mapping_igvc::LineObs
     visualization_msgs::Marker::_color_type green = snowbots::RvizUtils::createMarkerColor(0, 1.0, 0, 1.0);
     visualization_msgs::Marker::_scale_type scale = snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
 
-    std::string frame_id = "line_obstacle";
+    std::string frame_id = "line_extractor_test";
     std::string ns = "debug";
 
     visualization_msgs::Marker marker = snowbots::RvizUtils::displayPoints(points, green, scale, frame_id, ns);

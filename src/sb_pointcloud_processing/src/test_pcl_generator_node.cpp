@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
     ros::Publisher publisher = nh.advertise<sensor_msgs::PointCloud2>("input_pointcloud", 1);
 
     sensor_msgs::PointCloud2 msg_to_publish = generatePclMessage();
+    msg_to_publish.header.frame_id = "line_extractor_test";
 
     while(ros::ok()) {
         publisher.publish(msg_to_publish);
