@@ -10,11 +10,12 @@ using namespace cv;
 using namespace cv_bridge;
 
 IPMFilterNode::IPMFilterNode(int argc, char** argv, std::string node_name) {
+    displayWindowName  = "Snowbots - IPMFilterNode";
     receivedFirstImage = false;
 
     // Set topics
-    std::string image_topic  = "/vision/hsv_filtered_image";
-    std::string output_topic = "/vision/ipm_filtered_image";
+    std::string image_topic  = "/robot/vision/hsv_filtered_image";
+    std::string output_topic = "/robot/vision/ipm_filtered_image";
 
     // ROS
     ros::init(argc, argv, node_name);
@@ -26,21 +27,20 @@ IPMFilterNode::IPMFilterNode(int argc, char** argv, std::string node_name) {
 
     // Setup subscriber
     uint32_t queue_size = 1;
-    ipm_input_image_sub = it.subscribe(
-    image_topic, queue_size, &IPMFilterNode::filteredImageCallBack, this);
+    ipm_input_image_sub = it.subscribe(image_topic,
+                                       queue_size,
+                                       &IPMFilterNode::filteredImageCallBack, this);
 
     // Setup publisher
     ipm_output_image_pub = it.advertise(output_topic, queue_size);
 
     SB_getParam(private_nh, "ipm_base_width", ipm_base_width, (float) 1);
     SB_getParam(private_nh, "ipm_top_width", ipm_top_width, (float) 0.5);
-    SB_getParam(
-    private_nh, "ipm_base_displacement", ipm_base_displacement, (float) 0);
-    SB_getParam(
-    private_nh, "ipm_top_displacement", ipm_top_displacement, (float) 0.25);
+    SB_getParam(private_nh, "ipm_base_displacement", ipm_base_displacement, (float) 0);
+    SB_getParam(private_nh, "ipm_top_displacement", ipm_top_displacement, (float) 0.25);
 }
 
-IPMFilterNode::IPMFilterNode(){};
+IPMFilterNode::IPMFilterNode() {};
 
 void IPMFilterNode::filteredImageCallBack(
 const sensor_msgs::ImageConstPtr& msg) {

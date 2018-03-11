@@ -40,6 +40,16 @@ public:
     LineDetect();
 
     /**
+     * Gets the intersection point of the lane lines
+     *
+     * @param_one left and right lane polynomials
+     * @param_two desired order of polynomial
+     *
+     * @return intersection point
+     */
+    cv::Point2d getIntersectionPoint(std::vector<Polynomial> lane_lines, int order);
+
+    /**
      * Creates lane lines from lane points
      *
      * @param_one left and right lane points
@@ -51,6 +61,16 @@ public:
     getLaneLines(std::vector<std::vector<cv::Point2d>> lane_points);
 
     /**
+     * Generates polynomial coefficients representing left/right lane line
+     *
+     * @param_one left/right lane points
+     * @param_two desired order of polynomial
+     *
+     * @return left/right lane polynomial coefficients
+     */
+    Polynomial fitPolyToLine(std::vector<cv::Point2d> points, int order);
+
+    /**
      * Creates the lane points to model the lane lines
      *
      * @param_one filtered image
@@ -59,7 +79,7 @@ public:
      * @return left and right lane points
      */
     std::vector<std::vector<cv::Point2d>>
-    getLanePoints(cv::Mat &filtered_image, std::vector<Window> base_windows);    
+    getLanePoints(cv::Mat &filtered_image);
 
     /**
      * Creates two base windows to cover left and right lanes
@@ -101,7 +121,6 @@ public:
      *
      * @return window slice
      */
-
     cv::Mat getWindowSlice(cv::Mat &filtered_image,
                           Window BaseWindow,
                           int vertical_slice_index);
@@ -115,26 +134,6 @@ public:
      */
     int getWindowHistogramPeakPosition(intvec window_histogram);
 
-    /**
-     * Generates polynomial coefficients representing left/right lane line
-     *
-     * @param_one left/right lane points
-     * @param_two desired order of polynomial
-     *
-     * @return left/right lane polynomial coefficients
-     */
-    Polynomial fitPolyToLine(std::vector<cv::Point2d> points, int order);
-
-    /**
-     * Gets the intersection point of the lane lines
-     *
-     * @param_one left and right lane polynomials
-     * @param_two desired order of polynomial
-     *
-     * @return intersection point
-     */
-    cv::Point2d getIntersectionPoint(std::vector<Polynomial> lane_lines, int order);
-
     // Exception class to throw when no intersect roots exist
     class NoLaneIntersectException: public std::exception {
         virtual const char* what() const throw() {
@@ -142,13 +141,23 @@ public:
         }
     };
 
+    /**
+     * gets degree
+     *
+     * @return degree
+     */
+    int getDegree();
+
 private:
     // white color value
     int white;
+
     // number of window slices
     int num_vertical_slices;
+
     // lane polynomial degree
     int degree;
+
     // window width
     int window_width;
 };

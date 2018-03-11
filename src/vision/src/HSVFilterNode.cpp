@@ -19,21 +19,21 @@ HSVFilterNode::HSVFilterNode(int argc, char** argv, std::string node_name) {
     ros::NodeHandle private_nh("~");
 
     // Set topics
-    std::string image_topic  = "/robot/vision/raw_camera_image";
-    std::string output_topic = "/vision/hsv_filtered_image";
+    std::string image_topic  = "/robot/camera/raw_image";
+    std::string output_topic = "/robot/vision/hsv_filtered_image";
 
     // Setup image transport
     image_transport::ImageTransport it(nh);
 
     // Setup subscriber
     uint32_t queue_size = 1;
-    hsv_input_image_sub = it.subscribe(
-    image_topic, queue_size, &HSVFilterNode::rawImageCallBack, this);
+    hsv_input_image_sub = it.subscribe(image_topic,
+                                       queue_size,
+                                       &HSVFilterNode::rawImageCallBack, this);
     // Setup publisher
     hsv_output_image_pub = it.advertise(output_topic, queue_size);
 
-    // Get some params (not all though, we wait until we have an image to get
-    // the rest)
+    // Get some params (not all though, we wait until we have an image to get the rest)
     SB_getParam(private_nh, "update_frequency", frequency, 5.0);
     SB_getParam(private_nh,
                 "config_file",
@@ -46,8 +46,7 @@ HSVFilterNode::HSVFilterNode(int argc, char** argv, std::string node_name) {
     setUpFilter();
 }
 
-void HSVFilterNode::rawImageCallBack(
-const sensor_msgs::Image::ConstPtr& image) {
+void HSVFilterNode::rawImageCallBack(const sensor_msgs::Image::ConstPtr& image) {
     if (!receivedFirstImage) {
         ROS_INFO("First image received!");
         ros::NodeHandle private_nh("~");

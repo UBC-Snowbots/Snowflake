@@ -12,6 +12,124 @@ using namespace cv;
 
 LineDetect::LineDetect() : white(255), num_vertical_slices(10), degree(3) {}
 
+cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines, int order) {
+
+    Polynomial LeftLanePolynomial = lane_lines[0];
+    Polynomial RightLanePolynomial = lane_lines[1];
+    Polynomial IntersectPolynomial = Polynomial();
+
+    // create the intersect polynomial
+    for (int i = 0; i <= order; i++) {
+
+        IntersectPolynomial.coefficients.emplace_back(
+                RightLanePolynomial.coefficients[i] - LeftLanePolynomial.coefficients[i]);
+    }
+
+    // initialize the intersect polynomial coefficients matrix
+    cv::Mat intersect_coefficients(1, order+1, CV_64F, Scalar::all(0));
+
+    memcpy(intersect_coefficients.data,
+           IntersectPolynomial.coefficients.data(),
+           IntersectPolynomial.coefficients.size()*sizeof(double));
+
+    // initialize the intersect polynomial roots matrix
+    // a nice solution will contain 3 roots each with an x channel and a y channel
+    // i.e: intersect_roots =
+    //      [x1, y1;
+    //       x2, y2;
+    //       x3, y3]
+    // one of these roots will be the intersect root
+    cv::Mat intersect_roots(3, 1, CV_64F, Scalar::all(0));
+
+    // solve for the intersect polynomial
+    cv::solvePoly(intersect_coefficients, intersect_roots);
+
+    int max_row = intersect_roots.rows - 1; // we expect there to be 3 rows
+    int max_col = intersect_roots.cols - 1; // we expect there to be 1 col
+
+    std::vector<double> possible_x_intersects;
+
+    for (int i = 0; i <= max_row; i++) {
+
+        // find the real roots knowing its y components are very close to 0
+        if ( (intersect_roots.at<cv::Vec2d>(i, max_col)[1] >= -1e-10) &&
+             (intersect_roots.at<cv::Vec2d>(i, max_col)[1] <= +1e-10) ) {
+
+            // store the x components of the possible intersect roots
+            possible_x_intersects.emplace_back(intersect_roots.at<double>(i, max_col));
+        }
+    }
+
+    double x_intersect;
+    double y_intersect;
+
+    // throw an exception if no intersect roots exist
+    if (possible_x_intersects.size() == 1 && possible_x_intersects[0] == 0) {
+
+        std::cout <<
+                  "intersect_roots = "
+                  << std::endl << intersect_roots << std::endl << std::endl;
+        throw LineDetect::NoLaneIntersectException();
+    }
+
+        // there exists one unique intersect root
+    else if (possible_x_intersects.size() == 1) {
+
+        // set the x component of the intersect root
+        x_intersect = possible_x_intersects[0];
+
+        y_intersect = 0;
+
+        // solve the right/left lane polynomial given the x intersect and sum up powered terms
+        for (int i = order; i > 0; i--) {
+
+            y_intersect += (RightLanePolynomial.coefficients[i] * pow(x_intersect, i));
+        }
+
+        // add powered terms with last term to get the y intersect
+        y_intersect += RightLanePolynomial.coefficients[0];
+
+    }
+
+        // there exists more than one intersect root
+    else {
+
+        // attempt to find the correct intersect root
+        for (double possible_x_intersect : possible_x_intersects) {
+
+            x_intersect = possible_x_intersect;
+
+            y_intersect = 0;
+
+            // set the x value of the right/left lane polynomial to the x intersect
+            // and sum up powered terms
+            for (int j = order; j > 0; j--) {
+
+                y_intersect += (RightLanePolynomial.coefficients[j] * pow(x_intersect, j));
+            }
+
+            // add powered terms with last term to get the y intersect
+            y_intersect += RightLanePolynomial.coefficients[0];
+
+            // the correct y intersect is positive
+            if (y_intersect > 0)
+                goto create_point;
+        }
+
+        // throw an exception since no valid intersect root exists
+        std::cout <<
+                  "intersect_roots = "
+                  << std::endl << intersect_roots << std::endl << std::endl;
+        throw LineDetect::NoLaneIntersectException();
+    }
+
+    create_point:
+    // create a Point2d storing the intersect data
+    cv::Point2d intersect_point = {x_intersect, y_intersect};
+
+    return intersect_point;
+}
+
 std::vector<Polynomial>
 LineDetect::getLaneLines(std::vector<std::vector<cv::Point2d>> lane_points) {
 
@@ -29,8 +147,49 @@ LineDetect::getLaneLines(std::vector<std::vector<cv::Point2d>> lane_points) {
     return lane_lines;
 }
 
+Polynomial LineDetect::fitPolyToLine(std::vector<cv::Point2d> points, int order) {
+
+    Polynomial PolyLine = Polynomial();
+
+    int order_plus_one = order + 1;
+    assert(points.size() >= order_plus_one);
+    assert(order <= 4);
+
+    std::vector<double> xv(points.size(), 0);
+    std::vector<double> yv(points.size(), 0);
+
+    for (size_t i = 0; i < points.size(); i++) {
+
+        xv[i] = points[i].x;
+        yv[i] = points[i].y;
+    }
+
+    Eigen::MatrixXd A(xv.size(), order_plus_one);
+    Eigen::VectorXd yvMapped = Eigen::VectorXd::Map(&yv.front(), yv.size());
+    Eigen::VectorXd result;
+
+    // create matrix
+    for (size_t i = 0; i < points.size(); i++)
+
+        for (size_t j = 0; j < order_plus_one; j++)
+            A(i, j) = pow((xv.at(i)), j);
+
+    // solve for linear least squares fit
+    result = A.householderQr().solve(yvMapped);
+
+    for (size_t i = 0; i < result.size(); i++) {
+
+        // append coefficients to end of coefficients vector from greatest to least order term
+        PolyLine.coefficients.emplace_back(result[i]);
+    }
+
+    return PolyLine;
+}
+
 std::vector<std::vector<cv::Point2d>>
-LineDetect::getLanePoints(cv::Mat &filtered_image, std::vector<Window> base_windows) {
+LineDetect::getLanePoints(cv::Mat &filtered_image) {
+
+    std::vector<Window> base_windows = this->getBaseWindows(filtered_image);
 
     // contains left and right lane points
     std::vector<std::vector<cv::Point2d>> lane_points(base_windows.size(),
@@ -153,6 +312,7 @@ cv::Mat LineDetect::getWindowSlice(cv::Mat &filtered_image,
                                    Window BaseWindow,
                                    int vertical_slice_index) {
 
+    // create window slice
     cv::Mat window_slice = filtered_image(
 
             Range(vertical_slice_index * filtered_image.rows / num_vertical_slices,
@@ -181,154 +341,6 @@ int LineDetect::getWindowHistogramPeakPosition(intvec window_histogram) {
     return peak;
 }
 
-Polynomial LineDetect::fitPolyToLine(std::vector<cv::Point2d> points, int order) {
-
-    Polynomial PolyLine = Polynomial();
-
-    int order_plus_one = order + 1;
-    assert(points.size() >= order_plus_one);
-    assert(order <= 4);
-
-    std::vector<double> xv(points.size(), 0);
-    std::vector<double> yv(points.size(), 0);
-
-    for (size_t i = 0; i < points.size(); i++) {
-
-        xv[i] = points[i].x;
-        yv[i] = points[i].y;
-    }
-
-    Eigen::MatrixXd A(xv.size(), order_plus_one);
-    Eigen::VectorXd yvMapped = Eigen::VectorXd::Map(&yv.front(), yv.size());
-    Eigen::VectorXd result;
-
-    // create matrix
-    for (size_t i = 0; i < points.size(); i++)
-
-        for (size_t j = 0; j < order_plus_one; j++)
-            A(i, j) = pow((xv.at(i)), j);
-
-    // solve for linear least squares fit
-    result = A.householderQr().solve(yvMapped);
-
-    for (size_t i = 0; i < result.size(); i++) {
-
-        // append coefficients to end of coefficients vector from greatest to least order term
-        PolyLine.coefficients.emplace_back(result[i]);
-    }
-
-    return PolyLine;
-}
-
-cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines, int order) {
-
-    Polynomial LeftLanePolynomial = lane_lines[0];
-    Polynomial RightLanePolynomial = lane_lines[1];
-    Polynomial IntersectPolynomial = Polynomial();
-
-    // create the intersect polynomial
-    for (int i = 0; i <= order; i++) {
-
-        IntersectPolynomial.coefficients.emplace_back(
-                RightLanePolynomial.coefficients[i] - LeftLanePolynomial.coefficients[i]);
-    }
-
-    // initialize the intersect polynomial coefficients matrix
-    cv::Mat intersect_coefficients(1, order+1, CV_64F, Scalar::all(0));
-
-    memcpy(intersect_coefficients.data,
-           IntersectPolynomial.coefficients.data(),
-           IntersectPolynomial.coefficients.size()*sizeof(double));
-
-    // initialize the intersect polynomial roots matrix
-    // a nice solution will contain 3 roots each with an x channel and a y channel
-    // i.e: intersect_roots =
-    //      [x1, y1;
-    //       x2, y2;
-    //       x3, y3]
-    // one of these roots will be the intersect root
-    cv::Mat intersect_roots(3, 1, CV_64F, Scalar::all(0));
-
-    // solve for the intersect polynomial
-    cv::solvePoly(intersect_coefficients, intersect_roots);
-
-    int max_row = intersect_roots.rows - 1; // we expect there to be 3 rows
-    int max_col = intersect_roots.cols - 1; // we expect there to be 1 col
-
-    std::vector<double> possible_x_intersects;
-
-    for (int i = 0; i <= max_row; i++) {
-
-        // find the real roots knowing its y components are very close to 0
-        if ( (intersect_roots.at<cv::Vec2d>(i, max_col)[1] >= -1e-10) &&
-             (intersect_roots.at<cv::Vec2d>(i, max_col)[1] <= +1e-10) ) {
-
-            // store the x components of the possible intersect roots
-            possible_x_intersects.emplace_back(intersect_roots.at<double>(i, max_col));
-        }
-    }
-
-    double x_intersect;
-    double y_intersect;
-
-    // throw an exception if no intersect roots exist
-    if (possible_x_intersects.size() == 1 && possible_x_intersects[0] == 0) {
-
-        std::cout << "intersect_roots = " << std::endl << intersect_roots << std::endl << std::endl;
-        throw LineDetect::NoLaneIntersectException();
-    }
-
-    // there exists one unique intersect root
-    else if (possible_x_intersects.size() == 1) {
-
-        // set the x component of the intersect root
-        x_intersect = possible_x_intersects[0];
-
-        y_intersect = 0;
-
-        // solve the right/left lane polynomial given the x intersect and sum up powered terms
-        for (int i = order; i > 0; i--) {
-
-            y_intersect += (RightLanePolynomial.coefficients[i] * pow(x_intersect, i));
-        }
-
-        // add powered terms with last term to get the y intersect
-        y_intersect += RightLanePolynomial.coefficients[0];
-
-    }
-
-    // there exists more than one intersect root
-    else {
-
-        // attempt to find the correct intersect root
-        for (int i = 0; i < possible_x_intersects.size(); i++) {
-
-            x_intersect = possible_x_intersects[i];
-
-            y_intersect = 0;
-
-            // set the x value of the right/left lane polynomial to the x intersect and sum up powered terms
-            for (int j = order; j > 0; j--) {
-
-                y_intersect += (RightLanePolynomial.coefficients[j] * pow(x_intersect, j));
-            }
-
-            // add powered terms with last term to get the y intersect
-            y_intersect += RightLanePolynomial.coefficients[0];
-
-            // the correct y intersect is positive
-            if (y_intersect > 0)
-                goto create_point;
-        }
-
-        // throw an exception since no valid intersect root exists
-        std::cout << "intersect_roots = " << std::endl << intersect_roots << std::endl << std::endl;
-        throw LineDetect::NoLaneIntersectException();
-    }
-
-    create_point:
-        // create a Point2d storing the intersect data
-        cv::Point2d intersection_point = {x_intersect, y_intersect};
-
-        return intersection_point;
+int LineDetect::getDegree() {
+    return degree;
 }

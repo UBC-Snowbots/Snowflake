@@ -9,20 +9,7 @@
 
 using namespace cv;
 
-TEST(LineDetect, straightLaneFollowTest) {
-
-    std::string image_path = "images/straightImage.jpg";
-    cv::Mat testColorImage = imread(image_path);
-    cv::Mat testGrayImage;
-    if (testColorImage.empty()) {
-        printf("cannot access frame");
-        return;
-    }
-    cv::cvtColor(testColorImage, testGrayImage, CV_BGR2GRAY);
-
-    LineDetect testLineDetect;
-
-}
+// TODO add unit tests
 
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
