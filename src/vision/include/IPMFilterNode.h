@@ -69,14 +69,17 @@ class IPMFilterNode {
     Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
 
     /**
-     * Subscribes to the filtered image
+     * Subscribes to the hsv filtered image
      */
     image_transport::Subscriber ipm_input_image_sub;
 
     /**
-     * Publishes the filtered image
+     * Publishes the complete filtered image
      */
     image_transport::Publisher ipm_output_image_pub;
+
+    // The name and size of the display window
+    std::string displayWindowName;
 
     // Whether or not we've received the first image
     bool receivedFirstImage;

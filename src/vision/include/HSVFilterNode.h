@@ -84,7 +84,7 @@ class HSVFilterNode {
     image_transport::Subscriber hsv_input_image_sub;
 
     /**
-     * Publishes the filtered image
+     * Publishes the hsv filtered image
      */
     image_transport::Publisher hsv_output_image_pub;
 

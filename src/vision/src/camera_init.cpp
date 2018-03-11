@@ -16,16 +16,18 @@ int main(int argc, char **argv) {
     string inputWindow = "Camera";
     namedWindow(inputWindow, CV_WINDOW_AUTOSIZE);
 
-    VideoCapture cap(0); //captures the first camera
+    VideoCapture cap(0); // captures the first camera
+
     if (!cap.isOpened()) {
         cout << "Camera cannot be opened" << endl;
         return -1;
     }
 
-    ros::init(argc, argv, "camera_publisher");
+    ros::init(argc, argv, "camera");
+
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
-    image_transport::Publisher pub = it.advertise("/robot/camera1/image_raw", 1);
+    image_transport::Publisher camera_pub = it.advertise("/robot/camera/raw_image", 1);
 
     Mat inputImage;
 
@@ -33,14 +35,20 @@ int main(int argc, char **argv) {
 
     while (nh.ok()) {
         bool isRead = cap.read(inputImage);
+
         if (!isRead) {
             cout << "Failed to read image from camera" << endl;
             break;
         }
+
         imshow(inputWindow, inputImage);
+
         sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", inputImage).toImageMsg();
-        pub.publish(msg);
+
+        camera_pub.publish(msg);
+
         waitKey(1);
+
         ros::spinOnce();
         loop_rate.sleep();
     }

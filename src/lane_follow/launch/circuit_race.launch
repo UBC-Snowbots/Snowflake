@@ -12,10 +12,10 @@
 
     <!--
         <!-- Input -->
-        <remap from="/robot/vision/raw_camera_image" to="/vision/hsv_input_image"/>
+        <remap from="/robot/camera/raw_image" to="/vision/hsv_input_image"/>
 
         <!-- Output -->
-        <remap from="/vision/hsv_filtered_image" to="/vision/hsv_output_image"/>
+        <remap from="/robot/vision/hsv_filtered_image" to="/vision/hsv_output_image"/>
     --!>
 
     <!-- Launch our IPM Filter -->
@@ -23,15 +23,15 @@
          <rosparam param="ipm_base_width"> 1 </rosparam>
          <rosparam param="ipm_top_width"> 0.5 </rosparam>
          <rosparam param="ipm_base_displacement"> 0 </rosparam>
-         <rosparam param="ipm_top_displacement"> 0.25 </rosparam>
+         <rosparam param="ipm_top_displacement"> 0 </rosparam>
     </node>
 
     <!--
         <!-- Input -->
-        <remap from="/vision/hsv_output_image" to="/vision/ipm_input_image"/>
+        <remap from="/robot/vision/hsv_filtered_image" to="/vision/ipm_input_image"/>
 
         <!-- Output -->
-        <remap from="/vision/ipm_filtered_image" to="/vision/ipm_output_image"/>
+        <remap from="/robot/vision/ipm_filtered_image" to="/vision/ipm_output_image"/>
     --!>
 
     <!-- Start lane detection -->
