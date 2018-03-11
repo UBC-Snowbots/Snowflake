@@ -6,6 +6,7 @@
 
 #include <LineExtractorNode.h>
 
+
 LineExtractorNode::LineExtractorNode(int argc,
                                      char** argv,
                                      std::string node_name) {
@@ -56,6 +57,12 @@ LineExtractorNode::LineExtractorNode(int argc,
     uint32_t queue_size = 1;
     publisher           = private_nh.advertise<mapping_igvc::LineObstacle>(
     topic_to_publish_to, queue_size);
+
+    std::string rviz_line_topic = "debug/output_line_obstacle";
+    rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(rviz_line_topic, queue_size);
+
+    std::string rviz_pcl_topic = "debug/pcl";
+    rviz_pcl_publisher = private_nh.advertise<visualization_msgs::Marker>(rviz_pcl_topic, queue_size);
 
     this->dbscan.setRadius(this->radius);
     this->dbscan.setMinNeighbours(this->minNeighbours);
@@ -110,6 +117,8 @@ void LineExtractorNode::visualizeLineObstacles(std::vector<mapping_igvc::LineObs
     std::string ns = "debug";
 
     visualization_msgs::Marker marker = snowbots::RvizUtils::displayPoints(points, green, scale, frame_id, ns);
+
+    rviz_line_publisher.publish(marker);
 }
 
 std::vector<geometry_msgs::Point> LineExtractorNode::convertLineObstaclesToPoints(std::vector<mapping_igvc::LineObstacle> line_obstacles) {

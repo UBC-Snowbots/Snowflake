@@ -37,6 +37,8 @@ class LineExtractorNode {
   private:
     ros::Subscriber subscriber;
     ros::Publisher publisher;
+    ros::Publisher rviz_line_publisher;
+    ros::Publisher rviz_pcl_publisher;
 
     /*
      * @dbscan takes in a PointCloud and clusters them into a vector of
