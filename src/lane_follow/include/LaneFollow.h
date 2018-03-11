@@ -60,7 +60,7 @@ class LaneFollow {
 
     // Instantiate LineDetect to generate the lane lines
     LineDetect ld;
-
+  
     // Instantiate IPM to perform IPM on points
     IPM ipm;
 
@@ -72,7 +72,7 @@ class LaneFollow {
 
     // Image processing Mat pipeline
     cv::Mat filtered_image;
-
+    
     // Recommended steer to follow lane
     geometry_msgs::Twist steering_output;
 
