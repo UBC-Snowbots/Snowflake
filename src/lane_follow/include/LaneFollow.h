@@ -60,7 +60,7 @@ class LaneFollow {
 
     // Instantiate LineDetect to generate the lane lines
     LineDetect ld;
-
+  
     // Instantiate IPM to perform IPM on points
     IPM ipm;
 
