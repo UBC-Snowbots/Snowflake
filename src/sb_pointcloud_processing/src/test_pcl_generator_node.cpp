@@ -11,6 +11,12 @@
 std::vector<float> first_line;
 std::vector<float> second_line;
 
+float x_min;
+float x_max;
+float x_delta;
+float max_noise_x;
+float max_noise_y;
+
 sensor_msgs::PointCloud2 generatePclMessage();
 
 int main(int argc, char** argv) {
@@ -29,6 +35,26 @@ int main(int argc, char** argv) {
     std::vector<float> default_second_line = {0, 0, -0.01};
     private_nh.param(second_line_param, second_line, default_second_line);
 
+    std::string x_min_param = "x_min";
+    float default_x_min = -50;
+    private_nh.param(x_min_param, x_min, default_x_min);
+
+    std::string x_max_param = "x_max";
+    float default_x_max = 50;
+    private_nh.param(x_max_param, x_max, default_x_max);
+
+    std::string x_delta_param = "x_delta";
+    float default_x_delta = 0.5;
+    private_nh.param(x_delta_param, x_delta, default_x_delta);
+
+    std::string max_noise_x_param = "max_noise_x";
+    float default_max_noise_x = 5;
+    private_nh.param(max_noise_x_param, max_noise_x, default_max_noise_x);
+
+    std::string max_noise_y_param = "max_noise_y";
+    float default_max_noise_y = 5;
+    private_nh.param(max_noise_y_param, max_noise_y, default_max_noise_y);
+
     sensor_msgs::PointCloud2 msg_to_publish = generatePclMessage();
     msg_to_publish.header.frame_id = "line_extractor_test";
 
@@ -41,26 +67,21 @@ int main(int argc, char** argv) {
 }
 
 sensor_msgs::PointCloud2 generatePclMessage() {
-    float x_min   = -50;
-    float x_max   = 50;
-    float x_delta = 0.1;
-
     // coefficients is the same as the one in LineObstacle message
     LineExtractor::TestUtils::LineArgs args(
             first_line, x_min, x_max, x_delta);
-
-    float max_noise_x = 5;
-    float max_noise_y = 5;
 
     // Generate a single PointCloud with noise
     pcl::PointCloud<pcl::PointXYZ> pcl;
     LineExtractor::TestUtils::addLineToPointCloud(
             args, pcl, max_noise_x, max_noise_y);
 
+    // Add second line to the pointcloud
     args.coefficients = second_line;
     LineExtractor::TestUtils::addLineToPointCloud(
             args, pcl, max_noise_x, max_noise_y);
 
+    // convert pointcloud to sensor msgs
     sensor_msgs::PointCloud2 msg;
     pcl::toROSMsg(pcl, msg);
 
