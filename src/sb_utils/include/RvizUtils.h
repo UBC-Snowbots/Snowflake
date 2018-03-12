@@ -16,6 +16,24 @@ class RvizUtils {
   public:
     /**
      *  Turn points into a marker for rviz
+     *  Can specify a color for each point
+     *
+     *  @param points the points to be converted
+     *  @param colors the color of each point
+     *  @param frame_id the frame id
+     *  @param ns the namespace
+     *
+     *  @return an rviz marker
+     */
+    static visualization_msgs::Marker
+    displayPoints(std::vector<geometry_msgs::Point> points,
+                  std::vector<std_msgs::ColorRGBA> colors,
+                  visualization_msgs::Marker::_scale_type scale,
+                  std::string frame_id,
+                  std::string ns);
+
+    /**
+     *  Turn points into a marker for rviz
      *
      *  @param points the points to be converted
      *  @param color the color of the points

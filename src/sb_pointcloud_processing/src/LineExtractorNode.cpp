@@ -118,17 +118,11 @@ void LineExtractorNode::visualizeClusters() {
     visualization_msgs::Marker::_scale_type scale =
             snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
 
-    visualization_msgs::Marker marker;
-    marker.header.frame_id = "line_extractor_test";
-    marker.ns              = "debug";
-    marker.type               = visualization_msgs::Marker::POINTS;
-    marker.header.stamp       = ros::Time::now();
-    marker.action             = visualization_msgs::Marker::ADD;
-    marker.pose.orientation.w = 1.0;
-    marker.id                 = 0;
-    marker.scale = scale;
-    marker.points = cluster_points;
-    marker.colors = colors;
+    std::string frame_id = "line_extractor_test";
+    std::string ns       = "debug";
+
+    visualization_msgs::Marker marker =
+            snowbots::RvizUtils::displayPoints(cluster_points, colors, scale, frame_id, ns);
 
     rviz_cluster_publisher.publish(marker);
 }
