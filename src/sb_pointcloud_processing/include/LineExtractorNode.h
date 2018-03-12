@@ -9,6 +9,7 @@
 
 #include "DBSCAN.h"
 #include "Regression.h"
+#include <RvizUtils.h>
 #include <iostream>
 #include <mapping_igvc/LineObstacle.h>
 #include <math.h>
@@ -19,7 +20,6 @@
 #include <ros/ros.h>
 #include <sb_utils.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <RvizUtils.h>
 #include <string>
 
 class LineExtractorNode {
@@ -98,13 +98,15 @@ class LineExtractorNode {
      */
     void pclCallBack(const sensor_msgs::PointCloud2ConstPtr processed_pcl);
 
-    void visualizeLineObstacles(std::vector<mapping_igvc::LineObstacle> line_obstacles);
+    void visualizeLineObstacles(
+    std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
-    std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(std::vector<mapping_igvc::LineObstacle> line_obstacles);
+    std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(
+    std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
-        /*
-         * Convert a list of vectors to a list of LineObstacle message
-         */
+    /*
+     * Convert a list of vectors to a list of LineObstacle message
+     */
     std::vector<mapping_igvc::LineObstacle>
     vectorsToMsgs(std::vector<Eigen::VectorXf> vectors);
 
