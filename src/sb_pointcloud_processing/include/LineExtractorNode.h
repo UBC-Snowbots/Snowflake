@@ -38,6 +38,7 @@ class LineExtractorNode {
     ros::Subscriber subscriber;
     ros::Publisher publisher;
     ros::Publisher rviz_line_publisher;
+    ros::Publisher rviz_cluster_publisher;
 
     /*
      * @dbscan takes in a PointCloud and clusters them into a vector of
@@ -101,8 +102,15 @@ class LineExtractorNode {
     void visualizeLineObstacles(
     std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
+    void visualizeClusters();
+
     std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(
     std::vector<mapping_igvc::LineObstacle> line_obstacles);
+
+    void convertClustersToPointsWithColors(
+            std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+            std::vector<geometry_msgs::Point> &cluster_points,
+            std::vector<std_msgs::ColorRGBA> &colors);
 
     /*
      * Convert a list of vectors to a list of LineObstacle message

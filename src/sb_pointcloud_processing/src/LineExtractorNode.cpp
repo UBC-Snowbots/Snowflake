@@ -61,6 +61,10 @@ LineExtractorNode::LineExtractorNode(int argc,
     rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(
     rviz_line_topic, queue_size);
 
+    std::string rviz_cluster_topic = "debug/clusters";
+    rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
+            rviz_cluster_topic, queue_size);
+
     this->dbscan.setRadius(this->radius);
     this->dbscan.setMinNeighbours(this->minNeighbours);
 }
@@ -89,6 +93,8 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 
 void LineExtractorNode::extractLines() {
     this->clusters = this->dbscan.findClusters(this->pclPtr);
+    visualizeClusters();
+
     std::vector<Eigen::VectorXf> lines =
     regression.getLinesOfBestFit(this->clusters, this->degreePoly);
 
@@ -102,6 +108,63 @@ void LineExtractorNode::extractLines() {
     visualizeLineObstacles(line_obstacles);
 
     return;
+}
+
+void LineExtractorNode::visualizeClusters() {
+    std::vector<geometry_msgs::Point> cluster_points;
+    std::vector<std_msgs::ColorRGBA> colors;
+    convertClustersToPointsWithColors(this->clusters, cluster_points, colors);
+
+    visualization_msgs::Marker::_scale_type scale =
+            snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
+
+    visualization_msgs::Marker marker;
+    marker.header.frame_id = "line_extractor_test";
+    marker.ns              = "debug";
+    marker.type               = visualization_msgs::Marker::POINTS;
+    marker.header.stamp       = ros::Time::now();
+    marker.action             = visualization_msgs::Marker::ADD;
+    marker.pose.orientation.w = 1.0;
+    marker.id                 = 0;
+    marker.scale = scale;
+    marker.points = cluster_points;
+    marker.colors = colors;
+
+    rviz_cluster_publisher.publish(marker);
+}
+
+void LineExtractorNode::convertClustersToPointsWithColors(
+        std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+        std::vector<geometry_msgs::Point> &cluster_points,
+        std::vector<std_msgs::ColorRGBA> &colors) {
+    for (unsigned int c = 0; c < clusters.size(); c++) {
+        pcl::PointCloud<pcl::PointXYZ> cluster = clusters[c];
+
+        std_msgs::ColorRGBA color;
+
+        if (c==0) {
+            color.r = 1.0;
+            color.g = 0.0;
+            color.b = 0.0;
+            color.a = 1.0;
+        } else {
+            color.r = 0.0;
+            color.g = 0.0;
+            color.b = 1.0;
+            color.a = 1.0;
+        }
+
+        for (unsigned int p = 0; p < cluster.size(); p++) {
+            pcl::PointXYZ pcl_point = cluster[p];
+
+            geometry_msgs::Point msg_point;
+            msg_point.x = pcl_point.x;
+            msg_point.y = pcl_point.y;
+
+            cluster_points.push_back(msg_point);
+            colors.push_back(color);
+        }
+    }
 }
 
 void LineExtractorNode::visualizeLineObstacles(

@@ -17,7 +17,10 @@ float x_delta;
 float max_noise_x;
 float max_noise_y;
 
-sensor_msgs::PointCloud2 generatePclMessage();
+float outlier_x_delta;
+std::vector<float> outlier_line;
+
+sensor_msgs::PointCloud2 generatePclMessage(bool include_outlier);
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "test_pcl_generator_node");
@@ -56,7 +59,22 @@ int main(int argc, char** argv) {
     float default_max_noise_y     = 5;
     private_nh.param(max_noise_y_param, max_noise_y, default_max_noise_y);
 
-    sensor_msgs::PointCloud2 msg_to_publish = generatePclMessage();
+    std::string outlier_param = "outlier";
+    bool default_outlier = false;
+    bool outlier;
+    private_nh.param(outlier_param, outlier, default_outlier);
+
+    if (outlier) {
+        std::string outlier_line_param = "outlier_line";
+        std::vector<float> default_outlier_line = {0};
+        private_nh.param(outlier_line_param, outlier_line, default_outlier_line);
+
+        std::string outlier_x_delta_param = "outlier_x_delta";
+        float default_outlier_x_delta     = 1;
+        private_nh.param(outlier_x_delta_param, outlier_x_delta, default_outlier_x_delta);
+    }
+
+    sensor_msgs::PointCloud2 msg_to_publish = generatePclMessage(outlier);
     msg_to_publish.header.frame_id          = "line_extractor_test";
 
     while (ros::ok()) {
@@ -67,7 +85,7 @@ int main(int argc, char** argv) {
     }
 }
 
-sensor_msgs::PointCloud2 generatePclMessage() {
+sensor_msgs::PointCloud2 generatePclMessage(bool include_outlier) {
     // coefficients is the same as the one in LineObstacle message
     LineExtractor::TestUtils::LineArgs args(first_line, x_min, x_max, x_delta);
 
@@ -80,6 +98,15 @@ sensor_msgs::PointCloud2 generatePclMessage() {
     args.coefficients = second_line;
     LineExtractor::TestUtils::addLineToPointCloud(
     args, pcl, max_noise_x, max_noise_y);
+
+    // Add outlier if wanted
+    if (include_outlier) {
+        args.coefficients = outlier_line;
+        args.x_delta = outlier_x_delta;
+
+        LineExtractor::TestUtils::addLineToPointCloud(
+                args, pcl, max_noise_x, max_noise_y);
+    }
 
     // convert pointcloud to sensor msgs
     sensor_msgs::PointCloud2 msg;
