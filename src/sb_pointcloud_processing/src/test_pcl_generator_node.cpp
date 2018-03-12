@@ -29,20 +29,24 @@ int main(int argc, char** argv) {
 }
 
 sensor_msgs::PointCloud2 generatePclMessage() {
-    float x_min   = 0;
-    float x_max   = 99;
-    float x_delta = 1;
+    float x_min   = -50;
+    float x_max   = 50;
+    float x_delta = 0.1;
 
     // coefficients is the same as the one in LineObstacle message
-    std::vector<float> coefficients = {1000, 7, -0.7, 0.007};
+    std::vector<float> coefficients = {50, 0, -0.01};
     LineExtractor::TestUtils::LineArgs args(
             coefficients, x_min, x_max, x_delta);
 
-    float max_noise_x = 1;
-    float max_noise_y = 1;
+    float max_noise_x = 5;
+    float max_noise_y = 5;
 
     // Generate a single PointCloud with noise
     pcl::PointCloud<pcl::PointXYZ> pcl;
+    LineExtractor::TestUtils::addLineToPointCloud(
+            args, pcl, max_noise_x, max_noise_y);
+
+    args.coefficients = {0, 0, -0.01};
     LineExtractor::TestUtils::addLineToPointCloud(
             args, pcl, max_noise_x, max_noise_y);
 
