@@ -8,4 +8,6 @@
         <param name="min_neighbours" value="10" type="int" />
         <param name="radius" value="5" type="double" />
     </node>
+    <node name="test_pcl_generator_node" pkg="sb_pointcloud_processing" type="test_pcl_generator_node" output="screen">
+    </node>
 </launch>
