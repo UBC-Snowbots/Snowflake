@@ -8,14 +8,26 @@
 #include <sensor_msgs/PointCloud2.h>
 #include "../test/TestUtils.h"
 
+std::vector<float> first_line;
+std::vector<float> second_line;
+
 sensor_msgs::PointCloud2 generatePclMessage();
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "test_pcl_generator_node");
     ros::NodeHandle nh;
+    ros::NodeHandle private_nh("~");
 
     ros::Rate loop_rate = 1;
     ros::Publisher publisher = nh.advertise<sensor_msgs::PointCloud2>("input_pointcloud", 1);
+
+    std::string first_line_param = "first_line";
+    std::vector<float> default_first_line = {50, 0, -0.01};
+    private_nh.param(first_line_param, first_line, default_first_line);
+
+    std::string second_line_param = "second_line";
+    std::vector<float> default_second_line = {0, 0, -0.01};
+    private_nh.param(second_line_param, second_line, default_second_line);
 
     sensor_msgs::PointCloud2 msg_to_publish = generatePclMessage();
     msg_to_publish.header.frame_id = "line_extractor_test";
@@ -34,9 +46,8 @@ sensor_msgs::PointCloud2 generatePclMessage() {
     float x_delta = 0.1;
 
     // coefficients is the same as the one in LineObstacle message
-    std::vector<float> coefficients = {50, 0, -0.01};
     LineExtractor::TestUtils::LineArgs args(
-            coefficients, x_min, x_max, x_delta);
+            first_line, x_min, x_max, x_delta);
 
     float max_noise_x = 5;
     float max_noise_y = 5;
@@ -46,7 +57,7 @@ sensor_msgs::PointCloud2 generatePclMessage() {
     LineExtractor::TestUtils::addLineToPointCloud(
             args, pcl, max_noise_x, max_noise_y);
 
-    args.coefficients = {0, 0, -0.01};
+    args.coefficients = second_line;
     LineExtractor::TestUtils::addLineToPointCloud(
             args, pcl, max_noise_x, max_noise_y);
 
