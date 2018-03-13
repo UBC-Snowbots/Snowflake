@@ -91,7 +91,7 @@ class LidarDecisionTest : public testing::Test {
         LidarObstacle(1.6, 10),
         LidarObstacle(0.2, 10),
         LidarObstacle(0.0, 10),
-        LidarObstacle(99, 10),
+        LidarObstacle(1.2, 10),
         LidarObstacle(1.1, 10),
         };
     }
