@@ -163,8 +163,8 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     std::vector<geometry_msgs::Point> points =
     convertLineObstaclesToPoints(line_obstacles);
 
-    visualization_msgs::Marker::_color_type green =
-    snowbots::RvizUtils::createMarkerColor(0, 1.0, 0, 1.0);
+    visualization_msgs::Marker::_color_type color =
+    snowbots::RvizUtils::createMarkerColor(0.0, 1.0, 1.0, 1.0);
     visualization_msgs::Marker::_scale_type scale =
     snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
 
@@ -172,7 +172,7 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     std::string ns       = "debug";
 
     visualization_msgs::Marker marker =
-    snowbots::RvizUtils::displayPoints(points, green, scale, frame_id, ns);
+    snowbots::RvizUtils::displayPoints(points, color, scale, frame_id, ns);
 
     rviz_line_publisher.publish(marker);
 }

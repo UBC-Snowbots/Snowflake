@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
-    ros::Rate loop_rate = 1;
+    ros::Rate loop_rate = 0.75;
     ros::Publisher publisher =
     nh.advertise<sensor_msgs::PointCloud2>("input_pointcloud", 1);
 
