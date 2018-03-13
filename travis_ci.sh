@@ -45,7 +45,7 @@ if [ "$RUN_TESTS" == "true" ]; then
 
     # Report the results of the tests
     # (which tests failed and why)
-    catkin_test_results --verbose
+    travis_run catkin_test_results --verbose
 fi
 
 if [ "$RUN_FORMATTING_CHECKS" == "true" ]; then
