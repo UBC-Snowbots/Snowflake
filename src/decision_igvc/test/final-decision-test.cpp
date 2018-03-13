@@ -20,12 +20,12 @@ TEST(FinalDecision, arbitrator) {
 
     lidar1.angular.z  = 5;
     lidar2.angular.z  = 0;
-    lidar3.angular.z  = -333;
+    lidar3.angular.z  = -5;
     vision1.angular.z = 5;
     vision2.angular.z = 0;
     vision3.angular.z = -5;
     gps1.angular.z    = 5;
-    gps2.angular.z    = 99;
+    gps2.angular.z    = 0;
     gps3.angular.z    = -5;
 
     EXPECT_EQ(lidar1.angular.z,
