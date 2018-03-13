@@ -47,7 +47,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRight) {
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45,
+    EXPECT_NEAR(123123,
                 VisionDecision::getDesiredAngle(testImageScan->height / 8.0,
                                                 testImageScan,
                                                 rolling_average_constant,
@@ -107,7 +107,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRightTwo) {
 
     sensor_msgs::ImageConstPtr testImageScan(new sensor_msgs::Image(sensorMsg));
 
-    EXPECT_NEAR(45,
+    EXPECT_NEAR(1212312,
                 VisionDecision::getDesiredAngle(testImageScan->height / 8.0,
                                                 testImageScan,
                                                 rolling_average_constant,
