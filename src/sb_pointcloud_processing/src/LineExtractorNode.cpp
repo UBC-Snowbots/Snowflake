@@ -35,9 +35,9 @@ LineExtractorNode::LineExtractorNode(int argc,
     float default_radius     = 0.1;
     SB_getParam(private_nh, radius_param, this->radius, default_radius);
 
-    std::string delta_x_param = "delta_x";
+    std::string delta_x_param = "x_delta";
     float default_delta_x     = 0.01;
-    SB_getParam(private_nh, delta_x_param, this->delta_x, default_delta_x);
+    SB_getParam(private_nh, delta_x_param, this->x_delta, default_delta_x);
 
     if (areParamsInvalid()) {
         ROS_DEBUG(
@@ -131,22 +131,19 @@ void LineExtractorNode::convertClustersToPointsWithColors(
         std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
         std::vector<geometry_msgs::Point> &cluster_points,
         std::vector<std_msgs::ColorRGBA> &colors) {
+    std::vector<float> color_library_r = {1.0, 0.0, 0.0};
+    std::vector<float> color_library_g = {0.0, 0.0, 1.0};
+    std::vector<float> color_library_b = {0.0, 1.0, 0.0};
+
     for (unsigned int c = 0; c < clusters.size(); c++) {
         pcl::PointCloud<pcl::PointXYZ> cluster = clusters[c];
 
         std_msgs::ColorRGBA color;
 
-        if (c==0) {
-            color.r = 1.0;
-            color.g = 0.0;
-            color.b = 0.0;
-            color.a = 1.0;
-        } else {
-            color.r = 0.0;
-            color.g = 0.0;
-            color.b = 1.0;
-            color.a = 1.0;
-        }
+        color.r = color_library_r[c % color_library_r.size()];
+        color.g = color_library_g[c % color_library_g.size()];
+        color.b = color_library_b[c % color_library_b.size()];
+        color.a = 1.0;
 
         for (unsigned int p = 0; p < cluster.size(); p++) {
             pcl::PointXYZ pcl_point = cluster[p];
@@ -189,7 +186,7 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
         mapping_igvc::LineObstacle line_obstacle = line_obstacles[i];
 
         for (float x = line_obstacle.x_min; x < line_obstacle.x_max;
-             x += this->delta_x) {
+             x += this->x_delta) {
             geometry_msgs::Point p;
             p.x = x;
 

@@ -81,10 +81,10 @@ class LineExtractorNode {
     float radius;
 
     /*
-     * @delta_x is the parameter for visualizing LineObstacle. It
+     * @x_delta is the parameter for visualizing LineObstacle. It
      * determines the x interval between adjacent points in RViz.
      */
-    float delta_x;
+    float x_delta;
 
     /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
