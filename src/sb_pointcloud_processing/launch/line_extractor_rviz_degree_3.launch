@@ -1,7 +1,7 @@
 <launch>
     <node name="line_extractor_node" pkg="sb_pointcloud_processing" type="line_extractor_node" output="screen">
         <!-- degree of polynomial for line of best fit -->
-        <param name="degree_polynomial" value="3" type="int" />
+        <param name="degree_polynomial" value="5" type="int" />
         <!-- regularization constant for line of best fit -->
         <param name="lambda" value="0" type="double" />
         <!-- density parameters for DBSCAN -->

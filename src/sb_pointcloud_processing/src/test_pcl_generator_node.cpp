@@ -1,12 +1,16 @@
-//
-// Created by min on 10/03/18.
-//
+/*
+ * Created by: Min Gyo Kim
+ * Created On: March 11th 2018
+ * Description: Generates a point cloud with two lines and an optional outlier line
+ *              and publishes it to "/input/pointcloud"
+ */
 
 #include "../test/TestUtils.h"
 #include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <sb_utils.h>
 
 std::vector<float> first_line;
 std::vector<float> second_line;
@@ -41,28 +45,28 @@ int main(int argc, char** argv) {
 
     std::string x_min_param = "x_min";
     float default_x_min     = -50;
-    private_nh.param(x_min_param, x_min, default_x_min);
+    SB_getParam(private_nh, x_min_param, x_min, default_x_min);
 
     std::string x_max_param = "x_max";
     float default_x_max     = 50;
-    private_nh.param(x_max_param, x_max, default_x_max);
+    SB_getParam(private_nh, x_max_param, x_max, default_x_max);
 
     std::string x_delta_param = "x_delta";
     float default_x_delta     = 0.5;
-    private_nh.param(x_delta_param, x_delta, default_x_delta);
+    SB_getParam(private_nh, x_delta_param, x_delta, default_x_delta);
 
     std::string max_noise_x_param = "max_noise_x";
     float default_max_noise_x     = 5;
-    private_nh.param(max_noise_x_param, max_noise_x, default_max_noise_x);
+    SB_getParam(private_nh, max_noise_x_param, max_noise_x, default_max_noise_x);
 
     std::string max_noise_y_param = "max_noise_y";
     float default_max_noise_y     = 5;
-    private_nh.param(max_noise_y_param, max_noise_y, default_max_noise_y);
+    SB_getParam(private_nh, max_noise_y_param, max_noise_y, default_max_noise_y);
 
     std::string outlier_param = "outlier";
     bool default_outlier = false;
     bool outlier;
-    private_nh.param(outlier_param, outlier, default_outlier);
+    SB_getParam(private_nh, outlier_param, outlier, default_outlier);
 
     if (outlier) {
         std::string outlier_line_param = "outlier_line";
