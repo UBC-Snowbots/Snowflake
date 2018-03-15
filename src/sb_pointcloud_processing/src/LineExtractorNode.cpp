@@ -63,7 +63,7 @@ LineExtractorNode::LineExtractorNode(int argc,
 
     std::string rviz_cluster_topic = "debug/clusters";
     rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
-            rviz_cluster_topic, queue_size);
+    rviz_cluster_topic, queue_size);
 
     this->dbscan.setRadius(this->radius);
     this->dbscan.setMinNeighbours(this->minNeighbours);
@@ -116,21 +116,21 @@ void LineExtractorNode::visualizeClusters() {
     convertClustersToPointsWithColors(this->clusters, cluster_points, colors);
 
     visualization_msgs::Marker::_scale_type scale =
-            snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
+    snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
 
     std::string frame_id = "line_extractor_test";
     std::string ns       = "debug";
 
-    visualization_msgs::Marker marker =
-            snowbots::RvizUtils::displayPoints(cluster_points, colors, scale, frame_id, ns);
+    visualization_msgs::Marker marker = snowbots::RvizUtils::displayPoints(
+    cluster_points, colors, scale, frame_id, ns);
 
     rviz_cluster_publisher.publish(marker);
 }
 
 void LineExtractorNode::convertClustersToPointsWithColors(
-        std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
-        std::vector<geometry_msgs::Point> &cluster_points,
-        std::vector<std_msgs::ColorRGBA> &colors) {
+std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+std::vector<geometry_msgs::Point>& cluster_points,
+std::vector<std_msgs::ColorRGBA>& colors) {
     std::vector<float> color_library_r = {1.0, 0.0, 0.0};
     std::vector<float> color_library_g = {0.0, 0.0, 1.0};
     std::vector<float> color_library_b = {0.0, 1.0, 0.0};

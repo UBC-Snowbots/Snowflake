@@ -44,9 +44,9 @@ class LineExtractorNode {
      * and @colors.
      */
     static void convertClustersToPointsWithColors(
-            std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
-            std::vector<geometry_msgs::Point> &cluster_points,
-            std::vector<std_msgs::ColorRGBA> &colors);
+    std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+    std::vector<geometry_msgs::Point>& cluster_points,
+    std::vector<std_msgs::ColorRGBA>& colors);
 
   private:
     ros::Subscriber subscriber;
@@ -135,7 +135,7 @@ class LineExtractorNode {
      * vector.
      */
     std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(
-            std::vector<mapping_igvc::LineObstacle> line_obstacles);
+    std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
     /*
      * Convert a list of vectors to a list of LineObstacle message

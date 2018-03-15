@@ -10,7 +10,6 @@ using namespace std;
 using namespace visualization_msgs;
 using namespace snowbots;
 
-
 Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points,
                                 std::vector<std_msgs::ColorRGBA> colors,
                                 Marker::_scale_type scale,
@@ -22,7 +21,7 @@ Marker RvizUtils::displayPoints(vector<geometry_msgs::Point> points,
 
     // Set the shape & color
     marker.colors = colors;
-    marker.scale = scale;
+    marker.scale  = scale;
 
     // Set the points
     marker.points = points;

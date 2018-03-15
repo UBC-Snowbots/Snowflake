@@ -1,7 +1,8 @@
 /*
  * Created by: Min Gyo Kim
  * Created On: March 11th 2018
- * Description: Generates a point cloud with two lines and an optional outlier line
+ * Description: Generates a point cloud with two lines and an optional outlier
+ * line
  *              and publishes it to "/input/pointcloud"
  */
 
@@ -9,8 +10,8 @@
 #include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <ros/ros.h>
-#include <sensor_msgs/PointCloud2.h>
 #include <sb_utils.h>
+#include <sensor_msgs/PointCloud2.h>
 
 std::vector<float> first_line;
 std::vector<float> second_line;
@@ -57,25 +58,29 @@ int main(int argc, char** argv) {
 
     std::string max_noise_x_param = "max_noise_x";
     float default_max_noise_x     = 5;
-    SB_getParam(private_nh, max_noise_x_param, max_noise_x, default_max_noise_x);
+    SB_getParam(
+    private_nh, max_noise_x_param, max_noise_x, default_max_noise_x);
 
     std::string max_noise_y_param = "max_noise_y";
     float default_max_noise_y     = 5;
-    SB_getParam(private_nh, max_noise_y_param, max_noise_y, default_max_noise_y);
+    SB_getParam(
+    private_nh, max_noise_y_param, max_noise_y, default_max_noise_y);
 
     std::string outlier_param = "outlier";
-    bool default_outlier = false;
+    bool default_outlier      = false;
     bool outlier;
     SB_getParam(private_nh, outlier_param, outlier, default_outlier);
 
     if (outlier) {
-        std::string outlier_line_param = "outlier_line";
+        std::string outlier_line_param          = "outlier_line";
         std::vector<float> default_outlier_line = {0};
-        private_nh.param(outlier_line_param, outlier_line, default_outlier_line);
+        private_nh.param(
+        outlier_line_param, outlier_line, default_outlier_line);
 
         std::string outlier_x_delta_param = "outlier_x_delta";
         float default_outlier_x_delta     = 1;
-        private_nh.param(outlier_x_delta_param, outlier_x_delta, default_outlier_x_delta);
+        private_nh.param(
+        outlier_x_delta_param, outlier_x_delta, default_outlier_x_delta);
     }
 
     sensor_msgs::PointCloud2 msg_to_publish = generatePclMessage(outlier);
@@ -106,10 +111,10 @@ sensor_msgs::PointCloud2 generatePclMessage(bool include_outlier) {
     // Add outlier if wanted
     if (include_outlier) {
         args.coefficients = outlier_line;
-        args.x_delta = outlier_x_delta;
+        args.x_delta      = outlier_x_delta;
 
         LineExtractor::TestUtils::addLineToPointCloud(
-                args, pcl, max_noise_x, max_noise_y);
+        args, pcl, max_noise_x, max_noise_y);
     }
 
     // convert pointcloud to sensor msgs
