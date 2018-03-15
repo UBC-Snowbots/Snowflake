@@ -34,6 +34,20 @@ class LineExtractorNode {
     // main entry function
     void extractLines();
 
+    /*
+     * @clusters: input clusters
+     * @cluster_points: vector to store converted cluster points
+     * @colors: vector to store color for each cluster point
+     * This function takes in @clusters, assigns a different color
+     * for each cluster, and converts each point to geometry_msgs::Point.
+     * It pushes the points and colors to the back of @cluster_points
+     * and @colors.
+     */
+    static void convertClustersToPointsWithColors(
+            std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+            std::vector<geometry_msgs::Point> &cluster_points,
+            std::vector<std_msgs::ColorRGBA> &colors);
+
   private:
     ros::Subscriber subscriber;
     ros::Publisher publisher;
@@ -99,18 +113,29 @@ class LineExtractorNode {
      */
     void pclCallBack(const sensor_msgs::PointCloud2ConstPtr processed_pcl);
 
+    /*
+     * @line_obstacles a list of LineObstacle messages
+     * This function takes in @line_obstacles and publishes a message
+     * to rviz for visualization at "~/debug/output_line_obstacle".
+     */
     void visualizeLineObstacles(
     std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
+    /*
+     * This function makes a Marker for all points in @clusters
+     * with a different color for each cluster and publishes a message
+     * to rviz for visualization at "~/debug/clusters".
+     */
     void visualizeClusters();
 
+    /*
+     * @line_obstacles: list of line obstacle messages
+     * This function converts each line obstacle into a list of
+     * geometry_msgs:Point and then merges all of them into a single
+     * vector.
+     */
     std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(
-    std::vector<mapping_igvc::LineObstacle> line_obstacles);
-
-    void convertClustersToPointsWithColors(
-            std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
-            std::vector<geometry_msgs::Point> &cluster_points,
-            std::vector<std_msgs::ColorRGBA> &colors);
+            std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
     /*
      * Convert a list of vectors to a list of LineObstacle message

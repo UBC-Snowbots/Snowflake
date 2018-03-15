@@ -138,6 +138,7 @@ void LineExtractorNode::convertClustersToPointsWithColors(
     for (unsigned int c = 0; c < clusters.size(); c++) {
         pcl::PointCloud<pcl::PointXYZ> cluster = clusters[c];
 
+        // assign color to this cluster
         std_msgs::ColorRGBA color;
 
         color.r = color_library_r[c % color_library_r.size()];
@@ -145,6 +146,7 @@ void LineExtractorNode::convertClustersToPointsWithColors(
         color.b = color_library_b[c % color_library_b.size()];
         color.a = 1.0;
 
+        // push all the points in this cluster along with its color
         for (unsigned int p = 0; p < cluster.size(); p++) {
             pcl::PointXYZ pcl_point = cluster[p];
 
@@ -181,15 +183,17 @@ std::vector<geometry_msgs::Point>
 LineExtractorNode::convertLineObstaclesToPoints(
 std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     std::vector<geometry_msgs::Point> points;
-
+    // iterate through all lines
     for (unsigned int i = 0; i < line_obstacles.size(); i++) {
         mapping_igvc::LineObstacle line_obstacle = line_obstacles[i];
 
+        // draw the line as a series of points
         for (float x = line_obstacle.x_min; x < line_obstacle.x_max;
              x += this->x_delta) {
             geometry_msgs::Point p;
             p.x = x;
 
+            // calculate y with a polynomial function
             for (unsigned int i = 0; i < line_obstacle.coefficients.size();
                  i++) {
                 p.y += line_obstacle.coefficients[i] * pow(x, i);
