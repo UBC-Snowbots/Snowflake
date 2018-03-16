@@ -42,9 +42,14 @@ fi
 if [ "$RUN_TESTS" == "true" ]; then
     # Run all the tests
     travis_run catkin_make run_tests
+
+    # Report the results of the tests
+    # (which tests failed and why)
+    travis_run catkin_test_results --verbose
 fi
 
 if [ "$RUN_FORMATTING_CHECKS" == "true" ]; then
+    CLANG_VERSION="4.0"
     # Determine what we should compare this branch against to figure out what 
     # files were changed
     if [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
