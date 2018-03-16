@@ -8,7 +8,9 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
     message_generation
     std_msgs
+    sb_utils
 )
+
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -37,12 +39,12 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
     DIRECTORY msg
-    FILES ConeObstacle.msg LineObstacle.msg Point2D.msg
+    FILES ConeObstacle.msg LineObstacle.msg
 )
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-    DEPENDENCIES std_msgs
+    DEPENDENCIES sb_geom_msgs
 )
 
 ###################################
@@ -51,8 +53,8 @@ generate_messages(
 ## The catkin_package macro generates cmake config files for your package
 ## Declare things to be passed to dependent projects
 catkin_package(
-    #INCLUDE_DIRS include
-    CATKIN_DEPENDS message_runtime std_msgs
+    INCLUDE_DIRS include
+    CATKIN_DEPENDS message_runtime std_msgs sb_geom_msgs
 )
 
 ###########
@@ -62,8 +64,8 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-    ${catkin_INCLUDE_DIRS}
-    ./include
+        ${catkin_INCLUDE_DIRS}
+        ./include
 )
 
 ## Declare a C++ executable
@@ -81,7 +83,25 @@ include_directories(
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
-    #gTest
+    catkin_add_gtest(obstacle-manager-test
+            test/obstacle-manager-test.cpp
+            src/ObstacleManager.cpp
+            include/ObstacleManager.h
+            )
+    target_link_libraries(obstacle-manager-test
+            ${catkin_LIBRARIES}
+            )
+
+    #catkin_add_gtest(spline-line-test
+    #        test/spline-line-test.cpp
+    #        ../sb_utils/src/sb_geom/SplineLine.cpp
+    #        ../sb_utils/include/sb_geom/SplineLine.h
+    #        include/spline.h
+    #        )
+    #target_link_libraries(spline-line-test
+    #        ${sb_geom_LIBRARIES}
+    #        )
+
     # rostest
     # TODO: Maybe? Not sure if we need rostests for the ObstacleManager
 
