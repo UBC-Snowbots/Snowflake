@@ -92,6 +92,14 @@ class RvizUtils {
     static visualization_msgs::Marker::_scale_type
     createrMarkerScale(float x, float y, float z);
 
+    static visualization_msgs::Marker displayLineStrips(std::vector<geometry_msgs::Point> points,
+                                                         visualization_msgs::Marker::_color_type color,
+                                                         visualization_msgs::Marker::_scale_type scale,
+                                                         std::string frame_id,
+                                                         std::string ns,
+                                                        int id);
+
+
   private:
     /**
      *  Private constructor (No reason for someone to make an instance of this
@@ -108,7 +116,21 @@ class RvizUtils {
      */
     static void initialiseMarkerHeader(visualization_msgs::Marker& marker,
                                        std::string frame_id,
-                                       std::string ns);
+                                       std::string ns,
+                                       int id = 0);
+
+    /**
+     *  Sets the header information value
+     *
+     *  @param marker the marker that will have its header initialised
+     *  @param frame_id the frame id that the marker will get
+     *  @param ns the name space that the marker will get
+     */
+    static void initialiseMarkerHeader(visualization_msgs::Marker& marker,
+                                       std::string frame_id,
+                                       std::string ns,
+                                       int type,
+                                       int id = 0);
 };
 };
 #endif // HOLE_TRACKER_RVIZUTILS_H

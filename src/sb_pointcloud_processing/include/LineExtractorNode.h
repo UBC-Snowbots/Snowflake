@@ -21,6 +21,7 @@
 #include <sb_utils.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <string>
+#include <visualization_msgs/MarkerArray.h>
 
 class LineExtractorNode {
   public:
@@ -134,7 +135,7 @@ class LineExtractorNode {
      * geometry_msgs:Point and then merges all of them into a single
      * vector.
      */
-    std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(
+    std::vector<std::vector<geometry_msgs::Point>> convertLineObstaclesToPoints(
     std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
     /*

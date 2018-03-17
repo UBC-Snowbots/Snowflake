@@ -89,7 +89,8 @@ Marker::_scale_type RvizUtils::createrMarkerScale(float x, float y, float z) {
 
 void RvizUtils::initialiseMarkerHeader(Marker& marker,
                                        string frame_id,
-                                       string ns) {
+                                       string ns,
+                                       int id) {
     // Set up frame id and namespace
     marker.header.frame_id = frame_id;
     marker.ns              = ns;
@@ -99,5 +100,42 @@ void RvizUtils::initialiseMarkerHeader(Marker& marker,
     marker.header.stamp       = ros::Time::now();
     marker.action             = Marker::ADD;
     marker.pose.orientation.w = 1.0;
-    marker.id                 = 0;
+    marker.id                 = id;
+}
+
+void RvizUtils::initialiseMarkerHeader(Marker& marker,
+                                       string frame_id,
+                                       string ns,
+                                       int type,
+                                       int id) {
+    // Set up frame id and namespace
+    marker.header.frame_id = frame_id;
+    marker.ns              = ns;
+
+    // Set up other values (TODO: Find out what these values do)
+    marker.type               = type;
+    marker.header.stamp       = ros::Time::now();
+    marker.action             = Marker::ADD;
+    marker.pose.orientation.w = 1.0;
+    marker.id                 = id;
+}
+
+Marker RvizUtils::displayLineStrips(vector<geometry_msgs::Point> points,
+                                    Marker::_color_type color,
+                                    Marker::_scale_type scale,
+                                    string frame_id,
+                                    string ns,
+                                    int id) {
+    Marker marker;
+
+    initialiseMarkerHeader(marker, frame_id, ns, Marker::LINE_STRIP, id);
+
+    // Set the shape & color
+    marker.color = color;
+    marker.scale  = scale;
+
+    // Set the points
+    marker.points = points;
+
+    return marker;
 }
