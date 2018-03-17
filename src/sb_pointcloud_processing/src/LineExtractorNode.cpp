@@ -121,7 +121,7 @@ void LineExtractorNode::visualizeClusters() {
     std::string frame_id = "line_extractor_test";
     std::string ns       = "debug";
 
-    visualization_msgs::Marker marker = snowbots::RvizUtils::displayPoints(
+    visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
     cluster_points, colors, scale, frame_id, ns);
 
     rviz_cluster_publisher.publish(marker);
@@ -173,12 +173,12 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     std::string frame_id = "line_extractor_test";
     std::string ns       = "debug";
 
-    visualization_msgs::MarkerArray markerArray;
-    for (unsigned int i = 0; i < lines_points.size(); i++) {
-        visualization_msgs::Marker marker =
-                snowbots::RvizUtils::displayLineStrips(lines_points[i], color, scale, frame_id, ns, i);
-        markerArray.markers.push_back(marker);
-    }
+    visualization_msgs::MarkerArray markerArray = snowbots::RvizUtils::createMarkerArray(lines_points,
+                                                                                         color,
+                                                                                         scale,
+                                                                                         frame_id,
+                                                                                         ns,
+                                                                                         visualization_msgs::Marker::LINE_STRIP);
 
     rviz_line_publisher.publish(markerArray);
 }
