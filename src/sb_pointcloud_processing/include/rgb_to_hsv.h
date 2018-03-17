@@ -20,7 +20,6 @@
 
 #include <ColourspaceConverter.h>
 
-
 namespace sb_pointcloud_processing {
 
 class RGBtoHSV : public nodelet::Nodelet {

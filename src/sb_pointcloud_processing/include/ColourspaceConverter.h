@@ -39,7 +39,8 @@ class ColourspaceConverter {
      * @param in a PointXYZRGB
      * @param out the corresponding point in HSV colourspace
      */
-    void PointXYZRGBAtoXYZHSV(const pcl::PointXYZRGB& in, pcl::PointXYZHSV& out);
+    void PointXYZRGBAtoXYZHSV(const pcl::PointXYZRGB& in,
+                              pcl::PointXYZHSV& out);
 };
 
 #endif // SB_POINTCLOUD_PROCESSING_COLOURSPACE_CONVERTER_H
