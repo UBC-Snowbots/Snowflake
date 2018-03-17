@@ -8,7 +8,7 @@
         <!-- regularization constant for line of best fit -->
         <param name="lambda" value="0" type="double" />
         <!-- density parameters for DBSCAN -->
-        <param name="min_neighbours" value="3" type="int" />
+        <param name="min_neighbours" value="10" type="int" />
         <param name="radius" value="0.5" type="double" />
         <!-- density of lines for rviz; make sure this value is not too small or rviz will crash :( -->
         <param name="x_delta" value="0.1" type="double" />
@@ -26,15 +26,17 @@
         <param name="x_min" value="-1" type="double" />
         <param name="x_max" value="4" type="double" />
         <!-- x_delta defines how far apart the points are for the first and second line -->
-        <param name="x_delta" value="0.01" type="double" />
-        <!-- max_noise_x/y defines the magnitude of random deviation from the actual mathematical line -->
+        <param name="x_delta" value="0.005" type="double" />
+        <!-- max_noise_x/y defines the magnitude of random deviation from the actual mathematical line
+             for all lines (first, second, outlier)
+        -->
         <param name="max_noise_x" value="0.5" type="double" />
         <param name="max_noise_y" value="0.5" type="double" />
         <!-- outlier defines whether we want another line to test outliers -->
-        <param name="outlier" value="false" type="bool" />
+        <param name="outlier" value="true" type="bool" />
         <!-- polynomial representation of outlier line. outlier must be true for it to be shown -->
-        <rosparam param="outlier_line">[60]</rosparam>
+        <rosparam param="outlier_line">[5]</rosparam>
         <!-- defines how far apart the points are for the outlier line -->
-        <param name="outlier_x_delta" value="1" type="double"></param>
+        <param name="outlier_x_delta" value="0.1" type="double"></param>
     </node>
 </launch>
