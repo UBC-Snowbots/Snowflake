@@ -40,8 +40,8 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
 6. Fork this repository by heading over to the GitHub page and click the fork button on the top right
-7. Clone your server-side repository from the terminal by running git clone https://github.com/YOUR_USERNAME/Snowflake.git (YOUR_USERNAME is your github username)
-8. To start the setup run `cd ~/Snowflake && ./get_started.sh` (Do not run this script as root).
+7. Clone your server-side repository from the terminal by running `git clone --recursive https://github.com/YOUR_USERNAME/Snowflake.git` (`YOUR_USERNAME` is your github username)
+8. To start the setup run `cd ~/Snowflake && ./setup_scripts/install_tools.sh` (Do not run this script as root).
     - *Just choose yes and enter your password when the terminal prompts you*
 9. If everything compiles correctly and you don't get any errors, then you're good to go!
 
