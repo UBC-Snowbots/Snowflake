@@ -101,6 +101,11 @@ class LineExtractorNode {
      */
     float x_delta;
 
+    /**
+     * @param scale scale of the marker points
+     */
+    float scale;
+
     /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
      * been converted from sensor_msgs PointCloud2

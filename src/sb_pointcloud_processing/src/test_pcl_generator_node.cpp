@@ -2,11 +2,10 @@
  * Created by: Min Gyo Kim
  * Created On: March 11th 2018
  * Description: Generates a point cloud with two lines and an optional outlier
- * line
- *              and publishes it to "/input/pointcloud"
+ * line and publishes it to "/input/pointcloud"
  */
 
-#include "../test/TestUtils.h"
+#include <TestUtils.h>
 #include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <ros/ros.h>
@@ -45,15 +44,15 @@ int main(int argc, char** argv) {
     private_nh.param(second_line_param, second_line, default_second_line);
 
     std::string x_min_param = "x_min";
-    float default_x_min     = -50;
+    float default_x_min     = -5;
     SB_getParam(private_nh, x_min_param, x_min, default_x_min);
 
     std::string x_max_param = "x_max";
-    float default_x_max     = 50;
+    float default_x_max     = 5;
     SB_getParam(private_nh, x_max_param, x_max, default_x_max);
 
     std::string x_delta_param = "x_delta";
-    float default_x_delta     = 0.5;
+    float default_x_delta     = 0.01;
     SB_getParam(private_nh, x_delta_param, x_delta, default_x_delta);
 
     std::string max_noise_x_param = "max_noise_x";

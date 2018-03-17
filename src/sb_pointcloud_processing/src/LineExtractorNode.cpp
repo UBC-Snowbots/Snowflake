@@ -39,6 +39,10 @@ LineExtractorNode::LineExtractorNode(int argc,
     float default_delta_x     = 0.01;
     SB_getParam(private_nh, delta_x_param, this->x_delta, default_delta_x);
 
+    std::string scale_param = "scale";
+    float default_scale    = 0.1;
+    SB_getParam(private_nh, scale_param, this->scale, default_scale);
+
     if (areParamsInvalid()) {
         ROS_DEBUG(
         "At least one of your parameters are negative; they should be "
@@ -116,7 +120,7 @@ void LineExtractorNode::visualizeClusters() {
     convertClustersToPointsWithColors(this->clusters, cluster_points, colors);
 
     visualization_msgs::Marker::_scale_type scale =
-    snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
+    snowbots::RvizUtils::createrMarkerScale(this->scale, this->scale, this->scale);
 
     std::string frame_id = "line_extractor_test";
     std::string ns       = "debug";
@@ -168,7 +172,7 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     visualization_msgs::Marker::_color_type color =
     snowbots::RvizUtils::createMarkerColor(0.0, 1.0, 1.0, 1.0);
     visualization_msgs::Marker::_scale_type scale =
-    snowbots::RvizUtils::createrMarkerScale(1.0, 1.0, 1.0);
+    snowbots::RvizUtils::createrMarkerScale(this->scale, this->scale, this->scale);
 
     std::string frame_id = "line_extractor_test";
     std::string ns       = "debug";
