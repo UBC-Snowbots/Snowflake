@@ -5,8 +5,8 @@
  *              and returns it in the HSV colourspace.
  */
 
-#ifndef PROJECT_PREPROCESSINGNODE_H
-#define PROJECT_PREPROCESSINGNODE_H
+#ifndef SB_POINTCLOUD_PROCESSING_RGB_TO_HSV_H
+#define SB_POINTCLOUD_PROCESSING_RGB_TO_HSV_H
 
 // ROS Includes
 #include <nodelet/nodelet.h>
@@ -25,18 +25,33 @@ namespace sb_pointcloud_processing {
 
 class RGBtoHSV : public nodelet::Nodelet {
   public:
+    /**
+     * Empty constructor
+     */
     RGBtoHSV();
 
   private:
+    /**
+     * Initializes the nodelet
+     */
     virtual void onInit();
 
+    /**
+     * Callback which converts a given pointcloud from RGB to HSV
+     *
+     * @param input the RGB pointcloud to be converted
+     */
     void callback(const sensor_msgs::PointCloud2::ConstPtr& input);
 
+    // A converter from RGB to HSV
     ColourspaceConverter converter;
 
+    // Publishes the HSV pointcloud
     ros::Publisher pub;
+
+    // Subscribes to the RGB pointcloud
     ros::Subscriber sub;
 };
 }
 
-#endif // PROJECT_PREPROCESSINGNODE_H
+#endif // SB_POINTCLOUD_PROCESSING_RGB_TO_HSV_H

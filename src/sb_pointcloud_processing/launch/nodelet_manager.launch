@@ -4,7 +4,7 @@
 
     <node pkg="nodelet"
           type="nodelet"
-          name="nm"
+          name="nodelet_manager"
           args="manager"
           output="screen" />
 </launch>

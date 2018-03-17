@@ -5,8 +5,8 @@
  *              Used in the rgb_to_hsv nodelet.
  */
 
-#ifndef PROJECT_PREPROCESSFILTER_H
-#define PROJECT_PREPROCESSFILTER_H
+#ifndef SB_POINTCLOUD_PROCESSING_COLOURSPACE_CONVERTER_H
+#define SB_POINTCLOUD_PROCESSING_COLOURSPACE_CONVERTER_H
 
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/point_cloud.h>
@@ -42,4 +42,4 @@ class ColourspaceConverter {
     void PointXYZRGBAtoXYZHSV(const pcl::PointXYZRGB& in, pcl::PointXYZHSV& out);
 };
 
-#endif // PROJECT_PREPROCESSFILTER_H
+#endif // SB_POINTCLOUD_PROCESSING_COLOURSPACE_CONVERTER_H

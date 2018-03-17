@@ -23,16 +23,24 @@ void RGBtoHSV::onInit() {
 }
 
 void RGBtoHSV::callback(const sensor_msgs::PointCloud2::ConstPtr& input) {
+    // Obtain the ROS pointcloud and convert into PCL Pointcloud2
     pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
     pcl_conversions::toPCL(*(input), *(pcl_input));
+
+    // Converts from the Pointcloud2 format to PointcloudRGB
     pcl::PointCloud<PointXYZRGB>::Ptr pcl_rgb(
     new pcl::PointCloud<PointXYZRGB>());
     pcl::fromPCLPointCloud2(*pcl_input, *pcl_rgb);
+
+    // Converts RGB pointcloud to HSV
     converter.setInputCloud(pcl_rgb);
     pcl::PointCloud<PointXYZHSV>::Ptr pcl_output(
     new pcl::PointCloud<PointXYZHSV>());
     converter.convert(*pcl_output);
+
+    // Publishes the new cloud
     pub.publish(*pcl_output);
 }
 
+// Allows this node to be exported and registered as a nodelet
 PLUGINLIB_EXPORT_CLASS(RGBtoHSV, nodelet::Nodelet)

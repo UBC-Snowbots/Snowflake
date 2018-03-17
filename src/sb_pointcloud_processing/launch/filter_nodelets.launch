@@ -5,14 +5,14 @@
     <node pkg="nodelet"
           type="nodelet"
           name="rgb_to_hsv"
-          args="load sb_pointcloud_processing/rgb_to_hsv nm" output="screen">
+          args="load sb_pointcloud_processing/rgb_to_hsv nodelet_manager" output="screen">
         <remap from="~/input" to="/zed/point_cloud/cloud_registered" />
     </node>
 
     <node pkg="nodelet"
           type="nodelet"
-          name="h"
-          args="load pcl/PassThrough nm" output="screen">
+          name="hue_filter"
+          args="load pcl/PassThrough nodelet_manager" output="screen">
         <remap from="~input" to="rgb_to_hsv/output" />
         <rosparam>
             filter_field_name: h
@@ -24,9 +24,9 @@
 
     <node pkg="nodelet"
           type="nodelet"
-          name="s"
-          args="load pcl/PassThrough nm" output="screen">
-        <remap from="~input" to="/h/output" />
+          name="saturation_filter"
+          args="load pcl/PassThrough nodelet_manager" output="screen">
+        <remap from="~input" to="/hue_filter/output" />
         <rosparam>
             filter_field_name: s
             filter_limit_min: 0
@@ -37,9 +37,9 @@
 
     <node pkg="nodelet"
           type="nodelet"
-          name="v"
-          args="load pcl/PassThrough nm" output="screen">
-        <remap from="~input" to="/s/output" />
+          name="value_filter"
+          args="load pcl/PassThrough nodelet_manager" output="screen">
+        <remap from="~input" to="/saturation_filter/output" />
         <rosparam>
             filter_field_name: v
             filter_limit_min: 0
@@ -50,9 +50,9 @@
 
     <node pkg="nodelet"
           type="nodelet"
-          name="z"
-          args="load pcl/PassThrough nm" output="screen">
-        <remap from="~input" to="/v/output" />
+          name="height_filter"
+          args="load pcl/PassThrough nodelet_manager" output="screen">
+        <remap from="~input" to="/value_filter/output" />
         <rosparam>
             filter_field_name: z
             filter_limit_min: -10
