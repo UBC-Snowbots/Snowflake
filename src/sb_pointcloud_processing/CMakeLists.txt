@@ -51,6 +51,7 @@ add_executable(line_extractor_node
   include/Regression.h
 )
 
+
 add_library(sb_pointcloud_processing
     include/rgb_to_hsv.h
     src/rgb_to_hsv.cpp
@@ -65,13 +66,16 @@ target_link_libraries(sb_pointcloud_processing
 )
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(line_extractor_node
-   ${catkin_LIBRARIES}
-   ${sb_utils_LIBRARIES}
-   ${mapping_igvc_LIBRARIES}
-   ${PCL_COMMON_LIBRARIES}
-   ${PCL_IO_LIBRARIES}
-   ${pcl_conversions_LIBRARIES}
+target_link_libraries(line_extractor_node
+    ${catkin_LIBRARIES}
+    ${sb_utils_LIBRARIES}
+    ${mapping_igvc_LIBRARIES}
+    ${PCL_COMMON_LIBRARIES}
+    ${PCL_IO_LIBRARIES}
+    ${pcl_conversions_LIBRARIES}
+)
+add_dependencies(line_extractor_node 
+    ${mapping_igvc_EXPORTED_TARGETS}
 )
 
 install(
