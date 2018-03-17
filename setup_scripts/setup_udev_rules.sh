@@ -13,8 +13,8 @@ echo "================================================================"
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Target file directory
-file="/etc/udev/rules.d/10-snowbots.rules"
-if [ -e "$file" ]
+FILE="/etc/udev/rules.d/10-snowbots.rules"
+if [ -e "$FILE" ]
 then
   echo "Delete the existing Snowbots udev rules"
   
@@ -23,7 +23,7 @@ then
 fi
 
 # Copy the new snowbots udev rules to the rule folder
-sudo cp $CURR_DIR/10-snowbots.rules /etc/udev/rules.d/10-snowbots.rules
+sudo cp $CURR_DIR/10-snowbots.rules $FILE
 
 echo "================================================================"
 echo "Finished Installing snowbots udev rules"
