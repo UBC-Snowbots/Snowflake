@@ -1,7 +1,5 @@
 # Snowflake
 UBC Snowbots Repository for competitions.
-- IGVC - International Ground Vehicle Competition
-- IARRC - International Autonomous Robot Racing Competition
 
 ![alt tag](https://travis-ci.org/UBC-Snowbots/Snowflake.svg?branch=core)
 
@@ -9,9 +7,10 @@ UBC Snowbots Repository for competitions.
 - [Installation and Setup](#installation-and-setup)
   - [Important Notes](#important-notes)
   - [Zed Configuration](#zed-configuration)
-  - [Catkin Migration](#catkin-migration)
+- [New Members](#new-members)
 - [Conventions](#conventions)
   - [Github](#github-conventions)
+  - [Pull Requests](#pull-requests)
   - [Coding Conventions](#coding-conventions)
   - [Coordinate Systems](#coordinate-systems)
 - [Creating a New Node](#creating-a-new-node)
@@ -41,11 +40,10 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
 6. Fork this repository by heading over to the GitHub page and click the fork button on the top right
-7. Clone your server-side repository from the terminal by running `git clone github.com:YOUR_USERNAME/Snowflake.git` **(YOUR_USERNAME is your github username)**
-8. To start set-up run `cd ~/Snowflake && ./get_started.sh` **(Do not run this script as root)**
-    - _Just choose yes and enter your password when the terminal prompts you_ 
-9. Build the ROS project by running `source /opt/ros/kinetic/setup.bash` and `cd ~/Snowflake && catkin_make` 
-    - If everything compiles correctly and you don't get any errors, then you're good to go!
+7. Clone your server-side repository from the terminal by running git clone https://github.com/YOUR_USERNAME/Snowflake.git (YOUR_USERNAME is your github username)
+8. To start the setup run `cd ~/Snowflake && ./setup_scripts/install_tools.sh` (Do not run this script as root).
+    - *Just choose yes and enter your password when the terminal prompts you*
+9. If everything compiles correctly and you don't get any errors, then you're good to go!
 
 ### Important Notes:
 - To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/Snowflake`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
@@ -55,13 +53,24 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
 
+## New Members
+We've put together a seperate `README` file that should help to get you up and running. You can find it here: [README_NEWMEMBERS.md](README_NEWMEMBERS.md)
+
 ## Conventions
 
 ### Github Conventions
-- We follow the Forking Workflow: know what it is [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
+- We follow the Forking Workflow: here is what it is [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
     - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
+- Once your pull request has been reviewed and revised until it looks good from both your and the reviewers' sides, go ahead and Squash and Merge it, which will squash all the commits on your pull request into one and merge it to the target branch.
+
+### Pull Requests
+Below are some notes we would like to highlight about pull requests: 
+- Once your pull request has been approved, please proceed to merge and close the pull request yourself
+- When your pull requests receive comments, please reply to each comment individually. 
+- If there were any fixes that were specific to resources you found (eg. stackoverflow thread), please comment them into the PR for future reference. 
+- On a similar note, if you made design decisions, please document them in the comments of the PR. We often go back to close PRs to look at why things were done a certain way. It is very helpful for us to know how you came up with your brilliant solution. 
 
 ### Coding Conventions
 - Every **.cpp** and **.h** file should start with 
@@ -95,6 +104,8 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Constants are **ALL_CAPS_WITH_UNDERSCORES**
 - Functions are **camelCase**
 - Indentations are 4 spaces
+
+- `CMakeLists.txt` files should be reduced to only contain the minimum amount of comments. The version in `sample_package` has all the comments left in (for the sake of verbosity), so for a more representative example of what yours should look like, see `sb_vision/CMakeLists.txt` (or really any package aside from `sample_package`)
 
 ### Coordinate Systems
 - We try to follow ROS standards, which can be found [here](http://www.ros.org/reps/rep-0103.html)

@@ -1,0 +1,12 @@
+<!-- A .test file which launches LineExtractor node and its corresponding rostest -->
+<!-- The param values here are specifically for the rostest -->
+
+<launch>
+    <node name="line_extractor_node" pkg="sb_pointcloud_processing" type="line_extractor_node">
+        <param name="degree_polynomial" value="3" type="int" />
+        <param name="lambda" value="0" type="double" />
+        <param name="min_neighbours" value="1" type="int" />
+        <param name="radius" value="80" type="double" />
+    </node>
+    <test test-name="line_extractor_rostest" pkg="sb_pointcloud_processing" type="line_extractor_rostest" />
+</launch>

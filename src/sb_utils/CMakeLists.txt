@@ -41,7 +41,10 @@ include_directories(
 
 ## Declare a C++ library
 add_library(sb_utils
-    include/sb_utils.h src/sb_utils.cpp
+        include/sb_utils.h
+        include/RvizUtils.h
+        src/sb_utils.cpp
+        src/RvizUtils.cpp
 )
 
 ## Specify libraries to link a library or executable target against

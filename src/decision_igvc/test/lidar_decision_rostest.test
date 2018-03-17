@@ -1,0 +1,6 @@
+<!-- A .test file which launches the node and its corresponding rostest -->
+
+<launch>
+    <node name="lidar_decision" pkg="decision_igvc" type="lidar_decision" />
+    <test test-name="lidar_decision_rostest" pkg="decision_igvc" type="lidar_decision_rostest" />
+</launch>

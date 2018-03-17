@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV REQUIRED)
 find_package(sb_utils REQUIRED)
-find_package(vision REQUIRED)
+find_package(sb_vision REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_definitions(-std=c++14)
@@ -36,7 +36,7 @@ include_directories(
     ${OpenCV_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIRS}
     ${EIGEN3_LIBRARIES}
-    ${vision_INCLUDE_DIRS}
+    ${sb_vision_INCLUDE_DIRS}
     ./include
 )
 
@@ -58,7 +58,7 @@ target_link_libraries(lane_follow
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
     ${sb_utils_LIBRARIES}
-    ${vision_LIBRARIES}
+    ${sb_vision_LIBRARIES}
     )
 
 #############
@@ -72,8 +72,8 @@ target_link_libraries(lane_follow
 # endif()
 if (CATKIN_ENABLE_TESTING)
     # Adding gtests to the package
-    catkin_add_gtest(line-detect-test test/line-detect-test.cpp src/LineDetect.cpp src/LaneFollow.cpp ../vision/src/IPM.cpp)
-    catkin_add_gtest(lane-follow-test test/lane-follow-test.cpp src/LaneFollow.cpp src/LineDetect.cpp ../vision/src/IPM.cpp)
+    catkin_add_gtest(line-detect-test test/line-detect-test.cpp src/LineDetect.cpp src/LaneFollow.cpp)
+    catkin_add_gtest(lane-follow-test test/lane-follow-test.cpp src/LaneFollow.cpp src/LineDetect.cpp)
     target_link_libraries(lane-follow-test ${catkin_LIBRARIES})
     target_link_libraries(line-detect-test ${catkin_LIBRARIES})
 endif ()

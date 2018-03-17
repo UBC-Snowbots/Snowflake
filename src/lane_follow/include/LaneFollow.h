@@ -9,10 +9,18 @@
 #ifndef LANE_FOLLOW_LANEFOLLOW_H
 #define LANE_FOLLOW_LANEFOLLOW_H
 
+// ROS
+#include <ros/ros.h>
+#include <sensor_msgs/Image.h>
+#include <geometry_msgs/Twist.h>
+
+// Image Conversion
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+
 // Snowbots
-#include "HSVFilterNode.h"
-#include "IPMFilterNode.h"
 #include "LineDetect.h"
+#include "IPM.h"
 
 using namespace ros;
 using namespace cv;
@@ -86,7 +94,7 @@ class LaneFollow {
     double angular_vel_cap;
     double linear_vel_cap;
 
-    // Scalars
+    // Speed scalars
     double angular_speed_multiplier;
     double linear_speed_multiplier;
 };
