@@ -11,12 +11,12 @@ using namespace visualization_msgs;
 using namespace snowbots;
 
 Marker RvizUtils::createMarker(vector<geometry_msgs::Point> points,
-                                    Marker::_color_type color,
-                                    Marker::_scale_type scale,
-                                    string frame_id,
-                                    string ns,
-                                    int type,
-                                    int id) {
+                               Marker::_color_type color,
+                               Marker::_scale_type scale,
+                               string frame_id,
+                               string ns,
+                               int type,
+                               int id) {
     Marker marker;
 
     setupMarker(marker, scale, frame_id, ns, type, id);
@@ -70,15 +70,17 @@ Marker RvizUtils::createMarker(geometry_msgs::Point point,
     return marker;
 }
 
-MarkerArray RvizUtils::createMarkerArray(vector<vector<geometry_msgs::Point>> points_array,
-                               Marker::_color_type color,
-                               Marker::_scale_type scale,
-                               string frame_id,
-                               string ns,
-                               int type) {
+MarkerArray
+RvizUtils::createMarkerArray(vector<vector<geometry_msgs::Point>> points_array,
+                             Marker::_color_type color,
+                             Marker::_scale_type scale,
+                             string frame_id,
+                             string ns,
+                             int type) {
     visualization_msgs::MarkerArray markerArray;
     for (unsigned int i = 0; i < points_array.size(); i++) {
-        Marker marker = createMarker(points_array[i], color, scale, frame_id, ns, type, i);
+        Marker marker =
+        createMarker(points_array[i], color, scale, frame_id, ns, type, i);
         markerArray.markers.push_back(marker);
     }
 
@@ -105,17 +107,21 @@ Marker::_scale_type RvizUtils::createrMarkerScale(float x, float y, float z) {
     return scale;
 }
 
-void RvizUtils::setupMarker(Marker &marker, visualization_msgs::Marker::_scale_type scale, std::string frame_id, std::string ns,
-                            int type, int id) {
+void RvizUtils::setupMarker(Marker& marker,
+                            visualization_msgs::Marker::_scale_type scale,
+                            std::string frame_id,
+                            std::string ns,
+                            int type,
+                            int id) {
     marker.header.stamp       = ros::Time::now();
     marker.action             = Marker::ADD;
     marker.pose.orientation.w = 1.0;
 
     marker.type = type;
-    marker.id = id;
+    marker.id   = id;
 
     marker.header.frame_id = frame_id;
     marker.ns              = ns;
 
-    marker.scale  = scale;
+    marker.scale = scale;
 }

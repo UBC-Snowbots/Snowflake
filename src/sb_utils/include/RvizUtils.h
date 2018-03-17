@@ -25,13 +25,14 @@ class RvizUtils {
      *
      *  @return an rviz marker
      */
-    static visualization_msgs::Marker createMarker(std::vector<geometry_msgs::Point> points,
-                                            visualization_msgs::Marker::_color_type color,
-                                            visualization_msgs::Marker::_scale_type scale,
-                                            std::string frame_id,
-                                            std::string ns,
-                                            int type = visualization_msgs::Marker::POINTS,
-                                            int id = 0);
+    static visualization_msgs::Marker
+    createMarker(std::vector<geometry_msgs::Point> points,
+                 visualization_msgs::Marker::_color_type color,
+                 visualization_msgs::Marker::_scale_type scale,
+                 std::string frame_id,
+                 std::string ns,
+                 int type = visualization_msgs::Marker::POINTS,
+                 int id   = 0);
 
     /**
      *  Turn points into a marker for rviz
@@ -44,13 +45,14 @@ class RvizUtils {
      *
      *  @return an rviz marker
      */
-    static visualization_msgs::Marker createMarker(std::vector<geometry_msgs::Point> points,
-                                            std::vector<std_msgs::ColorRGBA> colors,
-                                            visualization_msgs::Marker::_scale_type scale,
-                                            std::string frame_id,
-                                            std::string ns,
-                                            int type = visualization_msgs::Marker::POINTS,
-                                            int id = 0);
+    static visualization_msgs::Marker
+    createMarker(std::vector<geometry_msgs::Point> points,
+                 std::vector<std_msgs::ColorRGBA> colors,
+                 visualization_msgs::Marker::_scale_type scale,
+                 std::string frame_id,
+                 std::string ns,
+                 int type = visualization_msgs::Marker::POINTS,
+                 int id   = 0);
 
     /**
      *  Turn a point into a marker for rviz
@@ -62,13 +64,14 @@ class RvizUtils {
      *
      *  @return an rviz marker
      */
-    static visualization_msgs::Marker createMarker(geometry_msgs::Point point,
-                                                   std::vector<std_msgs::ColorRGBA> colors,
-                                                   visualization_msgs::Marker::_scale_type scale,
-                                                   std::string frame_id,
-                                                   std::string ns,
-                                                   int type = visualization_msgs::Marker::POINTS,
-                                                   int id = 0);
+    static visualization_msgs::Marker
+    createMarker(geometry_msgs::Point point,
+                 std::vector<std_msgs::ColorRGBA> colors,
+                 visualization_msgs::Marker::_scale_type scale,
+                 std::string frame_id,
+                 std::string ns,
+                 int type = visualization_msgs::Marker::POINTS,
+                 int id   = 0);
 
     /**
      * Creates a Marker Array (array of Markers)
@@ -81,12 +84,13 @@ class RvizUtils {
      *
      * @return an rviz marker array
      */
-    static visualization_msgs::MarkerArray createMarkerArray(std::vector<std::vector<geometry_msgs::Point>> points_arary,
-                                            visualization_msgs::Marker::_color_type color,
-                                            visualization_msgs::Marker::_scale_type scale,
-                                            std::string frame_id,
-                                            std::string ns,
-                                            int type = visualization_msgs::Marker::POINTS);
+    static visualization_msgs::MarkerArray createMarkerArray(
+    std::vector<std::vector<geometry_msgs::Point>> points_arary,
+    visualization_msgs::Marker::_color_type color,
+    visualization_msgs::Marker::_scale_type scale,
+    std::string frame_id,
+    std::string ns,
+    int type = visualization_msgs::Marker::POINTS);
 
     /**
      *  Create a marker color type based on given red, green, blue, alpha
@@ -130,12 +134,12 @@ class RvizUtils {
      * @param type the type of marker
      * @param id the id of marker
      */
-    static void setupMarker(visualization_msgs::Marker &marker,
+    static void setupMarker(visualization_msgs::Marker& marker,
                             visualization_msgs::Marker::_scale_type scale,
                             std::string frame_id,
                             std::string ns,
                             int type = visualization_msgs::Marker::POINTS,
-                            int id = 0);
+                            int id   = 0);
 };
 };
 #endif // HOLE_TRACKER_RVIZUTILS_H

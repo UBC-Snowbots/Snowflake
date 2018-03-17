@@ -40,7 +40,7 @@ LineExtractorNode::LineExtractorNode(int argc,
     SB_getParam(private_nh, delta_x_param, this->x_delta, default_delta_x);
 
     std::string scale_param = "scale";
-    float default_scale    = 0.1;
+    float default_scale     = 0.1;
     SB_getParam(private_nh, scale_param, this->scale, default_scale);
 
     if (areParamsInvalid()) {
@@ -120,7 +120,8 @@ void LineExtractorNode::visualizeClusters() {
     convertClustersToPointsWithColors(this->clusters, cluster_points, colors);
 
     visualization_msgs::Marker::_scale_type scale =
-    snowbots::RvizUtils::createrMarkerScale(this->scale, this->scale, this->scale);
+    snowbots::RvizUtils::createrMarkerScale(
+    this->scale, this->scale, this->scale);
 
     std::string frame_id = "line_extractor_test";
     std::string ns       = "debug";
@@ -172,17 +173,20 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     visualization_msgs::Marker::_color_type color =
     snowbots::RvizUtils::createMarkerColor(0.0, 1.0, 1.0, 1.0);
     visualization_msgs::Marker::_scale_type scale =
-    snowbots::RvizUtils::createrMarkerScale(this->scale, this->scale, this->scale);
+    snowbots::RvizUtils::createrMarkerScale(
+    this->scale, this->scale, this->scale);
 
     std::string frame_id = "line_extractor_test";
     std::string ns       = "debug";
 
-    visualization_msgs::MarkerArray markerArray = snowbots::RvizUtils::createMarkerArray(lines_points,
-                                                                                         color,
-                                                                                         scale,
-                                                                                         frame_id,
-                                                                                         ns,
-                                                                                         visualization_msgs::Marker::LINE_STRIP);
+    visualization_msgs::MarkerArray markerArray =
+    snowbots::RvizUtils::createMarkerArray(
+    lines_points,
+    color,
+    scale,
+    frame_id,
+    ns,
+    visualization_msgs::Marker::LINE_STRIP);
 
     rviz_line_publisher.publish(markerArray);
 }
