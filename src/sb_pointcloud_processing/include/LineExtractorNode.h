@@ -21,7 +21,6 @@
 #include <sb_utils.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <string>
-#include <visualization_msgs/MarkerArray.h>
 
 class LineExtractorNode {
   public:
@@ -101,8 +100,8 @@ class LineExtractorNode {
      */
     float x_delta;
 
-    /**
-     * @param scale scale of the marker points
+    /*
+     * scale of the marker points
      */
     float scale;
 
