@@ -38,7 +38,7 @@ class PathFinding {
                                             double x_pos,
                                             double y_pos,
                                             double orientation,
-                                            int num_poses);
+                                            int num_poses, bool valid_cood);
 
     /**
      * Adds geometric vector values to two empty vectors, based on contents of
@@ -99,9 +99,12 @@ class PathFinding {
     std::string global_frame; // The global frame ("map", "odom", etc.)
     int num_poses;            // Rosparam: number of poses to process
 
+    /* Robot coordinates in global system */
     double robot_x_pos;
     double robot_y_pos;
     double robot_orientation;
+
+    bool valid_cood; //Flag is set to true when we receive our first tf message
 };
 
 #endif // PATHFINDING_IGVC_PATHFINDING_H

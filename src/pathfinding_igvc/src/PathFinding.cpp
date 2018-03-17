@@ -14,10 +14,8 @@ PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
     ros::NodeHandle private_nh("~");
     uint32_t queue_size = 1;
 
-    /*Assume initial coordinates: may need to change later*/
-    robot_x_pos       = 0;
-    robot_y_pos       = 0;
-    robot_orientation = 0;
+    /*No received coordinates from tf on launch so not valid */
+    valid_cood = false;
 
     std::string path_subscribe_topic = "/path"; // Setup subscriber to path
     path_subscriber                  = nh.subscribe(
@@ -44,7 +42,7 @@ void PathFinding::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
     nav_msgs::Path path_msg =
     *path_ptr; // Take required information from received message
     geometry_msgs::Twist twist_msg = pathToTwist(
-    path_msg, robot_x_pos, robot_y_pos, robot_orientation, num_poses);
+    path_msg, robot_x_pos, robot_y_pos, robot_orientation, num_poses, valid_cood);
     twist_publisher.publish(twist_msg);
 }
 
@@ -70,6 +68,7 @@ void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
             robot_y_pos = y_pos;
             robot_orientation =
             yaw; // Orientation = rotation about z axis (yaw)
+            valid_cood = true;
         }
     }
 }
@@ -78,8 +77,14 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg,
                                               double x_pos,
                                               double y_pos,
                                               double orientation,
-                                              int num_poses) {
+                                              int num_poses, bool valid_cood) {
     geometry_msgs::Twist twist_msg; // Initialize velocity message
+
+    if (!valid_cood){ //No TF received yet so don't move
+        twist_msg.linear.x = 0;
+        twist_msg.angular.z = 0;
+        return twist_msg;
+    }
 
     std::vector<geometry_msgs::PoseStamped> inc_poses = path_msg.poses;
 
@@ -94,8 +99,7 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg,
 
     float x_sum = weightedSum(
     x_vectors,
-    num_poses -
-    1); //-1 because number of vectors is one less than number of poses
+    num_poses - 1); //-1 because number of vectors is one less than number of poses
     float y_sum = weightedSum(y_vectors, num_poses - 1);
 
     float desired_angle = atan(y_sum / x_sum);
@@ -115,7 +119,6 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg,
 
     twist_msg.linear.x  = speed;
     twist_msg.angular.z = turn_rate;
-
     return twist_msg;
 }
 

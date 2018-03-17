@@ -46,7 +46,7 @@ TEST(PathFinding, testStraightPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.875, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0.785, twist_msg.angular.z, 0.01);
 }
@@ -68,7 +68,7 @@ TEST(PathFinding, testPerpenPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.750, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(-1.57, twist_msg.angular.z, 0.01);
 }
@@ -90,7 +90,7 @@ TEST(PathFinding, testOppPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.5, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(M_PI, twist_msg.angular.z, 0.01);
 }
@@ -112,7 +112,7 @@ TEST(PathFinding, testFarStartPos) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.63, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(2.36, twist_msg.angular.z, 0.01);
 }
@@ -140,7 +140,7 @@ TEST(PathFinding, testSharpTurns) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.787, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(1.336, twist_msg.angular.z, 0.01);
 }
@@ -167,7 +167,7 @@ TEST(PathFinding, testErraticPath) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.903, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0.606, twist_msg.angular.z, 0.01);
 }
@@ -189,7 +189,7 @@ TEST(PathFinding, testPathLag) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(1.0, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0, twist_msg.angular.z, 0.01);
 }
