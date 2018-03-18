@@ -53,6 +53,9 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
 
+### Nodelets Quick Guide
+See [here](nodelets.md)
+
 ## New Members
 We've put together a seperate `README` file that should help to get you up and running. You can find it here: [README_NEWMEMBERS.md](README_NEWMEMBERS.md)
 
