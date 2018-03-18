@@ -8,3 +8,6 @@
 # The points that the spline passes through sequentially
 # (ie. the first and last points are the start and end of the spline)
 Point2D[] points
+
+# The degree of the spline
+std_msgs/Int32 degree
