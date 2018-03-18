@@ -59,7 +59,9 @@ We've put together a seperate `README` file that should help to get you up and r
 ## Conventions
 
 ### Github Conventions
-- We follow the Forking Workflow: [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962) is what it is, and [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962) is a good TLDR of it. 
+- We follow the Forking Workflow:
+    - [what it is](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow)
+    - [how to use it](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
     - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
