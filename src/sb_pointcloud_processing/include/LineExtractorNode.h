@@ -9,6 +9,7 @@
 
 #include "DBSCAN.h"
 #include "Regression.h"
+#include <RvizUtils.h>
 #include <iostream>
 #include <mapping_igvc/LineObstacle.h>
 #include <math.h>
@@ -33,9 +34,25 @@ class LineExtractorNode {
     // main entry function
     void extractLines();
 
+    /*
+     * @clusters: input clusters
+     * @cluster_points: vector to store converted cluster points
+     * @colors: vector to store color for each cluster point
+     * This function takes in @clusters, assigns a different color
+     * for each cluster, and converts each point to geometry_msgs::Point.
+     * It pushes the points and colors to the back of @cluster_points
+     * and @colors.
+     */
+    static void convertClustersToPointsWithColors(
+    std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+    std::vector<geometry_msgs::Point>& cluster_points,
+    std::vector<std_msgs::ColorRGBA>& colors);
+
   private:
     ros::Subscriber subscriber;
     ros::Publisher publisher;
+    ros::Publisher rviz_line_publisher;
+    ros::Publisher rviz_cluster_publisher;
 
     /*
      * @dbscan takes in a PointCloud and clusters them into a vector of
@@ -78,6 +95,17 @@ class LineExtractorNode {
     float radius;
 
     /*
+     * @x_delta is the parameter for visualizing LineObstacle. It
+     * determines the x interval between adjacent points in RViz.
+     */
+    float x_delta;
+
+    /*
+     * scale of the marker points
+     */
+    float scale;
+
+    /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
      * been converted from sensor_msgs PointCloud2
      */
@@ -89,6 +117,30 @@ class LineExtractorNode {
      * to PCL PointCloud pointer and then extracts lines from the PointCloud
      */
     void pclCallBack(const sensor_msgs::PointCloud2ConstPtr processed_pcl);
+
+    /*
+     * @line_obstacles a list of LineObstacle messages
+     * This function takes in @line_obstacles and publishes a message
+     * to rviz for visualization at "~/debug/output_line_obstacle".
+     */
+    void visualizeLineObstacles(
+    std::vector<mapping_igvc::LineObstacle> line_obstacles);
+
+    /*
+     * This function makes a Marker for all points in @clusters
+     * with a different color for each cluster and publishes a message
+     * to rviz for visualization at "~/debug/clusters".
+     */
+    void visualizeClusters();
+
+    /*
+     * @line_obstacles: list of line obstacle messages
+     * This function converts each line obstacle into a list of
+     * geometry_msgs:Point and then merges all of them into a single
+     * vector.
+     */
+    std::vector<std::vector<geometry_msgs::Point>> convertLineObstaclesToPoints(
+    std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
     /*
      * Convert a list of vectors to a list of LineObstacle message
