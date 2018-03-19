@@ -8,8 +8,8 @@ add_definitions(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
         roscpp
         sb_geom_msgs
-        ecl_geometry
         )
+find_package(Eigen3 REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -35,7 +35,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
         ${catkin_INCLUDE_DIRS}
-        ${sb_geom_INCLUDE_DIRS}
+        ${EIGEN3_INCLUDE_DIRS}
         ./include
 )
 
@@ -67,6 +67,13 @@ if (CATKIN_ENABLE_TESTING)
             )
     target_link_libraries(polyline-test ${catkin_LIBRARIES})
     add_dependencies(polyline-test ${catkin_EXPORTED_TARGETS})
+
+    catkin_add_gtest(splineline-test
+            test/splineline-test.cpp
+            src/SplineLine.cpp
+            )
+    target_link_libraries(splineline-test ${catkin_LIBRARIES})
+    add_dependencies(splineline-test ${catkin_EXPORTED_TARGETS})
 
 endif()
 

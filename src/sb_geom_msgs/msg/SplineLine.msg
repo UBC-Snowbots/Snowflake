@@ -1,3 +1,4 @@
+# TODO: Is there any meaning to having this if it's literally just a list of points?
 # A 2D Spline Line
 
 # We define the spline by the points it passes through, as well as the start
