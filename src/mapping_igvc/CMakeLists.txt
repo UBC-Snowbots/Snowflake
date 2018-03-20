@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
     message_generation
     std_msgs
     sb_utils
+    sb_geom
 )
 
 
@@ -94,8 +95,8 @@ if (CATKIN_ENABLE_TESTING)
 
     #catkin_add_gtest(spline-line-test
     #        test/spline-line-test.cpp
-    #        ../sb_utils/src/sb_geom/SplineLine.cpp
-    #        ../sb_utils/include/sb_geom/SplineLine.h
+    #        ../sb_utils/src/sb_geom/Spline.cpp
+    #        ../sb_utils/include/sb_geom/Spline.h
     #        include/spline.h
     #        )
     #target_link_libraries(spline-line-test

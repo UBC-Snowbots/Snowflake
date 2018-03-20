@@ -10,14 +10,11 @@
 // C++ STD includes
 #include <vector>
 
-// Alglib (used for spline interpolation) includes
-#include <libalglib/interpolation.h>
-
 // TODO: Should we have a general geometry package for these lines? Seems like we use them a lot (in IARRC, etc)...
 // TODO: (perhaps these could go in sb_utils
 // Snowbots Includes
-#include <sb_geom/SplineLine.h>
-#include <sb_geom/PolyLine.h>
+#include <sb_geom/Spline.h>
+#include <sb_geom/Polynomial.h>
 
 // TODO: Should this class be in it's own file? (probably...)
 class Cone {
@@ -83,7 +80,7 @@ public:
      * Add a given line to our map of the world
      * @param line the line to add
      */
-    void addObstacle(sb_geom::PolyLine line);
+    void addObstacle(sb_geom::Polynomial line);
 
     /**
      * Get all the cones in our world
@@ -99,7 +96,7 @@ private:
      * @param poly_line a polynomial line
      * @return the minimum distance between the spline and polynomial lines
      */
-    double distanceBetweenLines(sb_geom::SplineLine spline_line, sb_geom::PolyLine poly_line);
+    double distanceBetweenLines(sb_geom::Spline spline_line, sb_geom::Polynomial poly_line);
 
     /**
      * Merges the new line into the current line to come up with an updated line
@@ -110,7 +107,7 @@ private:
      * @param new_line the newly found line
      * @return the merged line
      */
-    sb_geom::SplineLine updateLineWithNewLine(sb_geom::SplineLine current_line, sb_geom::PolyLine new_line);
+    sb_geom::Spline updateLineWithNewLine(sb_geom::Spline current_line, sb_geom::Polynomial new_line);
 
     // the minimum distance between the center of two cones for them to be
     // considered different from each other (and so not merged)
@@ -124,7 +121,7 @@ private:
     std::vector<Cone> cones;
 
     // all known lines in our world
-    std::vector<sb_geom::SplineLine> lines;
+    std::vector<sb_geom::Spline> lines;
 };
 
 
