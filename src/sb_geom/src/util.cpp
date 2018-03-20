@@ -34,8 +34,12 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
     // over one third of the digits are correct.
     int get_digits = static_cast<int>(digits * 0.4);
 
-    return boost::math::tools::halley_iterate(
+    double best_x = boost::math::tools::halley_iterate(
             f, guess, line.x_min(), line.x_max(), get_digits, max_iter);
+
+    double dx = point.x() - best_x;
+    double dy = point.y() - line(best_x);
+    return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 }
 
 
