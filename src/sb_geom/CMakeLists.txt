@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sb_geom)
 
+# Add our custom cmake files to the `CMAKE_MODULE_PATH`
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 add_definitions(-std=c++14)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -9,7 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
         roscpp
         sb_geom_msgs
         )
-find_package(Eigen3 REQUIRED)
+find_package(ALGLIB REQUIRED)
+
 
 ###################################
 ## catkin specific configuration ##
@@ -35,7 +39,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
         ${catkin_INCLUDE_DIRS}
-        ${EIGEN3_INCLUDE_DIRS}
+        ${ALGLIB_INCLUDE_DIRS}
         ./include
 )
 
@@ -62,17 +66,20 @@ add_dependencies(sb_geom ${catkin_EXPORTED_TARGETS})
 if (CATKIN_ENABLE_TESTING)
 
     catkin_add_gtest(polyline-test
-            test/polyline-test.cpp
-            src/PolyLine.cpp
+        test/polynomial-test.cpp
+        src/Polynomial.cpp
             )
     target_link_libraries(polyline-test ${catkin_LIBRARIES})
     add_dependencies(polyline-test ${catkin_EXPORTED_TARGETS})
 
     catkin_add_gtest(splineline-test
             test/splineline-test.cpp
-            src/SplineLine.cpp
+        src/Spline.cpp
             )
-    target_link_libraries(splineline-test ${catkin_LIBRARIES})
+    target_link_libraries(splineline-test
+        ${catkin_LIBRARIES}
+        ${ALGLIB_LIBRARIES}
+        )
     add_dependencies(splineline-test ${catkin_EXPORTED_TARGETS})
 
 endif()

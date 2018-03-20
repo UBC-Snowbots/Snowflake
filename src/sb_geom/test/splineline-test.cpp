@@ -5,7 +5,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "sb_geom/SplineLine.h"
+#include "sb_geom/Spline.h"
 #include "sb_geom/Point2D.h"
 
 class SplineLineTest : public testing::Test {
@@ -22,19 +22,16 @@ TEST_F(SplineLineTest, messing_about){
             {0,0},
             {2,2},
             {0,3},
+            {10, 10}
     };
-    sb_geom::SplineLine spline_line(points);
+    sb_geom::Spline spline_line(points);
 
     std::cout << "~~ Points ~~"  << std::endl;
-    for (double i = 0; i <= 1; i += 0.05){
-        std::cout << spline_line._spline(i)(0) << ", "
-                << spline_line._spline(i)(1) << std::endl;
+    for (double i = 0; i <= 1; i += 0.01){
+        std::cout << i << ", " << spline_line(i).x() << ", " << spline_line(i).y() << std::endl;
     }
-    std::cout << "~~ Derivatives ~~" << std::endl;
-    for (double i = 0; i <= 1; i += 0.05){
-        std::cout << spline_line._spline.derivatives(i, 3) << std::endl;
-        std::cout << "--" << std::endl;
-    }
+    int i = 1;
+    std::cout << i << ", " << spline_line(i).x() << ", " << spline_line(i).y() << std::endl;
 
 }
 

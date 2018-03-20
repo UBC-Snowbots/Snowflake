@@ -11,27 +11,24 @@
 #include <sb_geom_msgs/SplineLine.h>
 #include <sb_geom/Point2D.h>
 
-// Eigen Includes
-#include <eigen3/unsupported/Eigen/Splines>
+// Alglib Includes
+#include <interpolation.h>
 
 namespace sb_geom {
 
+    // TODO: This class is rapidly becoming not very generic, might want to rename and move to mapping_igvc
+    // TODO: If we're using akima, might want to make a `Spline` interface and then a `AkimaSpline` subclass?
+    // TODO: This is more of a "curve" then a spline now? How to make this distinction?
     // A line, represented as a spline
-    class SplineLine {
+    class Spline {
     public:
 
-        /**
-         * Construct a SplineLine from a SplineLine msg
-         * @param spline_line_msg the msg to construct the SplineLine from
-         */
-        // TODO
-        //SplineLine(sb_geom_msgs::SplineLine spline_line_msg);
-
+        // TODO: Test me
         /**
          * Construct a Spline through a list of points
          * @param points the points to interpolate the spline through
          */
-        SplineLine(std::vector<Point2D> points);
+        Spline(std::vector<Point2D> &points);
 
         // TODO: Test me
         /**
@@ -58,12 +55,20 @@ namespace sb_geom {
          */
         Point2D operator()(double u);
 
-        // TODO: Descriptive comment
-        // TODO: Make this private
-        Eigen::Spline2d _spline;
-
     private:
 
+        /**
+         * Interpolates this spline through the current `interpolation_points`
+         */
+        void interpolate();
+
+        // The points this spline interpolates through
+        std::vector<Point2D> interpolation_points;
+
+        // TODO: More clear comment here
+        // The two splines that relate (u,x) and (u,y) respectively
+        alglib::spline1dinterpolant x_interpolant;
+        alglib::spline1dinterpolant y_interpolant;
     };
 
 }

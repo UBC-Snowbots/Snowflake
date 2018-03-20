@@ -26,13 +26,24 @@ namespace sb_geom {
         {};
 
         /**
-         * Construct a Point2D from a Point2D msg
+         * Construct a Point2D from a Point2D msg via Copy Constructor
+         *
          * @param point_msg
          */
-        Point2D(sb_geom_msgs::Point2D point_msg):
+        Point2D(const sb_geom_msgs::Point2D &point_msg):
                 _x(point_msg.x),
                 _y(point_msg.y)
         {};
+
+        /**
+         * Construct a Point2D from a Point2D msg via assignment
+         * Copy Constructor
+         * @param point_msg
+         */
+        Point2D& operator= (const sb_geom_msgs::Point2D &point_msg) {
+                _x = point_msg.x;
+                _y = point_msg.y;
+        };
 
         /**
          * Get the x coordinate of this point
