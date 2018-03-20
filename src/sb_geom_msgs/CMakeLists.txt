@@ -16,7 +16,7 @@ find_package(catkin REQUIRED
 ## Generate messages in the 'msg' folder
 add_message_files(
     DIRECTORY msg
-    FILES Point2D.msg PolyLine.msg SplineLine.msg
+    FILES Point2D.msg Polynomial.msg SplineLine.msg
 )
 
 ## Generate added messages and services with any dependencies listed here
