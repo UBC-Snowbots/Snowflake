@@ -4,7 +4,11 @@
  * Description: TODO
  */
 
+// Snowbots Includes
 #include <ObstacleManager.h>
+#include <sb_geom/util.h>
+
+// STD Includes
 #include <cmath>
 #include <algorithm>
 #include <tuple>
@@ -63,7 +67,7 @@ void ObstacleManager::addObstacle(Polynomial line) {
     // Find the distance from this line to every other known line
     std::vector<std::pair<double, int>> distances;
     for (int line_index = 0; line_index < lines.size(); line_index++) {
-        double distance = distanceBetweenLines(lines[line_index], line);
+        double distance = distanceBetweenLines(lines[line_index], line, 0, 0);
         distances.emplace_back(std::make_pair(distance, line_index));
     }
 
@@ -95,16 +99,52 @@ void ObstacleManager::addObstacle(Polynomial line) {
     }
 }
 
-double ObstacleManager::distanceBetweenLines(Spline spline_line,
-                                             Polynomial poly_line) {
-    // TODO
-    return 0;
+double ObstacleManager::distanceBetweenLines(sb_geom::Spline spline,
+                                             PolynomialSegment poly_line,
+                                             unsigned int num_sample_points,
+                                             double max_err) {
+    // The start and end of the section of spline we're sampling
+    // Initially just choose the entire spline
+    double u1 = 0;
+    double u2 = 1;
+    double distance_to_u1 = minDistanceFromPointToPolynomialSegment(
+            spline(u1), poly_line);
+    double distance_to_u2 = minDistanceFromPointToPolynomialSegment(
+            spline(u2), poly_line);
+    do {
+        // Calculate how much to step each time, depending on the length
+        // of spline we're sampling
+        double len_of_sub_spline = std::max(u1, u2) - std::min(u1, u2);
+        double u_step = len_of_sub_spline/num_sample_points;
+        for (int i = 0; i < num_sample_points; i++){
+            double curr_u = i * u_step;
+            // Find the distance to the polynomial from the sample point on the spline
+            Point2D curr_p = spline(i * 1/num_sample_points);
+            double dist_to_p = minDistanceFromPointToPolynomialSegment(curr_p, poly_line);
+            // Check if this point is better then at least one of the points we have
+            if (dist_to_p < std::max(distance_to_u1, distance_to_u2)){
+                // If it is better, overwrite the furthest currently known point
+                if (distance_to_u1 > distance_to_u2){
+                    u1 = curr_u;
+                    distance_to_u1 = dist_to_p;
+                } else { // (distance_to_p1 <= distance_to_p2)
+                    u2 = curr_u;
+                    distance_to_u2 = dist_to_p;
+                }
+            }
+        }
+    } while (std::abs(distance_to_u1 - distance_to_u2) > max_err);
+
+    // Return the average of the two closest points
+    return (distance_to_u1 + distance_to_u2)/2;
 }
 
 Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
                                                   Polynomial new_line) {
     // TODO
-    return Spline(Polynomial());
+//    - find closest point on spline to end points of poly
+//    - remove points in spline between two found closest points
+//    - re-fit spline through some points in poly and remaining points from spline2
 }
 
 

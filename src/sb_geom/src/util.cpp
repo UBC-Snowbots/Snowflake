@@ -24,9 +24,10 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
         return std::make_tuple(fx, dx, d2x);
     };
 
-    // TODO: better initialguess
-    // Just guess one of the end points of the line
-    double guess = line.x_min();
+    // TODO: better initial_guess
+
+    // Just initial_guess one of the end points of the line
+    double initial_guess = line.x_min();
     // Maximum possible binary digits accuracy for doubles
     // digits used to control how accurate to try to make the result.
     const int digits = std::numeric_limits<double>::digits;
@@ -34,9 +35,11 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
     // over one third of the digits are correct.
     int get_digits = static_cast<int>(digits * 0.4);
 
+    // Find the x value of the closest point on f(x)
     double best_x = boost::math::tools::halley_iterate(
-            f, guess, line.x_min(), line.x_max(), get_digits, max_iter);
+            f, initial_guess, line.x_min(), line.x_max(), get_digits, max_iter);
 
+    // Calculate the distance between the given point and the closest point on f(x)
     double dx = point.x() - best_x;
     double dy = point.y() - line(best_x);
     return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));

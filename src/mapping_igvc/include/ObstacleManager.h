@@ -15,6 +15,7 @@
 // Snowbots Includes
 #include <sb_geom/Spline.h>
 #include <sb_geom/Polynomial.h>
+#include <sb_geom/PolynomialSegment.h>
 
 // TODO: Should this class be in it's own file? (probably...)
 class Cone {
@@ -90,13 +91,22 @@ public:
 
 private:
 
+    // TODO: Test me!
     /**
      * Finds the minimum distance between a spline line and polynomial line
-     * @param spline_line a spline line
+     *
+     * It does this by first sampling points along the spline, finding the closest two to
+     * the polynomial, and then re-sampling the section of line between the two closest points
+     * until the difference in distance from each of the two points to the line is < `max_err`
+     * @param spline a spline line
      * @param poly_line a polynomial line
+     * @param num_sample_points the number of sample points to sample from the spline
+     * @param max_err the maximum allowable error in the distance
      * @return the minimum distance between the spline and polynomial lines
      */
-    double distanceBetweenLines(sb_geom::Spline spline_line, sb_geom::Polynomial poly_line);
+    double distanceBetweenLines(sb_geom::Spline spline, sb_geom::PolynomialSegment poly_line,
+                                unsigned int num_sample_points,
+                                double max_err);
 
     /**
      * Merges the new line into the current line to come up with an updated line
