@@ -4,7 +4,12 @@
  * Description: TODO
  */
 
+// Snowbots Includes
 #include "sb_geom/Spline.h"
+#include "sb_geom/util.h"
+
+// GNU Scientific Library Includes
+#include <gsl/gsl_poly.h>
 
 using namespace sb_geom;
 
@@ -12,6 +17,32 @@ using namespace sb_geom;
 Spline::Spline(std::vector<Point2D> &points):
     interpolation_points(points)
 {
+    interpolate();
+}
+
+Spline::Spline(sb_geom::PolynomialSegment poly_segment) {
+    // Add the start point of the polynomial segment
+    interpolation_points.emplace_back(Point2D(
+            poly_segment.x_min(), poly_segment(poly_segment.x_min())));
+
+    // Add an interpolation point for every inflection point in the polynomial segment
+    // We do this by find the roots of the first derivative
+    std::vector<double> roots = findRoots(poly_segment.deriv(1));
+    // TODO: Do we need this sort?
+    std::sort(roots.begin(), roots.end());
+    for (double& root : roots){
+        if (root > poly_segment.x_min() && root < poly_segment.x_max());
+        interpolation_points.emplace_back(Point2D(
+                root, poly_segment(root)
+        ));
+    }
+
+    // Add the end point of the Polynomial Segment
+    interpolation_points.emplace_back(Point2D(
+            poly_segment.x_max(), poly_segment(poly_segment.x_max())
+    ));
+
+    // Interpolate through the points
     interpolate();
 }
 

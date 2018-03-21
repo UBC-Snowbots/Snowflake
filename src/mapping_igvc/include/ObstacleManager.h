@@ -81,7 +81,7 @@ public:
      * Add a given line to our map of the world
      * @param line the line to add
      */
-    void addObstacle(sb_geom::Polynomial line);
+    void addObstacle(sb_geom::PolynomialSegment line);
 
     /**
      * Get all the cones in our world

@@ -25,6 +25,7 @@ namespace sb_geom {
          */
         Polynomial(sb_geom_msgs::Polynomial polynomial_msg);
 
+        // TODO: Should we be taking coefficients by reference?
         /**
          * Create a Polynomial with given coefficients
          * @param coefficients the coefficients of this polynomial
@@ -50,6 +51,7 @@ namespace sb_geom {
          */
         double operator()(double x);
 
+        // TODO: Should we just come up with a generic derivative function and then provide special 1st and 2nd functions that just call the generic one
         // TODO: Test me
         /**
          * Calculate the derivative of the polyline at the given point
@@ -65,6 +67,16 @@ namespace sb_geom {
          * @return the derivative of the line at the given x value
          */
         double deriv2nd(double x);
+
+        // TODO: better name?
+        // TODO: test me
+        /**
+         * Return the derivative polynomial of this one to the given degree
+         *
+         * @param degree the degree of the derivative (1st, 2nd, 3rd, etc.)
+         * @return the derivative polynomial of this one
+         */
+        Polynomial deriv(unsigned int degree);
 
     private:
         std::vector<double> _coefficients;

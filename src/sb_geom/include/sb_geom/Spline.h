@@ -13,6 +13,7 @@
 
 // Alglib Includes
 #include <interpolation.h>
+#include "PolynomialSegment.h"
 
 namespace sb_geom {
 
@@ -26,9 +27,20 @@ namespace sb_geom {
         // TODO: Test me
         /**
          * Construct a Spline through a list of points
+         *
          * @param points the points to interpolate the spline through
          */
         Spline(std::vector<Point2D> &points);
+
+        /**
+         * Construct a spline from a polynomial line segment
+         *
+         * We do this by sampling a spline through the endpoints of the polynomial segment,
+         * and through it's points of inflection.
+         *
+         * @param poly_segment
+         */
+        Spline(sb_geom::PolynomialSegment poly_segment);
 
         // TODO: Test me
         /**
@@ -36,6 +48,7 @@ namespace sb_geom {
          *
          * Approximates the spline by drawing lines between sample points and
          * summing the length
+         *
          * @param num_sample_points the number of sample points to use along
          * the spline
          * @return an approximation of the length of the spline
@@ -45,10 +58,11 @@ namespace sb_geom {
         // TODO: Test
         // TODO: Test exception cases
         /**
-         * Override the () operator to return a point at some length along
-         * the spline
+         * Override the () operator to return a point at some length along the spline
+         *
          * 0 is the first point in the spline
          * 1 is the last point in the spline
+         *
          * @param u a value in [0,1], where 0 is the first point on the spline
          * and 1 is the last point. Will throw an exception if u is not in [0,1]
          * @return the point at the given u value

@@ -63,7 +63,7 @@ void ObstacleManager::addObstacle(Cone cone) {
 }
 
 // TODO: The `addObstacle` functions seem pretty similar.... maybe we could apply DRY here?
-void ObstacleManager::addObstacle(Polynomial line) {
+void ObstacleManager::addObstacle(PolynomialSegment line) {
     // Find the distance from this line to every other known line
     std::vector<std::pair<double, int>> distances;
     for (int line_index = 0; line_index < lines.size(); line_index++) {
@@ -111,16 +111,19 @@ double ObstacleManager::distanceBetweenLines(sb_geom::Spline spline,
             spline(u1), poly_line);
     double distance_to_u2 = minDistanceFromPointToPolynomialSegment(
             spline(u2), poly_line);
+
     do {
         // Calculate how much to step each time, depending on the length
         // of spline we're sampling
         double len_of_sub_spline = std::max(u1, u2) - std::min(u1, u2);
         double u_step = len_of_sub_spline/num_sample_points;
+
         for (int i = 0; i < num_sample_points; i++){
             double curr_u = i * u_step;
             // Find the distance to the polynomial from the sample point on the spline
             Point2D curr_p = spline(i * 1/num_sample_points);
             double dist_to_p = minDistanceFromPointToPolynomialSegment(curr_p, poly_line);
+
             // Check if this point is better then at least one of the points we have
             if (dist_to_p < std::max(distance_to_u1, distance_to_u2)){
                 // If it is better, overwrite the furthest currently known point

@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
         sb_geom_msgs
         )
 find_package(ALGLIB REQUIRED)
+find_package(GSL REQUIRED)
 
 
 ###################################
@@ -40,6 +41,7 @@ catkin_package(
 include_directories(
         ${catkin_INCLUDE_DIRS}
         ${ALGLIB_INCLUDE_DIRS}
+        ${GSL_INCLUDE_DIRS}
         ./include
 )
 
@@ -79,6 +81,7 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(splineline-test
         ${catkin_LIBRARIES}
         ${ALGLIB_LIBRARIES}
+        ${GSL_LIBRARIES}
         )
     add_dependencies(splineline-test ${catkin_EXPORTED_TARGETS})
 

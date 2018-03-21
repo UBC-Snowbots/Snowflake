@@ -3,11 +3,15 @@
 // Snowbots Includes
 #include "sb_geom/util.h"
 
+// STD Includes
+#include <functional>
+
 // Boost Includes
 #include <boost/math/tools/roots.hpp>
 
-// STD Includes
-#include <functional>
+// GNU Scientific Library Includes
+#include <gsl/gsl_poly.h>
+
 
 using namespace sb_geom;
 
@@ -62,6 +66,32 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
     double dx = point.x() - best_x;
     double dy = point.y() - line(best_x);
     return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+}
+
+std::vector<double> findRoots(Polynomial poly){
+    // Allocate a the `gsl_poly_complex_workspace` used to solve the polynomial in later
+    gsl_poly_complex_workspace* workspace = gsl_poly_complex_workspace_alloc(poly.getDegree());
+
+    // This is what our roots will be returned in
+    gsl_complex_packed_ptr z;
+
+    // TODO: Check return value, what if it is `GSL_EFAILED`? Throw an exception?
+    // TODO: See docs: https://www.gnu.org/software/gsl/manual/html_node/General-Polynomial-Equations.html
+    // Solve for the roots of the polynomial
+    double* coefficients = &poly.coefficients()[0];
+    int success = gsl_poly_complex_solve(coefficients, poly.getDegree(), workspace, z);
+
+    // Free the workspace we allocated above
+    gsl_poly_complex_workspace_free(workspace);
+
+    // Put all the roots in a vector and return it
+    std::vector<double> roots;
+    roots.reserve(poly.getDegree());
+    for (int i = 0; i < poly.getDegree(); i++){
+        roots.emplace_back(z[2*i]);
+    }
+
+    return roots;
 }
 
 

@@ -38,14 +38,14 @@ namespace sb_geom {
          * Get the min x value of this line segment
          * @return the min x value of this line segment
          */
-        double &x_min() { return _x_min; }
+        inline double &x_min() { return _x_min; }
 
         // TODO: Test
         /**
          * Get the max x value of this line segment
          * @return the max x value of this line segment
          */
-        double &x_max() { return _x_max; }
+        inline double &x_max() { return _x_max; }
 
     private:
         // The min/max extents of the line segment

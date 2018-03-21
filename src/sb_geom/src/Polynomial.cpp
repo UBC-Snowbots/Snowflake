@@ -58,3 +58,11 @@ double Polynomial::deriv2nd(double x) {
     return y;
 }
 
+Polynomial Polynomial::deriv(unsigned int degree) {
+    std::vector<double> new_coeffs;
+    for (int i = degree; i < _coefficients.size(); i++){
+        new_coeffs.emplace_back(boost::math::factorial(i)*_coefficients[i]);
+    }
+    return Polynomial(new_coeffs);
+}
+

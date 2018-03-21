@@ -8,7 +8,6 @@
 
 namespace sb_geom {
     // TODO: Test me
-    // TODO: Do we even need this function?
     /**
      * Computes the shortest distance between a given point and polynomial line segment
      *
@@ -21,6 +20,17 @@ namespace sb_geom {
      */
     double minDistanceFromPointToPolynomialSegment(
             Point2D point, PolynomialSegment line, uintmax_t max_iter = 20);
+
+    // TODO: Test me
+    /**
+     * Find the roots of a given polynomial
+     *
+     * To do this we use the GNU Scientific Libraries General Polynomial Equations:
+     * https://www.gnu.org/software/gsl/manual/html_node/General-Polynomial-Equations.html
+     * @param poly the polynomial line to find the roots of
+     * @return the roots (x-values) of the polynomial
+     */
+    std::vector<double> findRoots(Polynomial poly);
 }
 
 #endif //SB_GEOM_UTIL_H
