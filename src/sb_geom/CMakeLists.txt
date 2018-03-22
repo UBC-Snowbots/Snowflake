@@ -101,5 +101,16 @@ if (CATKIN_ENABLE_TESTING)
         )
     add_dependencies(Spline-test ${catkin_EXPORTED_TARGETS})
 
+    catkin_add_gtest(utils-test
+        test/utils-test.cpp
+        ${sb_geom_SRCS}
+        )
+    target_link_libraries(utils-test
+        ${catkin_LIBRARIES}
+        ${ALGLIB_LIBRARIES}
+        ${GSL_LIBRARIES}
+        )
+    add_dependencies(utils-test ${catkin_EXPORTED_TARGETS})
+
 endif()
 

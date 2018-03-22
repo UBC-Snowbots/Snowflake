@@ -5,7 +5,7 @@
  */
 
 // Snowbots Includes
-#include "sb_geom/util.h"
+#include "sb_geom/utils.h"
 
 // STD Includes
 #include <functional>
@@ -72,27 +72,45 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
     return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 }
 
-std::vector<double> sb_geom::findRoots(sb_geom::Polynomial poly){
+std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly){
+    double* coefficients = &poly.coefficients()[0];
+
+    // Since `gsl_poly_complex_solve` requires the leading term of the polynomial to be
+    // non-zero, choose the degree to be less then the actual degree of the polnomial so this is the case
+    unsigned int degree = poly.getDegree();
+    for (; degree > 0 && coefficients[degree-1] == 0; degree--){}
+
     // Allocate a the `gsl_poly_complex_workspace` used to solve the polynomial in later
-    gsl_poly_complex_workspace* workspace = gsl_poly_complex_workspace_alloc(poly.getDegree());
+    gsl_poly_complex_workspace* workspace = gsl_poly_complex_workspace_alloc(degree);
 
     // This is what our roots will be returned in
-    gsl_complex_packed_ptr z;
+    double z[2*degree];
 
     // TODO: Check return value, what if it is `GSL_EFAILED`? Throw an exception?
     // TODO: See docs: https://www.gnu.org/software/gsl/manual/html_node/General-Polynomial-Equations.html
     // Solve for the roots of the polynomial
-    double* coefficients = &poly.coefficients()[0];
-    int success = gsl_poly_complex_solve(coefficients, poly.getDegree(), workspace, z);
+    int success = gsl_poly_complex_solve(coefficients, degree, workspace, z);
 
     // Free the workspace we allocated above
     gsl_poly_complex_workspace_free(workspace);
 
-    // Put all the roots in a vector and return it
+    // Put all the real roots in a vector and return it
     std::vector<double> roots;
-    roots.reserve(poly.getDegree());
     for (int i = 0; i < poly.getDegree(); i++){
-        roots.emplace_back(z[2*i]);
+        // Get the real part of the root
+        double real_part = z[2*i];
+        // Because of numerical instability, round to the 12th decimal place
+        // (because zero values might show up as non-zero)
+        real_part = std::round(real_part * 1e12) / 1e12;
+        // If it's non-zero, add it to our roots
+        if (real_part != 0){
+            roots.emplace_back(real_part);
+        }
+    }
+
+    // Check for case where no roots have non-zero real parts, but there is a real root at 0
+    if (poly(0) == 0){
+        roots.emplace_back(0);
     }
 
     return roots;
@@ -148,7 +166,7 @@ sb_geom::getInterpolationPointsFromPolySegment(PolynomialSegment poly_segment) {
 
     // Add an interpolation point for every critical point in the polynomial segment
     // We do this by find the roots of the first derivative
-    std::vector<double> roots = findRoots(poly_segment.deriv(1));
+    std::vector<double> roots = findRealRoots(poly_segment.deriv(1));
     // TODO: Do we need this sort?
     std::sort(roots.begin(), roots.end());
     for (double& root : roots){

@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
- * Created On:  February 24th, 2018
- * Description: Test for the `PolyLine` class
+ * Created On:  March 19th, 2018
+ * Description: Test for the `Spline` class
  */
 
 // GTest Includes
@@ -76,12 +76,12 @@ TEST_F(SplineTest, constructor_from_PolynomialSegment){
     // We know where these critical points are by understanding a bit of the
     // implementation. Since we use the start, end, and critical points as the
     // interpolation points, they will be a u=0,1,2,etc.
+
     Point2D crit_point_1(-8.0/3.0, 155.0/27.0);
     EXPECT_EQ(crit_point_1, spline.getPointAtZeroToNIndex(1));
 
-    // TODO: YOU ARE HERE, need to check second critical point:
-    // https://www.wolframalpha.com/input/?i=critical+points+of+1%2F2x%5E3%2B2x%5E2%2B1
-    // https://www.wolframalpha.com/input/?i=value+of+1%2F2x%5E3%2B2x%5E2%2B1+at+-8%2F3
+    Point2D crit_point_2(0,1);
+    EXPECT_EQ(crit_point_2, spline.getPointAtZeroToNIndex(2));
 }
 
 // TODO: Not a real test - delete me

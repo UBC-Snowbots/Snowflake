@@ -33,14 +33,14 @@ namespace sb_geom {
     // TODO: Test me
     // TODO: Should this go in the Polynomial class?
     /**
-     * Find the roots of a given polynomial
+     * Find the real roots of a given polynomial
      *
      * To do this we use the GNU Scientific Libraries General Polynomial Equations:
      * https://www.gnu.org/software/gsl/manual/html_node/General-Polynomial-Equations.html
      * @param poly the polynomial line to find the roots of
-     * @return the roots (x-values) of the polynomial
+     * @return the x-values of the roots of the polynomial in *arbitrary* order
      */
-    std::vector<double> findRoots(Polynomial poly);
+    std::vector<double> findRealRoots(Polynomial poly);
 
     // TODO: Test me
     /**

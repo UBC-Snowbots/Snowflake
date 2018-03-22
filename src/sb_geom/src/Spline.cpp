@@ -6,7 +6,7 @@
 
 // Snowbots Includes
 #include "sb_geom/Spline.h"
-#include "sb_geom/util.h"
+#include "sb_geom/utils.h"
 
 // GNU Scientific Library Includes
 #include <gsl/gsl_poly.h>
