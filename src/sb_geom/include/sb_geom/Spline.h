@@ -51,7 +51,6 @@ namespace sb_geom {
     class Spline {
     public:
 
-        // TODO: Test me
         /**
          * Construct a Spline through a list of points
          *
@@ -63,7 +62,7 @@ namespace sb_geom {
          * Construct a spline from a polynomial line segment
          *
          * We do this by sampling a spline through the endpoints of the polynomial segment,
-         * and through it's points of inflection.
+         * and through it's critical points
          *
          * @param poly_segment
          */

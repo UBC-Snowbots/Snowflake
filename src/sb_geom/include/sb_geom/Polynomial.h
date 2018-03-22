@@ -49,6 +49,7 @@ namespace sb_geom {
          */
         unsigned int getDegree();
 
+        // TODO: We should consider adding a function for this, then just having the operator call it
         /**
          * Override the () operator so that we can use it to get the y value for a given x
          * @param x the x value to get the y value of the line at

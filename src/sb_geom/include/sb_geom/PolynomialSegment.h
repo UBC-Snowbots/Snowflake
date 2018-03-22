@@ -47,6 +47,24 @@ namespace sb_geom {
          */
         inline double &x_max() { return _x_max; }
 
+        // TODO: Test me
+        /**
+         * Get the starting point of this segment
+         * @return the point on the polynomial at `x_min`
+         */
+        inline Point2D getStartPoint(){
+            return Point2D(x_min(), operator()(x_min()));
+        }
+
+        // TODO: Test me
+        /**
+         * Get the ending point of this segment
+         * @return the point on the polynomial at `x_max`
+         */
+        inline Point2D getEndPoint(){
+            return Point2D(x_max(), operator()(x_max()));
+        }
+
     private:
         // The min/max extents of the line segment
         double _x_min, _x_max;

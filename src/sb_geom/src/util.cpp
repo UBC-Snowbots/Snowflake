@@ -146,7 +146,7 @@ sb_geom::getInterpolationPointsFromPolySegment(PolynomialSegment poly_segment) {
     interpolation_points.emplace_back(Point2D(
             poly_segment.x_min(), poly_segment(poly_segment.x_min())));
 
-    // Add an interpolation point for every inflection point in the polynomial segment
+    // Add an interpolation point for every critical point in the polynomial segment
     // We do this by find the roots of the first derivative
     std::vector<double> roots = findRoots(poly_segment.deriv(1));
     // TODO: Do we need this sort?

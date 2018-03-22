@@ -24,8 +24,9 @@ protected:
     }
 };
 
-// Tests the version of the constructor that takes a vector points
-TEST_F(SplineTest, constructor_from_points){
+// Tests the version of the constructor that takes a vector of points
+// with a small sample of points
+TEST_F(SplineTest, constructor_from_points_small_case){
     std::vector<Point2D> points = {{1,1}, {3,3}, {2,4}, {5, 1}};
     Spline spline(points);
 
@@ -56,6 +57,31 @@ TEST_F(SplineTest, constructor_from_points){
     EXPECT_LE(p.x(), 5);
     EXPECT_GE(p.y(), 1);
     EXPECT_LE(p.y(), 4);
+}
+
+// Test the constructor from a PolynomialSegment
+TEST_F(SplineTest, constructor_from_PolynomialSegment){
+
+    // y = 0.5x^3 + 2x^2 + 1
+    std::vector<double> coeff = {1, 0, 2, 0.5};
+    PolynomialSegment poly_segment(coeff, -5, 5);
+
+    Spline spline(poly_segment);
+
+    // Check that the spline starts and ends at the start and end of the segment
+    EXPECT_EQ(poly_segment.getStartPoint(), spline(0));
+    EXPECT_EQ(poly_segment.getEndPoint(), spline(1));
+
+    // Check that the spline passes through the critical points of the polynomial
+    // We know where these critical points are by understanding a bit of the
+    // implementation. Since we use the start, end, and critical points as the
+    // interpolation points, they will be a u=0,1,2,etc.
+    Point2D crit_point_1(-8.0/3.0, 155.0/27.0);
+    EXPECT_EQ(crit_point_1, spline.getPointAtZeroToNIndex(1));
+
+    // TODO: YOU ARE HERE, need to check second critical point:
+    // https://www.wolframalpha.com/input/?i=critical+points+of+1%2F2x%5E3%2B2x%5E2%2B1
+    // https://www.wolframalpha.com/input/?i=value+of+1%2F2x%5E3%2B2x%5E2%2B1+at+-8%2F3
 }
 
 // TODO: Not a real test - delete me

@@ -65,7 +65,7 @@ namespace sb_geom {
      * Find a set of interpolation points in a Polynomial Segment
      *
      * We do this by choosing the points to be the start point, end point,
-     * and points of inflection of the polynomial line
+     * and critical points of the polynomial line
      *
      * @param poly_segment the Polynomial Segment to find the points in
      * @return the interpolation points
