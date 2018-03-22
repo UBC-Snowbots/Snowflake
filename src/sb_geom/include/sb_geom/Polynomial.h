@@ -42,7 +42,7 @@ namespace sb_geom {
          * Get the degree of this polynomial
          * @return the degree of this polynomial
          */
-        int getDegree();
+        unsigned int getDegree();
 
         /**
          * Override the () operator so that we can use it to get the y value for a given x
@@ -51,22 +51,14 @@ namespace sb_geom {
          */
         double operator()(double x);
 
-        // TODO: Should we just come up with a generic derivative function and then provide special 1st and 2nd functions that just call the generic one
         // TODO: Test me
         /**
-         * Calculate the derivative of the polyline at the given point
-         * @param x the x value to get the derivative of the line at
-         * @return the derivative of the line at the given x value
+         * Calculate the derivative to a given degree at a given point
+         * @param x the point to calculate the derivative at
+         * @param degree the degree of the derivative (1st, 2nd, etc.)
+         * @return the value of the degree'th derivative at `x`
          */
-        double deriv1st(double x);
-
-        // TODO: Test me
-        /**
-         * Calculate the second derivative of the polyline at the given point
-         * @param x the x value to get the derivative of the line at
-         * @return the derivative of the line at the given x value
-         */
-        double deriv2nd(double x);
+        double deriv(double x, unsigned int degree);
 
         // TODO: better name?
         // TODO: test me

@@ -32,8 +32,8 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
         double y0 = point.y();
 
         double f_x = line(x);
-        double f_dx = line.deriv1st(x);
-        double f_d2x = line.deriv2nd(x);
+        double f_dx = line.deriv(x, 1);
+        double f_d2x = line.deriv(x, 2);
 
         // g(x) is the function representing the distance from the point to the polynomial line
         // for g'(x) see https://www.wolframalpha.com/input/?i=d%2Fdx+sqrt((f(x)-y_0)%5E2%2B(x-x_0)%5E2)

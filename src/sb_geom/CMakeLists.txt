@@ -73,11 +73,22 @@ add_dependencies(sb_geom ${catkin_EXPORTED_TARGETS})
 if (CATKIN_ENABLE_TESTING)
 
     catkin_add_gtest(polyline-test
-        test/polynomial-test.cpp
+            test/Polynomial-test.cpp
         src/Polynomial.cpp
             )
     target_link_libraries(polyline-test ${catkin_LIBRARIES})
     add_dependencies(polyline-test ${catkin_EXPORTED_TARGETS})
+
+    catkin_add_gtest(Polynomial-test
+            test/Polynomial-test.cpp
+            ${sb_geom_SRCS}
+            )
+    target_link_libraries(Polynomial-test
+            ${catkin_LIBRARIES}
+            ${ALGLIB_LIBRARIES}
+            ${GSL_LIBRARIES}
+            )
+    add_dependencies(Polynomial-test ${catkin_EXPORTED_TARGETS})
 
     catkin_add_gtest(Spline-test
             test/Spline-test.cpp
