@@ -21,26 +21,8 @@ Spline::Spline(std::vector<Point2D> &points):
 }
 
 Spline::Spline(sb_geom::PolynomialSegment poly_segment) {
-    // Add the start point of the polynomial segment
-    interpolation_points.emplace_back(Point2D(
-            poly_segment.x_min(), poly_segment(poly_segment.x_min())));
-
-    // Add an interpolation point for every inflection point in the polynomial segment
-    // We do this by find the roots of the first derivative
-    std::vector<double> roots = findRoots(poly_segment.deriv(1));
-    // TODO: Do we need this sort?
-    std::sort(roots.begin(), roots.end());
-    for (double& root : roots){
-        if (root > poly_segment.x_min() && root < poly_segment.x_max());
-        interpolation_points.emplace_back(Point2D(
-                root, poly_segment(root)
-        ));
-    }
-
-    // Add the end point of the Polynomial Segment
-    interpolation_points.emplace_back(Point2D(
-            poly_segment.x_max(), poly_segment(poly_segment.x_max())
-    ));
+    // Get the interpolation points from the polynomial segment
+    interpolation_points = getInterpolationPointsFromPolySegment(poly_segment);
 
     // Interpolate through the points
     interpolate();
@@ -49,11 +31,11 @@ Spline::Spline(sb_geom::PolynomialSegment poly_segment) {
 double Spline::approxLength(int num_sample_points) {
     double length = 0;
 
-    Point2D prev_point(this->(0));
+    Point2D prev_point(this->operator()(0));
     Point2D curr_point;
     double increment = 1/num_sample_points;
     for (int i = 0; i < 1; i++){
-        curr_point = this->(i * increment);
+        curr_point = this->operator()(i * increment);
         // Calculate distance between current and previous point
         double dx = curr_point.x() - prev_point.x();
         double dy = curr_point.y() - prev_point.y();
@@ -65,6 +47,26 @@ double Spline::approxLength(int num_sample_points) {
 
     return length;
 }
+
+std::vector<Point2D>
+Spline::getInterpolationPointsInRange(double start_u, double end_u) {
+    // If the start is after the end, just return an empty vector
+    if (start_u >= end_u){
+        return std::vector<Point2D>();
+    }
+
+    // Scale the given u value from [0,1] -> [0,n] where n is the number of
+    // points the spline interpolates through and round down and up respectively
+    double start_index = std::floor(start_u * (interpolation_points.size()-1));
+    double end_index = std::ceil(start_u * (interpolation_points.size()-1));
+
+    // Get the interpolation points in the given index range
+    return std::vector<Point2D>(
+            interpolation_points.begin()+start_index,
+            interpolation_points.begin()+end_index
+    );
+}
+
 Point2D Spline::operator()(double u){
     if (u < 0 || u > 1){
         // Throw an exception if u is outside of [0,1]

@@ -24,6 +24,10 @@ std::vector<Cone> ObstacleManager::getConeObstacles() {
     return cones;
 }
 
+std::vector<sb_geom::Spline> ObstacleManager::getLineObstacle() {
+    return lines;
+}
+
 void ObstacleManager::addObstacle(Cone cone) {
     // Find the distance to every known cone from this one
     std::vector<std::pair<double,int>> distances;
@@ -143,11 +147,41 @@ double ObstacleManager::distanceBetweenLines(sb_geom::Spline spline,
 }
 
 Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
-                                                  Polynomial new_line) {
-    // TODO
-//    - find closest point on spline to end points of poly
-//    - remove points in spline between two found closest points
-//    - re-fit spline through some points in poly and remaining points from spline2
+                                              PolynomialSegment new_line) {
+    Point2D min_endpoint(new_line.x_min(), new_line(new_line.x_min()));
+    Point2D max_endpoint(new_line.x_max(), new_line(new_line.x_max()));
+
+    // Find the closest points on the spline to the start and end points of the
+    // polynomial
+    // TODO: Make max_err and num_sample points here class members we can set
+    double u1 =
+            findClosestPointOnSplineToPoint(current_line, min_endpoint, 100, 0.01);
+    double u2 =
+            findClosestPointOnSplineToPoint(current_line, max_endpoint, 100, 0.01);
+
+    // "replace" the interpolation points between `u1` and `u2` with interpolation
+    // points created from the polynomial line
+
+    // Find the points "before" the polynomial line segment (on the spline)
+    std::vector<Point2D> points_before_poly =
+            current_line.getInterpolationPointsInRange(0, std::min(u1,u2));
+    // Find the points through the polynomial line segment (on the polynomial itself)
+    std::vector<Point2D> points_in_poly =
+            getInterpolationPointsFromPolySegment(new_line);
+    // Find the points "after" the polynomial segment (on the spline)
+    std::vector<Point2D> points_after_poly =
+            current_line.getInterpolationPointsInRange(std::max(u1,u2), 1);
+
+    // Merge the 3 sets of interpolation points
+    std::vector<Point2D> new_interpolation_points = points_before_poly;
+    new_interpolation_points.insert(
+            new_interpolation_points.end(), points_in_poly.begin(), points_in_poly.end());
+    new_interpolation_points.insert(
+            new_interpolation_points.end(), points_after_poly.begin(), points_after_poly.end());
+
+    // Return a spline interpolated through our new points
+    return Spline(new_interpolation_points);
 }
+
 
 

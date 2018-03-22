@@ -8,21 +8,22 @@
 #include "sb_geom/Spline.h"
 #include "sb_geom/Point2D.h"
 
-class SplineLineTest : public testing::Test {
+class SplineTest : public testing::Test {
 protected:
-    SplineLineTest(){};
+    SplineTest(){};
 
     virtual void SetUp() {
     }
 };
 
 // TODO: Not a real test - delete me
-TEST_F(SplineLineTest, messing_about){
+TEST_F(SplineTest, messing_about){
     std::vector<sb_geom::Point2D> points = {
             {0,0},
             {2,2},
             {0,3},
-            {10, 10}
+            {10, 10},
+            {6,2}
     };
     sb_geom::Spline spline_line(points);
 
@@ -34,6 +35,7 @@ TEST_F(SplineLineTest, messing_about){
     std::cout << i << ", " << spline_line(i).x() << ", " << spline_line(i).y() << std::endl;
 
 }
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

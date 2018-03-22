@@ -15,7 +15,7 @@ namespace sb_geom {
     // A segment of a polnomial line
     class PolynomialSegment : public Polynomial {
     public:
-        // TODO: COmment?
+        // TODO: Comment?
         PolynomialSegment() :
                 _x_min(0),
                 _x_max(0)

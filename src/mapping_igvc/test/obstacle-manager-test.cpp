@@ -125,6 +125,19 @@ TEST_F(ObstacleManagerTest, add_several_cones){
     EXPECT_EQ(expected, actual);
 }
 
+// TODO: Delete me, not a real test
+TEST_F(ObstacleManagerTest, messing_about){
+    ObstacleManager obstacle_manager(10, 10);
+
+    std::vector<double> coeff = {0, 0, 1.0/5.0};
+    sb_geom::PolynomialSegment poly_segment(coeff, 2, 5);
+    obstacle_manager.addObstacle(poly_segment);
+    coeff = {0, 0, 1/4};
+    poly_segment = sb_geom::PolynomialSegment(coeff, 4, 10);
+    obstacle_manager.addObstacle(poly_segment);
+    std::vector<sb_geom::Spline> lines = obstacle_manager.getLineObstacle();
+}
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

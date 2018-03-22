@@ -8,12 +8,12 @@
 #define SB_GEOM_SPLINELINE_H
 
 // Snowbots Includes
-#include <sb_geom_msgs/SplineLine.h>
-#include <sb_geom/Point2D.h>
+#include "sb_geom_msgs/SplineLine.h"
+#include "sb_geom/Point2D.h"
+#include "sb_geom/PolynomialSegment.h"
 
 // Alglib Includes
-#include <interpolation.h>
-#include "PolynomialSegment.h"
+#include <libalglib/interpolation.h>
 
 namespace sb_geom {
 
@@ -54,6 +54,18 @@ namespace sb_geom {
          * @return an approximation of the length of the spline
          */
         double approxLength(int num_sample_points = 100);
+
+        // TODO: Test me
+        /**
+         * Finds all the interpolation points in a given range on the spline
+         *
+         * @param start_u a value in [0,1] indicating the start of the range to
+         * get interpolation points in
+         * @param end_u a value in [0,1] indicating the end of the range to
+         * get interpolation points in
+         * @return interpolation points in the given range
+         */
+        std::vector<Point2D> getInterpolationPointsInRange(double start_u, double end_u);
 
         // TODO: Test
         // TODO: Test exception cases

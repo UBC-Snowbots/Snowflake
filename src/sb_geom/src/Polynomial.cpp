@@ -6,7 +6,11 @@
  * Description: TODO
  */
 
+// Snowbots Includes
 #include "sb_geom/Polynomial.h"
+
+// Boost Includes
+#include <boost/math/special_functions/factorials.hpp>
 
 using namespace sb_geom;
 
@@ -61,7 +65,7 @@ double Polynomial::deriv2nd(double x) {
 Polynomial Polynomial::deriv(unsigned int degree) {
     std::vector<double> new_coeffs;
     for (int i = degree; i < _coefficients.size(); i++){
-        new_coeffs.emplace_back(boost::math::factorial(i)*_coefficients[i]);
+        new_coeffs.emplace_back(boost::math::factorial<double>(i)*_coefficients[i]);
     }
     return Polynomial(new_coeffs);
 }

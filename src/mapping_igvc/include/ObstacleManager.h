@@ -89,6 +89,12 @@ public:
      */
     std::vector<Cone> getConeObstacles();
 
+    /**
+     * Get all the lines in our world
+     * @return a list of all known lines in our world
+     */
+    std::vector<sb_geom::Spline> getLineObstacle();
+
 private:
 
     // TODO: Test me!
@@ -117,7 +123,8 @@ private:
      * @param new_line the newly found line
      * @return the merged line
      */
-    sb_geom::Spline updateLineWithNewLine(sb_geom::Spline current_line, sb_geom::Polynomial new_line);
+    sb_geom::Spline updateLineWithNewLine(sb_geom::Spline current_line,
+                                          sb_geom::PolynomialSegment new_line);
 
     // the minimum distance between the center of two cones for them to be
     // considered different from each other (and so not merged)

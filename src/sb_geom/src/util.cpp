@@ -1,4 +1,8 @@
-// TODO: Start of file comment
+/*
+ * Created By: Gareth Ellis
+ * Created On:  March 19th, 2018
+ * Description: Geometry Utility Functions
+ */
 
 // Snowbots Includes
 #include "sb_geom/util.h"
@@ -23,7 +27,7 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
     // to find the shortest distance. For `halley_iterate` to work, we need to return the function
     // value, along with it's first and second derivatives
     std::function<std::tuple<double, double, double>(double x)> f =
-    [](double x) {
+    [&](double x) {
         double x0 = point.x();
         double y0 = point.y();
 
@@ -68,7 +72,7 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
     return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 }
 
-std::vector<double> findRoots(Polynomial poly){
+std::vector<double> sb_geom::findRoots(sb_geom::Polynomial poly){
     // Allocate a the `gsl_poly_complex_workspace` used to solve the polynomial in later
     gsl_poly_complex_workspace* workspace = gsl_poly_complex_workspace_alloc(poly.getDegree());
 
@@ -92,6 +96,80 @@ std::vector<double> findRoots(Polynomial poly){
     }
 
     return roots;
+}
+
+double sb_geom::findClosestPointOnSplineToPoint(
+        Spline spline, Point2D point, unsigned int num_sample_points, double max_err){
+
+    // The start and end of the section of spline we're sampling
+    // Initially just choose the entire spline
+    double u1 = 0;
+    double u2 = 1;
+    double distance_to_u1 = distance(spline(u1), point);
+    double distance_to_u2 = distance(spline(u2), point);
+
+    do {
+        // Calculate how much to step each time, depending on the length
+        // of spline we're sampling
+        double len_of_sub_spline = std::max(u1, u2) - std::min(u1, u2);
+        double u_step = len_of_sub_spline/num_sample_points;
+
+        for (int i = 0; i < num_sample_points; i++){
+            double curr_u = i * u_step;
+            // Find the distance to the polynomial from the sample point on the spline
+            Point2D curr_p = spline(i * 1/num_sample_points);
+            double dist_to_p = distance(curr_p, point);
+
+            // Check if this point is better then at least one of the points we have
+            if (dist_to_p < std::max(distance_to_u1, distance_to_u2)){
+                // If it is better, overwrite the furthest currently known point
+                if (distance_to_u1 > distance_to_u2){
+                    u1 = curr_u;
+                    distance_to_u1 = dist_to_p;
+                } else { // (distance_to_p1 <= distance_to_p2)
+                    u2 = curr_u;
+                    distance_to_u2 = dist_to_p;
+                }
+            }
+        }
+    } while (std::abs(distance_to_u1 - distance_to_u2) > max_err);
+
+    // Return the average of the two closest points
+    return (distance_to_u1 + distance_to_u2)/2;
+}
+
+std::vector<Point2D>
+sb_geom::getInterpolationPointsFromPolySegment(PolynomialSegment poly_segment) {
+    std::vector<Point2D> interpolation_points;
+
+    // Add the start point of the polynomial segment
+    interpolation_points.emplace_back(Point2D(
+            poly_segment.x_min(), poly_segment(poly_segment.x_min())));
+
+    // Add an interpolation point for every inflection point in the polynomial segment
+    // We do this by find the roots of the first derivative
+    std::vector<double> roots = findRoots(poly_segment.deriv(1));
+    // TODO: Do we need this sort?
+    std::sort(roots.begin(), roots.end());
+    for (double& root : roots){
+        if (root > poly_segment.x_min() && root < poly_segment.x_max());
+        interpolation_points.emplace_back(Point2D(
+                root, poly_segment(root)
+        ));
+    }
+
+    // Add the end point of the Polynomial Segment
+    interpolation_points.emplace_back(Point2D(
+            poly_segment.x_max(), poly_segment(poly_segment.x_max())
+    ));
+
+    return interpolation_points;
+}
+
+double sb_geom::distance(Point2D p1, Point2D p2) {
+    double dx = p1.x() - p2.x();
+    double dy = p1.y() - p2.y();
+    return std::sqrt(std::pow(dx,2) + std::pow(dy,2));
 }
 
 

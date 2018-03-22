@@ -58,6 +58,11 @@ add_library(sb_geom
         ${sb_geom_SRCS}
         ${sb_geom_HEADERS}
         )
+target_link_libraries(sb_geom
+        ${catkin_LIBRARIES}
+        ${ALGLIB_LIBRARIES}
+        ${GSL_LIBRARIES}
+        )
 add_dependencies(sb_geom ${catkin_EXPORTED_TARGETS})
 
 
@@ -74,16 +79,16 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(polyline-test ${catkin_LIBRARIES})
     add_dependencies(polyline-test ${catkin_EXPORTED_TARGETS})
 
-    catkin_add_gtest(splineline-test
-            test/splineline-test.cpp
-        src/Spline.cpp
+    catkin_add_gtest(Spline-test
+            test/Spline-test.cpp
+            ${sb_geom_SRCS}
             )
-    target_link_libraries(splineline-test
+    target_link_libraries(Spline-test
         ${catkin_LIBRARIES}
         ${ALGLIB_LIBRARIES}
         ${GSL_LIBRARIES}
         )
-    add_dependencies(splineline-test ${catkin_EXPORTED_TARGETS})
+    add_dependencies(Spline-test ${catkin_EXPORTED_TARGETS})
 
 endif()
 

@@ -1,10 +1,19 @@
-// TODO: Start of file comment
+/*
+ * Created By: Gareth Ellis
+ * Created On:  March 19th, 2018
+ * Description: Geometry Utility Functions
+ */
+
+
+// TODO: Should this file be called "utils.h" instead of "util.h"?
 
 #ifndef SB_GEOM_UTIL_H
 #define SB_GEOM_UTIL_H
 
+// Snowbots Includes
 #include "sb_geom/Point2D.h"
 #include "sb_geom/PolynomialSegment.h"
+#include "sb_geom/Spline.h"
 
 namespace sb_geom {
     // TODO: Test me
@@ -22,6 +31,7 @@ namespace sb_geom {
             Point2D point, PolynomialSegment line, uintmax_t max_iter = 20);
 
     // TODO: Test me
+    // TODO: Should this go in the Polynomial class?
     /**
      * Find the roots of a given polynomial
      *
@@ -31,6 +41,44 @@ namespace sb_geom {
      * @return the roots (x-values) of the polynomial
      */
     std::vector<double> findRoots(Polynomial poly);
+
+    // TODO: Test me
+    /**
+     * Finds the closest point on the given spline to the given point
+     *
+     * It does this by first sampling points along the spline, finding the closest two to
+     * the given point, and then re-sampling the section of line between the two closest points
+     * until the difference in distance from each of the two points to the given point is < `max_err`
+     *
+     * @param spline TODO?
+     * @param point TODO?
+     * @param num_sample_points the number of sample points to sample from the spline
+     * @param max_err the maximum allowable error in the distance
+     * @return the distance along the spline (in [0,1]) closest to the given point
+     */
+    double findClosestPointOnSplineToPoint(
+            Spline spline, Point2D point, unsigned int num_sample_points, double max_err
+    );
+
+    // TODO: Test me
+    /**
+     * Find a set of interpolation points in a Polynomial Segment
+     *
+     * We do this by choosing the points to be the start point, end point,
+     * and points of inflection of the polynomial line
+     *
+     * @param poly_segment the Polynomial Segment to find the points in
+     * @return the interpolation points
+     */
+    std::vector<Point2D> getInterpolationPointsFromPolySegment(PolynomialSegment poly_segment);
+
+    /**
+     * Find the distance between two given points
+     * @param p1
+     * @param p2
+     * @return the distance from `p1` to `p2`
+     */
+    double distance(Point2D p1, Point2D p2);
 }
 
 #endif //SB_GEOM_UTIL_H
