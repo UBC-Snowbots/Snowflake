@@ -67,7 +67,7 @@ Spline::getInterpolationPointsInRange(double start_u, double end_u) {
     );
 }
 
-Point2D Spline::operator()(double u){
+Point2D Spline::getPointAtZeroToOneIndex(double u) {
     if (u < 0 || u > 1){
         // Throw an exception if u is outside of [0,1]
         std::string err_msg = "u must be between 0 and 1, given: " + std::to_string(u);
@@ -77,6 +77,22 @@ Point2D Spline::operator()(double u){
     // the spline interpolates through
     u = u * (interpolation_points.size()-1);
     return Point2D(alglib::spline1dcalc(x_interpolant, u), alglib::spline1dcalc(y_interpolant, u));
+}
+
+Point2D Spline::getPointAtZeroToNIndex(double u) {
+    if (u < 0 || u > interpolation_points.size()-1){
+        // Throw an exception if u is outside of [0,1]
+        std::string err_msg =
+        "u must be between 0 and the # of interpolation points " +
+                std::to_string(interpolation_points.size()) + ", given: "
+                + std::to_string(u);
+        throw std::out_of_range(err_msg);
+    }
+    return Point2D(alglib::spline1dcalc(x_interpolant, u), alglib::spline1dcalc(y_interpolant, u));
+}
+
+Point2D Spline::operator()(double u){
+    return getPointAtZeroToOneIndex(u);
 }
 
 void Spline::interpolate() {
@@ -93,9 +109,6 @@ void Spline::interpolate() {
         x[i] = point.x();
         y[i] = point.y();
         u[i] = i;
-    }
-    for (int i = 0; i < interpolation_points.size(); i++){
-        std::cout << x[i] << " " << y[i] << " " << u[i] << std::endl;
     }
 
     alglib::spline1dbuildakima(u, x, x_interpolant);

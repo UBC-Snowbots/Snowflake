@@ -40,7 +40,7 @@ namespace sb_geom {
          * Copy Constructor
          * @param point_msg
          */
-        Point2D& operator= (const sb_geom_msgs::Point2D &point_msg) {
+        Point2D& operator=(const sb_geom_msgs::Point2D &point_msg) {
                 _x = point_msg.x;
                 _y = point_msg.y;
         };
@@ -62,6 +62,9 @@ namespace sb_geom {
         double _x, _y;
     };
 
+    inline bool operator==(Point2D p1, Point2D p2){
+            return (p1.x() == p2.x() && p1.y() == p2.y());
+    }
 }
 
 #endif //SB_GEOM_POINT2D_H

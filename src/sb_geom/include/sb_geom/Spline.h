@@ -17,10 +17,37 @@
 
 namespace sb_geom {
 
-    // TODO: This class is rapidly becoming not very generic, might want to rename and move to mapping_igvc
     // TODO: If we're using akima, might want to make a `Spline` interface and then a `AkimaSpline` subclass?
     // TODO: This is more of a "curve" then a spline now? How to make this distinction?
-    // A line, represented as a spline
+
+    /**
+     * The Spline class represents a Spline interpolated through some points
+     *
+     * Since the points may not be in strictly increasing order of x-value,
+     * the way that a point on the spline is accessed is by a value in [0,1],
+     * where 0 is the start of the start of the spline and 1 is the end of the
+     * spline. For example:
+     * <code>
+     *    std::vector<sb_geom::Point2D> points = {
+     *            {0,0},
+     *            {3,3},
+     *            {10,1},
+     *            {4, 10}
+     *    };
+     *    sb_geom::Spline spline(points);
+     *
+     *    // The start point of the spline
+     *    sb_geom::Point2D start = spline(0);
+     *
+     *    // The end point of the spline
+     *    sb_geom::Point2D end = spline(1);
+     *
+     *    // Some point in the middle of the spline
+     *    // (there are no guarantees made about where this point is
+     *    sb_geom::Point2D somewhere_on_spline = spline(0.345);
+     * </code>
+     */
+
     class Spline {
     public:
 
@@ -67,6 +94,33 @@ namespace sb_geom {
          */
         std::vector<Point2D> getInterpolationPointsInRange(double start_u, double end_u);
 
+        // TODO: Better name?
+        /**
+         * Returns a point at some length along the spline
+         *
+         * TODO: Code sample
+         * @param u a value in [0,1], where:
+         *          0 is the first point in the spline
+         *          1 is the last point in the spline
+         * @return the point at the given location on the spline
+         * @throws {std::out_of_range} if `u` is not in [0,1]
+         */
+        Point2D getPointAtZeroToOneIndex(double u);
+
+        /**
+         * Returns a point at some length along the spline
+         *
+         * TODO: Code sample
+         * @param u a value in [0,n-1], where:
+         *          n is the number of interpolation points in the spline
+         *          0 is the first point in the spline
+         *          n is the last point in the spline
+         *          every integer i in [0,n-1] is the interpolation point i
+         * @return the point at the given location on the spline
+         * @throws {std::out_of_range} if `u` is not in [0,n-1]
+         */
+        Point2D getPointAtZeroToNIndex(double u);
+
         // TODO: Test
         // TODO: Test exception cases
         /**
@@ -78,6 +132,7 @@ namespace sb_geom {
          * @param u a value in [0,1], where 0 is the first point on the spline
          * and 1 is the last point. Will throw an exception if u is not in [0,1]
          * @return the point at the given u value
+         * @throws {std::out_of_range} if `u` is not in [0,1]
          */
         Point2D operator()(double u);
 
