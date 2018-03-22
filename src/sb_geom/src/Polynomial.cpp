@@ -1,9 +1,7 @@
-#include <vector>
-
 /*
  * Created By: Gareth Ellis
  * Created On: January 27, 2018
- * Description: TODO
+ * Description: This file contains the declaration for the `Polynomial` class
  */
 
 // Snowbots Includes

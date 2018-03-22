@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 27, 2018
- * Description: TODO
+ * Description: This file contains the declaration for the `Polynomial` class
  */
 
 #ifndef SB_GEOM_POLYNOMIAL_H
@@ -10,7 +10,12 @@
 #include "sb_geom_msgs/Polynomial.h"
 
 namespace sb_geom {
-    // A line, represented as a n-ary polynomial
+
+    /**
+     * This class represents a n-ary polynomial line
+     *
+     * TODO: example usage
+     */
     class Polynomial {
     public:
 
@@ -51,7 +56,6 @@ namespace sb_geom {
          */
         double operator()(double x);
 
-        // TODO: Test me
         /**
          * Calculate the derivative to a given degree at a given point
          * @param x the point to calculate the derivative at
@@ -61,7 +65,6 @@ namespace sb_geom {
         double deriv(double x, unsigned int degree);
 
         // TODO: better name?
-        // TODO: test me
         /**
          * Return the derivative polynomial of this one to the given degree
          *
