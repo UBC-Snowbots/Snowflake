@@ -6,7 +6,7 @@
 
 // Snowbots Includes
 #include <ObstacleManager.h>
-#include <sb_geom/util.h>
+#include <sb_geom/utils.h>
 
 // STD Includes
 #include <cmath>
