@@ -68,7 +68,6 @@ namespace sb_geom {
          */
         Spline(sb_geom::PolynomialSegment poly_segment);
 
-        // TODO: Test me
         /**
          * Calculate a rough approximation of the length of the spline
          *
@@ -81,7 +80,6 @@ namespace sb_geom {
          */
         double approxLength(int num_sample_points = 100);
 
-        // TODO: Test me
         /**
          * Finds all the interpolation points in a given range on the spline
          *
@@ -89,7 +87,8 @@ namespace sb_geom {
          * get interpolation points in
          * @param end_u a value in [0,1] indicating the end of the range to
          * get interpolation points in
-         * @return interpolation points in the given range
+         * @return interpolation points in the given range (inclusive)
+         * (ie. in [start_u, end_u] )
          */
         std::vector<Point2D> getInterpolationPointsInRange(double start_u, double end_u);
 
@@ -125,9 +124,7 @@ namespace sb_geom {
         /**
          * Override the () operator to return a point at some length along the spline
          *
-         * 0 is the first point in the spline
-         * 1 is the last point in the spline
-         *
+         * TODO: Code sample
          * @param u a value in [0,1], where 0 is the first point on the spline
          * and 1 is the last point. Will throw an exception if u is not in [0,1]
          * @return the point at the given u value

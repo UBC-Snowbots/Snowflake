@@ -77,11 +77,46 @@ TEST_F(SplineTest, constructor_from_PolynomialSegment){
     // implementation. Since we use the start, end, and critical points as the
     // interpolation points, they will be a u=0,1,2,etc.
 
-    Point2D crit_point_1(-8.0/3.0, 155.0/27.0);
-    EXPECT_EQ(crit_point_1, spline.getPointAtZeroToNIndex(1));
+    Point2D expected_crit_point_1(-8.0/3.0, 155.0/27.0);
+    Point2D actual_crit_point_1 = spline.getPointAtZeroToNIndex(1);
+    EXPECT_NEAR(expected_crit_point_1.x(), actual_crit_point_1.x(), 1e-10);
+    EXPECT_NEAR(expected_crit_point_1.y(), actual_crit_point_1.y(), 1e-10);
 
-    Point2D crit_point_2(0,1);
-    EXPECT_EQ(crit_point_2, spline.getPointAtZeroToNIndex(2));
+    Point2D expected_crit_point_2(0,1);
+    Point2D actual_crit_point_2 = spline.getPointAtZeroToNIndex(2);
+    EXPECT_NEAR(expected_crit_point_2.x(), actual_crit_point_2.x(), 1e-10);
+    EXPECT_NEAR(expected_crit_point_2.y(), actual_crit_point_2.y(), 1e-10);
+}
+
+TEST_F(SplineTest, approxLength_straight_line){
+    std::vector<Point2D> points = {
+            {-5, -4},
+            {3, 4}
+    };
+    Spline spline(points);
+
+    EXPECT_NEAR(std::sqrt(128), spline.approxLength(), 1e-10);
+}
+
+TEST_F(SplineTest, approxLength_arc){
+    // Interpolate a spline through a quarter circle
+    std::vector<Point2D> points = {
+            {0, 0},
+            {4*cos(45.0), 4*sin(45.0)},
+            {4, 4},
+    };
+    Spline spline(points);
+
+    EXPECT_NEAR(2*M_PI, spline.approxLength(), 0.2);
+}
+
+TEST_F(SplineTest, approxLength_complex_polynomial){
+    // Try and approximate a complicated polynomial with a spline
+    std::vector<double> coeff = {0, 0, 10, 3, 0.23};
+    PolynomialSegment poly_segment(coeff, -8, 2);
+    Spline spline(poly_segment);
+
+    EXPECT_NEAR(153, spline.approxLength(), 3);
 }
 
 // TODO: Not a real test - delete me
@@ -94,16 +129,76 @@ TEST_F(SplineTest, messing_about){
             {6,2}
     };
     sb_geom::Spline spline_line(points);
-
-    std::cout << "~~ Points ~~"  << std::endl;
-    for (double i = 0; i <= 1; i += 0.01){
-        std::cout << i << ", " << spline_line(i).x() << ", " << spline_line(i).y() << std::endl;
-    }
-    int i = 1;
-    std::cout << i << ", " << spline_line(i).x() << ", " << spline_line(i).y() << std::endl;
-
 }
 
+// Test with equal start_u/end_u points. Since we should be getting points
+// in a range that is inclusive (ie. in [start_u, end_u] ), we should be
+// able to get points
+TEST_F(SplineTest, getInterpolationPointsInRange_start_and_end_equal){
+    Point2D start_point(0,0);
+    Point2D end_point(9.33, 2313.3);
+    std::vector<sb_geom::Point2D> points = {
+            start_point,
+            {2,2},
+            {0,3},
+            {10, 10},
+            end_point,
+    };
+    Spline spline(points);
+
+    // Check getting the endpoints of the spline
+
+    EXPECT_EQ(std::vector<Point2D>({start_point}), spline.getInterpolationPointsInRange(0,0));
+    EXPECT_EQ(std::vector<Point2D>({end_point}), spline.getInterpolationPointsInRange(1,1));
+}
+
+// Test getting interpolation points in ranges that include the endpoints of
+// the spline
+TEST_F(SplineTest, getInterpolationPointsInRange_including_endpoints){
+    // Create a spline in a straight line through 5 points
+    Point2D p1(0,0);
+    Point2D p2(5,5);
+    Point2D p3(10,10);
+    Point2D p4(15,15);
+    Point2D p5(20,20);
+    std::vector<sb_geom::Point2D> points = { p1, p2, p3, p4, p5};
+    Spline spline(points);
+
+    std::vector<Point2D> expected;
+
+    // Range including the start point of the Spline
+    expected = {p1, p2};
+    EXPECT_EQ(expected, spline.getInterpolationPointsInRange(0,0.27));
+
+    // Range including the end point of the Spline
+    expected = {p4, p5};
+    EXPECT_EQ(expected, spline.getInterpolationPointsInRange(0.72,1));
+}
+
+// Test getting interpolation points in the middle section of the spline
+TEST_F(SplineTest, getInterpolationPointsInRange_mid_section_of_spline){
+    // Create a spline in a straight line through 5 points
+    Point2D p1(0,0);
+    Point2D p2(5,5);
+    Point2D p3(10,10);
+    Point2D p4(15,15);
+    Point2D p5(20,20);
+    std::vector<sb_geom::Point2D> points = { p1, p2, p3, p4, p5};
+    Spline spline(points);
+
+    std::vector<Point2D> expected;
+
+    // Test getting a few ranges
+    expected = {p2, p3};
+    EXPECT_EQ(expected, spline.getInterpolationPointsInRange(0.2, 0.52));
+
+    expected = {p2, p3, p4};
+    EXPECT_EQ(expected, spline.getInterpolationPointsInRange(0.2, 0.79));
+}
+
+TEST_F(SplineTest, getInterpolationPointsInRange_out_of_bounds){
+    // TODO
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

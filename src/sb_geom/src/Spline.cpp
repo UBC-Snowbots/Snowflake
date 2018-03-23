@@ -31,11 +31,11 @@ Spline::Spline(sb_geom::PolynomialSegment poly_segment) {
 double Spline::approxLength(int num_sample_points) {
     double length = 0;
 
-    Point2D prev_point(this->operator()(0));
+    Point2D prev_point(this->getPointAtZeroToOneIndex(0));
     Point2D curr_point;
-    double increment = 1/num_sample_points;
-    for (int i = 0; i < 1; i++){
-        curr_point = this->operator()(i * increment);
+    double increment = 1.0/num_sample_points;
+    for (int i = 0; i <= num_sample_points; i++){
+        curr_point = this->getPointAtZeroToOneIndex(i * increment);
         // Calculate distance between current and previous point
         double dx = curr_point.x() - prev_point.x();
         double dy = curr_point.y() - prev_point.y();
@@ -51,14 +51,25 @@ double Spline::approxLength(int num_sample_points) {
 std::vector<Point2D>
 Spline::getInterpolationPointsInRange(double start_u, double end_u) {
     // If the start is after the end, just return an empty vector
-    if (start_u >= end_u){
+    if (start_u > end_u){
         return std::vector<Point2D>();
     }
 
     // Scale the given u value from [0,1] -> [0,n] where n is the number of
     // points the spline interpolates through and round down and up respectively
-    double start_index = std::floor(start_u * (interpolation_points.size()-1));
-    double end_index = std::ceil(start_u * (interpolation_points.size()-1));
+    double start_index = std::floor(start_u * (interpolation_points.size()));
+    double end_index = std::ceil(end_u * (interpolation_points.size()));
+
+    // Check for case where we're just getting the exactly one point
+    if (start_index == end_index && start_index < interpolation_points.size()-1){
+        return {interpolation_points[start_index]};
+    }
+    // Check for case where we're getting exactly the last point
+    // This is here because of the way the rounding works out, the index found
+    // will be out of range
+    if (start_u == 1 && end_u == 1){
+        return {interpolation_points[interpolation_points.size()-1]};
+    }
 
     // Get the interpolation points in the given index range
     return std::vector<Point2D>(
