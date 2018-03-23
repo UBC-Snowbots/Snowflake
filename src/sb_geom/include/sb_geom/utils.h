@@ -17,6 +17,7 @@
 
 namespace sb_geom {
     // TODO: Test me
+    // TODO: Do we need this function any more
     /**
      * Computes the shortest distance between a given point and polynomial line segment
      *
@@ -29,6 +30,19 @@ namespace sb_geom {
      */
     double minDistanceFromPointToPolynomialSegment(
             Point2D point, PolynomialSegment line, uintmax_t max_iter = 20);
+
+    /**
+     * Computes the minimum distance between two given splines
+     *
+     * Will terminate if the # of iterations reaches `max_iter` or the error drops to at or below `min_err`
+     * @param s1 the first spline
+     * @param s2 the second spline
+     * @param max_iter the maximum number of iterations to perform, more iterations
+     * will lead to more accurate results, but increases computation time
+     * @param min_err the maximum allowable error in the result
+     * @return the minimum distance between `s1` and `s2`
+     */
+    double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter = 20, double min_err = 1e-4);
 
     // TODO: Test me
     // TODO: Should this go in the Polynomial class?

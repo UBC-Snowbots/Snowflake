@@ -105,6 +105,19 @@ namespace sb_geom {
          */
         Point2D getPointAtZeroToOneIndex(double u);
 
+        // TODO: Test me
+        /**
+         * Gets the derivative at some point along the spline
+         *
+         * @param u a value in [0,1], where:
+         *          0 is the first point in the spline
+         *          1 is the last point in the spline
+         * @return a pair of the derivative with respect to x and y respectively
+         * (ie. <deriv. with respect to x, deriv. with respect to y>)
+         * @throws {std::out_of_range} if `u` is not in [0,1]
+         */
+        std::pair<double, double> getDerivAtZeroToOneIndex(double u);
+
         /**
          * Returns a point at some length along the spline
          *

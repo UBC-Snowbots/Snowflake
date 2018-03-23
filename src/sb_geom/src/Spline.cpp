@@ -90,6 +90,26 @@ Point2D Spline::getPointAtZeroToOneIndex(double u) {
     return Point2D(alglib::spline1dcalc(x_interpolant, u), alglib::spline1dcalc(y_interpolant, u));
 }
 
+std::pair<double, double> Spline::getDerivAtZeroToOneIndex(double u) {
+    if (u < 0 || u > 1){
+        // Throw an exception if u is outside of [0,1]
+        std::string err_msg = "u must be between 0 and 1, given: " + std::to_string(u);
+        throw std::out_of_range(err_msg);
+    }
+
+    // Scale the given u value from [0,1] -> [0,n] where n is the number of points
+    // the spline interpolates through
+    u = u * (interpolation_points.size()-1);
+
+    // Get the derivative of the spline with respect to x and y
+   double x, dx, d2x;
+   alglib::spline1ddiff(x_interpolant, u, x, dx, d2x);
+   double y, dy, d2y;
+   alglib::spline1ddiff(y_interpolant, u, y, dy, d2y);
+
+   return std::make_pair(dx, dy);
+}
+
 Point2D Spline::getPointAtZeroToNIndex(double u) {
     if (u < 0 || u > interpolation_points.size()-1){
         // Throw an exception if u is outside of [0,1]
@@ -125,4 +145,5 @@ void Spline::interpolate() {
     alglib::spline1dbuildakima(u, x, x_interpolant);
     alglib::spline1dbuildakima(u, y, y_interpolant);
 }
+
 

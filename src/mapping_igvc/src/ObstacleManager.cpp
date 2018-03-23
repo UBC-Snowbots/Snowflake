@@ -67,117 +67,73 @@ void ObstacleManager::addObstacle(Cone cone) {
 }
 
 // TODO: The `addObstacle` functions seem pretty similar.... maybe we could apply DRY here?
-void ObstacleManager::addObstacle(PolynomialSegment line) {
-    // Find the distance from this line to every other known line
+void ObstacleManager::addObstacle(Spline line_obstacle) {
+    // Find the distance from this line_obstacle to every other known line_obstacle
     std::vector<std::pair<double, int>> distances;
     for (int line_index = 0; line_index < lines.size(); line_index++) {
-        double distance = distanceBetweenLines(lines[line_index], line, 0, 0);
+        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle, 0, 0);
         distances.emplace_back(std::make_pair(distance, line_index));
     }
 
-    // Find the closest known line (min element by distance)
+    // Find the closest known line_obstacle (min element by distance)
     auto min_element = std::min_element(distances.begin(), distances.end(),
                                         [&](auto pair1, auto pair2){
                                             return pair1.first < pair2.first;
                                         });
 
-    // Make sure that we were at least able to find one line
+    // Make sure that we were at least able to find one line_obstacle
     if (min_element != distances.end()){
-        // Get the distance and line from the iterator
+        // Get the distance and line_obstacle from the iterator
         double distance_to_closest_known_line = min_element->first;
         int closest_known_line_index = min_element->second;
 
         if (distance_to_closest_known_line < line_merging_tolerance){
-            // Update our current knowledge of the line based on the new line
-            Spline merged_line = updateLineWithNewLine(lines[closest_known_line_index], line);
-            // Overwrite the old line with our new merged line
+            // Update our current knowledge of the line_obstacle based on the new line_obstacle
+            Spline merged_line = updateLineWithNewLine(lines[closest_known_line_index], line_obstacle);
+            // Overwrite the old line_obstacle with our new merged line_obstacle
             lines[closest_known_line_index] = merged_line;
         } else {
-            // The closest line to this one isn't close enough to merge into,
-            // so just add this line as a new line
-            lines.emplace_back(Spline(line));
+            // The closest line_obstacle to this one isn't close enough to merge into,
+            // so just add this line_obstacle as a new line_obstacle
+            lines.emplace_back(Spline(line_obstacle));
         }
     } else {
-        // We don't know about any lines yet, so just add this one as it's own line
-        lines.emplace_back(Spline(line));
+        // We don't know about any lines yet, so just add this one as it's own line_obstacle
+        lines.emplace_back(Spline(line_obstacle));
     }
 }
 
-double ObstacleManager::distanceBetweenLines(sb_geom::Spline spline,
-                                             PolynomialSegment poly_line,
-                                             unsigned int num_sample_points,
-                                             double max_err) {
-    // The start and end of the section of spline we're sampling
-    // Initially just choose the entire spline
-    double u1 = 0;
-    double u2 = 1;
-    double distance_to_u1 = minDistanceFromPointToPolynomialSegment(
-            spline(u1), poly_line);
-    double distance_to_u2 = minDistanceFromPointToPolynomialSegment(
-            spline(u2), poly_line);
-
-    do {
-        // Calculate how much to step each time, depending on the length
-        // of spline we're sampling
-        double len_of_sub_spline = std::max(u1, u2) - std::min(u1, u2);
-        double u_step = len_of_sub_spline/num_sample_points;
-
-        for (int i = 0; i < num_sample_points; i++){
-            double curr_u = i * u_step;
-            // Find the distance to the polynomial from the sample point on the spline
-            Point2D curr_p = spline(i * 1/num_sample_points);
-            double dist_to_p = minDistanceFromPointToPolynomialSegment(curr_p, poly_line);
-
-            // Check if this point is better then at least one of the points we have
-            if (dist_to_p < std::max(distance_to_u1, distance_to_u2)){
-                // If it is better, overwrite the furthest currently known point
-                if (distance_to_u1 > distance_to_u2){
-                    u1 = curr_u;
-                    distance_to_u1 = dist_to_p;
-                } else { // (distance_to_p1 <= distance_to_p2)
-                    u2 = curr_u;
-                    distance_to_u2 = dist_to_p;
-                }
-            }
-        }
-    } while (std::abs(distance_to_u1 - distance_to_u2) > max_err);
-
-    // Return the average of the two closest points
-    return (distance_to_u1 + distance_to_u2)/2;
-}
-
 Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
-                                              PolynomialSegment new_line) {
-    Point2D min_endpoint(new_line.x_min(), new_line(new_line.x_min()));
-    Point2D max_endpoint(new_line.x_max(), new_line(new_line.x_max()));
+                                              Spline new_line) {
 
-    // Find the closest points on the spline to the start and end points of the
-    // polynomial
+    // Find the closest points on the known line to the start and aend of the new line
     // TODO: Make max_err and num_sample points here class members we can set
     double u1 =
-            findClosestPointOnSplineToPoint(current_line, min_endpoint, 100, 0.01);
+            findClosestPointOnSplineToPoint(current_line, new_line(0), 100, 0.01);
     double u2 =
-            findClosestPointOnSplineToPoint(current_line, max_endpoint, 100, 0.01);
+            findClosestPointOnSplineToPoint(current_line, new_line(1), 100, 0.01);
 
-    // "replace" the interpolation points between `u1` and `u2` with interpolation
-    // points created from the polynomial line
+    // "replace" the section of the current line between `u1` and `u2` with the new line
 
-    // Find the points "before" the polynomial line segment (on the spline)
-    std::vector<Point2D> points_before_poly =
+    // Find the interpolation points "before" the new line (on the current line)
+    std::vector<Point2D> points_before_new_line =
             current_line.getInterpolationPointsInRange(0, std::min(u1,u2));
-    // Find the points through the polynomial line segment (on the polynomial itself)
-    std::vector<Point2D> points_in_poly =
-            getInterpolationPointsFromPolySegment(new_line);
-    // Find the points "after" the polynomial segment (on the spline)
-    std::vector<Point2D> points_after_poly =
+    // Find the points "after" the new line (on the current line)
+    std::vector<Point2D> points_after_new_line =
             current_line.getInterpolationPointsInRange(std::max(u1,u2), 1);
 
-    // Merge the 3 sets of interpolation points
-    std::vector<Point2D> new_interpolation_points = points_before_poly;
+    // Get the interpolation points from the new line
+    std::vector<Point2D> points_on_new_line = new_line.getInterpolationPointsInRange(0,1);
+
+    // Merge the 3 sets of interpolation points:
+    // - points on the current line before the new line
+    // - points on the new line
+    // - points on the current line after the new line
+    std::vector<Point2D> new_interpolation_points = points_before_new_line;
     new_interpolation_points.insert(
-            new_interpolation_points.end(), points_in_poly.begin(), points_in_poly.end());
+            new_interpolation_points.end(), points_on_new_line.begin(), points_on_new_line.end());
     new_interpolation_points.insert(
-            new_interpolation_points.end(), points_after_poly.begin(), points_after_poly.end());
+            new_interpolation_points.end(), points_after_new_line.begin(), points_after_new_line.end());
 
     // Return a spline interpolated through our new points
     return Spline(new_interpolation_points);
