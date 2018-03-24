@@ -56,7 +56,7 @@ namespace sb_geom {
          *
          * @param points the points to interpolate the spline through
          */
-        Spline(std::vector<Point2D> &points);
+        Spline(std::vector<Point2D> points);
 
         /**
          * Construct a spline from a polynomial line segment

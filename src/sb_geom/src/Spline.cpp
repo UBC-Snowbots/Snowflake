@@ -14,7 +14,7 @@
 using namespace sb_geom;
 
 // TODO: Probably don't want to be passing points in by reference
-Spline::Spline(std::vector<Point2D> &points):
+Spline::Spline(std::vector<Point2D> points):
     interpolation_points(points)
 {
     interpolate();

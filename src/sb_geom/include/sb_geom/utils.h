@@ -17,13 +17,13 @@
 
 namespace sb_geom {
     // TODO: Test me
-    // TODO: Do we need this function any more
+    // TODO: Do we need this function any more?
     /**
      * Computes the shortest distance between a given point and polynomial line segment
      *
      * Uses Halley Iteration
-     * @param point TODO
-     * @param line TODO
+     * @param point TODO?
+     * @param line TODO?
      * @param max_iter the maximum number of iterations to perform, more iterations
      * will lead to more accurate results, but increases computation time
      * @return the minimum distance between the point and polynomial line
@@ -37,12 +37,12 @@ namespace sb_geom {
      * Will terminate if the # of iterations reaches `max_iter` or the error drops to at or below `min_err`
      * @param s1 the first spline
      * @param s2 the second spline
-     * @param max_iter the maximum number of iterations to perform, more iterations
-     * will lead to more accurate results, but increases computation time
-     * @param min_err the maximum allowable error in the result
+     * @param max_iter the maximum number of iterations of the global minima search to perform
+     * increasing this will improve the final result (more likely to find the true global minima) but
+     * will increase the computation time
      * @return the minimum distance between `s1` and `s2`
      */
-    double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter);
+    double minDistanceBetweenSplines(Spline s1, Spline s2, unsigned int max_iter = 100);
 
     // TODO: Test me
     // TODO: Should this go in the Polynomial class?
@@ -66,13 +66,12 @@ namespace sb_geom {
      *
      * @param spline TODO?
      * @param point TODO?
-     * @param num_sample_points the number of sample points to sample from the spline
-     * @param max_err the maximum allowable error in the distance
+     * @param max_iter the maximum number of iterations of the global minima search to perform
+     * increasing this will improve the final result (more likely to find the true global minima) but
+     * will increase the computation time
      * @return the distance along the spline (in [0,1]) closest to the given point
      */
-    double findClosestPointOnSplineToPoint(
-            Spline spline, Point2D point, unsigned int num_sample_points, double max_err
-    );
+    double findClosestPointOnSplineToPoint(Spline spline, Point2D point, unsigned int max_iter = 100);
 
     // TODO: Test me
     /**

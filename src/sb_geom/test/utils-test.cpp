@@ -61,7 +61,7 @@ TEST_F(UtilsTest, findRoots_3rd_degree_neg_and_positive_roots){
 
 // Find the roots of a Polynomial where the coefficient of the highest power is 0
 TEST_F(UtilsTest, findRoots_polynomial_with_zero_leading_coefficient){
-    // y 0x^3 + x^2
+    // y = 0x^3 + x^2
     std::vector<double> coeff = {0, 0, 1, 0};
     Polynomial polynomial(coeff);
 
@@ -69,6 +69,51 @@ TEST_F(UtilsTest, findRoots_polynomial_with_zero_leading_coefficient){
     EXPECT_EQ(roots.size(), 1);
     EXPECT_NEAR(0, roots[0], 1e-11);
 }
+
+TEST_F(UtilsTest, findRoots_polynomial_with_all_zero_coefficients){
+    // y = 0
+    std::vector<double> coeff = {0, 0, 0, 0};
+    Polynomial polynomial(coeff);
+
+    std::vector<double> roots = findRealRoots(polynomial);
+    EXPECT_EQ(0, roots.size());
+}
+
+// Test finding the distance between two splines that are just straight lines
+TEST_F(UtilsTest, minDistanceBetweenSplines_two_straight_lines){
+    Spline spline1({{0,1}, {10,1}});
+    Spline spline2({{0,4}, {10,4}});
+
+    EXPECT_DOUBLE_EQ(3, minDistanceBetweenSplines(spline1, spline2));
+}
+
+// Test finding the minimum distance between two splines with their arcs
+// pointing towards each other
+TEST_F(UtilsTest, minDistanceBetweenSplines_one_arc){
+    // (roughly) y = x^2 + 5
+    Spline spline1({{-1,6}, {5,0}, {1,6}});
+    // (roughly) y = -x^2
+    Spline spline2({{-1,-1}, {0,0}, {1,-1}});
+
+    EXPECT_DOUBLE_EQ(5, minDistanceBetweenSplines(spline1, spline2));
+}
+
+// Test finding the minimum distance between two splines with multiple arcs
+TEST_F(UtilsTest, minDistanceBetweenSplines_multiple_arcs){
+    // (roughly) y = x^2 + 5
+    Spline spline1({{-1,6}, {5,0}, {1,6}});
+    // (roughly) y = -x^2
+    Spline spline2({{-1,-1}, {0,0}, {1,-1}});
+
+    EXPECT_DOUBLE_EQ(5, minDistanceBetweenSplines(spline1, spline2));
+}
+
+// Test finding the minimum distance between two splines where the closest point
+// is at the endpoint of one of the splines and somewhere in the middle of the other
+// TODO
+
+// Test finding the minimum distance between two splines where the closest point
+// is at the endpoints of both splines
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

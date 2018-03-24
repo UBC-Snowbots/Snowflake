@@ -75,11 +75,11 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
     return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 }
 
-double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter) {
+double sb_geom::minDistanceBetweenSplines(Spline s1, Spline s2, unsigned int max_iter) {
     // Define a function for the distance between the two splines
     // `u` is the distance along the first spline (in [0,1])
     // `t` is the distance along the second spline (in [0,1])
-    auto distance_between_splines_func = [&](double u, double t){
+    auto distanceBetweenSplines = [&](double u, double t){
         Point2D p1 = s1(u);
         Point2D p2 = s2(t);
 
@@ -91,7 +91,7 @@ double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter) {
     };
 
     auto min_result =  dlib::find_min_global(
-            distance_between_splines_func,
+            distanceBetweenSplines,
             {0,0}, // lower bounds on the search
             {1,1}, // upper bounds on the search
             dlib::max_function_calls(max_iter)
@@ -101,7 +101,7 @@ double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter) {
     double minimizing_t = min_result.x(1);
 
     // Return the distance between the two found points
-    return distance_between_splines_func(minimizing_u, minimizing_t);
+    return distanceBetweenSplines(minimizing_u, minimizing_t);
 }
 
 std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly){
@@ -111,6 +111,11 @@ std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly){
     // non-zero, choose the degree to be less then the actual degree of the polnomial so this is the case
     unsigned int degree = poly.getDegree();
     for (; degree > 0 && coefficients[degree-1] == 0; degree--){}
+
+    // If the degree is 0, then there are no roots
+    if (degree == 0){
+        return std::vector<double>();
+    }
 
     // Allocate a the `gsl_poly_complex_workspace` used to solve the polynomial in later
     gsl_poly_complex_workspace* workspace = gsl_poly_complex_workspace_alloc(degree);
@@ -148,45 +153,28 @@ std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly){
     return roots;
 }
 
-// TODO: We could probably do this much faster with GSL and just minimizing the distance function
-double sb_geom::findClosestPointOnSplineToPoint(
-        Spline spline, Point2D point, unsigned int num_sample_points, double max_err){
+double sb_geom::findClosestPointOnSplineToPoint(Spline spline, Point2D point, unsigned int max_iter) {
+    // Define a function for the distance from the spline to the given point in terms
+    // of the position on the spline (`u`)
+    auto distanceFromPointToSpline = [&](double u){
+        Point2D point_on_spline = spline(u);
+        double dx = point_on_spline.x() - point.x();
+        double dy = point_on_spline.y() - point.y();
 
-    // The start and end of the section of spline we're sampling
-    // Initially just choose the entire spline
-    double u1 = 0;
-    double u2 = 1;
-    double distance_to_u1 = distance(spline(u1), point);
-    double distance_to_u2 = distance(spline(u2), point);
+        // TODO: Could we use L1 loss (absolute value) instead of L2 here? sqrt operations are expensive
+        return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+    };
 
-    do {
-        // Calculate how much to step each time, depending on the length
-        // of spline we're sampling
-        double len_of_sub_spline = std::max(u1, u2) - std::min(u1, u2);
-        double u_step = len_of_sub_spline/num_sample_points;
+    auto min_result =  dlib::find_min_global(
+            distanceFromPointToSpline,
+            {0}, // lower bound on the search
+            {1}, // upper bound on the search
+            dlib::max_function_calls(max_iter)
+    );
 
-        for (int i = 0; i < num_sample_points; i++){
-            double curr_u = i * u_step;
-            // Find the distance to the polynomial from the sample point on the spline
-            Point2D curr_p = spline(i * 1/num_sample_points);
-            double dist_to_p = distance(curr_p, point);
+    double minimizing_u = min_result.x(0);
 
-            // Check if this point is better then at least one of the points we have
-            if (dist_to_p < std::max(distance_to_u1, distance_to_u2)){
-                // If it is better, overwrite the furthest currently known point
-                if (distance_to_u1 > distance_to_u2){
-                    u1 = curr_u;
-                    distance_to_u1 = dist_to_p;
-                } else { // (distance_to_p1 <= distance_to_p2)
-                    u2 = curr_u;
-                    distance_to_u2 = dist_to_p;
-                }
-            }
-        }
-    } while (std::abs(distance_to_u1 - distance_to_u2) > max_err);
-
-    // Return the average of the two closest points
-    return (distance_to_u1 + distance_to_u2)/2;
+    return minimizing_u;
 }
 
 std::vector<Point2D>

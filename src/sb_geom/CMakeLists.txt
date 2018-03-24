@@ -80,11 +80,7 @@ add_library(sb_geom
         ${sb_geom_SRCS}
         ${sb_geom_HEADERS}
         )
-target_link_libraries(sb_geom
-        ${catkin_LIBRARIES}
-        ${ALGLIB_LIBRARIES}
-        ${GSL_LIBRARIES}
-        )
+target_link_libraries(sb_geom ${ALL_LIBRARIES})
 add_dependencies(sb_geom ${catkin_EXPORTED_TARGETS})
 
 
@@ -94,33 +90,18 @@ add_dependencies(sb_geom ${catkin_EXPORTED_TARGETS})
 
 if (CATKIN_ENABLE_TESTING)
 
-    catkin_add_gtest(polyline-test
-            test/Polynomial-test.cpp
-        src/Polynomial.cpp
-            )
-    target_link_libraries(polyline-test ${catkin_LIBRARIES})
-    add_dependencies(polyline-test ${catkin_EXPORTED_TARGETS})
-
     catkin_add_gtest(Polynomial-test
             test/Polynomial-test.cpp
             ${sb_geom_SRCS}
             )
-    target_link_libraries(Polynomial-test
-            ${catkin_LIBRARIES}
-            ${ALGLIB_LIBRARIES}
-            ${GSL_LIBRARIES}
-            )
+    target_link_libraries(Polynomial-test ${ALL_LIBRARIES})
     add_dependencies(Polynomial-test ${catkin_EXPORTED_TARGETS})
 
     catkin_add_gtest(Spline-test
             test/Spline-test.cpp
             ${sb_geom_SRCS}
             )
-    target_link_libraries(Spline-test
-        ${catkin_LIBRARIES}
-        ${ALGLIB_LIBRARIES}
-        ${GSL_LIBRARIES}
-        )
+    target_link_libraries(Spline-test ${ALL_LIBRARIES})
     add_dependencies(Spline-test ${catkin_EXPORTED_TARGETS})
 
     catkin_add_gtest(utils-test
