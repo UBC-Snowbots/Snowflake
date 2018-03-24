@@ -1,6 +1,7 @@
-//
-// Created by william on 24/03/18.
-//
+/*
+ * Created by William Gu on 24/03/18
+ * Creates a cone extractor node (for identifying cones from a laser message)
+ */
 
 #include <ConeExtractorNode.h>
 

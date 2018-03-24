@@ -1,6 +1,10 @@
 //
 // Created by william on 24/03/18.
 //
+/**
+ * Created by William Gu on 24/03/18
+ * Implementation for a Cone Extractor Node that identifies cones from a laser msg
+ */
 
 #include <ConeExtractorNode.h>
 

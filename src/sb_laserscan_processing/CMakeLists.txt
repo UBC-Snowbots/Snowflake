@@ -7,9 +7,9 @@ add_compile_options(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
         roscpp
         std_msgs
+        mapping_igvc #For cone obstacle msg
+        sb_utils
 )
-find_package(sb_utils REQUIRED)
-find_package(mapping_igvc REQUIRED) #Contains cone obstacle
 
 catkin_package(
         INCLUDE_DIRS include
@@ -24,8 +24,6 @@ catkin_package(
 include_directories(
         ./include
         ${catkin_INCLUDE_DIRS}
-        ${sb_utils_INCLUDE_DIRS}
-        ${mapping_igvc_INCLUDE_DIRS}
 )
 
 ## Declare a C++ executable
@@ -34,6 +32,8 @@ add_executable(sb_laserscan_processing
         src/cone_extractor_node.cpp
         src/ConeExtractorNode.cpp
         include/ConeExtractorNode.h
+        src/ConeIdentification.cpp
+        include/ConeIdentification.h
         )
 
 
@@ -43,9 +43,10 @@ add_executable(sb_laserscan_processing
 # )
 target_link_libraries(sb_laserscan_processing
         ${catkin_LIBRARIES}
-        ${sb_utils_LIBRARIES}
-        ${mapping_igvc_LIBRARIES}
         )
+
+add_dependencies(sb_laserscan_processing
+        ${catkin_EXPORTED_TARGETS})
 
 
 #############
