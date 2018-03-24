@@ -15,8 +15,10 @@
 
 // GNU Scientific Library Includes
 #include <gsl/gsl_poly.h>
-#include <gsl/gsl_multimin.h>
 
+// dlib Includes
+#include <dlib/optimization.h>
+#include <dlib/global_optimization.h>
 
 using namespace sb_geom;
 
@@ -73,85 +75,33 @@ double sb_geom::minDistanceFromPointToPolynomialSegment(
     return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 }
 
-double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter, double max_err) {
-    // Define a function of two variables representing the distance between two points,
-    // s1(u) and s2(t), that we can minimize to find the closest distance betweent the two splines
-
-    // f(u,t)
-    double f(const gsl_vector *v, void *params){
-        // Get the values of `u` and `t`
-        double u, t;
-        double *p = (double *)params;
-        u = gsl_vector_get(v, 0);
-        t = gsl_vector_get(v, 1);
-
-        // Get the points on the two splines at the given points
+double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter) {
+    // Define a function for the distance between the two splines
+    // `u` is the distance along the first spline (in [0,1])
+    // `t` is the distance along the second spline (in [0,1])
+    auto distance_between_splines_func = [&](double u, double t){
         Point2D p1 = s1(u);
         Point2D p2 = s2(t);
 
-        // Return the distance between the points
         double dx = p1.x() - p2.x();
-        double dy = p1.y() - p2.y();
-        return std::abs(std::pow(dx, 2) + std::pow(dy, 2));
-    }
+        double dy = p2.y() - p2.y();
 
-    // TODO: We could probably make this much faster if we calculate the derivatives of the distance function
-    // TODO: but this is quite difficult, as each function returns a vector, need to use vector calculus
+        // TODO: Could we use L1 loss (absolute value) instead of L2 here? sqrt operations are expensive
+        return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+    };
 
-    const gsl_multimin_fminimizer_type *T =
-            gsl_multimin_fminimizer_nmsimplex2;
-    gsl_multimin_fminimizer *minimizer = NULL;
-    gsl_vector *step_sizes, *curr_state;
-    gsl_multimin_function minex_func;
+    auto min_result =  dlib::find_min_global(
+            distance_between_splines_func,
+            {0,0}, // lower bounds on the search
+            {1,1}, // upper bounds on the search
+            dlib::max_function_calls(max_iter)
+    );
 
-    size_t iter = 0;
-    int status;
-    double size
+    double minimizing_u = min_result.x(0);
+    double minimizing_t = min_result.x(1);
 
-    // Starting point
-    curr_state = gsl_vector_alloc(2);
-    gsl_vector_set(curr_state, 0, 0.5);
-    gsl_vector_set(curr_state, 1, 0.5);
-
-    // Set initial step sizes
-    step_sizes = gsl_vector_alloc(2);
-    gsl_vector_set_all(step_sizes, 0.1);
-
-    // Initialize method and iterate
-    minex_func.n = 2;
-    minex_func.f = f;
-    minex_func.params = {};
-
-    minimizer = gsl_multimin_fminimizer_alloc(T, 2);
-    gsl_multimin_fminimizer_set(minimizer, &minex_func, curr_state, step_sizes);
-
-    do {
-        iter++;
-        status = gsl_multimin_fminimizer_iterate(minimizer);
-
-        if (status)
-            break;
-
-        size = gsl_multimin_fminimizer_size(minimizer);
-        status = gsl_multimin_test_size(size, max_err);
-    } while (status == GSL_CONTINUE && iter < max_iter);
-
-    // Get the two points we found
-    double u = gsl_vector_get(minimizer->x, 0);
-    double t = gsl_vector_get(minimizer->x, 1);
-    Point2D p1 = s1(u);
-    Point2D p2 =  s2(t);
-
-    // Free memory
-    gsl_vector_free(curr_state);
-    gsl_vector_free(step_sizes);
-    gsl_multimin_fminimizer_free(minimizer);
-
-    // Calculate and return the distance between the two found points
-    double dx = p1.x() - p2.x();
-    double dy = p1.y() - p2.y();
-
-    return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+    // Return the distance between the two found points
+    return distance_between_splines_func(minimizing_u, minimizing_t);
 }
 
 std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly){

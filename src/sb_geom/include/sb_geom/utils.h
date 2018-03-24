@@ -42,7 +42,7 @@ namespace sb_geom {
      * @param min_err the maximum allowable error in the result
      * @return the minimum distance between `s1` and `s2`
      */
-    double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter = 20, double min_err = 1e-4);
+    double minDistanceBetweenSplines(Spline s1, Spline s2, uintmax_t max_iter);
 
     // TODO: Test me
     // TODO: Should this go in the Polynomial class?
