@@ -123,7 +123,7 @@ void LineExtractorNode::visualizeClusters() {
     snowbots::RvizUtils::createrMarkerScale(
     this->scale, this->scale, this->scale);
 
-    std::string frame_id = "line_extractor_test";
+    std::string frame_id = "base_link";
     std::string ns       = "debug";
 
     visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
@@ -176,7 +176,7 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     snowbots::RvizUtils::createrMarkerScale(
     this->scale, this->scale, this->scale);
 
-    std::string frame_id = "line_extractor_test";
+    std::string frame_id = "base_link";
     std::string ns       = "debug";
 
     visualization_msgs::MarkerArray markerArray =

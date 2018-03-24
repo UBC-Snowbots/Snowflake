@@ -5,7 +5,8 @@
         <!-- regularization constant for line of best fit -->
         <param name="lambda" value="0" type="double" />
         <!-- density parameters for DBSCAN -->
-        <param name="min_neighbours" value="1" type="int" />
-        <param name="radius" value="80" type="double" />
+        <param name="min_neighbours" value="10" type="int" />
+        <param name="radius" value="0.1" type="double" />
+        <remap from="input_pointcloud" to="height_filter/output"/>
     </node>
 </launch>
