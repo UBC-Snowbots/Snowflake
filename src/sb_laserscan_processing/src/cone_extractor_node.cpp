@@ -7,10 +7,10 @@
 
 int main(int argc, char** argv) {
     // Set up ROS node
-    std::string node_name = "laserscan_cone_manager";
+    std::string node_name = "cone_extractor_node";
 
     // Create an instance of the class
-    LaserscanConeManager node(argc, argv, node_name);
+    ConeExtractorNode node(argc, argv, node_name);
 
     // Start up
     ros::spin();

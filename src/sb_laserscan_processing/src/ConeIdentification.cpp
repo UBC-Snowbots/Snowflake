@@ -49,11 +49,21 @@ mapping_igvc::ConeObstacle ConeIdentification::clusterToCone(const std::vector<m
     //We can assume there's at least 3 points
     mapping_igvc::ConeObstacle cone = mapping_igvc::ConeObstacle();
 
+    /*Sample 3 points method*/
+    /*Indices for points to sample from cluster*/
+    int i1 = 0;
+    int i3 = cluster_points.size()-1;
+    int i2 = i3/2;
 
-
-    //Cluster points should be approximately an arc, try to predict radius + center of this arc
-    //Find center first, then radius is trivial
-
+    /* Formula from http://paulbourke.net/geometry/circlesphere/ */
+    float slopeA = (cluster_points[i2].y - cluster_points[i1].y)/(cluster_points[i2].x - cluster_points[i1].x);
+    float slopeB = (cluster_points[i3].y - cluster_points[i2].y)/(cluster_points[i3].x - cluster_points[i2].x);
+    cone.center.x = ((slopeA * slopeB) * (cluster_points[i1].y - cluster_points[i3].y) +
+                    slopeB * (cluster_points[i1].x - cluster_points[i2].x) -
+                    slopeA * (cluster_points[i2].x + cluster_points[i3].x)) /
+                    (2 * (slopeB - slopeA));
+    cone.center.y = slopeA * (cone.center.x - cluster_points[i1].x) + cluster_points[i1].y;
+    cone.radius = getDist(cluster_points[i1], cone.center);
 
     return cone;
 }

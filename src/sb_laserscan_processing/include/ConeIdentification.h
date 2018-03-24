@@ -34,8 +34,19 @@ class ConeIdentification {
          */
         static mapping_igvc::Point2D laserToPoint(float dist, float ang); //TODO: Points must be in global frame?
 
+        /**
+         * Gets the distance between 2 points
+         * @param p1 point 1
+         * @param p2 point 2
+         * @return distance between points
+         */
         static float getDist(const mapping_igvc::Point2D &p1, const mapping_igvc::Point2D &p2);
 
+        /**
+         * Converts a cluster of points to a cone obstacle
+         * @param cluster_points should have size >= 3
+         * @return a cone formed by cluster points
+         */
         static mapping_igvc::ConeObstacle clusterToCone(const std::vector<mapping_igvc::Point2D> &cluster_points);
 };
 
