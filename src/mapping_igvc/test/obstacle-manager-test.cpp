@@ -4,8 +4,14 @@
  * Description: TODO
  */
 
-#include <ObstacleManager.h>
+// Snowbots Includes
+#include "ObstacleManager.h"
+#include "sb_geom/Point2D.h"
+
+// GTest Includes
 #include <gtest/gtest.h>
+
+using namespace sb_geom;
 
 class ObstacleManagerTest : public testing::Test {
 protected:
@@ -129,13 +135,34 @@ TEST_F(ObstacleManagerTest, add_several_cones){
 TEST_F(ObstacleManagerTest, messing_about){
     ObstacleManager obstacle_manager(10, 10);
 
-    std::vector<double> coeff = {0, 0, 1.0/5.0};
-    sb_geom::PolynomialSegment poly_segment(coeff, 2, 5);
-    obstacle_manager.addObstacle(poly_segment);
-    coeff = {0, 0, 1/4};
-    poly_segment = sb_geom::PolynomialSegment(coeff, 4, 10);
-    obstacle_manager.addObstacle(poly_segment);
-    std::vector<sb_geom::Spline> lines = obstacle_manager.getLineObstacle();
+    std::vector<Point2D> points;
+
+    points = {
+            {0,1},
+            {10,1}
+    };
+    Spline spline1(points);
+    points = {
+            {3,3},
+            {7,3}
+    };
+    Spline spline2(points);
+
+    obstacle_manager.addObstacle(spline1);
+    obstacle_manager.addObstacle(spline2);
+
+
+    std::vector<sb_geom::Spline> lines = obstacle_manager.getLineObstacles();
+
+    for (sb_geom::Spline& spline : lines){
+        std::cout << "~~~~~~~~~~~~~" << std::endl;
+        int num_points = 100;
+        for (int i = 0; i < num_points; i++){
+            double u = i * 1/num_points;
+            sb_geom::Point2D p = spline(u);
+            std::cout << u << ", " << p.x() << ", " << p.y() << std::endl;
+        }
+    }
 }
 
 
