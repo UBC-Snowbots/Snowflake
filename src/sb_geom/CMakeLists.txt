@@ -1,8 +1,15 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sb_geom)
 
-# Add our custom cmake files to the `CMAKE_MODULE_PATH`
+# Add our custom cmake files to the `CMAKE_MODULE_PATH` so that we can use them here
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+# Since this is a highly performance sensitive section of the codebase
+# build in "Release" (with lots of compiler optimizations) by default
+# (If built in "Debug", some functions can take up to 250x longer)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+endif()
 
 add_definitions(-std=gnu++14)
 ## Find catkin macros and libraries
