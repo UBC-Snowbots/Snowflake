@@ -15,6 +15,9 @@
 // STD Includes
 #include <vector>
 
+// dlib Includes
+#include <dlib/global_optimization/find_max_global.h>
+
 using namespace sb_geom;
 
 class UtilsTest : public testing::Test {
@@ -108,6 +111,8 @@ TEST_F(UtilsTest, minDistanceBetweenSplines_multiple_arcs){
     EXPECT_DOUBLE_EQ(5, minDistanceBetweenSplines(spline1, spline2));
 }
 
+// Test finding the closest point on a straight spline to a given point
+
 // Test finding the minimum distance between two splines where the closest point
 // is at the endpoint of one of the splines and somewhere in the middle of the other
 // TODO
@@ -115,6 +120,60 @@ TEST_F(UtilsTest, minDistanceBetweenSplines_multiple_arcs){
 // Test finding the minimum distance between two splines where the closest point
 // is at the endpoints of both splines
 // TODO
+
+// TODO: Delete me later
+//TEST_F(UtilsTest, find_min_global_slow_repro_two_variables) {
+//    auto f = [](double u, double t){
+//        u = 100*u;
+//        t = 100*t;
+//
+//        if (t < 20){
+//            t = 20;
+//        } else if (t > 60){
+//            t = 60;
+//        }
+//
+//        double dx = t - u;
+//        double dy = 10;
+//
+//        return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+//    };
+//
+//    auto min_result = dlib::find_min_global(
+//            f, {0,0},{1,1}, dlib::max_function_calls(10)
+//    );
+//}
+//
+//TEST_F(UtilsTest, find_min_global_repro_single_variable){
+//    auto f = [](double u){
+//        u = 100*u;
+//
+//        double dx = 20 - u;
+//        double dy = 10;
+//
+//        return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+//    };
+//
+//    auto min_result = dlib::find_min_global(
+//            f, {0},{1}, dlib::max_function_calls(10)
+//    );
+//}
+//
+//TEST_F(UtilsTest, find_min_global_repro_two_variables_ignore_one){
+//    auto f = [](double u, double t){
+//        u = 100*u;
+//        t = 100*t;
+//
+//        double dx = 20 - u;
+//        double dy = 10;
+//
+//        return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+//    };
+//
+//    auto min_result = dlib::find_min_global(
+//            f, {0,0},{1,1}, dlib::max_function_calls(10)
+//    );
+//}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
