@@ -24,7 +24,7 @@ std::vector<Cone> ObstacleManager::getConeObstacles() {
     return cones;
 }
 
-std::vector<sb_geom::Spline> ObstacleManager::getLineObstacle() {
+std::vector<sb_geom::Spline> ObstacleManager::getLineObstacles() {
     return lines;
 }
 
@@ -71,7 +71,7 @@ void ObstacleManager::addObstacle(Spline line_obstacle) {
     // Find the distance from this line_obstacle to every other known line_obstacle
     std::vector<std::pair<double, int>> distances;
     for (int line_index = 0; line_index < lines.size(); line_index++) {
-        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle, 0, 0);
+        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle);
         distances.emplace_back(std::make_pair(distance, line_index));
     }
 
@@ -107,11 +107,10 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
                                               Spline new_line) {
 
     // Find the closest points on the known line to the start and aend of the new line
-    // TODO: Make max_err and num_sample points here class members we can set
     double u1 =
-            findClosestPointOnSplineToPoint(current_line, new_line(0), 100, 0.01);
+            findClosestPointOnSplineToPoint(current_line, new_line(0));
     double u2 =
-            findClosestPointOnSplineToPoint(current_line, new_line(1), 100, 0.01);
+            findClosestPointOnSplineToPoint(current_line, new_line(1));
 
     // "replace" the section of the current line between `u1` and `u2` with the new line
 

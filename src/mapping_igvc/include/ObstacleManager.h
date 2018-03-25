@@ -93,7 +93,7 @@ public:
      * Get all the lines in our world
      * @return a list of all known lines in our world
      */
-    std::vector<sb_geom::Spline> getLineObstacle();
+    std::vector<sb_geom::Spline> getLineObstacles();
 
 private:
 
