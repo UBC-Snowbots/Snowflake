@@ -135,8 +135,8 @@ TEST_F(ObstacleManagerTest, add_several_cones){
 TEST_F(ObstacleManagerTest, messing_about){
     ObstacleManager obstacle_manager(10, 30);
 
-    Spline spline1({{0,1}, {20,1}, {30,1}, {40,1}, {50,1}, {60,1}, {100,1}});
-    Spline spline2({{25,20}, {50,20}, {60, 20}});
+    Spline spline1({{0,1}, {20,1}, {30,1}, {40,1}, {50,1}, {75,1}, {100,1}});
+    Spline spline2({{29,20}, {50,20}, {55, 20}});
 
     // TODO: YOU ARE HERE - seems like checking the distance between two splines is fast,
     // TODO: but when we go to actually merge the splines and check point to spline distance, it's slow

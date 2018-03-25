@@ -67,11 +67,11 @@ namespace sb_geom {
      * @param spline TODO?
      * @param point TODO?
      * @param max_iter the maximum number of iterations of the global minima search to perform
-     * increasing this will improve the final result (more likely to find the true global minima) but
-     * will increase the computation time
+     * increasing this will improve the final result (more likely to find the true global minimum point)
+     * but will increase the computation time
      * @return the distance along the spline (in [0,1]) closest to the given point
      */
-    double findClosestPointOnSplineToPoint(Spline spline, Point2D point, unsigned int max_iter = 100);
+    double findClosestPointOnSplineToPoint(Spline spline, Point2D point, unsigned int max_iter = 10);
 
     // TODO: Test me
     /**
