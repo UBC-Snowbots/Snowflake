@@ -91,7 +91,7 @@ TEST_F(UtilsTest, minDistanceBetweenSplines_two_straight_lines){
 // pointing towards each other
 TEST_F(UtilsTest, minDistanceBetweenSplines_one_arc){
     // (roughly) y = x^2 + 5
-    Spline spline1({{-1,6}, {5,0}, {1,6}});
+    Spline spline1({{-1,6}, {0,5}, {1,6}});
     // (roughly) y = -x^2
     Spline spline2({{-1,-1}, {0,0}, {1,-1}});
 
@@ -101,7 +101,7 @@ TEST_F(UtilsTest, minDistanceBetweenSplines_one_arc){
 // Test finding the minimum distance between two splines with multiple arcs
 TEST_F(UtilsTest, minDistanceBetweenSplines_multiple_arcs){
     // (roughly) y = x^2 + 5
-    Spline spline1({{-1,6}, {5,0}, {1,6}});
+    Spline spline1({{-1,6}, {0,5}, {1,6}});
     // (roughly) y = -x^2
     Spline spline2({{-1,-1}, {0,0}, {1,-1}});
 
@@ -114,6 +114,7 @@ TEST_F(UtilsTest, minDistanceBetweenSplines_multiple_arcs){
 
 // Test finding the minimum distance between two splines where the closest point
 // is at the endpoints of both splines
+// TODO
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

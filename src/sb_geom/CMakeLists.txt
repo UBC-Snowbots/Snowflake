@@ -50,12 +50,12 @@ include_directories(
         ${ALGLIB_INCLUDE_DIRS}
         ${GSL_INCLUDE_DIRS}
         # We have this include because the system version of dlib on Ubuntu
-        # is out of date and doesn't have the header files we need. Eventually
-        # if the system version of dlib is updated, we should be able to remove
-        # this line.
-        # Current system version of dlib in Ubuntu is here:
+        # is out of date and is missing the "global_optimization" part of the
+        # library. Eventually, if the system version of dlib is updated to >19.6,
+        # we should be able to remove this line and delete the `dlib` folder.
+        # Current system version of dlib in Ubuntu is indicated here:
         #   https://launchpad.net/ubuntu/+source/dlib
-        ./dlib/global_optimization
+        ./dlib
         ./include
 )
 
@@ -72,6 +72,13 @@ set(ALL_LIBRARIES
 # Find all the `.h` and `.cpp` files for the `sb_geom` library
 file(GLOB sb_geom_SRCS
         "src/*.cpp"
+        # We have this include because the system version of dlib on Ubuntu
+        # is out of date and is missing the "global_optimization" part of the
+        # library. Eventually, if the system version of dlib is updated to >19.6,
+        # we should be able to remove this line and delete the `dlib` folder.
+        # Current system version of dlib in Ubuntu is indicated here:
+        #   https://launchpad.net/ubuntu/+source/dlib
+        "dlib/dlib/global_optimization/*.cpp"
         )
 file(GLOB sb_geom_HEADERS
         "include/sb_geom/*.h"

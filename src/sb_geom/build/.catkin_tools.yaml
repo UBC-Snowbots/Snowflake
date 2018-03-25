@@ -1,0 +1,6 @@
+devel_space: /home/gareth/programming/Snowflake/src/sb_geom/devel
+install: false
+install_space: /home/gareth/programming/Snowflake/src/sb_geom/install
+profile: default
+source_space: /home/gareth/programming/Snowflake/src/sb_geom/src
+workspace: /home/gareth/programming/Snowflake/src/sb_geom

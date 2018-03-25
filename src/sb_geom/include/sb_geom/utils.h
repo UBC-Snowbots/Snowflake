@@ -29,7 +29,7 @@ namespace sb_geom {
      * @return the minimum distance between the point and polynomial line
      */
     double minDistanceFromPointToPolynomialSegment(
-            Point2D point, PolynomialSegment line, uintmax_t max_iter = 20);
+            Point2D point, PolynomialSegment line, uintmax_t max_iter = 10);
 
     /**
      * Computes the minimum distance between two given splines
@@ -42,7 +42,7 @@ namespace sb_geom {
      * will increase the computation time
      * @return the minimum distance between `s1` and `s2`
      */
-    double minDistanceBetweenSplines(Spline s1, Spline s2, unsigned int max_iter = 100);
+    double minDistanceBetweenSplines(Spline s1, Spline s2, unsigned int max_iter = 10);
 
     // TODO: Test me
     // TODO: Should this go in the Polynomial class?

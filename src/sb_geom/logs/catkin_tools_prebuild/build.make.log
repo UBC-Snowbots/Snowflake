@@ -1,0 +1,22 @@
+/usr/bin/cmake -H/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild -B/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/make -f CMakeFiles/Makefile2 run_tests
+make[1]: Entering directory '/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild'
+/usr/bin/cmake -H/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild -B/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild/CMakeFiles 0
+/usr/bin/make -f CMakeFiles/Makefile2 CMakeFiles/run_tests.dir/all
+make[2]: Entering directory '/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild'
+/usr/bin/make -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/depend
+make[3]: Entering directory '/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild'
+cd /home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild /home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild /home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild /home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild /home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild/CMakeFiles/run_tests.dir/DependInfo.cmake --color=
+Dependee "/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild/CMakeFiles/run_tests.dir/DependInfo.cmake" is newer than depender "/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild/CMakeFiles/run_tests.dir/depend.internal".
+Dependee "/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild/CMakeFiles/CMakeDirectoryInformation.cmake" is newer than depender "/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild/CMakeFiles/run_tests.dir/depend.internal".
+[35m[1mScanning dependencies of target run_tests[0m
+make[3]: Leaving directory '/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild'
+/usr/bin/make -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
+make[3]: Entering directory '/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild'
+make[3]: Nothing to be done for 'CMakeFiles/run_tests.dir/build'.
+make[3]: Leaving directory '/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild'
+Built target run_tests
+make[2]: Leaving directory '/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild'
+/usr/bin/cmake -E cmake_progress_start /home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild/CMakeFiles 0
+make[1]: Leaving directory '/home/gareth/programming/Snowflake/src/sb_geom/build/catkin_tools_prebuild'

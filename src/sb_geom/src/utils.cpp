@@ -18,13 +18,13 @@
 
 // dlib Includes
 #include <dlib/optimization.h>
-#include <dlib/global_optimization.h>
+#include <dlib/global_optimization/find_max_global.h>
 
 using namespace sb_geom;
 
 double sb_geom::minDistanceFromPointToPolynomialSegment(
         Point2D point, PolynomialSegment line, uintmax_t max_iter) {
-    std::vector<double>& coeffecients = line.coefficients();
+    std::vector<double>& coefficients = line.coefficients();
 
     // Define a function of the distance from the point to the line that we can optimize
     // to find the shortest distance. For `halley_iterate` to work, we need to return the function
@@ -84,9 +84,8 @@ double sb_geom::minDistanceBetweenSplines(Spline s1, Spline s2, unsigned int max
         Point2D p2 = s2(t);
 
         double dx = p1.x() - p2.x();
-        double dy = p2.y() - p2.y();
+        double dy = p1.y() - p2.y();
 
-        // TODO: Could we use L1 loss (absolute value) instead of L2 here? sqrt operations are expensive
         return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
     };
 
@@ -161,7 +160,6 @@ double sb_geom::findClosestPointOnSplineToPoint(Spline spline, Point2D point, un
         double dx = point_on_spline.x() - point.x();
         double dy = point_on_spline.y() - point.y();
 
-        // TODO: Could we use L1 loss (absolute value) instead of L2 here? sqrt operations are expensive
         return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
     };
 

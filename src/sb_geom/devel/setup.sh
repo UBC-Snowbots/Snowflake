@@ -1,0 +1,1 @@
+/home/gareth/programming/Snowflake/src/sb_geom/devel/.private/catkin_tools_prebuild/setup.sh
