@@ -105,6 +105,8 @@ class LineExtractorNode {
      */
     float scale;
 
+    std::string frame_id;
+
     /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
      * been converted from sensor_msgs PointCloud2

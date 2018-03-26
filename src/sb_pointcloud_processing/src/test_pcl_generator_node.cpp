@@ -70,6 +70,11 @@ int main(int argc, char** argv) {
     bool outlier;
     SB_getParam(private_nh, outlier_param, outlier, default_outlier);
 
+    std::string frame_id_param = "frame_id";
+    std::string default_frame_id     = "line_extractor_test";
+    std::string frame_id;
+    SB_getParam(private_nh, frame_id_param, frame_id, default_frame_id);
+
     if (outlier) {
         std::string outlier_line_param          = "outlier_line";
         std::vector<float> default_outlier_line = {0};
@@ -83,7 +88,7 @@ int main(int argc, char** argv) {
     }
 
     sensor_msgs::PointCloud2 msg_to_publish = generatePclMessage(outlier);
-    msg_to_publish.header.frame_id          = "line_extractor_test";
+    msg_to_publish.header.frame_id          = frame_id;
 
     while (ros::ok()) {
         publisher.publish(msg_to_publish);
