@@ -28,7 +28,7 @@ namespace sb_geom {
          * @param x_min the min x value of the segment
          * @param x_max the max x value of the segment
          */
-        PolynomialSegment(std::vector<double> &coefficients, double x_min, double x_max) :
+        PolynomialSegment(std::vector<double> coefficients, double x_min, double x_max) :
                 Polynomial(coefficients),
                 _x_min(x_min),
                 _x_max(x_max) {};

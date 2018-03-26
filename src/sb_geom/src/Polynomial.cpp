@@ -21,7 +21,7 @@ Polynomial::Polynomial(sb_geom_msgs::Polynomial polynomial_msg):
 {
 }
 
-Polynomial::Polynomial(std::vector<double>& coefficients):
+Polynomial::Polynomial(std::vector<double> coefficients):
 _coefficients(coefficients)
 {}
 

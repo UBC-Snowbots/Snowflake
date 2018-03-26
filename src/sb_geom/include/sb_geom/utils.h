@@ -17,7 +17,8 @@
 
 namespace sb_geom {
     // TODO: Test me
-    // TODO: Do we need this function any more?
+    // TODO: Do we need this function any more? Check if we do and delete if not
+    // TODO: This will only find local minima.... so it's wrong, use dlib::find_min_global if needed
     /**
      * Computes the shortest distance between a given point and polynomial line segment
      *
@@ -44,7 +45,6 @@ namespace sb_geom {
      */
     double minDistanceBetweenSplines(Spline s1, Spline s2, unsigned int max_iter = 10);
 
-    // TODO: Test me
     // TODO: Should this go in the Polynomial class?
     /**
      * Find the real roots of a given polynomial
@@ -56,7 +56,6 @@ namespace sb_geom {
      */
     std::vector<double> findRealRoots(Polynomial poly);
 
-    // TODO: Test me
     /**
      * Finds the closest point on the given spline to the given point
      *

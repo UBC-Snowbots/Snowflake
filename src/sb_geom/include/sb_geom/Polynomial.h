@@ -35,7 +35,7 @@ namespace sb_geom {
          * Create a Polynomial with given coefficients
          * @param coefficients the coefficients of this polynomial
          */
-        Polynomial(std::vector<double>& coefficients);
+        Polynomial(std::vector<double> coefficients);
 
         /**
          * Get the current coefficients for this polynomial
