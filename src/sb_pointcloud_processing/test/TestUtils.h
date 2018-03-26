@@ -47,8 +47,14 @@ class TestUtils {
     static void addLineToPointCloud(LineArgs args,
                                     pcl::PointCloud<pcl::PointXYZ>& pcl,
                                     float max_noise_x,
-                                    float max_noise_y) {
-        srand(123);
+                                    float max_noise_y,
+                                    bool same_seed = true) {
+        if (same_seed) {
+            srand(123);
+        } else {
+            srand(time(NULL));
+        }
+
         for (float x = args.x_min; x <= args.x_max; x += args.x_delta) {
             float true_x = x;
             float true_y = 0;

@@ -72,9 +72,6 @@ LineExtractorNode::LineExtractorNode(int argc,
     std::string rviz_cluster_topic = "debug/clusters";
     rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
     rviz_cluster_topic, queue_size);
-
-    this->dbscan.setRadius(this->radius);
-    this->dbscan.setMinNeighbours(this->minNeighbours);
 }
 
 void LineExtractorNode::pclCallBack(
@@ -100,8 +97,8 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 }
 
 void LineExtractorNode::extractLines() {
-    this->clusters = this->dbscan.findClusters(this->pclPtr);
-    visualizeClusters();
+    DBSCAN dbscan(this->minNeighbours, this->radius);
+    this->clusters = dbscan.findClusters(this->pclPtr);
 
     std::vector<Eigen::VectorXf> lines =
     regression.getLinesOfBestFit(this->clusters, this->degreePoly);
@@ -113,6 +110,7 @@ void LineExtractorNode::extractLines() {
         publisher.publish(line_obstacles[i]);
     }
 
+    visualizeClusters();
     visualizeLineObstacles(line_obstacles);
 
     return;

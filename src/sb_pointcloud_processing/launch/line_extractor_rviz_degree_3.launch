@@ -8,12 +8,12 @@
         <!-- regularization constant for line of best fit -->
         <param name="lambda" value="0" type="double" />
         <!-- density parameters for DBSCAN -->
-        <param name="min_neighbours" value="10" type="int" />
-        <param name="radius" value="0.5" type="double" />
+        <param name="min_neighbours" value="5" type="int" />
+        <param name="radius" value="0.15" type="double" />
         <!-- density of lines for rviz; make sure this value is not too small or rviz will crash :( -->
         <param name="x_delta" value="0.1" type="double" />
         <!-- size of marker points for rviz -->
-        <param name="scale" value="0.1" type="double" />
+        <param name="scale" value="0.02" type="double" />
         <param name="frame_id" value="zed_camera" type="string" />
     </node>
 
@@ -31,8 +31,8 @@
         <!-- max_noise_x/y defines the magnitude of random deviation from the actual mathematical line
              for all lines (first, second, outlier)
         -->
-        <param name="max_noise_x" value="0.5" type="double" />
-        <param name="max_noise_y" value="0.5" type="double" />
+        <param name="max_noise_x" value="0.1" type="double" />
+        <param name="max_noise_y" value="0.2" type="double" />
         <!-- outlier defines whether we want another line to test outliers -->
         <param name="outlier" value="true" type="bool" />
         <!-- polynomial representation of outlier line. outlier must be true for it to be shown -->

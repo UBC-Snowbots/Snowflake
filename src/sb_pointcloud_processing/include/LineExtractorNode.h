@@ -55,12 +55,6 @@ class LineExtractorNode {
     ros::Publisher rviz_cluster_publisher;
 
     /*
-     * @dbscan takes in a PointCloud and clusters them into a vector of
-     * PointClouds
-     */
-    DBSCAN dbscan;
-
-    /*
      * @regression takes in the output from @dbscan and outputs a LineObstacle
      * for each cluster.
      * A line has the same index as its corresponding cluster
