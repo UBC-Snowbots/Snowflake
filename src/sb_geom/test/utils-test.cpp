@@ -82,6 +82,31 @@ TEST_F(UtilsTest, findRealRoots_polynomial_with_all_zero_coefficients){
     EXPECT_EQ(0, roots.size());
 }
 
+TEST_F(UtilsTest, findRealRoots_complex_polynomial){
+    // y = -32x^31 + 4x^3 + 1
+    std::vector<double> coeff(32);
+    coeff[0] = 1;
+    coeff[3] = 4;
+    coeff[31] = -32;
+    Polynomial polynomial(coeff);
+
+    std::vector<double> expected_roots = {
+            -0.91544111165991093096935295,
+            -0.62996456269339499629737930,
+            0.93725891366674881690617031,
+    };
+
+    std::vector<double> roots = findRealRoots(polynomial);
+    EXPECT_EQ(expected_roots.size(), roots.size());
+
+    // Compare the roots to the expected ones
+    // we're using a for loop here because doubles are not _exactly_ equal
+    std::sort(roots.begin(), roots.end());
+    for (int i = 0; i < expected_roots.size(); i++){
+        EXPECT_NEAR(expected_roots[i], roots[i], 1e-10);
+    }
+}
+
 // Test finding the distance between two splines that are just straight lines
 TEST_F(UtilsTest, minDistanceBetweenSplines_two_straight_lines){
     Spline spline1({{0,1}, {10,1}});
@@ -173,27 +198,31 @@ TEST_F(UtilsTest, getInterpolationPointsFromPolySegment_simple_polynomial){
 
 // Test finding interpolation points for a more complex polynomial
 TEST_F(UtilsTest, getInterpolationPointsFromPolySegment_complex_polynomial){
-    // y = -x^32 + x^4 + x
-    std::vector<double> coeff(32);
+    // y = -x^{32} + x^{4} + x
+    std::vector<double> coeff(33);
     std::fill(coeff.begin(), coeff.end(), 0);
     coeff[1] = 1;
-    coeff[3] = 1;
-    coeff[31] = -1;
-    PolynomialSegment poly_segment(coeff, -1, 1.024);
+    coeff[4] = 1;
+    coeff[32] = -1;
+    PolynomialSegment poly_segment(coeff, -1, 1);
 
     std::vector<Point2D> interpolation_points = getInterpolationPointsFromPolySegment(poly_segment);
-    std::vector<Point2D> expected_points =
-            {{-1,-1}, {-0.915,-0.272}, {-0.63,-0.472}, {0.937,1.583}, {1,1}};
+    std::vector<Point2D> expected_points = {
+            {-1,-1},
+            {-0.91544111165991093096935295, -0.2723225189933820843419262},
+            {-0.62996456269339499629737930, -0.4724707722152933636982830},
+            {0.93725891366674881690617031, 1.5831912409539385747402411},
+            {1,1}
+    };
 
     ASSERT_EQ(expected_points.size(), interpolation_points.size());
     for (int i = 0; i < expected_points.size(); i++){
         Point2D expected = expected_points[i];
         Point2D actual = interpolation_points[i];
-        EXPECT_NEAR(expected.x(), actual.x(), 0.01);
-        EXPECT_NEAR(expected.y(), actual.y(), 0.01);
+        EXPECT_NEAR(expected.x(), actual.x(), 1e-10);
+        EXPECT_NEAR(expected.y(), actual.y(), 1e-10);
     }
 }
-
 // TODO: Delete me later
 //TEST_F(UtilsTest, find_min_global_slow_repro_two_variables) {
 //    auto f = [](double u, double t){

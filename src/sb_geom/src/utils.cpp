@@ -133,13 +133,15 @@ std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly){
     // Put all the real roots in a vector and return it
     std::vector<double> roots;
     for (int i = 0; i < poly.getDegree(); i++){
-        // Get the real part of the root
+        // Get the real and imaginary parts of the root
         double real_part = z[2*i];
+        double imaginary_part = z[2*i + 1];
         // Because of numerical instability, round to the 12th decimal place
         // (because zero values might show up as non-zero)
         real_part = std::round(real_part * 1e12) / 1e12;
-        // If it's non-zero, add it to our roots
-        if (real_part != 0){
+        // If it's real, non-zero and we don't have it already, add it to our roots
+        bool already_found = std::find(roots.begin(), roots.end(), real_part) != roots.end();
+        if (imaginary_part ==0 && real_part != 0 && !already_found){
             roots.emplace_back(real_part);
         }
     }
