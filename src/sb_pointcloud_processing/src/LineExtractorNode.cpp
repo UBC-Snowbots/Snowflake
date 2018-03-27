@@ -43,8 +43,8 @@ LineExtractorNode::LineExtractorNode(int argc,
     float default_scale     = 0.1;
     SB_getParam(private_nh, scale_param, this->scale, default_scale);
 
-    std::string frame_id_param = "frame_id";
-    std::string default_frame_id     = "line_extractor_test";
+    std::string frame_id_param   = "frame_id";
+    std::string default_frame_id = "line_extractor_test";
     SB_getParam(private_nh, frame_id_param, this->frame_id, default_frame_id);
 
     if (areParamsInvalid()) {
@@ -67,7 +67,7 @@ LineExtractorNode::LineExtractorNode(int argc,
 
     std::string rviz_line_topic = "debug/output_line_obstacle";
     rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(
-            rviz_line_topic, queue_size);
+    rviz_line_topic, queue_size);
 
     std::string rviz_cluster_topic = "debug/clusters";
     rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
@@ -100,8 +100,8 @@ void LineExtractorNode::extractLines() {
     DBSCAN dbscan(this->minNeighbours, this->radius);
     this->clusters = dbscan.findClusters(this->pclPtr);
 
-    std::vector<Eigen::VectorXf> lines =
-            regression.getLinesOfBestFit(this->clusters, this->degreePoly, this->lambda);
+    std::vector<Eigen::VectorXf> lines = regression.getLinesOfBestFit(
+    this->clusters, this->degreePoly, this->lambda);
 
     std::vector<mapping_igvc::LineObstacle> line_obstacles =
     vectorsToMsgs(lines);
@@ -125,7 +125,7 @@ void LineExtractorNode::visualizeClusters() {
     snowbots::RvizUtils::createrMarkerScale(
     this->scale, this->scale, this->scale);
 
-    std::string ns       = "debug";
+    std::string ns = "debug";
 
     visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
     cluster_points, colors, scale, this->frame_id, ns);
@@ -177,16 +177,15 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     snowbots::RvizUtils::createrMarkerScale(
     this->scale, this->scale, this->scale);
 
-    std::string ns       = "debug";
+    std::string ns = "debug";
 
     visualization_msgs::Marker marker =
-            snowbots::RvizUtils::createMarker(
-                    lines_points,
-                    color,
-                    scale,
-                    this->frame_id,
-                    ns,
-                    visualization_msgs::Marker::POINTS);
+    snowbots::RvizUtils::createMarker(lines_points,
+                                      color,
+                                      scale,
+                                      this->frame_id,
+                                      ns,
+                                      visualization_msgs::Marker::POINTS);
 
     rviz_line_publisher.publish(marker);
 }
@@ -213,7 +212,6 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
 
             line_points.push_back(p);
         }
-
     }
 
     return line_points;

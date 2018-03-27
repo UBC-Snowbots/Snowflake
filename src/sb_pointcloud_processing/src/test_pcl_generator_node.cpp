@@ -70,8 +70,8 @@ int main(int argc, char** argv) {
     bool outlier;
     SB_getParam(private_nh, outlier_param, outlier, default_outlier);
 
-    std::string frame_id_param = "frame_id";
-    std::string default_frame_id     = "line_extractor_test";
+    std::string frame_id_param   = "frame_id";
+    std::string default_frame_id = "line_extractor_test";
     std::string frame_id;
     SB_getParam(private_nh, frame_id_param, frame_id, default_frame_id);
 
