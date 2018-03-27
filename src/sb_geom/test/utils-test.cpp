@@ -171,7 +171,6 @@ TEST_F(UtilsTest, getInterpolationPointsFromPolySegment_simple_polynomial){
     EXPECT_EQ(expected_points, getInterpolationPointsFromPolySegment(poly_segment));
 }
 
-// TODO: YOU ARE HERE - on computer at home this seems to induce memory dealloc bug?
 // Test finding interpolation points for a more complex polynomial
 TEST_F(UtilsTest, getInterpolationPointsFromPolySegment_complex_polynomial){
     // y = -x^32 + x^4 + x
