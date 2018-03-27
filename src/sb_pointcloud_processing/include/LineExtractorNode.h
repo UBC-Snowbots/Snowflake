@@ -99,6 +99,9 @@ class LineExtractorNode {
      */
     float scale;
 
+    /*
+     * frame_id for rviz markers
+     */
     std::string frame_id;
 
     /*
@@ -135,7 +138,7 @@ class LineExtractorNode {
      * geometry_msgs:Point and then merges all of them into a single
      * vector.
      */
-    std::vector<std::vector<geometry_msgs::Point>> convertLineObstaclesToPoints(
+    std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(
     std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
     /*

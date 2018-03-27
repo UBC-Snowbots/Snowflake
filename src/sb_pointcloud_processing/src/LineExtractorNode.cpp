@@ -66,8 +66,8 @@ LineExtractorNode::LineExtractorNode(int argc,
     topic_to_publish_to, queue_size);
 
     std::string rviz_line_topic = "debug/output_line_obstacle";
-    rviz_line_publisher = private_nh.advertise<visualization_msgs::MarkerArray>(
-    rviz_line_topic, queue_size);
+    rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(
+            rviz_line_topic, queue_size);
 
     std::string rviz_cluster_topic = "debug/clusters";
     rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
@@ -101,7 +101,7 @@ void LineExtractorNode::extractLines() {
     this->clusters = dbscan.findClusters(this->pclPtr);
 
     std::vector<Eigen::VectorXf> lines =
-    regression.getLinesOfBestFit(this->clusters, this->degreePoly);
+            regression.getLinesOfBestFit(this->clusters, this->degreePoly, this->lambda);
 
     std::vector<mapping_igvc::LineObstacle> line_obstacles =
     vectorsToMsgs(lines);
@@ -168,7 +168,7 @@ std::vector<std_msgs::ColorRGBA>& colors) {
 
 void LineExtractorNode::visualizeLineObstacles(
 std::vector<mapping_igvc::LineObstacle> line_obstacles) {
-    std::vector<std::vector<geometry_msgs::Point>> lines_points =
+    std::vector<geometry_msgs::Point> lines_points =
     convertLineObstaclesToPoints(line_obstacles);
 
     visualization_msgs::Marker::_color_type color =
@@ -179,26 +179,25 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
 
     std::string ns       = "debug";
 
-    visualization_msgs::MarkerArray markerArray =
-    snowbots::RvizUtils::createMarkerArray(
-    lines_points,
-    color,
-    scale,
-    this->frame_id,
-    ns,
-    visualization_msgs::Marker::LINE_STRIP);
+    visualization_msgs::Marker marker =
+            snowbots::RvizUtils::createMarker(
+                    lines_points,
+                    color,
+                    scale,
+                    this->frame_id,
+                    ns,
+                    visualization_msgs::Marker::POINTS);
 
-    rviz_line_publisher.publish(markerArray);
+    rviz_line_publisher.publish(marker);
 }
 
-std::vector<std::vector<geometry_msgs::Point>>
+std::vector<geometry_msgs::Point>
 LineExtractorNode::convertLineObstaclesToPoints(
 std::vector<mapping_igvc::LineObstacle> line_obstacles) {
-    std::vector<std::vector<geometry_msgs::Point>> lines_points;
+    std::vector<geometry_msgs::Point> line_points;
     // iterate through all lines
     for (unsigned int i = 0; i < line_obstacles.size(); i++) {
         mapping_igvc::LineObstacle line_obstacle = line_obstacles[i];
-        std::vector<geometry_msgs::Point> line_points;
 
         // draw the line as a series of points
         for (float x = line_obstacle.x_min; x < line_obstacle.x_max;
@@ -215,10 +214,9 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
             line_points.push_back(p);
         }
 
-        lines_points.push_back(line_points);
     }
 
-    return lines_points;
+    return line_points;
 }
 
 bool LineExtractorNode::areParamsInvalid() {
