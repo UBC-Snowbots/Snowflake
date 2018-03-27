@@ -175,7 +175,7 @@ TEST_F(UtilsTest, getInterpolationPointsFromPolySegment_simple_polynomial){
 // Test finding interpolation points for a more complex polynomial
 TEST_F(UtilsTest, getInterpolationPointsFromPolySegment_complex_polynomial){
     // y = -x^32 + x^4 + x
-    std::vector<double> coeff(31);
+    std::vector<double> coeff(32);
     std::fill(coeff.begin(), coeff.end(), 0);
     coeff[1] = 1;
     coeff[3] = 1;
