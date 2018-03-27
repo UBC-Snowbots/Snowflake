@@ -152,6 +152,9 @@ namespace sb_geom {
          */
         void interpolate();
 
+        // make the `==` operator a "friend" function so it can access private members of this class
+        friend bool operator==(Spline s1, Spline s2);
+
         // The points this spline interpolates through
         std::vector<Point2D> interpolation_points;
 
@@ -160,6 +163,11 @@ namespace sb_geom {
         alglib::spline1dinterpolant x_interpolant;
         alglib::spline1dinterpolant y_interpolant;
     };
+
+
+    inline bool operator==(Spline s1, Spline s2){
+        return s1.interpolation_points == s2.interpolation_points;
+    }
 
 }
 
