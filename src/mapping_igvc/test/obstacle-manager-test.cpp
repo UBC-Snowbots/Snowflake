@@ -131,33 +131,86 @@ TEST_F(ObstacleManagerTest, add_several_cones){
     EXPECT_EQ(expected, actual);
 }
 
-// TODO: Delete me, not a real test
-TEST_F(ObstacleManagerTest, messing_about){
-    ObstacleManager obstacle_manager(10, 30);
+TEST_F(ObstacleManagerTest, add_single_line){
+    ObstacleManager obstacle_manager(10, 10);
 
-    Spline spline1({{0,1}, {20,1}, {30,1}, {40,1}, {50,1}, {75,1}, {100,1}});
-    Spline spline2({{29,20}, {50,20}, {55, 20}});
+    Spline spline({{29,20}, {50,20}, {55, 20}});
 
-    // TODO: YOU ARE HERE - seems like checking the distance between two splines is fast,
-    // TODO: but when we go to actually merge the splines and check point to spline distance, it's slow
-    //Spline spline1({{0,0}, {10, -10}, {10, 20}, {100,-100}});
-    //Spline spline2({{0,10}, {10, 20}, {10, 30}, {100,100}});
+    obstacle_manager.addObstacle(spline);
+
+    std::vector<Spline> expected = {spline};
+    EXPECT_EQ(expected, obstacle_manager.getLineObstacles());
+}
+
+// Test adding two lines to an ObstacleManager just outside of the tolerance
+// needed to merge the two lines
+TEST_F(ObstacleManagerTest, add_two_lines_just_outside_merging_tolerance){
+    ObstacleManager obstacle_manager(1, 4.9);
+
+    // These splines are basically two straight lines,
+    // one at y=0, and one at y=5
+    Spline spline1({{0,0}, {10,0}});
+    Spline spline2({{2,5}, {7,5}});
 
     obstacle_manager.addObstacle(spline1);
     obstacle_manager.addObstacle(spline2);
 
-    std::vector<sb_geom::Spline> lines = obstacle_manager.getLineObstacles();
-
-    for (sb_geom::Spline& spline : lines){
-        std::cout << "~~~~~~~~~~~~~" << std::endl;
-        int num_points = 100;
-        for (int i = 0; i < num_points; i++){
-            double u = i * 1.0/(double)num_points;
-            sb_geom::Point2D p = spline(u);
-            std::cout << u << ", " << p.x() << ", " << p.y() << std::endl;
-        }
-    }
+    std::vector<Spline> known_lines = obstacle_manager.getLineObstacles();
+    std::vector<Spline> expected_lines = {spline1, spline2};
+    EXPECT_EQ(expected_lines.size(), known_lines.size());
+    EXPECT_EQ(expected_lines, known_lines);
 }
+
+// Test adding two lines to an ObstacleManager just within of the tolerance
+// needed to merge the two lines
+TEST_F(ObstacleManagerTest, add_two_lines_just_within_merging_tolerance){
+    ObstacleManager obstacle_manager(1, 5.1);
+
+    Spline spline1({{0,0}, {10,0}});
+    Spline spline2({{2,5}, {7,5}});
+
+    obstacle_manager.addObstacle(spline1);
+    obstacle_manager.addObstacle(spline2);
+
+    // We expect that the second spline will be merged into the first. Since the closest
+    // points to the endpoints of the second Spline on the first are in the middle section
+    // of the first spline, we expect no interpolation points to be "cut" from the first
+    // spline, and so the resulting spline should interpolate through all interpolation
+    // points on both splines
+    std::vector<Spline> expected_lines = { Spline({{0,0}, {2,5}, {7,5}, {10,0}}) };
+    std::vector<Spline> known_lines = obstacle_manager.getLineObstacles();
+
+    EXPECT_EQ(expected_lines.size(), known_lines.size());
+    EXPECT_EQ(expected_lines, known_lines);
+}
+
+// TODO: Delete me, not a real test
+//TEST_F(ObstacleManagerTest, messing_about){
+//    ObstacleManager obstacle_manager(10, 30);
+//
+//    Spline spline1({{0,1}, {20,1}, {30,1}, {40,1}, {50,1}, {75,1}, {100,1}});
+//    Spline spline2({{29,20}, {50,20}, {55, 20}});
+//
+//    // TODO: YOU ARE HERE - seems like checking the distance between two splines is fast,
+//    // TODO: but when we go to actually merge the splines and check point to spline distance, it's slow
+//    //Spline spline1({{0,0}, {10, -10}, {10, 20}, {100,-100}});
+//    //Spline spline2({{0,10}, {10, 20}, {10, 30}, {100,100}});
+//
+//    obstacle_manager.addObstacle(spline1);
+//    obstacle_manager.addObstacle(spline2);
+//
+//    std::vector<sb_geom::Spline> lines = obstacle_manager.getLineObstacles();
+//
+//    for (sb_geom::Spline& spline : lines){
+//        std::cout << "~~~~~~~~~~~~~" << std::endl;
+//        int num_points = 100;
+//        for (int i = 0; i < num_points; i++){
+//            double u = i * 1.0/(double)num_points;
+//            sb_geom::Point2D p = spline(u);
+//            std::cout << u << ", " << p.x() << ", " << p.y() << std::endl;
+//        }
+//    }
+//}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
