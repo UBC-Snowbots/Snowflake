@@ -11,6 +11,11 @@ find_package(catkin REQUIRED COMPONENTS
     sb_utils
     sb_geom
 )
+find_package(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+  set(OpenMP_FLAGS ${OpenMP_CXX_FLAGS})
+  set(OpenMP_LIBRARIES gomp)
+endif()
 
 
 ################################################
@@ -91,7 +96,10 @@ if (CATKIN_ENABLE_TESTING)
             )
     target_link_libraries(obstacle-manager-test
             ${catkin_LIBRARIES}
+            ${OpenMP_LIBRARIES}
             )
+    # Set compiler flags to use OpenMP
+    target_compile_options(obstacle-manager-test PRIVATE ${OpenMP_FLAGS})
 
     #catkin_add_gtest(spline-line-test
     #        test/spline-line-test.cpp

@@ -69,11 +69,13 @@ void ObstacleManager::addObstacle(Cone cone) {
 // TODO: The `addObstacle` functions seem pretty similar.... maybe we could apply DRY here?
 void ObstacleManager::addObstacle(Spline line_obstacle) {
     // Find the distance from this line_obstacle to every other known line_obstacle
-    std::vector<std::pair<double, int>> distances;
+    // (in parallel)
+    std::vector<std::pair<double, int>> distances(lines.size());
+    #pragma omp parallel for
     for (int line_index = 0; line_index < lines.size(); line_index++) {
         // TODO: `max_iters` should be a class member we can change (of `ObstacleManager`)
-        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle, 20);
-        distances.emplace_back(std::make_pair(distance, line_index));
+        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle, 15);
+        distances[line_index] = std::make_pair(distance, line_index);
     }
 
     // Find the closest known line_obstacle (min element by distance)
