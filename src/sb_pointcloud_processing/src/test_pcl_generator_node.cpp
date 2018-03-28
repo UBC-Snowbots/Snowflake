@@ -25,6 +25,9 @@ float outlier_x_delta;
 std::vector<float> outlier_line;
 
 sensor_msgs::PointCloud2 generatePclMessage(bool include_outlier);
+unsigned int getSeed();
+
+unsigned int counter = 0;
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "test_pcl_generator_node");
@@ -105,12 +108,12 @@ sensor_msgs::PointCloud2 generatePclMessage(bool include_outlier) {
     // Generate a single PointCloud with noise
     pcl::PointCloud<pcl::PointXYZ> pcl;
     LineExtractor::TestUtils::addLineToPointCloud(
-    args, pcl, max_noise_x, max_noise_y, false);
+    args, pcl, max_noise_x, max_noise_y, getSeed());
 
     // Add second line to the pointcloud
     args.coefficients = second_line;
     LineExtractor::TestUtils::addLineToPointCloud(
-    args, pcl, max_noise_x, max_noise_y, false);
+    args, pcl, max_noise_x, max_noise_y, getSeed());
 
     // Add outlier if wanted
     if (include_outlier) {
@@ -118,7 +121,7 @@ sensor_msgs::PointCloud2 generatePclMessage(bool include_outlier) {
         args.x_delta      = outlier_x_delta;
 
         LineExtractor::TestUtils::addLineToPointCloud(
-        args, pcl, max_noise_x, max_noise_y, false);
+        args, pcl, max_noise_x, max_noise_y, getSeed());
     }
 
     // convert pointcloud to sensor msgs
@@ -126,4 +129,8 @@ sensor_msgs::PointCloud2 generatePclMessage(bool include_outlier) {
     pcl::toROSMsg(pcl, msg);
 
     return msg;
+}
+
+unsigned int getSeed() {
+    return counter++ % 10;
 }
