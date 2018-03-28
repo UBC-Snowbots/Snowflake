@@ -71,7 +71,8 @@ void ObstacleManager::addObstacle(Spline line_obstacle) {
     // Find the distance from this line_obstacle to every other known line_obstacle
     std::vector<std::pair<double, int>> distances;
     for (int line_index = 0; line_index < lines.size(); line_index++) {
-        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle);
+        // TODO: `max_iters` should be a class member we can change (of `ObstacleManager`)
+        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle, 5);
         distances.emplace_back(std::make_pair(distance, line_index));
     }
 
@@ -106,25 +107,41 @@ void ObstacleManager::addObstacle(Spline line_obstacle) {
 Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
                                               Spline new_line) {
 
-    // Find the closest points on the known line to the start and aend of the new line
+    // Find the closest points on the known line to the start and end of the new line
+    // TODO: `max_iters` should be a class member we can change (of `ObstacleManager`)
     double u1 =
-            findClosestPointOnSplineToPoint(current_line, new_line(0));
+            findClosestPointOnSplineToPoint(current_line, new_line(0), 5);
     double u2 =
-            findClosestPointOnSplineToPoint(current_line, new_line(1));
+            findClosestPointOnSplineToPoint(current_line, new_line(1), 5);
+    double min_u = std::min(u1,u2);
+    double max_u = std::max(u1,u2);
 
     // "replace" the section of the current line between `u1` and `u2` with the new line
 
-    // Find the interpolation points "before" the new line (on the current line)
-    std::vector<Point2D> points_before_new_line =
-            current_line.getInterpolationPointsInRange(0, std::min(u1,u2));
+    // Find the points "before" the new line (on the current line)
+    std::vector<Point2D> points_before_new_line = {};
+    // This catches the edge case where the closest point to the endpoint of the new spline
+    // is the endpoint of the currently known spline. In this case there are *NO* points on
+    // the known spline that we want in the merged spline, but `getInterpolationPointsInRange`
+    // is inclusive, and so will return the endpoint when given the range: [0,0]
+    if (min_u != 0){
+        points_before_new_line = current_line.getInterpolationPointsInRange(0, min_u);
+    }
+
     // Find the points "after" the new line (on the current line)
-    std::vector<Point2D> points_after_new_line =
-            current_line.getInterpolationPointsInRange(std::max(u1,u2), 1);
+    std::vector<Point2D> points_after_new_line = {};
+    // This catches the edge case where the closest point to the endpoint of the new spline
+    // is the endpoint of the currently known spline. In this case there are *NO* points on
+    // the known spline that we want in the merged spline, but `getInterpolationPointsInRange`
+    // is inclusive, and so will return the endpoint when given the range: [1,1]
+    if (max_u != 1){
+        points_after_new_line = current_line.getInterpolationPointsInRange(max_u, 1);
+    }
 
     // Get the interpolation points from the new line
     std::vector<Point2D> points_on_new_line = new_line.getInterpolationPointsInRange(0,1);
 
-    // Merge the 3 sets of interpolation points:
+    // Merge the 3 sets of interpolation points in order:
     // - points on the current line before the new line
     // - points on the new line
     // - points on the current line after the new line

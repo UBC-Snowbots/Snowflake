@@ -184,12 +184,54 @@ TEST_F(ObstacleManagerTest, add_two_lines_just_within_merging_tolerance){
     EXPECT_EQ(expected_lines, known_lines);
 }
 
+// Test merging two lines where the new line overlaps last point of the known line
+TEST_F(ObstacleManagerTest, add_two_lines_second_line_overlapping_last_point_of_first_line){
+    ObstacleManager obstacle_manager(1, 5);
+
+    Spline spline1({{0,0}, {5,0}, {10,0}});
+    Spline spline2({{7, 3}, {15, 4}});
+
+    obstacle_manager.addObstacle(spline1);
+    obstacle_manager.addObstacle(spline2);
+
+    // We expect a single spline which is basically `spline1` with it's last interpolation
+    // point replaced by the interpolation points of `spline2`
+    std::vector<Spline> expected_splines = {
+            Spline({{0,0}, {5,0}, {7,3}, {15,4}}),
+    };
+
+    EXPECT_EQ(expected_splines, obstacle_manager.getLineObstacles());
+}
+
+// Test merging two lines where the new line overlaps first point of the known line
+TEST_F(ObstacleManagerTest, add_two_lines_second_line_overlapping_first_point_of_first_line){
+    ObstacleManager obstacle_manager(1, 5);
+
+    Spline spline1({{0,0}, {5,0}, {10,0}});
+    Spline spline2({{-5, 4}, {3, 4}});
+
+    obstacle_manager.addObstacle(spline1);
+    obstacle_manager.addObstacle(spline2);
+
+    // We expect a single spline which is basically `spline1` with it's last interpolation
+    // point replaced by the interpolation points of `spline2`
+    std::vector<Spline> expected_splines = {
+            Spline({{-5,4}, {3,4}, {5,0}, {10,0}}),
+    };
+
+    EXPECT_EQ(expected_splines, obstacle_manager.getLineObstacles());
+}
+
+// TODO: Some more tests with more complex polynomials
+
 // TODO: Delete me, not a real test
 //TEST_F(ObstacleManagerTest, messing_about){
 //    ObstacleManager obstacle_manager(10, 30);
 //
-//    Spline spline1({{0,1}, {20,1}, {30,1}, {40,1}, {50,1}, {75,1}, {100,1}});
-//    Spline spline2({{29,20}, {50,20}, {55, 20}});
+//    //Spline spline1({{0,1}, {20,1}, {30,1}, {40,1}, {50,1}, {75,1}, {100,1}});
+//    //Spline spline2({{29,20}, {50,20}, {55, 20}});
+//    Spline spline1({{0,0}, {100,0}});
+//    Spline spline2({{30,20}, {70,20}});
 //
 //    // TODO: YOU ARE HERE - seems like checking the distance between two splines is fast,
 //    // TODO: but when we go to actually merge the splines and check point to spline distance, it's slow
