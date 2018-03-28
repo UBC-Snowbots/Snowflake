@@ -16,6 +16,7 @@
 #include "sb_geom/Spline.h"
 
 namespace sb_geom {
+    // TODO: Add option for time constraint? dlib::find_min_global has one we can use...
     /**
      * Computes the minimum distance between two given splines
      *
@@ -40,6 +41,7 @@ namespace sb_geom {
      */
     std::vector<double> findRealRoots(Polynomial poly);
 
+    // TODO: Add option for time constraint? dlib::find_min_global has one we can use...
     /**
      * Finds the closest point on the given spline to the given point
      *
