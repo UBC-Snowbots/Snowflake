@@ -16,6 +16,13 @@ using namespace std;
 using namespace std::tr1;
 
 class DBSCAN {
+    struct findNeighborsThreadArg {
+        unsigned int point_index;
+        float radius;
+        pcl::PointCloud<pcl::PointXYZ> *pcl_pointer;
+        vector<unsigned int> *neighbors_pointer;
+    };
+
     /*
      * This variable stores the PointCloud input that we want to cluster
      */
@@ -43,7 +50,7 @@ class DBSCAN {
      * Value: a vector containing all of the point's neighbors
      * (A neighbour is a point that is within @_radius of a point of interest)
      */
-    unordered_map<unsigned int, vector<unsigned int>> _neighbors;
+    vector<unsigned int> *_neighbors;
 
     // TODO: fine-tune parameters with real data
     int _min_neighbors = 5;
@@ -68,7 +75,7 @@ class DBSCAN {
     void setRadius(float new_radius);
 
   private:
-    double dist(pcl::PointXYZ p1, pcl::PointXYZ p2);
+    static double dist(pcl::PointXYZ p1, pcl::PointXYZ p2);
     bool isPointVisited(unsigned int p_index);
     bool isPointExpanded(unsigned int p_index);
 
@@ -77,6 +84,8 @@ class DBSCAN {
      * (A neighbour is a point that is within @_radius of a point of interest)
      */
     void findNeighbors();
+
+    static void *findNeighborsThread(void *index_pointer);
 
     /*
      * Expands a cluster around a given point recursively by:
