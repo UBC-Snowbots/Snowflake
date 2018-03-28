@@ -227,7 +227,7 @@ TEST_F(ObstacleManagerTest, add_two_lines_second_totally_overlaps_first){
     ObstacleManager obstacle_manager(1,4);
 
     Spline spline1({{0,0}, {5,3}, {10,0}});
-    Spline spline2({{-1,1}, {5,3}, {11,1}});
+    Spline spline2({{-1,0.5}, {5,3}, {11,0.5}});
 
     obstacle_manager.addObstacle(spline1);
     obstacle_manager.addObstacle(spline2);
@@ -280,6 +280,45 @@ TEST_F(ObstacleManagerTest, add_variety_of_overlapping_and_not_overlapping_lines
     };
 
     EXPECT_EQ(expected, obstacle_manager.getLineObstacles());
+}
+
+// Test adding a line to an obstacle manager with lots of known lines
+// (but the new line is close to only one)
+TEST_F(ObstacleManagerTest, test_adding_single_line_to_lots_of_lines){
+    ObstacleManager obstacle_manager(1,1);
+
+    // A bunch of lines outside merging tolerance of each other
+    std::vector<Spline> known_lines ={
+            Spline({{5,5}, {10,10}}),
+            Spline({{0,0}, {1,0}, {3,3}}),
+            Spline({{-1,-10}, {-13,-14}}),
+            Spline({{100,100}, {150,150}, {175, 125}, {200,200}}),
+            Spline({{1024,3423}, {1029, 3429}, {1045, 3450}}),
+            Spline({{-100,22}, {-102,25}, {-100,27}}),
+            Spline({{100, -10}, {105, -20}, {84, -100}}),
+    };
+
+    for (auto& line : known_lines){
+        obstacle_manager.addObstacle(line);
+    }
+
+    // Check that none of the lines merged together
+    EXPECT_EQ(known_lines.size(), obstacle_manager.getLineObstacles().size());
+
+    // This spline should merge with the first in `known_lines`
+    Spline new_line({{10, 10.2}, {15,15}});
+    obstacle_manager.addObstacle(new_line);
+
+    // Check that it was successfully merged
+
+    // If it was merged, the number of lines should be the same
+    EXPECT_EQ(known_lines.size(), obstacle_manager.getLineObstacles().size());
+
+    // Search through all the lines for the expected merged line
+    std::vector<Spline> curr_lines = obstacle_manager.getLineObstacles();
+    Spline expected_merged_line({{5,5}, {10,10}, {10,10.2}, {15,15}});
+
+    EXPECT_TRUE((std::find(curr_lines.begin(), curr_lines.end(), expected_merged_line) != curr_lines.end()));
 }
 
 
