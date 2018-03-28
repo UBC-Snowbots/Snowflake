@@ -152,6 +152,22 @@ TEST_F(SplineTest, getInterpolationPointsInRange_start_and_end_equal){
     EXPECT_EQ(std::vector<Point2D>({end_point}), spline.getInterpolationPointsInRange(1,1));
 }
 
+// Test getting interpolation points in a range that overlaps the first point on the spline
+TEST_F(SplineTest, getInterpolationPointsInRange_including_first_point){
+    Spline spline({{0,0}, {5,0}, {10,0}});
+
+    std::vector<Point2D> expected = {{0,0}, {5,0}};
+    EXPECT_EQ(expected, spline.getInterpolationPointsInRange(0, 0.7));
+}
+
+// Test getting interpolation points in a range that overlaps the first point on the spline
+TEST_F(SplineTest, getInterpolationPointsInRange_including_last_point){
+    Spline spline({{0,0}, {5,0}, {10,0}});
+
+    std::vector<Point2D> expected = {{5,0}, {10,0}};
+    EXPECT_EQ(expected, spline.getInterpolationPointsInRange(0.3, 1));
+}
+
 // Test getting interpolation points in ranges that include the endpoints of
 // the spline
 TEST_F(SplineTest, getInterpolationPointsInRange_including_endpoints){

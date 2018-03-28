@@ -55,10 +55,10 @@ Spline::getInterpolationPointsInRange(double start_u, double end_u) {
         return std::vector<Point2D>();
     }
 
-    // Scale the given u value from [0,1] -> [0,n] where n is the number of
+    // Scale the given u value from [0,1] -> [0,n-1] where n is the number of
     // points the spline interpolates through and round down and up respectively
-    double start_index = std::floor(start_u * (interpolation_points.size()));
-    double end_index = std::ceil(end_u * (interpolation_points.size()));
+    double start_index = std::ceil(start_u * (interpolation_points.size()-1));
+    double end_index = std::floor(end_u * (interpolation_points.size()-1))+1;
 
     // Check for case where we're just getting the exactly one point
     if (start_index == end_index && start_index < interpolation_points.size()-1){
