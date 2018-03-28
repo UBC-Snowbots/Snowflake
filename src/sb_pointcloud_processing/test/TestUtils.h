@@ -16,7 +16,8 @@ class TestUtils {
   public:
     /**
      * LineArgs is a struct representing a mathematical line.
-     * @param coefficients coefficients of the mathematical line, where the index
+     * @param coefficients coefficients of the mathematical line, where the
+     * index
      * of a coefficient corresponds to its degree
      * @param x_min, x_max domain of the line
      * @param x_delta the distance between adjacent points on the line
@@ -60,8 +61,10 @@ class TestUtils {
      * Adds given line with added noise to the given point cloud
      * @param args struct representing a mathematical line within a domain
      * @param pcl point cloud to add the line to
-     * @param max_noise_x maximum deviation of a point from the line in x direction
-     * @param max_noise_y maximum deviation of a point from the line in y direction
+     * @param max_noise_x maximum deviation of a point from the line in x
+     * direction
+     * @param max_noise_y maximum deviation of a point from the line in y
+     * direction
      * @param seed seed for rand()
      */
     static void addLineToPointCloud(LineArgs args,
@@ -93,7 +96,8 @@ class TestUtils {
     };
 
     /**
-     * Gets the number of points that form the line based on its domain and distance between adjacent points
+     * Gets the number of points that form the line based on its domain and
+     * distance between adjacent points
      * @param args representation of the line in a struct
      * @return the number of points that form the given line
      */
