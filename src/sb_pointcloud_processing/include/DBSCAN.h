@@ -17,7 +17,8 @@ using namespace std::tr1;
 
 class DBSCAN {
     struct findNeighborsThreadArg {
-        unsigned int point_index;
+        unsigned int start_index;
+        unsigned int stop_index;
         float radius;
         pcl::PointCloud<pcl::PointXYZ> *pcl_pointer;
         vector<unsigned int> *neighbors_pointer;

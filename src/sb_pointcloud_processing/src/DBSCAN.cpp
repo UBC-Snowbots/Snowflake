@@ -79,48 +79,54 @@ void DBSCAN::expand(unsigned int center_index,
     return;
 }
 
-//void DBSCAN::findNeighbors() {
-//    this->_neighbors = new vector<unsigned int>[this->_pcl.size()];
-//    for (unsigned int i = 0; i < this->_pcl.size(); i++) {
-//        vector<unsigned int> neighbors;
-//        pcl::PointXYZ current_point = this->_pcl[i];
-//
-//        // for current_point, determine all neighbour points that are within
-//        // predetermined radius
-//        for (unsigned int j = 0; j < this->_pcl.size(); j++) {
-//            if (i == j) continue;
-//            pcl::PointXYZ neighbor_point = this->_pcl[j];
-//            if (dist(current_point, neighbor_point) <= this->_radius) {
-//                neighbors.push_back(j);
-//            }
-//        }
-//
-//        // store the list of neighbours
-//        this->_neighbors[i] = neighbors;
-//    }
-//}
-
 void DBSCAN::findNeighbors() {
     this->_neighbors = new vector<unsigned int>[this->_pcl.size()];
 
-    pthread_t *threads = new pthread_t[this->_pcl.size()];
+    if (this->_pcl.size() > 5000) {
+        unsigned int num_threads = 8;
 
-    for (unsigned int i = 0; i < this->_pcl.size(); i++) {
-        findNeighborsThreadArg *arg = new findNeighborsThreadArg;
+        auto *threads = new pthread_t[num_threads];
+        unsigned int points_per_thread = (this->_pcl.size() + num_threads - 1) / num_threads;
 
-        arg->pcl_pointer = &this->_pcl;
-        arg->neighbors_pointer = this->_neighbors;
-        arg->point_index = i;
-        arg->radius = this->_radius;
+        for (unsigned int i = 0; i < num_threads; i++) {
+            findNeighborsThreadArg *arg = new findNeighborsThreadArg;
 
-        if(pthread_create(threads + i, NULL, findNeighborsThread, arg)) {
-            std::cout << "failed to start worker" << std::endl;
+            arg->pcl_pointer = &this->_pcl;
+            arg->neighbors_pointer = this->_neighbors;
+            arg->start_index = i * points_per_thread;
+            arg->stop_index = arg->start_index + points_per_thread - 1;
+            if (arg->stop_index >= this->_pcl.size()) {
+                arg->stop_index = this->_pcl.size() - 1;
+            }
+            arg->radius = this->_radius;
+
+            if (pthread_create(threads + i, NULL, findNeighborsThread, arg)) {
+                std::cout << "failed to start worker" << std::endl;
+            }
         }
-    }
 
-    for (unsigned int i = 0; i < this->_pcl.size(); i++) {
-        if(pthread_join(threads[i], NULL)) {
-            std::cout << "failed to join worker" << std::endl;
+        for (unsigned int i = 0; i < num_threads; i++) {
+            if (pthread_join(threads[i], NULL)) {
+                std::cout << "failed to join worker" << std::endl;
+            }
+        }
+    } else {
+        for (unsigned int i = 0; i < this->_pcl.size(); i++) {
+            vector<unsigned int> neighbors;
+            pcl::PointXYZ current_point = this->_pcl[i];
+
+            // for current_point, determine all neighbour points that are within
+            // predetermined radius
+            for (unsigned int j = 0; j < this->_pcl.size(); j++) {
+                if (i == j) continue;
+                pcl::PointXYZ neighbor_point = this->_pcl[j];
+                if (dist(current_point, neighbor_point) <= this->_radius) {
+                    neighbors.push_back(j);
+                }
+            }
+
+            // store the list of neighbours
+            this->_neighbors[i] = neighbors;
         }
     }
 }
@@ -129,27 +135,30 @@ void *DBSCAN::findNeighborsThread(void *arg) {
     auto *a = (findNeighborsThreadArg *)arg;
 
     pcl::PointCloud<pcl::PointXYZ> pcl = *(a->pcl_pointer);
-    unsigned int i = a->point_index;
+    unsigned int start = a->start_index;
+    unsigned int stop = a->stop_index;
     float radius = a->radius;
     vector<unsigned int> *neighbors_storage = a->neighbors_pointer;
 
-    pcl::PointXYZ current_point = pcl[i];
+    for (unsigned int i = start; i <= stop; i++) {
+        pcl::PointXYZ current_point = pcl[i];
 
-    vector<unsigned int> neighbors;
+        vector<unsigned int> neighbors;
 
-    // for current_point, determine all neighbour points that are within
-    // predetermined radius
-    for (unsigned int j = 0; j < pcl.size(); j++) {
-        if (i == j) continue;
-        pcl::PointXYZ neighbor_point = pcl[j];
+        // for current_point, determine all neighbour points that are within
+        // predetermined radius
+        for (unsigned int j = 0; j < pcl.size(); j++) {
+            if (i == j) continue;
+            pcl::PointXYZ neighbor_point = pcl[j];
 
-        if (dist(current_point, neighbor_point) <= radius) {
-            neighbors.push_back(j);
+            if (dist(current_point, neighbor_point) <= radius) {
+                neighbors.push_back(j);
+            }
         }
-    }
 
-    // store the list of neighbours
-    neighbors_storage[i] = neighbors;
+        // store the list of neighbours
+        neighbors_storage[i] = neighbors;
+    }
 
     return NULL;
 };
