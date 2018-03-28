@@ -72,7 +72,7 @@ void ObstacleManager::addObstacle(Spline line_obstacle) {
     std::vector<std::pair<double, int>> distances;
     for (int line_index = 0; line_index < lines.size(); line_index++) {
         // TODO: `max_iters` should be a class member we can change (of `ObstacleManager`)
-        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle, 5);
+        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle, 20);
         distances.emplace_back(std::make_pair(distance, line_index));
     }
 
@@ -109,12 +109,12 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
 
     // Find the closest points on the known line to the start and end of the new line
     // TODO: `max_iters` should be a class member we can change (of `ObstacleManager`)
-    double u1 =
-            findClosestPointOnSplineToPoint(current_line, new_line(0), 5);
-    double u2 =
-            findClosestPointOnSplineToPoint(current_line, new_line(1), 5);
-    double min_u = std::min(u1,u2);
-    double max_u = std::max(u1,u2);
+    double closest_point_to_start =
+            findClosestPointOnSplineToPoint(current_line, new_line(0), 10);
+    double closest_point_to_end =
+            findClosestPointOnSplineToPoint(current_line, new_line(1), 10);
+    double min_u = std::min(closest_point_to_start, closest_point_to_end);
+    double max_u = std::max(closest_point_to_start, closest_point_to_end);
 
     // "replace" the section of the current line between `u1` and `u2` with the new line
 
@@ -140,6 +140,13 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
 
     // Get the interpolation points from the new line
     std::vector<Point2D> points_on_new_line = new_line.getInterpolationPointsInRange(0,1);
+
+    // Check if the points of the new line are in the "opposite" order of those
+    // in the known line. That is, is the closest point to the start of the new
+    // line after the closest point to the end of the new line on the old line?
+    if (closest_point_to_start > closest_point_to_end){
+        std::reverse(points_on_new_line.begin(), points_on_new_line.end());
+    }
 
     // Merge the 3 sets of interpolation points in order:
     // - points on the current line before the new line

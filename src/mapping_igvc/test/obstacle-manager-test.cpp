@@ -6,7 +6,7 @@
 
 // Snowbots Includes
 #include "ObstacleManager.h"
-#include "sb_geom/Point2D.h"
+#include "TestUtils.h"
 
 // GTest Includes
 #include <gtest/gtest.h>
@@ -222,7 +222,66 @@ TEST_F(ObstacleManagerTest, add_two_lines_second_line_overlapping_first_point_of
     EXPECT_EQ(expected_splines, obstacle_manager.getLineObstacles());
 }
 
-// TODO: Some more tests with more complex polynomials
+// Test merging two lines where the second totally overlaps the first
+TEST_F(ObstacleManagerTest, add_two_lines_second_totally_overlaps_first){
+    ObstacleManager obstacle_manager(1,4);
+
+    Spline spline1({{0,0}, {5,3}, {10,0}});
+    Spline spline2({{-1,1}, {5,3}, {11,1}});
+
+    obstacle_manager.addObstacle(spline1);
+    obstacle_manager.addObstacle(spline2);
+
+    std::vector<Spline> expected = {spline2};
+
+    EXPECT_EQ(expected, obstacle_manager.getLineObstacles());
+}
+
+// Test merging a small line into a much longer and more complex one
+TEST_F(ObstacleManagerTest, merge_simple_and_small_line_into_large_and_complex_one){
+    ObstacleManager obstacle_manager(1,4);
+
+    Spline spline1({{0,0}, {2,2}, {8,8}, {6,0}, {10,-6}});
+    Spline spline2({{7, 9}, {10, 10}, {8,6.5}});
+
+    obstacle_manager.addObstacle(spline1);
+    obstacle_manager.addObstacle(spline2);
+
+    // We expect the 2nd spline to overwrite the point {8,8} on the first spline
+    std::vector<Spline> expected = {
+            Spline({{0,0}, {2,2}, {7, 9}, {10, 10}, {8,6.5}, {6,0}, {10,-6}})
+    };
+
+    EXPECT_EQ(expected, obstacle_manager.getLineObstacles());
+}
+
+// Add several overlapping lines, and a few ones that don't overlap
+TEST_F(ObstacleManagerTest, add_variety_of_overlapping_and_not_overlapping_lines){
+    ObstacleManager obstacle_manager(1,2);
+
+    // A simple straight line from (0,0) to (10,0)
+    Spline spline1({{0,0}, {5,0}, {10,0}});
+    // An arc around (5,0) that should merge with `spline1`
+    Spline spline2({{4, 1}, {5, 10}, {6,1}});
+    // A horizontal line that should merge into the right side of the arc
+    // from `spline2`
+    Spline spline3({{7, 3}, {7, 8}});
+    // A line outside of the merging tolerance of all known lines
+    Spline spline4({{10,10}, {11,11}});
+
+    obstacle_manager.addObstacle(spline1);
+    obstacle_manager.addObstacle(spline2);
+    obstacle_manager.addObstacle(spline3);
+    obstacle_manager.addObstacle(spline4);
+
+    std::vector<Spline> expected = {
+            Spline({{0,0}, {4,1}, {5,10}, {7,8}, {7,3}, {6,1}, {10,0}}),
+            spline4,
+    };
+
+    EXPECT_EQ(expected, obstacle_manager.getLineObstacles());
+}
+
 
 // TODO: Delete me, not a real test
 //TEST_F(ObstacleManagerTest, messing_about){
