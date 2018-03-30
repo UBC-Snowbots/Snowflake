@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(drivers)
 
+add_definitions(-std=c++1z)
+
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
         geometry_msgs
@@ -9,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
         sb_utils
 )
 find_library(libserial_LIBRARIES libserial.so.0)
-add_definitions(-std=c++14)
 
 catkin_package(
     INCLUDE_DIRS include

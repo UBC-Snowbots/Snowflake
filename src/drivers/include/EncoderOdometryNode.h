@@ -11,6 +11,7 @@
 
 // STD Includes
 #include <iostream>
+#include <experimental/optional>
 
 // ROS Includes
 #include <sensor_msgs/JointState.h>
@@ -44,9 +45,22 @@ private:
      */
     void encoderJointStateCallback(sensor_msgs::JointState::ConstPtr joint_state_ptr);
 
+    /**
+     * The callback function for the Joints
+     *
+     * Resets the node as if we'd never received encoder ticks
+     *
+     * @param empty_msg
+     */
+    void resetCallback(std_msgs::Empty::ConstPtr empty_msg);
+
     // The subscriber to the JointState messages from the Encoders containing
     // the # of ticks they have counted
     ros::Subscriber joint_state_subscriber;
+
+    // The subscriber to the empty "reset" topic for resetting the state of
+    // this node
+    ros::Subscriber reset_subscriber;
 
     // The publisher that publishes our Odometry estimates
     ros::Publisher odom_estimate_publisher;
@@ -56,14 +70,13 @@ private:
     std::string right_encoder_joint_name;
 
     // The current number of encoder ticks for the left and right encoders
-    // (-1 if we haven't gotten any ticks yet)
-    int left_encoder_num_ticks_curr;
-    int right_encoder_num_ticks_curr;
+    std::experimental::optional<int> left_encoder_num_ticks_curr;
+    std::experimental::optional<int> right_encoder_num_ticks_curr;
 
     // The number of encoder ticks for the left and right encoders at the last
     // time we made an Odometry estimate (-1 if we've never made an estimate)
-    int left_encoder_num_ticks_prev;
-    int right_encoder_num_ticks_prev;
+    std::experimental::optional<int> left_encoder_num_ticks_prev;
+    std::experimental::optional<int> right_encoder_num_ticks_prev;
 
     // The last odometry estimate we made
     nav_msgs::Odometry last_estimate;

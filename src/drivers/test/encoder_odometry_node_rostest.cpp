@@ -26,21 +26,39 @@
  */
 class EncoderOdometryNodeTest : public testing::Test{
 protected:
-    virtual void SetUp(){
+
+    EncoderOdometryNodeTest(){
         // TODO: Delete me
         //test_publisher = nh_.advertise<std_msgs::String>("subscribe_topic", 1);
         //test_subscriber = nh_.subscribe("/my_node/publish_topic", 1, &EncoderOdometryNodeTest::odomMsgCallback, this);
         // The publisher for our JointState message containing the encoder ticks
 
         // Setup Publishers and Subscribers
-        encoder_joint_state_publisher = nh.advertise<sensor_msgs::JointState>("/encoders/joint_states", 10);
+        encoder_joint_state_publisher = nh.advertise<sensor_msgs::JointState>("/encoders/joint_states", 1);
         // Note: We seem to need to set the queue size to be really large here in order to get the most recent
         //      odometry estimate....
         odom_msg_subscriber = nh.subscribe("/encoders/odom", 5000, &EncoderOdometryNodeTest::odomMsgCallback, this);
+        reset_msg_publisher = nh.advertise<std_msgs::Empty>("/encoder_odometry_node/reset",10);
 
         // Let the publishers and subscribers set itself up timely
         ros::Rate loop_rate(1);
         loop_rate.sleep();
+    }
+
+    virtual void SetUp(){
+    }
+
+    virtual void TearDown(){
+        // Let things clear up
+        ros::Rate loop_rate(1);
+        loop_rate.sleep();
+        ros::spinOnce();
+
+        // Reset the Encoder to Odometry Node by publishing an empty message
+        // the the node's "reset" topic
+        reset_msg_publisher.publish(std_msgs::Empty());
+
+        ros::spinOnce();
     }
 
     /**
@@ -49,11 +67,13 @@ protected:
      */
     void odomMsgCallback(const nav_msgs::Odometry::ConstPtr& odom_msg_ptr){
         odom_msg = *odom_msg_ptr;
-        std::cerr << "Got Into callback: " << std::endl << odom_msg.pose.pose << std::endl;
     }
 
     /**
-     * Simulate moving the robot
+     * Simulate moving the robot by simulating encoder values
+     *
+     * Publishes the given number of left and right encoder ticks over the
+     * given time frame
      *
      * @param left_ticks the number of ticks to move the left wheel
      * @param right_ticks the number of ticks to move the right wheel
@@ -111,6 +131,10 @@ protected:
     // The publisher for publishing JointState messages containing the encoder ticks
     ros::Publisher encoder_joint_state_publisher;
 
+    // The publisher for publishing empty "reset" messages to reset the
+    // encoder to odometry node
+    ros::Publisher reset_msg_publisher;
+
     // The subscriber for received Odometry messages estimated from the encoders
     ros::Subscriber odom_msg_subscriber;
 
@@ -118,7 +142,7 @@ public:
 
 };
 
-TEST_F(EncoderOdometryNodeTest, simulator_test){
+TEST_F(EncoderOdometryNodeTest, driving_straight_forward){
     // drive forward 1 rotation of the wheels
     driveSimulator(1000, 1000, 5);
 
@@ -131,7 +155,7 @@ TEST_F(EncoderOdometryNodeTest, simulator_test){
     ros::spinOnce();
 
     // We should now be ~62.83 cm ahead (wheel radius is 10cm)
-    EXPECT_NEAR(0.6283, odom_msg.pose.pose.position.x, 0.01);
+    EXPECT_NEAR(0.6283, odom_msg.pose.pose.position.x, 0.03);
     EXPECT_NEAR(0, odom_msg.pose.pose.position.y, 0.01);
     EXPECT_NEAR(0, tf::getYaw(odom_msg.pose.pose.orientation), 0.01);
 }
@@ -149,12 +173,12 @@ TEST_F(EncoderOdometryNodeTest, driving_straight_backwards){
     ros::spinOnce();
 
     // We should now be ~62.83 cm backwards (wheel radius is 10cm)
-    EXPECT_NEAR(-0.6283, odom_msg.pose.pose.position.x, 0.01);
+    EXPECT_NEAR(-0.6283, odom_msg.pose.pose.position.x, 0.03);
     EXPECT_NEAR(0, odom_msg.pose.pose.position.y, 0.01);
     EXPECT_NEAR(0, tf::getYaw(odom_msg.pose.pose.orientation), 0.01);
 }
 
-// Test turning 90 degrees right on the spot
+//// Test turning 90 degrees right on the spot
 TEST_F(EncoderOdometryNodeTest, turn_90_right){
     // drive forward 1 rotation of the wheels
     driveSimulator(-1000, -1000, 5);
