@@ -41,7 +41,7 @@ add_executable(encoder_odometry_node
         src/encoder_odometry_node.cpp
         include/EncoderOdometryNode.h
         )
-target_link_libraries(steering_driver
+target_link_libraries(encoder_odometry_node
         ${catkin_LIBRARIES}
         )
 
@@ -52,4 +52,16 @@ target_link_libraries(steering_driver
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
+
+    # Adding rostest to the package
+    find_package(rostest REQUIRED)
+    # name the test and link it to the .test file and the .cpp file itself, this will allow
+    # "catkin_make run_tests" to be able to find and run this rostest
+    add_rostest_gtest(encoder_odometry_node_rostest
+        test/encoder_odometry_node.test
+        test/encoder_odometry_node_rostest.cpp
+        )
+    target_link_libraries(encoder_odometry_node_rostest
+        ${catkin_LIBRARIES}
+        )
 endif()

@@ -68,11 +68,14 @@ private:
     // The last odometry estimate we made
     nav_msgs::Odometry last_estimate;
 
-    // The radius of the robots wheels
+    // The radius of the robots wheels (in meters)
     double wheel_radius;
 
     // The length of the wheelbase of the robot (the distance between the
-    // two wheels)
+    // two wheels) (in meters)
     double wheelbase_length;
+
+    // The number of ticks per single rotation of a wheel
+    int ticks_per_rotation;
 };
 #endif //DRIVERS_ENCODER_ODOMETRY_NODE_H

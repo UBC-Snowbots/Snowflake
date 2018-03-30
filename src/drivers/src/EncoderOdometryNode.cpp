@@ -26,19 +26,27 @@ EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node
     ros::NodeHandle private_nh("~");
 
     // Get Params
-    SB_getParam(private_nh, "left_encoder_joint_name", left_encoder_joint_name, std::string("joint0"));
-    SB_getParam(private_nh, "right_encoder_joint_name", right_encoder_joint_name, std::string("joint1"));
+    SB_getParam(private_nh, "left_encoder_joint_name", left_encoder_joint_name, std::string("left_encoder"));
+    SB_getParam(private_nh, "right_encoder_joint_name", right_encoder_joint_name, std::string("right_encoder"));
     SB_getParam(private_nh, "wheel_radius", wheel_radius, 0.1);
     SB_getParam(private_nh, "wheelbase_length", wheelbase_length, 0.7);
+    SB_getParam(private_nh, "ticks_per_rotation", ticks_per_rotation, 1024);
 
 
     // Setup Subscriber(s)
-    std::string joint_state_topic = "/encoders/jointstate";
+    std::string joint_state_topic = "/encoders/joint_states";
     joint_state_subscriber = nh.subscribe(joint_state_topic, 1, &EncoderOdometryNode::encoderJointStateCallback, this);
 
     // Setup Publisher(s)
     std::string odom_estimate_topic_name = nh.resolveName("/encoders/odom");
     odom_estimate_publisher = nh.advertise<nav_msgs::Odometry>(odom_estimate_topic_name, 10);
+
+    // Initialise our estimate
+    last_estimate.pose.pose.position.x = 0;
+    last_estimate.pose.pose.position.y = 0;
+    last_estimate.pose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+
+    ROS_INFO("Waiting for initial encoder counts from at least one encoder...");
 }
 
 void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::ConstPtr joint_state_ptr) {
@@ -55,10 +63,11 @@ void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::Con
                 // Something is wrong and we can't get an encoder reading
                 ROS_WARN("No \"position\" field for left encoder joint name found, so can't get number of ticks");
             } else {
-                left_encoder_num_ticks_curr = joint_state.position[i];
+                left_encoder_num_ticks_curr = (int)joint_state.position[i];
                 // If this is the first encoder reading, also update the "prev"
                 // reading
                 if (left_encoder_num_ticks_prev == -1){
+                    ROS_INFO("Got first ticks from left encoder");
                     left_encoder_num_ticks_prev = left_encoder_num_ticks_curr;
                 }
             }
@@ -68,10 +77,11 @@ void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::Con
                 // Something is wrong and we can't get an encoder reading
                 ROS_WARN("No \"position\" field for right encoder joint name found, so can't get number of ticks");
             } else {
-                right_encoder_num_ticks_curr = joint_state.position[i];
+                right_encoder_num_ticks_curr = (int)joint_state.position[i];
                 // If this is the first encoder reading, also update the "prev"
                 // reading
                 if (right_encoder_num_ticks_prev == -1){
+                    ROS_INFO("Got first ticks from right encoder");
                     right_encoder_num_ticks_prev = right_encoder_num_ticks_curr;
                 }
             }
@@ -81,10 +91,13 @@ void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::Con
 }
 
 void EncoderOdometryNode::publishEstimatedOdomMsg() {
+    // TODO: Delete me
+    ROS_INFO_STREAM("Updating Estimate from: " << left_encoder_num_ticks_curr << ", " << right_encoder_num_ticks_curr);
+
     // Check to make sure that we have some counts for both the left and right
     // encoders
     if (left_encoder_num_ticks_curr == -1 || right_encoder_num_ticks_curr == -1){
-        ROS_INFO("Waiting for initial encoder counts from at least one encoder...");
+        // If we don't have either the left or right encoder ticks, just return
         return;
     }
 
@@ -100,19 +113,17 @@ void EncoderOdometryNode::publishEstimatedOdomMsg() {
         return;
     }
 
-    // Save the current number of ticks as the "previous" number for the
-    // next time we estimate
-    left_encoder_num_ticks_prev = left_encoder_num_ticks_curr;
-    left_encoder_num_ticks_prev = left_encoder_num_ticks_curr;
-
     // All math taken from:
     // https://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/16311/www/s07/labs/NXTLabs/Lab%203.html
 
     double dt = ros::Time::now().toSec() - last_estimate.header.stamp.toSec();
 
-    // left and right wheel velocities
-    double v_l = (left_encoder_num_ticks_curr - left_encoder_num_ticks_prev)/dt * M_PI/180 * wheel_radius;
-    double v_r = (right_encoder_num_ticks_curr - right_encoder_num_ticks_prev)/dt * M_PI/180 * wheel_radius;
+    // left and right wheel velocities (in radians/s)
+    double v_l = (left_encoder_num_ticks_curr - left_encoder_num_ticks_prev)/dt * (2*M_PI)/ticks_per_rotation * wheel_radius;
+    double v_r = (right_encoder_num_ticks_curr - right_encoder_num_ticks_prev)/dt * (2*M_PI)/ticks_per_rotation * wheel_radius;
+
+    ROS_INFO_STREAM("v_l: " << v_l);
+    ROS_INFO_STREAM("v_r: " << v_r);
 
     // linear and angular velocity
     double v = (v_r + v_l) / 2;
@@ -146,7 +157,15 @@ void EncoderOdometryNode::publishEstimatedOdomMsg() {
     tf::quaternionTFToMsg(tf::createQuaternionFromYaw(yaw), last_estimate.pose.pose.orientation);
     last_estimate.header.stamp = ros::Time::now();
 
+    // Save the current number of ticks as the "previous" number for the
+    // next time we estimate
+    left_encoder_num_ticks_prev = left_encoder_num_ticks_curr;
+    right_encoder_num_ticks_prev = right_encoder_num_ticks_curr;
+
     // Publish our estimate
     odom_estimate_publisher.publish(last_estimate);
+
+    // TODO: Delete me
+    ROS_INFO_STREAM(last_estimate.pose.pose);
 }
 
