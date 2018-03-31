@@ -58,6 +58,7 @@ class DBSCAN {
     unordered_map<unsigned int, bool> _expanded;
 
     /*
+     * Stores the neighbours of each point
      * Index: index of a point in the PointCloud
      * Value: a vector containing all of the point's neighbors
      * (A neighbour is a point that is within @_radius of a point of interest)
