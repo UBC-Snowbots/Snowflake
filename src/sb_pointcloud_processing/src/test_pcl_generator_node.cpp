@@ -131,6 +131,12 @@ sensor_msgs::PointCloud2 generatePclMessage(bool include_outlier) {
     return msg;
 }
 
+/**
+ * function that returns a seed;
+ * the seed returned increments every time this function is called,
+ * and once the seed reaches 9, the next seed resets to 0;
+ * @return
+ */
 unsigned int getSeed() {
     return counter++ % 10;
 }
