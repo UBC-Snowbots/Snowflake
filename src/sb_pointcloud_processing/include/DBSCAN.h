@@ -20,8 +20,8 @@ class DBSCAN {
         unsigned int start_index;
         unsigned int stop_index;
         float radius;
-        pcl::PointCloud<pcl::PointXYZ> *pcl_pointer;
-        vector<unsigned int> *neighbors_pointer;
+        pcl::PointCloud<pcl::PointXYZ>* pcl_pointer;
+        vector<unsigned int>* neighbors_pointer;
     };
 
     /*
@@ -51,7 +51,7 @@ class DBSCAN {
      * Value: a vector containing all of the point's neighbors
      * (A neighbour is a point that is within @_radius of a point of interest)
      */
-    vector<unsigned int> *_neighbors;
+    vector<unsigned int>* _neighbors;
 
     // TODO: fine-tune parameters with real data
     int _min_neighbors = 5;
@@ -86,7 +86,7 @@ class DBSCAN {
      */
     void findNeighbors();
 
-    static void *findNeighborsThread(void *index_pointer);
+    static void* findNeighborsThread(void* index_pointer);
 
     /*
      * Expands a cluster around a given point recursively by:

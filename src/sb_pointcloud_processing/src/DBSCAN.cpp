@@ -85,16 +85,17 @@ void DBSCAN::findNeighbors() {
     if (this->_pcl.size() > 5000) {
         unsigned int num_threads = 8;
 
-        auto *threads = new pthread_t[num_threads];
-        unsigned int points_per_thread = (this->_pcl.size() + num_threads - 1) / num_threads;
+        auto* threads = new pthread_t[num_threads];
+        unsigned int points_per_thread =
+        (this->_pcl.size() + num_threads - 1) / num_threads;
 
         for (unsigned int i = 0; i < num_threads; i++) {
-            findNeighborsThreadArg *arg = new findNeighborsThreadArg;
+            findNeighborsThreadArg* arg = new findNeighborsThreadArg;
 
-            arg->pcl_pointer = &this->_pcl;
+            arg->pcl_pointer       = &this->_pcl;
             arg->neighbors_pointer = this->_neighbors;
-            arg->start_index = i * points_per_thread;
-            arg->stop_index = arg->start_index + points_per_thread - 1;
+            arg->start_index       = i * points_per_thread;
+            arg->stop_index        = arg->start_index + points_per_thread - 1;
             if (arg->stop_index >= this->_pcl.size()) {
                 arg->stop_index = this->_pcl.size() - 1;
             }
@@ -131,14 +132,14 @@ void DBSCAN::findNeighbors() {
     }
 }
 
-void *DBSCAN::findNeighborsThread(void *arg) {
-    auto *a = (findNeighborsThreadArg *)arg;
+void* DBSCAN::findNeighborsThread(void* arg) {
+    auto* a = (findNeighborsThreadArg*) arg;
 
-    pcl::PointCloud<pcl::PointXYZ> pcl = *(a->pcl_pointer);
-    unsigned int start = a->start_index;
-    unsigned int stop = a->stop_index;
-    float radius = a->radius;
-    vector<unsigned int> *neighbors_storage = a->neighbors_pointer;
+    pcl::PointCloud<pcl::PointXYZ> pcl      = *(a->pcl_pointer);
+    unsigned int start                      = a->start_index;
+    unsigned int stop                       = a->stop_index;
+    float radius                            = a->radius;
+    vector<unsigned int>* neighbors_storage = a->neighbors_pointer;
 
     for (unsigned int i = start; i <= stop; i++) {
         pcl::PointXYZ current_point = pcl[i];
