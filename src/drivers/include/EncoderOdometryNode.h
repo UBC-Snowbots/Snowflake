@@ -54,6 +54,13 @@ private:
      */
     void resetCallback(std_msgs::Empty::ConstPtr empty_msg);
 
+    /**
+     * Generate an odometry message containing all 0's
+     *
+     * @return an odometry message containing all 0's
+     */
+    static nav_msgs::Odometry generateAllZeroOdometryMessage();
+
     // The subscriber to the JointState messages from the Encoders containing
     // the # of ticks they have counted
     ros::Subscriber joint_state_subscriber;
@@ -90,5 +97,8 @@ private:
 
     // The number of ticks per single rotation of a wheel
     int ticks_per_rotation;
+
+    // The frame of reference the odom message should be published in
+    std::string odom_frame_id;
 };
 #endif //DRIVERS_ENCODER_ODOMETRY_NODE_H

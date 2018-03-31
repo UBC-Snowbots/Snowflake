@@ -19,7 +19,8 @@ EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node
     left_encoder_num_ticks_curr({}),
     right_encoder_num_ticks_curr({}),
     left_encoder_num_ticks_prev({}),
-    right_encoder_num_ticks_prev({})
+    right_encoder_num_ticks_prev({}),
+    last_estimate(generateAllZeroOdometryMessage())
 {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
@@ -32,20 +33,17 @@ EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "wheel_radius", wheel_radius, 0.1);
     SB_getParam(private_nh, "wheelbase_length", wheelbase_length, 0.7);
     SB_getParam(private_nh, "ticks_per_rotation", ticks_per_rotation, 1024);
+    SB_getParam(private_nh, "odom_frame", odom_frame_id, std::string("encoder"));
 
 
     // Setup Subscriber(s)
-    joint_state_subscriber = nh.subscribe(std::string("/encoders/joint_states"), 1, &EncoderOdometryNode::encoderJointStateCallback, this);
+    joint_state_subscriber = nh.subscribe(std::string("/encoders/joint_states"), 10, &EncoderOdometryNode::encoderJointStateCallback, this);
     reset_subscriber = private_nh.subscribe(std::string("reset"), 1, &EncoderOdometryNode::resetCallback, this);
 
     // Setup Publisher(s)
     std::string odom_estimate_topic_name = nh.resolveName("/encoders/odom");
     odom_estimate_publisher = nh.advertise<nav_msgs::Odometry>(odom_estimate_topic_name, 10);
 
-    // Initialise our estimate
-    last_estimate.pose.pose.position.x = 0;
-    last_estimate.pose.pose.position.y = 0;
-    last_estimate.pose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
 }
 
 void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::ConstPtr joint_state_ptr) {
@@ -85,9 +83,7 @@ void EncoderOdometryNode::resetCallback(std_msgs::Empty::ConstPtr empty_msg) {
     right_encoder_num_ticks_prev = {};
 
     // Reset our last estimate
-    last_estimate.pose.pose.position.x = 0;
-    last_estimate.pose.pose.position.y = 0;
-    last_estimate.pose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+    last_estimate = generateAllZeroOdometryMessage();
 }
 
 void EncoderOdometryNode::publishEstimatedOdomMsg() {
@@ -133,6 +129,10 @@ void EncoderOdometryNode::publishEstimatedOdomMsg() {
     double v = (v_r + v_l) / 2;
     double w = (v_r - v_l) / wheelbase_length;
 
+    //x and y velocity
+    double x_vel = v*cos(w);
+    double y_vel = v*sin(w);
+
     // position
     double prev_x = last_estimate.pose.pose.position.x;
     double prev_y = last_estimate.pose.pose.position.y;
@@ -159,7 +159,11 @@ void EncoderOdometryNode::publishEstimatedOdomMsg() {
     last_estimate.pose.pose.position.x = x;
     last_estimate.pose.pose.position.y = y;
     tf::quaternionTFToMsg(tf::createQuaternionFromYaw(yaw), last_estimate.pose.pose.orientation);
+    last_estimate.twist.twist.linear.x = x_vel;
+    last_estimate.twist.twist.linear.y = y_vel;
+    last_estimate.twist.twist.angular.z = w;
     last_estimate.header.stamp = ros::Time::now();
+    last_estimate.header.frame_id = odom_frame_id;
 
     // Save the current number of ticks as the "previous" number for the
     // next time we estimate
@@ -171,5 +175,20 @@ void EncoderOdometryNode::publishEstimatedOdomMsg() {
 
     // TODO: Delete me
     ROS_INFO_STREAM(last_estimate.pose.pose);
+}
+
+nav_msgs::Odometry EncoderOdometryNode::generateAllZeroOdometryMessage() {
+    nav_msgs::Odometry odom_msg;
+    odom_msg.pose.pose.position.x = 0;
+    odom_msg.pose.pose.position.y = 0;
+    odom_msg.pose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+    odom_msg.twist.twist.linear.x = 0;
+    odom_msg.twist.twist.linear.y = 0;
+    odom_msg.twist.twist.linear.z = 0;
+    odom_msg.twist.twist.angular.x = 0;
+    odom_msg.twist.twist.angular.y = 0;
+    odom_msg.twist.twist.angular.z = 0;
+
+    return odom_msg;
 }
 
