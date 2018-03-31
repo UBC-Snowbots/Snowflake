@@ -27,7 +27,7 @@ MyClass::MyClass(int argc, char **argv, std::string node_name) {
 
     // Setup Publisher(s)
     std::string topic = private_nh.resolveName("publish_topic");
-    queue_size = 10;
+    queue_size = 1;
     my_publisher = private_nh.advertise<std_msgs::String>(topic, queue_size);
 }
 
