@@ -12,7 +12,6 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
 
     int numIndices = (laser_msg.angle_max - laser_msg.angle_min) / laser_msg.angle_increment;
     for (int i=0; i<numIndices; i++){
-
         if (laser_msg.ranges[i] > laser_msg.range_max || laser_msg.ranges[i] < laser_msg.range_min) { //Check for invalid ranges (points)
             if (edge_points.size() >= 3) {
                 identified_cones.push_back(edgeToCone(edge_points));
@@ -23,7 +22,7 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
 
         mapping_igvc::Point2D point = laserToPoint(laser_msg.ranges[i], laser_msg.angle_min + i * laser_msg.angle_increment);
         //Out of tolerance or end of points, analyze edge points so far to create cone, and clear edge_points
-        if (getDist(edge_points.back(), point) > tolerance || i == numIndices - 1){
+        if ((!edge_points.empty() && getDist(edge_points.back(), point) > tolerance) || i == numIndices - 1){
             if (edge_points.size() >= 3) { //Ignore edge clusters of 2 or less, can't accurately analyze
                 identified_cones.push_back(edgeToCone(edge_points));
             }
@@ -31,6 +30,7 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
         }
         edge_points.push_back(point);
     }
+
     return identified_cones;
 }
 
@@ -52,22 +52,38 @@ mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapp
     mapping_igvc::ConeObstacle cone = mapping_igvc::ConeObstacle();
 
     //We can assume there's at least 3 points at the edge of the cone
-    /*Indices for points to sample from edge cluster*/
-    int i1 = 0;
-    int i3 = edge_points.size()-1;
-    int i2 = i3/2;
+    int start_i = 0; //First index
+    int end_i = edge_points.size()-1; //Last index
+
+    float total_x = 0;
+    float total_y = 0;
+    float total_radius = 0;
 
     /* Formula from http://paulbourke.net/geometry/circlesphere/ */
-    float slopeA = (edge_points[i2].y - edge_points[i1].y) / (edge_points[i2].x - edge_points[i1].x);
-    float slopeB = (edge_points[i3].y - edge_points[i2].y) / (edge_points[i3].x - edge_points[i2].x);
-    cone.center.x = (((slopeA * slopeB) * (edge_points[i1].y - edge_points[i3].y)) +
-                    slopeB * (edge_points[i1].x + edge_points[i2].x) -
-                    slopeA * (edge_points[i2].x + edge_points[i3].x)) /
-                    (2 * (slopeB - slopeA));
-    cone.center.y = -((cone.center.x - (edge_points[i1].x + edge_points[i2].x) / 2) / slopeA) +
-                    ((edge_points[i1].y + edge_points[i2].y) / 2);
-    cone.radius = getDist(edge_points[i1], cone.center);
+    //Get avg center
+    for (int i = 1; i < end_i; i++) {
+        float slopeA = (edge_points[i].y - edge_points[start_i].y) / (edge_points[i].x - edge_points[start_i].x);
+        float slopeB = (edge_points[end_i].y - edge_points[i].y) / (edge_points[end_i].x - edge_points[i].x);
+        total_x += (((slopeA * slopeB) * (edge_points[start_i].y - edge_points[end_i].y)) +
+                         slopeB * (edge_points[start_i].x + edge_points[i].x) -
+                         slopeA * (edge_points[i].x + edge_points[end_i].x)) /
+                        (2 * (slopeB - slopeA));
+        total_y += -(((total_x / i) - (edge_points[start_i].x + edge_points[i].x) / 2) / slopeA) +
+                        ((edge_points[start_i].y + edge_points[i].y) / 2);
+    }
 
+    cone.center.x = total_x / (end_i - 1);
+    cone.center.y = total_y / (end_i - 1);
+
+    //Get avg radius
+    for (int i=0; i <= end_i; i++){
+        total_radius += ConeIdentification::getDist(edge_points[i], cone.center);
+    }
+    cone.radius = total_radius / (end_i + 1);
+
+    return cone;
+
+    //TODO: Compare radius to what we expect and toss if its off
     //TODO: create header
 
     return cone;

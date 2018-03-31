@@ -25,8 +25,9 @@ class ConeIdentification {
         static std::vector<mapping_igvc::ConeObstacle> identifyCones(const sensor_msgs::LaserScan &laser_msg, float tolerance);
 
         /**
+        * TODO: Add indicator if cone does not match expected (nullptr?)
         * Converts a cluster of edge points to a cone obstacle
-        * @param edge_points should have size >= 3
+        * @param edge_points should have size >= 3 and be in the order they appear in the object
         * @return a cone formed by edge points
         */
         static mapping_igvc::ConeObstacle edgeToCone(const std::vector<mapping_igvc::Point2D> &edge_points);
