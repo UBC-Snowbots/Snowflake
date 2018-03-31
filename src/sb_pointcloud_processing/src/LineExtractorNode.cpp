@@ -48,7 +48,7 @@ LineExtractorNode::LineExtractorNode(int argc,
     SB_getParam(private_nh, frame_id_param, this->frame_id, default_frame_id);
 
     std::string num_threads_param   = "num_threads";
-    unsigned int default_num_threads = 8;
+    int default_num_threads = 8;
     SB_getParam(private_nh, num_threads_param, this->num_threads, default_num_threads);
 
     if (areParamsInvalid()) {
