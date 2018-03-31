@@ -136,6 +136,9 @@ if (CATKIN_ENABLE_TESTING)
       src/Regression.cpp
       )
     target_link_libraries(line_extractor_rostest ${catkin_LIBRARIES})
+    add_dependencies(line_extractor_rostest
+      ${mapping_igvc_EXPORTED_TARGETS}
+      )
 
     add_rostest_gtest(pointcloud_nodelet_filters_rostest test/pointcloud_nodelet_filters.test test/pointcloud_nodelet_filters_rostest.cpp)
     target_link_libraries(pointcloud_nodelet_filters_rostest ${catkin_LIBRARIES} ${PCL_LIBRARIES})
