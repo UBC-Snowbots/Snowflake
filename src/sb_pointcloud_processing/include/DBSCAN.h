@@ -73,7 +73,9 @@ class DBSCAN {
      * Constructor:
      * Takes in minimum number of neighbours and radius as parameters
      */
-    DBSCAN(int min_neighbours = 5, float radius = 5, unsigned int num_threads = 1);
+    DBSCAN(int min_neighbours       = 5,
+           float radius             = 5,
+           unsigned int num_threads = 1);
 
     /*
      * Main entry function:
@@ -110,11 +112,14 @@ class DBSCAN {
 
     /**
      * Builds the argument for entry function for each thread
-     * @param thread_index the index of the thread that it's building an argument for
+     * @param thread_index the index of the thread that it's building an
+     * argument for
      * @param points_per_thread number of points each thread is processing
      * @return the pointer to an initialized findNeighborsThreadArg
      */
-    findNeighborsThreadArg *buildFindNeighborsThreadArg(unsigned int thread_index, unsigned int points_per_thread);
+    findNeighborsThreadArg*
+    buildFindNeighborsThreadArg(unsigned int thread_index,
+                                unsigned int points_per_thread);
 
     /**
      * Entry function for the threads created by

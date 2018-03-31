@@ -9,7 +9,7 @@
 DBSCAN::DBSCAN(int min_neighbours, float radius, unsigned int num_threads) {
     this->_min_neighbors = min_neighbours;
     this->_radius        = radius;
-    this->_num_threads = num_threads;
+    this->_num_threads   = num_threads;
     this->_clusters      = vector<pcl::PointCloud<pcl::PointXYZ>>();
 }
 
@@ -119,12 +119,13 @@ void DBSCAN::findNeighborsParallel() {
 
     // calculate how many points in the point cloud each thread should process
     unsigned int points_per_thread =
-            (this->_pcl.size() + this->_num_threads - 1) / this->_num_threads;
+    (this->_pcl.size() + this->_num_threads - 1) / this->_num_threads;
 
     // create threads
     for (unsigned int i = 0; i < this->_num_threads; i++) {
         // create argument to pass in to the thread worker
-        findNeighborsThreadArg* arg = buildFindNeighborsThreadArg(i, points_per_thread);
+        findNeighborsThreadArg* arg =
+        buildFindNeighborsThreadArg(i, points_per_thread);
 
         if (pthread_create(threads + i, NULL, findNeighborsThread, arg)) {
             std::cerr << "failed to start worker" << std::endl;
@@ -139,15 +140,17 @@ void DBSCAN::findNeighborsParallel() {
     }
 }
 
-DBSCAN::findNeighborsThreadArg *DBSCAN::buildFindNeighborsThreadArg(unsigned int thread_index, unsigned int points_per_thread) {
+DBSCAN::findNeighborsThreadArg*
+DBSCAN::buildFindNeighborsThreadArg(unsigned int thread_index,
+                                    unsigned int points_per_thread) {
     findNeighborsThreadArg* arg = new findNeighborsThreadArg;
 
     arg->pcl_pointer       = &this->_pcl;
     arg->neighbors_pointer = this->_neighbors;
 
     // determine the subset of points each thread should process
-    arg->start_index       = thread_index * points_per_thread;
-    arg->stop_index        = arg->start_index + points_per_thread - 1;
+    arg->start_index = thread_index * points_per_thread;
+    arg->stop_index  = arg->start_index + points_per_thread - 1;
     if (arg->stop_index >= this->_pcl.size()) {
         arg->stop_index = this->_pcl.size() - 1;
     }

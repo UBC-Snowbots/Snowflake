@@ -47,13 +47,15 @@ LineExtractorNode::LineExtractorNode(int argc,
     std::string default_frame_id = "line_extractor_test";
     SB_getParam(private_nh, frame_id_param, this->frame_id, default_frame_id);
 
-    std::string num_threads_param   = "num_threads";
-    int default_num_threads = 8;
-    SB_getParam(private_nh, num_threads_param, this->num_threads, default_num_threads);
+    std::string num_threads_param = "num_threads";
+    int default_num_threads       = 8;
+    SB_getParam(
+    private_nh, num_threads_param, this->num_threads, default_num_threads);
 
     if (areParamsInvalid()) {
         ROS_DEBUG(
-        "Detected invalid params - make sure all params are positive and that num_threads is greater than 0");
+        "Detected invalid params - make sure all params are positive and that "
+        "num_threads is greater than 0");
         ros::shutdown();
     }
 
@@ -222,7 +224,8 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
 
 bool LineExtractorNode::areParamsInvalid() {
     return this->degreePoly < 0 || this->lambda < 0 ||
-           this->minNeighbours < 0 || this->radius < 0 || this->num_threads <= 0;
+           this->minNeighbours < 0 || this->radius < 0 ||
+           this->num_threads <= 0;
 }
 
 std::vector<mapping_igvc::LineObstacle>
