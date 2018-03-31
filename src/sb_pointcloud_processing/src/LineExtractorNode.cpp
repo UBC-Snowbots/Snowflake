@@ -47,10 +47,13 @@ LineExtractorNode::LineExtractorNode(int argc,
     std::string default_frame_id = "line_extractor_test";
     SB_getParam(private_nh, frame_id_param, this->frame_id, default_frame_id);
 
+    std::string num_threads_param   = "num_threads";
+    unsigned int default_num_threads = 8;
+    SB_getParam(private_nh, num_threads_param, this->num_threads, default_num_threads);
+
     if (areParamsInvalid()) {
         ROS_DEBUG(
-        "At least one of your parameters are negative; they should be "
-        "positive!");
+        "Detected invalid params - make sure all params are positive and that num_threads is greater than 0");
         ros::shutdown();
     }
 
@@ -97,7 +100,7 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 }
 
 void LineExtractorNode::extractLines() {
-    DBSCAN dbscan(this->minNeighbours, this->radius);
+    DBSCAN dbscan(this->minNeighbours, this->radius, this->num_threads);
     this->clusters = dbscan.findClusters(this->pclPtr);
 
     std::vector<Eigen::VectorXf> lines = regression.getLinesOfBestFit(
@@ -219,7 +222,7 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
 
 bool LineExtractorNode::areParamsInvalid() {
     return this->degreePoly < 0 || this->lambda < 0 ||
-           this->minNeighbours < 0 || this->radius < 0;
+           this->minNeighbours < 0 || this->radius < 0 || this->num_threads <= 0;
 }
 
 std::vector<mapping_igvc::LineObstacle>
