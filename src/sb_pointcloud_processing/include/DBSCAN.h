@@ -7,6 +7,9 @@
 #ifndef LINE_EXTRACTOR_IGVC_DBSCAN_H
 #define LINE_EXTRACTOR_IGVC_DBSCAN_H
 
+#define SEQUENTIAL_CUT_OFF 5000
+#define DEFAULT_NUM_THREADS 8
+
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/conversions.h>
 #include <pcl/point_types.h>
@@ -53,16 +56,16 @@ class DBSCAN {
      */
     vector<unsigned int>* _neighbors;
 
-    // TODO: fine-tune parameters with real data
     int _min_neighbors = 5;
     float _radius      = 5;
+    unsigned int _num_threads;
 
   public:
     /*
      * Constructor:
      * Takes in minimum number of neighbours and radius as parameters
      */
-    DBSCAN(int min_neighbours = 5, float radius = 5);
+    DBSCAN(int min_neighbours = 5, float radius = 5, unsigned int num_threads = DEFAULT_NUM_THREADS);
 
     /*
      * Main entry function:

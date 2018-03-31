@@ -6,9 +6,10 @@
 
 #include <DBSCAN.h>
 
-DBSCAN::DBSCAN(int min_neighbours, float radius) {
+DBSCAN::DBSCAN(int min_neighbours, float radius, unsigned int num_threads) {
     this->_min_neighbors = min_neighbours;
     this->_radius        = radius;
+    this->_num_threads = num_threads;
     this->_clusters      = vector<pcl::PointCloud<pcl::PointXYZ>>();
 }
 
@@ -82,14 +83,12 @@ void DBSCAN::expand(unsigned int center_index,
 void DBSCAN::findNeighbors() {
     this->_neighbors = new vector<unsigned int>[this->_pcl.size()];
 
-    if (this->_pcl.size() > 5000) {
-        unsigned int num_threads = 8;
-
-        auto* threads = new pthread_t[num_threads];
+    if (this->_pcl.size() > SEQUENTIAL_CUT_OFF) {
+        auto* threads = new pthread_t[this->_num_threads];
         unsigned int points_per_thread =
-        (this->_pcl.size() + num_threads - 1) / num_threads;
+        (this->_pcl.size() + this->_num_threads - 1) / this->_num_threads;
 
-        for (unsigned int i = 0; i < num_threads; i++) {
+        for (unsigned int i = 0; i < this->_num_threads; i++) {
             findNeighborsThreadArg* arg = new findNeighborsThreadArg;
 
             arg->pcl_pointer       = &this->_pcl;
@@ -106,7 +105,7 @@ void DBSCAN::findNeighbors() {
             }
         }
 
-        for (unsigned int i = 0; i < num_threads; i++) {
+        for (unsigned int i = 0; i < this->_num_threads; i++) {
             if (pthread_join(threads[i], NULL)) {
                 std::cout << "failed to join worker" << std::endl;
             }
@@ -160,6 +159,9 @@ void* DBSCAN::findNeighborsThread(void* arg) {
         // store the list of neighbours
         neighbors_storage[i] = neighbors;
     }
+
+    // arg pointer is no longer needed, so free memory
+    free(arg);
 
     return NULL;
 };
