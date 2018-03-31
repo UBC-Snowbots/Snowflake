@@ -27,7 +27,11 @@
 class EncoderOdometryNodeTest : public testing::Test{
 protected:
 
-    EncoderOdometryNodeTest(){
+    EncoderOdometryNodeTest():
+            wheel_radius(0.1),
+            ticks_per_rotation(1000),
+            wheelbase(0.5)
+            {
         // TODO: Delete me
         //test_publisher = nh_.advertise<std_msgs::String>("subscribe_topic", 1);
         //test_subscriber = nh_.subscribe("/my_node/publish_topic", 1, &EncoderOdometryNodeTest::odomMsgCallback, this);
@@ -46,10 +50,7 @@ protected:
     }
 
     virtual void SetUp(){
-    }
-
-    virtual void TearDown(){
-        // Let things clear up
+        // Let callbacks process
         ros::Rate loop_rate(1);
         loop_rate.sleep();
         ros::spinOnce();
@@ -141,6 +142,11 @@ protected:
     // The subscriber for received Odometry messages estimated from the encoders
     ros::Subscriber odom_msg_subscriber;
 
+    // Things that we've set for the Encoder -> Odometry node
+    double wheel_radius;
+    double ticks_per_rotation;
+    double wheelbase;
+
 public:
 
 };
@@ -181,10 +187,9 @@ TEST_F(EncoderOdometryNodeTest, driving_straight_backwards){
     EXPECT_NEAR(0, tf::getYaw(odom_msg.pose.pose.orientation), 0.01);
 }
 
-//// Test turning 90 degrees by traveling in an arc
+// Test turning 90 degrees by traveling in an arc
 TEST_F(EncoderOdometryNodeTest, turn_90_right){
     double inner_turn_radius = 3;
-    double wheelbase = 0.5;
     double outer_turn_radius = inner_turn_radius + wheelbase;
 
     // Calculate how far the left and right wheel will have to move
@@ -192,11 +197,10 @@ TEST_F(EncoderOdometryNodeTest, turn_90_right){
     double dr = (2 * M_PI / 4) * inner_turn_radius;
 
     // Figure out how many ticks this will be per wheel
-    double wheel_radius = 0.1;
+    double wheel_circumference = 2 * M_PI * wheel_radius;
     double ticks_per_rotation = 1000;
-
-    int left_wheel_ticks = (int)std::floor(dl * (ticks_per_rotation / wheel_radius));
-    int right_wheel_ticks = (int)std::floor(dr * (ticks_per_rotation / wheel_radius));
+    auto left_wheel_ticks = (int)std::floor(dl * (ticks_per_rotation / wheel_circumference));
+    auto right_wheel_ticks = (int)std::floor(dr * (ticks_per_rotation / wheel_circumference));
 
     // Simulate driving in an arc
     driveSimulator(left_wheel_ticks, right_wheel_ticks, 10);
@@ -209,9 +213,9 @@ TEST_F(EncoderOdometryNodeTest, turn_90_right){
     // for the curious: http://answers.ros.org/question/11887/significance-of-rosspinonce/
     ros::spinOnce();
 
-    EXPECT_NEAR(3.25, odom_msg.pose.pose.position.x, 0.03);
-    EXPECT_NEAR(-3.25, odom_msg.pose.pose.position.y, 0.03);
-    EXPECT_NEAR(-(M_PI/2), tf::getYaw(odom_msg.pose.pose.orientation), 0.01);
+    EXPECT_NEAR(3.25, odom_msg.pose.pose.position.x, 0.1);
+    EXPECT_NEAR(-3.25, odom_msg.pose.pose.position.y, 0.1);
+    EXPECT_NEAR(-(M_PI/2), tf::getYaw(odom_msg.pose.pose.orientation), 0.05);
 }
 
 

@@ -5,9 +5,9 @@
     <node name="encoder_odometry_node" pkg="drivers" type="encoder_odometry_node" output="screen" >
         <param name="left_encoder_joint_name" value="left_encoder" />
         <param name="right_encoder_joint_name" value="right_encoder" />
-        <param name="wheel_radius" value="10" />
+        <param name="wheel_radius" value="0.1" />
         <param name="wheelbase_length" value="0.5" />
-        <param name="ticks_per_rotation" value="14000" />
+        <param name="ticks_per_rotation" value="1000" />
         <param name="odom_msg_refresh_rate" value="5" />
     </node>
 

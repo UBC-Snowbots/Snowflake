@@ -118,10 +118,11 @@ void EncoderOdometryNode::publishEstimatedOdomMsg() {
 
     double dt = ros::Time::now().toSec() - last_estimate.header.stamp.toSec();
 
-    // left and right wheel velocities (in radians/s)
+    // left and right wheel velocities (in meters/s)
     double v_l = (*left_encoder_num_ticks_curr - *left_encoder_num_ticks_prev)/dt * (2*M_PI)/ticks_per_rotation * wheel_radius;
     double v_r = (*right_encoder_num_ticks_curr - *right_encoder_num_ticks_prev)/dt * (2*M_PI)/ticks_per_rotation * wheel_radius;
 
+    // TODO: Delete me
     ROS_INFO_STREAM("v_l: " << v_l);
     ROS_INFO_STREAM("v_r: " << v_r);
 
