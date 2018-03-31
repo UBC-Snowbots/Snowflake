@@ -1,0 +1,5 @@
+<launch>
+
+    <node name="igvc_visualizer" pkg="sb_pointcloud_processing" type="igvc_visualizer" output="screen">
+    </node>
+</launch>
