@@ -34,6 +34,23 @@ public:
      */
     void publishEstimatedOdomMsg();
 
+    /**
+     * Calculate the Covariance for the Pose component of an Odometry message based on encoder variances
+     *
+     * Math used is from: http://digital.csic.es/bitstream/10261/30337/1/Onto%20computing.pdf
+     *
+     * @param left_wheel_ticks the number of ticks of the left wheel since our last estimate
+     * @param right_wheel_ticks the number of ticks of the right wheel since our last estimate
+     * @param prev_yaw the yaw of our last state estimate
+     *
+     * @return
+     *     Row-major representation of the 6x6 covariance matrix
+     *     The orientation parameters use a fixed-axis representation.
+     *     In order, the parameters are:
+     *     (x, y, z, rotation about X axis, rotation about Y axis, rotation about Z axis)
+     */
+    geometry_msgs::PoseWithCovariance::_covariance_type calculatePoseCovariance(int left_wheel_ticks, int right_wheel_ticks, double prev_yaw);
+
 private:
 
     /**
@@ -100,5 +117,9 @@ private:
 
     // The frame of reference the odom message should be published in
     std::string odom_frame_id;
+
+    // The variance of the left and right encoders
+    double left_encoder_variance;
+    double right_encoder_variance;
 };
 #endif //DRIVERS_ENCODER_ODOMETRY_NODE_H
