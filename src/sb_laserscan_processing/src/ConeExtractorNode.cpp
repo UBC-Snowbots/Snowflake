@@ -5,6 +5,7 @@
 
 #include <ConeExtractorNode.h>
 
+
 ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_name) {
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
@@ -12,10 +13,15 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
     uint32_t queue_size = 1;
     int refresh_rate = 10;
 
-    /* TODO: Get ros params here */
-    cone_dist_tol = 1; //CHANGE
+    /* Get ros params */
+    std::string cone_dist_tol_param = "cone_dist_tol";
+    float default_cone_dist_tol = 1.0;
+    SB_getParam(private_nh,
+                cone_dist_tol_param,
+                cone_dist_tol,
+                default_cone_dist_tol);
 
-    std::string subscribe_topic = "/scan"; // Setup subscriber to laserscan
+    std::string subscribe_topic = "/scan"; // Setup subscriber to laserscan (Placeholder)
     laser_subscriber = nh.subscribe(subscribe_topic, refresh_rate, &ConeExtractorNode::laserCallBack, this);
 
     std::string publish_topic = "output_cone_obstacle"; //Placeholder
@@ -23,6 +29,7 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
             publish_topic, queue_size
     );
 }
+
 
 void ConeExtractorNode::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& ptr){
     sensor_msgs::LaserScan laser_msg = *ptr;

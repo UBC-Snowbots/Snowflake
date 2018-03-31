@@ -19,10 +19,17 @@ class ConeIdentification {
         /**
          * Identifies the cones in a given laserscan message
          * @param laser_msg laserscan message to analyze
-         * @param tolerance max distance between points to be considered within a cluster
+         * @param tolerance max distance between points to be considered that are part of one cone
          * @return a vector of cone obstacle messages identified
          */
         static std::vector<mapping_igvc::ConeObstacle> identifyCones(const sensor_msgs::LaserScan &laser_msg, float tolerance);
+
+        /**
+        * Converts a cluster of edge points to a cone obstacle
+        * @param edge_points should have size >= 3
+        * @return a cone formed by edge points
+        */
+        static mapping_igvc::ConeObstacle edgeToCone(const std::vector<mapping_igvc::Point2D> &edge_points);
 
 
     private:
@@ -32,7 +39,7 @@ class ConeIdentification {
          * @param ang angle reading, should be in valid min-max angle of laser scan
          * @return point in 2d
          */
-        static mapping_igvc::Point2D laserToPoint(float dist, float ang); //TODO: Points must be in global frame?
+        static mapping_igvc::Point2D laserToPoint(float dist, float ang);
 
         /**
          * Gets the distance between 2 points
@@ -41,13 +48,6 @@ class ConeIdentification {
          * @return distance between points
          */
         static float getDist(const mapping_igvc::Point2D &p1, const mapping_igvc::Point2D &p2);
-
-        /**
-         * Converts a cluster of points to a cone obstacle
-         * @param cluster_points should have size >= 3
-         * @return a cone formed by cluster points
-         */
-        static mapping_igvc::ConeObstacle clusterToCone(const std::vector<mapping_igvc::Point2D> &cluster_points);
 };
 
 

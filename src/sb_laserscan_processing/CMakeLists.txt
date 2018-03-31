@@ -53,11 +53,14 @@ add_dependencies(sb_laserscan_processing
 ## Testing ##
 #############
 
-#if (CATKIN_ENABLE_TESTING)
+if (CATKIN_ENABLE_TESTING)
 
     # Adding gtests to the package
     #catkin_add_gtest(laserscan-cone-manager-test test/laserscan-cone-manager-test.cpp src/LaserscanConeManager.cpp)
     #target_link_libraries(laserscan-cone-manager-test ${catkin_LIBRARIES})
+
+    catkin_add_gtest(cone-identification-test test/cone-identification-test.cpp src/ConeIdentification.cpp)
+    target_link_libraries(cone-identification-test ${catkin_LIBRARIES})
 
     # Adding rostest to the package
     #find_package(rostest REQUIRED)
@@ -65,4 +68,4 @@ add_dependencies(sb_laserscan_processing
     # "catkin_make run_tests" to be able to find and run this rostest
     #add_rostest_gtest(laserscan_cone_manager_rostest test/sb_laserscan_processing_test.test test/laserscan_cone_manager_rostest.cpp)
     #target_link_libraries(laserscan_cone_manager_rostest ${catkin_LIBRARIES})
-#endif()
+endif()

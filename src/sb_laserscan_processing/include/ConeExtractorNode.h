@@ -21,7 +21,8 @@ class ConeExtractorNode {
         ros::Publisher cone_publisher;
 
         /**
-         * Callback function for receiving laser scan msgs
+         * Callback function for receiving laser scan msgs. Publishes the cones found in the laserscan to
+         * the correct topic one by one. Note that the coordinates for cones are in the base-link (robot frame)
          * @param ptr
          */
         void laserCallBack(const sensor_msgs::LaserScan::ConstPtr& ptr);
