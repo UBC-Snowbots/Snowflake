@@ -8,7 +8,6 @@
 #define LINE_EXTRACTOR_IGVC_DBSCAN_H
 
 #define SEQUENTIAL_CUT_OFF 5000
-#define DEFAULT_NUM_THREADS 8
 
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/conversions.h>
@@ -19,11 +18,20 @@ using namespace std;
 using namespace std::tr1;
 
 class DBSCAN {
+    /**
+     * This struct is used to pass information to entry function
+     * for each thread when we want to use multiple threads.
+     */
     struct findNeighborsThreadArg {
+        // start_index and stop_index defines the subset of the point cloud
+        // that each thread will work on
         unsigned int start_index;
         unsigned int stop_index;
+        // radius should equal to this->_radius
         float radius;
+        // pointer to the point cloud we want to process
         pcl::PointCloud<pcl::PointXYZ>* pcl_pointer;
+        // pointer to this->_neighbors
         vector<unsigned int>* neighbors_pointer;
     };
 
@@ -50,7 +58,7 @@ class DBSCAN {
     unordered_map<unsigned int, bool> _expanded;
 
     /*
-     * Key: index of a point in the PointCloud
+     * Index: index of a point in the PointCloud
      * Value: a vector containing all of the point's neighbors
      * (A neighbour is a point that is within @_radius of a point of interest)
      */
@@ -65,7 +73,7 @@ class DBSCAN {
      * Constructor:
      * Takes in minimum number of neighbours and radius as parameters
      */
-    DBSCAN(int min_neighbours = 5, float radius = 5, unsigned int num_threads = DEFAULT_NUM_THREADS);
+    DBSCAN(int min_neighbours = 5, float radius = 5, unsigned int num_threads = 1);
 
     /*
      * Main entry function:
@@ -89,7 +97,32 @@ class DBSCAN {
      */
     void findNeighbors();
 
-    static void* findNeighborsThread(void* index_pointer);
+    /**
+     * Finds the neighbours in parallel
+     * Number of threads is defined by this->_num_threads
+     */
+    void findNeighborsParallel();
+
+    /**
+     * Finds the neighbours sequentially
+     */
+    void findNeighborsSequential();
+
+    /**
+     * Builds the argument for entry function for each thread
+     * @param thread_index the index of the thread that it's building an argument for
+     * @param points_per_thread number of points each thread is processing
+     * @return the pointer to an initialized findNeighborsThreadArg
+     */
+    findNeighborsThreadArg *buildFindNeighborsThreadArg(unsigned int thread_index, unsigned int points_per_thread);
+
+    /**
+     * Entry function for the threads created by
+     * the function findNeighboursParallel
+     * @param args args of type findNeighborsThreadArg
+     * @return null
+     */
+    static void* findNeighborsThread(void* args);
 
     /*
      * Expands a cluster around a given point recursively by:

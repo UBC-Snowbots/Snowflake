@@ -83,52 +83,78 @@ void DBSCAN::expand(unsigned int center_index,
 void DBSCAN::findNeighbors() {
     this->_neighbors = new vector<unsigned int>[this->_pcl.size()];
 
-    if (this->_pcl.size() > SEQUENTIAL_CUT_OFF) {
-        auto* threads = new pthread_t[this->_num_threads];
-        unsigned int points_per_thread =
-        (this->_pcl.size() + this->_num_threads - 1) / this->_num_threads;
-
-        for (unsigned int i = 0; i < this->_num_threads; i++) {
-            findNeighborsThreadArg* arg = new findNeighborsThreadArg;
-
-            arg->pcl_pointer       = &this->_pcl;
-            arg->neighbors_pointer = this->_neighbors;
-            arg->start_index       = i * points_per_thread;
-            arg->stop_index        = arg->start_index + points_per_thread - 1;
-            if (arg->stop_index >= this->_pcl.size()) {
-                arg->stop_index = this->_pcl.size() - 1;
-            }
-            arg->radius = this->_radius;
-
-            if (pthread_create(threads + i, NULL, findNeighborsThread, arg)) {
-                std::cout << "failed to start worker" << std::endl;
-            }
-        }
-
-        for (unsigned int i = 0; i < this->_num_threads; i++) {
-            if (pthread_join(threads[i], NULL)) {
-                std::cout << "failed to join worker" << std::endl;
-            }
-        }
+    // only perform multi-threading if the point cloud is large enough,
+    // otherwise there will be more overhead in creating threads than
+    // speed up from parallelism
+    if (this->_pcl.size() > SEQUENTIAL_CUT_OFF || this->_num_threads > 1) {
+        findNeighborsParallel();
     } else {
-        for (unsigned int i = 0; i < this->_pcl.size(); i++) {
-            vector<unsigned int> neighbors;
-            pcl::PointXYZ current_point = this->_pcl[i];
+        findNeighborsSequential();
+    }
+}
 
-            // for current_point, determine all neighbour points that are within
-            // predetermined radius
-            for (unsigned int j = 0; j < this->_pcl.size(); j++) {
-                if (i == j) continue;
-                pcl::PointXYZ neighbor_point = this->_pcl[j];
-                if (dist(current_point, neighbor_point) <= this->_radius) {
-                    neighbors.push_back(j);
-                }
+void DBSCAN::findNeighborsSequential() {
+    for (unsigned int i = 0; i < this->_pcl.size(); i++) {
+        vector<unsigned int> neighbors;
+        pcl::PointXYZ current_point = this->_pcl[i];
+
+        // for current_point, determine all neighbour points that are within
+        // predetermined radius
+        for (unsigned int j = 0; j < this->_pcl.size(); j++) {
+            if (i == j) continue;
+            pcl::PointXYZ neighbor_point = this->_pcl[j];
+            if (dist(current_point, neighbor_point) <= this->_radius) {
+                neighbors.push_back(j);
             }
+        }
 
-            // store the list of neighbours
-            this->_neighbors[i] = neighbors;
+        // store the list of neighbours
+        this->_neighbors[i] = neighbors;
+    }
+}
+
+void DBSCAN::findNeighborsParallel() {
+    // array to store this->num_threads number of threads
+    auto* threads = new pthread_t[this->_num_threads];
+
+    // calculate how many points in the point cloud each thread should process
+    unsigned int points_per_thread =
+            (this->_pcl.size() + this->_num_threads - 1) / this->_num_threads;
+
+    // create threads
+    for (unsigned int i = 0; i < this->_num_threads; i++) {
+        // create argument to pass in to the thread worker
+        findNeighborsThreadArg* arg = buildFindNeighborsThreadArg(i, points_per_thread);
+
+        if (pthread_create(threads + i, NULL, findNeighborsThread, arg)) {
+            std::cerr << "failed to start worker" << std::endl;
         }
     }
+
+    // join threads
+    for (unsigned int i = 0; i < this->_num_threads; i++) {
+        if (pthread_join(threads[i], NULL)) {
+            std::cerr << "failed to join worker" << std::endl;
+        }
+    }
+}
+
+DBSCAN::findNeighborsThreadArg *DBSCAN::buildFindNeighborsThreadArg(unsigned int thread_index, unsigned int points_per_thread) {
+    findNeighborsThreadArg* arg = new findNeighborsThreadArg;
+
+    arg->pcl_pointer       = &this->_pcl;
+    arg->neighbors_pointer = this->_neighbors;
+
+    // determine the subset of points each thread should process
+    arg->start_index       = thread_index * points_per_thread;
+    arg->stop_index        = arg->start_index + points_per_thread - 1;
+    if (arg->stop_index >= this->_pcl.size()) {
+        arg->stop_index = this->_pcl.size() - 1;
+    }
+
+    arg->radius = this->_radius;
+
+    return arg;
 }
 
 void* DBSCAN::findNeighborsThread(void* arg) {
