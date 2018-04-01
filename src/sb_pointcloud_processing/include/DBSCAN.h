@@ -57,8 +57,7 @@ class DBSCAN {
      * Constructor:
      * Takes in minimum number of neighbours and radius as parameters
      */
-    DBSCAN(int min_neighbours       = 5,
-           float radius             = 5);
+    DBSCAN(int min_neighbours = 5, float radius = 5);
 
     /*
      * Main entry function:

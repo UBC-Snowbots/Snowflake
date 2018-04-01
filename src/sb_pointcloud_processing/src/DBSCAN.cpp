@@ -82,7 +82,7 @@ void DBSCAN::expand(unsigned int center_index,
 void DBSCAN::findNeighbors() {
     this->_neighbors = new vector<unsigned int>[this->_pcl.size()];
 
-#pragma omp parallel for if(this->_pcl.size() > SEQUENTIAL_CUT_OFF)
+#pragma omp parallel for if (this->_pcl.size() > SEQUENTIAL_CUT_OFF)
     for (unsigned int i = 0; i < this->_pcl.size(); i++) {
         vector<unsigned int> neighbors;
         pcl::PointXYZ current_point = this->_pcl[i];
