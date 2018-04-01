@@ -19,23 +19,6 @@ using namespace std;
 using namespace std::tr1;
 
 class DBSCAN {
-    /**
-     * This struct is used to pass information to entry function
-     * for each thread when we want to use multiple threads.
-     */
-    struct findNeighborsThreadArg {
-        // start_index and stop_index defines the subset of the point cloud
-        // that each thread will work on
-        unsigned int start_index;
-        unsigned int stop_index;
-        // radius should equal to this->_radius
-        float radius;
-        // pointer to the point cloud we want to process
-        pcl::PointCloud<pcl::PointXYZ>* pcl_pointer;
-        // pointer to this->_neighbors
-        vector<unsigned int>* neighbors_pointer;
-    };
-
     /*
      * This variable stores the PointCloud input that we want to cluster
      */
