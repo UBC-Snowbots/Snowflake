@@ -49,8 +49,7 @@ LineExtractorNode::LineExtractorNode(int argc,
 
     if (areParamsInvalid()) {
         ROS_DEBUG(
-        "Detected invalid params - make sure all params are positive and that "
-        "num_threads is greater than 0");
+        "Detected invalid params - make sure all params are positive");
         ros::shutdown();
     }
 
