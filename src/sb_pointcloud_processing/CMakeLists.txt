@@ -7,7 +7,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
 endif()
 
-add_definitions(-std=c++14)
+add_definitions(-std=c++14 -fopenmp)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -81,6 +81,7 @@ target_link_libraries(line_extractor_node
     ${catkin_LIBRARIES}
     ${PCL_COMMON_LIBRARIES}
     ${PCL_IO_LIBRARIES}
+    gomp
 )
 add_dependencies(line_extractor_node
     ${mapping_igvc_EXPORTED_TARGETS}
@@ -112,14 +113,14 @@ if (CATKIN_ENABLE_TESTING)
       test/TestUtils.h
       src/DBSCAN.cpp
       )
-    target_link_libraries(DBSCAN-test ${catkin_LIBRARIES})
+    target_link_libraries(DBSCAN-test ${catkin_LIBRARIES} gomp)
 
     catkin_add_gtest(Regression-test
       test/Regression-class-test.cpp
       test/TestUtils.h
       src/Regression.cpp
       )
-    target_link_libraries(Regression-test ${catkin_LIBRARIES})
+    target_link_libraries(Regression-test ${catkin_LIBRARIES} gomp)
 
     catkin_add_gtest(colourspace-converter-test test/colourspace-converter-test.cpp include/ColourspaceConverter.h src/ColourspaceConverter.cpp)
     target_link_libraries(colourspace-converter-test ${PCL_LIBRARIES})
@@ -135,7 +136,7 @@ if (CATKIN_ENABLE_TESTING)
       src/DBSCAN.cpp
       src/Regression.cpp
       )
-    target_link_libraries(line_extractor_rostest ${catkin_LIBRARIES})
+    target_link_libraries(line_extractor_rostest ${catkin_LIBRARIES} gomp)
     add_dependencies(line_extractor_rostest
       ${mapping_igvc_EXPORTED_TARGETS}
       )

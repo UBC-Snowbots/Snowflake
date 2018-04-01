@@ -7,7 +7,8 @@
 #ifndef LINE_EXTRACTOR_IGVC_DBSCAN_H
 #define LINE_EXTRACTOR_IGVC_DBSCAN_H
 
-#define SEQUENTIAL_CUT_OFF 5000
+// run sequentially when point cloud size is less than SEQUENTIAL_CUT_OFF
+#define SEQUENTIAL_CUT_OFF 1000
 
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/conversions.h>
@@ -67,7 +68,6 @@ class DBSCAN {
 
     int _min_neighbors = 5;
     float _radius      = 5;
-    unsigned int _num_threads;
 
   public:
     /*
@@ -75,8 +75,7 @@ class DBSCAN {
      * Takes in minimum number of neighbours and radius as parameters
      */
     DBSCAN(int min_neighbours       = 5,
-           float radius             = 5,
-           unsigned int num_threads = 1);
+           float radius             = 5);
 
     /*
      * Main entry function:
@@ -99,36 +98,6 @@ class DBSCAN {
      * (A neighbour is a point that is within @_radius of a point of interest)
      */
     void findNeighbors();
-
-    /**
-     * Finds the neighbours in parallel
-     * Number of threads is defined by this->_num_threads
-     */
-    void findNeighborsParallel();
-
-    /**
-     * Finds the neighbours sequentially
-     */
-    void findNeighborsSequential();
-
-    /**
-     * Builds the argument for entry function for each thread
-     * @param thread_index the index of the thread that it's building an
-     * argument for
-     * @param points_per_thread number of points each thread is processing
-     * @return the pointer to an initialized findNeighborsThreadArg
-     */
-    findNeighborsThreadArg*
-    buildFindNeighborsThreadArg(unsigned int thread_index,
-                                unsigned int points_per_thread);
-
-    /**
-     * Entry function for the threads created by
-     * the function findNeighboursParallel
-     * @param args args of type findNeighborsThreadArg
-     * @return null
-     */
-    static void* findNeighborsThread(void* args);
 
     /*
      * Expands a cluster around a given point recursively by:

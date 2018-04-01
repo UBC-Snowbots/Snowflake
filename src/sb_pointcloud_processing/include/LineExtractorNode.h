@@ -104,8 +104,6 @@ class LineExtractorNode {
      */
     std::string frame_id;
 
-    int num_threads;
-
     /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
      * been converted from sensor_msgs PointCloud2
