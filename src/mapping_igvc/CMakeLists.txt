@@ -13,10 +13,11 @@ find_package(catkin REQUIRED COMPONENTS
 )
 find_package(OpenMP REQUIRED)
 if(OPENMP_FOUND)
-  set(OpenMP_FLAGS ${OpenMP_CXX_FLAGS})
-  set(OpenMP_LIBRARIES gomp)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
-
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -75,7 +76,15 @@ include_directories(
 )
 
 ## Declare a C++ executable
-# TODO
+add_executable(obstacle_manager_node
+        src/obstacle_manager_node.cpp
+        src/ObstacleManagerNode.cpp
+        src/ObstacleManager.cpp
+        include/ObstacleManagerNode.h
+        )
+target_link_libraries(obstacle_manager_node
+        ${catkin_LIBRARIES}
+        )
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
@@ -96,20 +105,7 @@ if (CATKIN_ENABLE_TESTING)
             )
     target_link_libraries(obstacle-manager-test
             ${catkin_LIBRARIES}
-            ${OpenMP_LIBRARIES}
             )
-    # Set compiler flags to use OpenMP
-    target_compile_options(obstacle-manager-test PRIVATE ${OpenMP_FLAGS})
-
-    #catkin_add_gtest(spline-line-test
-    #        test/spline-line-test.cpp
-    #        ../sb_utils/src/sb_geom/Spline.cpp
-    #        ../sb_utils/include/sb_geom/Spline.h
-    #        include/spline.h
-    #        )
-    #target_link_libraries(spline-line-test
-    #        ${sb_geom_LIBRARIES}
-    #        )
 
     # rostest
     # TODO: Maybe? Not sure if we need rostests for the ObstacleManager
