@@ -153,7 +153,7 @@ public:
 
 TEST_F(EncoderOdometryNodeTest, driving_straight_forward){
     // drive forward 1 rotation of the wheels
-    driveSimulator(1000, 1000, 5);
+    driveSimulator(1000, 1000, 3);
 
     // Wait for the message to get passed around
     ros::Rate loop_rate(1);
@@ -171,7 +171,7 @@ TEST_F(EncoderOdometryNodeTest, driving_straight_forward){
 
 TEST_F(EncoderOdometryNodeTest, driving_straight_backwards){
     // drive forward 1 rotation of the wheels
-    driveSimulator(-1000, -1000, 5);
+    driveSimulator(-1000, -1000, 3);
 
     // Wait for the message to get passed around
     ros::Rate loop_rate(1);
@@ -189,7 +189,7 @@ TEST_F(EncoderOdometryNodeTest, driving_straight_backwards){
 
 // Test turning 90 degrees by traveling in an arc
 TEST_F(EncoderOdometryNodeTest, turn_90_right){
-    double inner_turn_radius = 3;
+    double inner_turn_radius = 2;
     double outer_turn_radius = inner_turn_radius + wheelbase;
 
     // Calculate how far the left and right wheel will have to move
@@ -203,7 +203,7 @@ TEST_F(EncoderOdometryNodeTest, turn_90_right){
     auto right_wheel_ticks = (int)std::floor(dr * (ticks_per_rotation / wheel_circumference));
 
     // Simulate driving in an arc
-    driveSimulator(left_wheel_ticks, right_wheel_ticks, 10);
+    driveSimulator(left_wheel_ticks, right_wheel_ticks, 5);
 
     // Wait for the message to get passed around
     ros::Rate loop_rate(1);
@@ -213,8 +213,8 @@ TEST_F(EncoderOdometryNodeTest, turn_90_right){
     // for the curious: http://answers.ros.org/question/11887/significance-of-rosspinonce/
     ros::spinOnce();
 
-    EXPECT_NEAR(3.25, odom_msg.pose.pose.position.x, 0.1);
-    EXPECT_NEAR(-3.25, odom_msg.pose.pose.position.y, 0.1);
+    EXPECT_NEAR(2.25, odom_msg.pose.pose.position.x, 0.1);
+    EXPECT_NEAR(-2.25, odom_msg.pose.pose.position.y, 0.1);
     EXPECT_NEAR(-(M_PI/2), tf::getYaw(odom_msg.pose.pose.orientation), 0.05);
 }
 

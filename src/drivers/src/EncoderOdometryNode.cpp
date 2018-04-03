@@ -191,6 +191,7 @@ geometry_msgs::PoseWithCovariance::_covariance_type EncoderOdometryNode::calcula
         double prev_yaw) {
 
     // All math taken from: http://digital.csic.es/bitstream/10261/30337/1/Onto%20computing.pdf
+    // namely pages 1342 and 1343
 
     // Compute displacement of the left and right wheels (relative to last estimate)
     double wheel_circumference = 2 * M_PI * wheel_radius;
