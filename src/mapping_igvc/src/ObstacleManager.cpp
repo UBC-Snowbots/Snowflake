@@ -13,11 +13,18 @@
 #include <algorithm>
 #include <tuple>
 
+// ROS Includes
+#include <std_msgs/Int8.h>
+
 using namespace sb_geom;
 
-ObstacleManager::ObstacleManager(double cone_merging_tolerance, double line_merging_tolerance) :
+ObstacleManager::ObstacleManager(double cone_merging_tolerance,
+                                 double line_merging_tolerance,
+                                 double obstacle_inflation_buffer,
+                                 double occ_grid_cell_size) :
 cone_merging_tolerance(cone_merging_tolerance),
-line_merging_tolerance(line_merging_tolerance)
+line_merging_tolerance(line_merging_tolerance),
+obstacle_inflation_buffer(obstacle_inflation_buffer)
 {}
 
 std::vector<Cone> ObstacleManager::getConeObstacles() {
@@ -29,6 +36,9 @@ std::vector<sb_geom::Spline> ObstacleManager::getLineObstacles() {
 }
 
 void ObstacleManager::addObstacle(Cone cone) {
+
+    // TODO: maybe prune obstacles outside a given distance from us?
+
     // Find the distance to every known cone from this one
     std::vector<std::pair<double,int>> distances;
     for (int known_cone_index = 0; known_cone_index < cones.size(); known_cone_index++){
@@ -68,6 +78,9 @@ void ObstacleManager::addObstacle(Cone cone) {
 
 // TODO: The `addObstacle` functions seem pretty similar.... maybe we could apply DRY here?
 void ObstacleManager::addObstacle(Spline line_obstacle) {
+
+    // TODO: maybe prune obstacles outside a given distance from us? (would likely improve performance of this function)
+
     // Find the distance from this line_obstacle to every other known line_obstacle
     // (in parallel)
     std::vector<std::pair<double, int>> distances(lines.size());
@@ -164,5 +177,86 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
     return Spline(new_interpolation_points);
 }
 
+nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
+    // Find what cells are directly occupied (ie. overlapping) with
+    // known obstacles
+    std::vector<Point2D> occupied_points;
 
+    for (auto& line : lines){
+        // Figure out how many points to sample
+        auto num_sample_points = (int)std::ceil(line.approxLength() / occ_grid_cell_size);
+
+        // Sample points from the line
+        for (int i = 0; i <= num_sample_points; i++){
+            occupied_points.emplace_back(line(i / (double)num_sample_points));
+        }
+    }
+
+    for (auto& cone : cones){
+        // Iterate over the cone in 2D
+        // figure out the width of the cone (in # of cells)
+        auto cone_width_num_cells = (int)std::ceil(cone.radius * 2 / occ_grid_cell_size);
+        for (int x = 0; x < cone_width_num_cells; x++){
+            // figure out the height of the cone at the current x value
+            // (in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
+            auto cone_height_num_cells =
+                    2 * (sqrt(std::pow(cone.radius, 2) - (x*occ_grid_cell_size)));
+            for (int y = 0; y < cone_height_num_cells; y++){
+                occupied_points.emplace_back(Point2D(
+                        cone.x + x * occ_grid_cell_size,
+                        cone.y + y * occ_grid_cell_size
+                ));
+            }
+        }
+    }
+
+    // Find the max/min x and y values in the occupied points
+    // these will define the extents of the generate occupancy grid
+    Point2D point_max_x = *std::max_element(occupied_points.begin(), occupied_points.end(),
+                                    [&](Point2D p1, Point2D p2){
+                                            return p1.x > p2.x;
+                                        });
+    double max_x = point_max_x.x();
+    Point2D point_max_y = *std::max_element(occupied_points.begin(), occupied_points.end(),
+                                            [&](Point2D p1, Point2D p2){
+                                                return p1.y > p2.y;
+                                            });
+    double max_y = point_max_y.y();
+    Point2D point_min_x = *std::min_element(occupied_points.begin(), occupied_points.end(),
+                                            [&](Point2D p1, Point2D p2){
+                                                return p1.x > p2.x;
+                                            });
+    double min_x = point_min_x.x();
+    Point2D point_min_y = *std::min_element(occupied_points.begin(), occupied_points.end(),
+                                            [&](Point2D p1, Point2D p2){
+                                                return p1.y > p2.y;
+                                            });
+    double min_y = point_min_y.y();
+
+    nav_msgs::OccupancyGrid occ_grid;
+
+    // TODO: Set header
+
+    // Set MapMetaData
+    occ_grid.info.map_load_time = ros::Time::now();
+    occ_grid.info.resolution = (float)occ_grid_cell_size;
+    // Convert our min/max extents into a width and height in # of cells
+    occ_grid.info.width = (unsigned int)std::ceil((max_x - min_x) / occ_grid_cell_size);
+    occ_grid.info.height = (unsigned int)std::ceil((max_y - min_y) / occ_grid_cell_size);
+    occ_grid.info.origin.orientation.x = 0;
+    occ_grid.info.origin.orientation.y = 0;
+    occ_grid.info.origin.orientation.z = 0;
+    occ_grid.info.origin.orientation.w = 0;
+    occ_grid.info.origin.position.x = min_x;
+    occ_grid.info.origin.position.y = min_y;
+
+    // Populate the occupancy grid
+    // TODO: If this is slow, we may want to more intelligently inflate lines and cones
+    occ_grid.data.reserve(occ_grid.info.width * occ_grid.info.height);
+    for (auto& point: occupied_points){
+        inflatePoint(occ_grid, point, obstacle_inflation_buffer);
+    }
+
+    return occ_grid;
+}
 
