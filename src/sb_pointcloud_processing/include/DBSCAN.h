@@ -7,9 +7,6 @@
 #ifndef LINE_EXTRACTOR_IGVC_DBSCAN_H
 #define LINE_EXTRACTOR_IGVC_DBSCAN_H
 
-// run sequentially when point cloud size is less than SEQUENTIAL_CUT_OFF
-#define SEQUENTIAL_CUT_OFF 1000
-
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/conversions.h>
 #include <pcl/point_types.h>
@@ -51,6 +48,8 @@ class DBSCAN {
 
     int _min_neighbors = 5;
     float _radius      = 5;
+
+    unsigned int _sequential_cut_off = 1000;
 
   public:
     /*

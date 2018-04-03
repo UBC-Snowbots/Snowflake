@@ -7,7 +7,15 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
 endif()
 
-add_definitions(-std=c++14 -fopenmp)
+add_definitions(-std=c++14)
+
+find_package(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -113,14 +121,14 @@ if (CATKIN_ENABLE_TESTING)
       test/TestUtils.h
       src/DBSCAN.cpp
       )
-    target_link_libraries(DBSCAN-test ${catkin_LIBRARIES} gomp)
+    target_link_libraries(DBSCAN-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(Regression-test
       test/Regression-class-test.cpp
       test/TestUtils.h
       src/Regression.cpp
       )
-    target_link_libraries(Regression-test ${catkin_LIBRARIES} gomp)
+    target_link_libraries(Regression-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(colourspace-converter-test test/colourspace-converter-test.cpp include/ColourspaceConverter.h src/ColourspaceConverter.cpp)
     target_link_libraries(colourspace-converter-test ${PCL_LIBRARIES})
@@ -136,7 +144,7 @@ if (CATKIN_ENABLE_TESTING)
       src/DBSCAN.cpp
       src/Regression.cpp
       )
-    target_link_libraries(line_extractor_rostest ${catkin_LIBRARIES} gomp)
+    target_link_libraries(line_extractor_rostest ${catkin_LIBRARIES})
     add_dependencies(line_extractor_rostest
       ${mapping_igvc_EXPORTED_TARGETS}
       )
