@@ -197,7 +197,7 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
         // figure out the width of the cone (in # of cells)
         auto cone_width_num_cells = (int)std::ceil(cone.radius * 2 / occ_grid_cell_size);
         for (int x = 0; x < cone_width_num_cells; x++){
-            // figure out the height of the cone at the current x value
+            // figure out the height of the cone (value of y) at the current x value
             // (in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
             auto cone_height_num_cells =
                     2 * (sqrt(std::pow(cone.radius, 2) - (x*occ_grid_cell_size)));
@@ -258,5 +258,44 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
     }
 
     return occ_grid;
+}
+
+void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::Point2D point, double inflation_radius) {
+    // This function returns the `y` value (in # of cells) of the inflation circle for a given
+    // `x` value (also in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
+    auto inflationCircle = [](int x) {
+        // Calculate `y` as a floating point distance
+        double y = std::sqrt(std::pow(inflation_radius,2) - std::pow(x,2));
+        // Return the equivalent number of cells
+        return (int)std::ceil(y / occ_grid_cell_size);
+    };
+
+    // Figure out how many cells the inflation radius corresponds to
+    auto inflation_radius_num_of_cells = (int)std::ceil(inflation_radius / occ_grid_cell_size);
+
+    // Find the closest cell to the given point
+    // Note: this cell may not be on the graph if the point isn't, but we catch
+    //       this case by checking that a given cell is on the graph before setting
+    //       it in the `for` loops below
+    auto center_cell_x = (int)std::floor(point.x() / occ_grid_cell_size);
+    auto center_cell_y = (int)std::floor(point.y() / occ_grid_cell_size);
+
+    // Iterate over the area this point is to be inflated to
+    int min_x = center_cell_x - inflation_radius_num_of_cells;
+    int max_x = center_cell_x + inflation_radius_num_of_cells;
+    for (int x = min_x; x <= max_x; x++){
+        int max_y = center_cell_y + inflationCircle(center_cell_x - x);
+        int min_y = -max_y;
+        for (int y = min_y; y <= max_y; y++){
+            // Check that (x,y) is actually on the grid
+            if (y > occ_grid.info.origin.position.y &&
+                    y < occ_grid.info.origin.position.y + occ_grid.info.height &&
+                    x > occ_grid.info.origin.position.x &&
+                    x < occ_grid.info.origin.position.x + occ_grid.info.width) {
+                // If (x,y) is on the grid, mark it as occupied
+                occ_grid.data[y * occ_grid.info.width + x] = 100;
+            }
+        }
+    }
 }
 

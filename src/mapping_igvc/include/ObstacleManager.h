@@ -115,7 +115,9 @@ public:
 
     // TODO: Test me
     /**
-     * Inflates the given point (`point`) in `occ_grid` in a circle with `radius`
+     * Inflates the given point (`point`) in `occ_grid` in a circle with `inflation_radius`
+     *
+     * This will set all grid cells within `inflation_radius` of `point` to 100
      * @param occ_grid
      * @param point
      * @param inflation_radius
