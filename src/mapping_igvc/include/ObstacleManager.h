@@ -64,7 +64,21 @@ public:
     ObstacleManager() = delete;
 
     /**
+     * Creates an ObstacleManager
+     *
+     * @param cone_merging_tolerance the minimum distance between the center of
+     * two cones for them to be considered different from each other
+     * (and so not merged)
+     * @param line_merging_tolerance the minimum distance (measured at the
+     * closest point) for two lines to be considered different
+     * (and so not merged)
+     */
+    explicit ObstacleManager(double cone_merging_tolerance, double line_merging_tolerance):
+        ObstacleManager(cone_merging_tolerance, line_merging_tolerance, 0, 0.1) {};
+
+    /**
      * Creates a ObstacleManager
+     *
      * @param cone_merging_tolerance the minimum distance between the center of
      * two cones for them to be considered different from each other
      * (and so not merged)
@@ -122,7 +136,7 @@ public:
      * @param point
      * @param inflation_radius
      */
-    void inflatePoint(nav_msgs::OccupancyGrid& occ_grid, sb_geom::Point2D point, double inflation_radius);
+    static void inflatePoint(nav_msgs::OccupancyGrid& occ_grid, sb_geom::Point2D point, double inflation_radius);
 
 private:
 

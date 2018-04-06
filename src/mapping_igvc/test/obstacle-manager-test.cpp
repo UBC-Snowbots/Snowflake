@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 9, 2018
- * Description: TODO
+ * Description: Tests for the `ObstacleManager` class
  */
 
 // Snowbots Includes
@@ -10,6 +10,7 @@
 
 // GTest Includes
 #include <gtest/gtest.h>
+#include <tf/transform_datatypes.h>
 
 using namespace sb_geom;
 
@@ -24,6 +25,35 @@ protected:
     }
 
     ObstacleManager obstacle_manager_with_one_cone;
+
+    /**
+     * Generates an empty Occupancy Grid
+     *
+     * @param width the width of the grid
+     * @param height the height of the height
+     * @param origin_x the x coordinate of the origin
+     * @param origin_y the y coordinate of the origin
+     * @param origin_rot the rotation of the origin (which rotates the entire graph
+     * @param resolution the length/width of each cell in the grid
+     * @return
+     */
+    nav_msgs::OccupancyGrid generateEmptyOccGrid(int width, int height, double origin_x,
+                                                 double origin_y, double origin_rot, double resolution){
+        nav_msgs::OccupancyGrid occ_grid;
+        occ_grid.info.resolution = resolution;
+
+        occ_grid.info.width = width;
+        occ_grid.info.height = height;
+
+        occ_grid.info.origin.position.x = origin_x;
+        occ_grid.info.origin.position.y = origin_y;
+        occ_grid.info.origin.orientation = tf::createQuaternionMsgFromYaw(origin_rot);
+
+        occ_grid.data.reserve(occ_grid.info.width * occ_grid.info.height);
+        std::fill(occ_grid.data.begin(), occ_grid.data.end(), 0);
+
+        return occ_grid;
+    }
 };
 
 TEST_F(ObstacleManagerTest, add_single_cone){
@@ -284,7 +314,7 @@ TEST_F(ObstacleManagerTest, add_variety_of_overlapping_and_not_overlapping_lines
 
 // Test adding a line to an obstacle manager with lots of known lines
 // (but the new line is close to only one)
-TEST_F(ObstacleManagerTest, test_adding_single_line_to_lots_of_lines){
+TEST_F(ObstacleManagerTest, adding_single_line_to_lots_of_lines){
     ObstacleManager obstacle_manager(1,1);
 
     // A bunch of lines outside merging tolerance of each other
@@ -319,6 +349,45 @@ TEST_F(ObstacleManagerTest, test_adding_single_line_to_lots_of_lines){
     Spline expected_merged_line({{5,5}, {10,10}, {10,10.2}, {15,15}});
 
     EXPECT_TRUE((std::find(curr_lines.begin(), curr_lines.end(), expected_merged_line) != curr_lines.end()));
+}
+
+// Test inflating a single point where the inflation radius does not extend beyound the edge
+// of the occupancy grid
+TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_within_occ_grid){
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 20, 0, 0, 0, 1);
+
+    ObstacleManager::inflatePoint(occ_grid, Point2D(10,10), 1);
+
+    // all the cells we expect to be marked as "occupied" in pairs: (x,y)
+    std::vector<std::pair<int,int>> expected_occupied_cells = {
+            std::make_pair(9,9),
+            std::make_pair(9,10),
+            std::make_pair(10,9),
+            std::make_pair(10,10),
+            std::make_pair(10,11),
+            std::make_pair(11,10),
+            std::make_pair(11,11),
+    };
+
+    // Figure out the extents of the graph
+    int x_min = occ_grid.info.origin.position.x;
+    int y_min = occ_grid.info.origin.position.y;
+    int x_max = occ_grid.info.origin.position.x + occ_grid.info.width;
+    int y_max = occ_grid.info.origin.position.y + occ_grid.info.height;
+
+    // Check that all the cells are set correctly
+    for (int x = 0; x < occ_grid.info.width; x++){
+        for (int y = 0; y < occ_grid.info.height; y++){
+            // Check if this is one of the inflated cells
+            if (std::find(expected_occupied_cells.begin(),
+                          expected_occupied_cells.end(), std::make_pair(x,y))
+                != expected_occupied_cells.end()) {
+                EXPECT_EQ(100, (int)occ_grid.data[y * occ_grid.info.width + x]);
+            } else {
+                EXPECT_EQ(0, (int)occ_grid.data[y * occ_grid.info.width + x]);
+            }
+        }
+    }
 }
 
 

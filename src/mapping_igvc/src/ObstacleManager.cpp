@@ -15,6 +15,7 @@
 
 // ROS Includes
 #include <std_msgs/Int8.h>
+#include <tf/transform_datatypes.h>
 
 using namespace sb_geom;
 
@@ -214,22 +215,22 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
     // these will define the extents of the generate occupancy grid
     Point2D point_max_x = *std::max_element(occupied_points.begin(), occupied_points.end(),
                                     [&](Point2D p1, Point2D p2){
-                                            return p1.x > p2.x;
+                                            return p1.x() > p2.x();
                                         });
     double max_x = point_max_x.x();
     Point2D point_max_y = *std::max_element(occupied_points.begin(), occupied_points.end(),
                                             [&](Point2D p1, Point2D p2){
-                                                return p1.y > p2.y;
+                                                return p1.y() > p2.y();
                                             });
     double max_y = point_max_y.y();
     Point2D point_min_x = *std::min_element(occupied_points.begin(), occupied_points.end(),
                                             [&](Point2D p1, Point2D p2){
-                                                return p1.x > p2.x;
+                                                return p1.x() > p2.x();
                                             });
     double min_x = point_min_x.x();
     Point2D point_min_y = *std::min_element(occupied_points.begin(), occupied_points.end(),
                                             [&](Point2D p1, Point2D p2){
-                                                return p1.y > p2.y;
+                                                return p1.y() > p2.y();
                                             });
     double min_y = point_min_y.y();
 
@@ -250,9 +251,12 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
     occ_grid.info.origin.position.x = min_x;
     occ_grid.info.origin.position.y = min_y;
 
-    // Populate the occupancy grid
-    // TODO: If this is slow, we may want to more intelligently inflate lines and cones
+    // Populate the occupancy grid with all 0 initially (unoccupied)
     occ_grid.data.reserve(occ_grid.info.width * occ_grid.info.height);
+    std::fill(occ_grid.data.begin(), occ_grid.data.end(), 0);
+
+    // Inflate the obstacles (and thus mark sections of the grid as occupied)
+    // TODO: If this is slow, we may want to more intelligently inflate lines and cones
     for (auto& point: occupied_points){
         inflatePoint(occ_grid, point, obstacle_inflation_buffer);
     }
@@ -263,22 +267,23 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::Point2D point, double inflation_radius) {
     // This function returns the `y` value (in # of cells) of the inflation circle for a given
     // `x` value (also in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
-    auto inflationCircle = [](int x) {
+    auto inflationCircle = [&](int x) {
         // Calculate `y` as a floating point distance
         double y = std::sqrt(std::pow(inflation_radius,2) - std::pow(x,2));
         // Return the equivalent number of cells
-        return (int)std::ceil(y / occ_grid_cell_size);
+        return (int)std::ceil(y / occ_grid.info.resolution);
     };
 
     // Figure out how many cells the inflation radius corresponds to
-    auto inflation_radius_num_of_cells = (int)std::ceil(inflation_radius / occ_grid_cell_size);
+    auto inflation_radius_num_of_cells = (int)std::ceil(inflation_radius / occ_grid.info.resolution);
 
     // Find the closest cell to the given point
     // Note: this cell may not be on the graph if the point isn't, but we catch
     //       this case by checking that a given cell is on the graph before setting
     //       it in the `for` loops below
-    auto center_cell_x = (int)std::floor(point.x() / occ_grid_cell_size);
-    auto center_cell_y = (int)std::floor(point.y() / occ_grid_cell_size);
+    double graph_rotation = tf::getYaw(occ_grid.info.origin.orientation);
+    auto center_cell_x = (int)std::floor(point.x() / occ_grid.info.resolution * cos(graph_rotation));
+    auto center_cell_y = (int)std::floor(point.y() / occ_grid.info.resolution * sin(graph_rotation));
 
     // Iterate over the area this point is to be inflated to
     int min_x = center_cell_x - inflation_radius_num_of_cells;
@@ -293,7 +298,7 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
                     x > occ_grid.info.origin.position.x &&
                     x < occ_grid.info.origin.position.x + occ_grid.info.width) {
                 // If (x,y) is on the grid, mark it as occupied
-                occ_grid.data[y * occ_grid.info.width + x] = 100;
+                occ_grid.data[y * occ_grid.info.width + x] = (signed char)100;
             }
         }
     }
