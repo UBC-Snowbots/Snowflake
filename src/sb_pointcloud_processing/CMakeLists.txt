@@ -89,7 +89,6 @@ target_link_libraries(line_extractor_node
     ${catkin_LIBRARIES}
     ${PCL_COMMON_LIBRARIES}
     ${PCL_IO_LIBRARIES}
-    gomp
 )
 add_dependencies(line_extractor_node
     ${mapping_igvc_EXPORTED_TARGETS}
