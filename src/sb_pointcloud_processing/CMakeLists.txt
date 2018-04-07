@@ -53,8 +53,11 @@ add_executable(line_extractor_node
 
 add_executable(igvc_visualizer 
   src/igvc_visualizer.cpp 
-  src/IGVCVisualizerNode.cpp 
-  include/IGVCVisualizerNode.h)
+  src/IGVCVisualizerNode.cpp
+  src/ColourspaceConverter.cpp
+  include/IGVCVisualizerNode.h
+  include/ColourspaceConverter.h
+  )
 
 
 add_library(sb_pointcloud_processing

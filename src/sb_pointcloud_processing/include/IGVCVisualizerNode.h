@@ -6,6 +6,7 @@
 #define SB_POINTCLOUD_PROCESSING_IGVCVISUALIZERNODE_H
 
 #include <iostream>
+#include <cstdlib>
 
 // Pointcloud
 #include <pcl/common/common_headers.h>
@@ -13,11 +14,15 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl_ros/filters/filter.h>
 #include <pcl/point_types.h>
+#include <pcl/filters/filter.h>
 
 // ROS
 #include <nodelet/nodelet.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+
+// Colour Space Conversions
+#include "ColourspaceConverter.h"
 
 class IGVCVisualizerNode {
 public:
@@ -49,7 +54,8 @@ private:
 
     void updateVisualizer(const ros::TimerEvent& event);
 
-    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+    static void updateFilterParams(float h, float s, float v);
+    static void setParameter(std::string node_name, std::string param_name, float val);
 
     ros::Subscriber image_sub;
     ros::Timer timer;
