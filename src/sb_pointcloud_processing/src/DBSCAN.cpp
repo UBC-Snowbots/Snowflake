@@ -82,9 +82,12 @@ void DBSCAN::expand(unsigned int center_index,
 void DBSCAN::findNeighbors() {
     this->_neighbors = new vector<unsigned int>[this->_pcl.size()];
 
-//    Run the following loops in parallel if the size of the point cloud is bigger than
-//    this->_sequential_cut_off. If there aren't enough points in the point cloud, then
-//    the overhead in creating multiple threads can overpower time gained from multi threading.
+//    Run the following loops in parallel if the size of the point cloud is
+//    bigger than
+//    this->_sequential_cut_off. If there aren't enough points in the point
+//    cloud, then
+//    the overhead in creating multiple threads can overpower time gained from
+//    multi threading.
 #pragma omp parallel for if (this->_pcl.size() > this->_sequential_cut_off)
     for (unsigned int i = 0; i < this->_pcl.size(); i++) {
         vector<unsigned int> neighbors;
