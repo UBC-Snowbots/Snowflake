@@ -1,0 +1,22 @@
+# The radius of the wheels
+wheel_radius: 0.13
+
+# The distance between the wheels
+wheelbase_length: 0.66
+
+# The number of ticks for a single rotation of a wheel
+# This will depend on both the number of ticks the encoder reads 
+# and the gear ratio between the encoders and the wheels
+ticks_per_rotation: 3600
+
+# If set to `true` this node assumes that *positive* encoder
+# ticks mean the wheel is moving *forward*. If the encoders are 
+# mirrored, it is likely one of them will need to be reversed
+reverse_left_encoder: false
+reverse_right_encoder: true
+
+# The variance of the left and right encoders.
+# TODO: This could use a more comprehensive comment about what variance is and how to determine it 
+left_encoder_variance: 0.1
+right_encoder_variance: 0.1
+

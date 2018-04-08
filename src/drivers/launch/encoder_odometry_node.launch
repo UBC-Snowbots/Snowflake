@@ -3,14 +3,31 @@
 
     <!-- Start the Encoder to Odometry Node -->
     <node name="encoder_odometry_node" pkg="drivers" type="encoder_odometry_node" output="screen" >
+        <!-- 
+            Encoder Ticks should be published as a JointState massage,
+            this defines what names in the JointState correspond to the left 
+            and right encoders
+        -->
         <rosparam param="left_encoder_joint_name"> "left_encoder" </rosparam>
         <rosparam param="right_encoder_joint_name"> "right_encoder" </rosparam>
-        <rosparam param="reverse_left_encoder"> false </rosparam>
-        <rosparam param="reverse_right_encoder"> true </rosparam>
-        <rosparam param="wheel_radius"> 0.13 </rosparam>
-        <rosparam param="wheelbase_length"> 0.66 </rosparam>
-        <rosparam param="ticks_per_rotation"> 3600 </rosparam>
+
+        <!-- 
+            Number of times per second to generate a new Odometry message.
+            Higher values are not neccesarily better, as enough time should 
+            be allowed between Odometry estimates so that we are estimating
+            a new state based on several encoder readings
+        -->
         <rosparam param="odom_msg_refresh_rate"> 10 </rosparam>
+
+        <!-- The frame the Odometry messages will be generated in -->
+        <rosparam param="odom_frame"> "encoder" </rosparam>
+
+        <!-- 
+            Load the physical parameters that define the physical robot
+            see examples in the `config` folder.
+        -->
+        <rosparam command="load" 
+            file="$(find drivers)/launch/config/test_cart.yaml" />
     </node>
 
 </launch>
