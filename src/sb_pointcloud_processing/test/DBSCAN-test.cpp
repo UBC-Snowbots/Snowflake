@@ -194,7 +194,7 @@ TEST(DBSCAN, TestClusterTwoLongHorizontalLines) {
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
     float x_min                = -10;
-    float x_max                = 489;
+    float x_max                = 9989;
     float x_delta              = 1;
     vector<float> coefficients = {3};
     LineExtractor::TestUtils::LineArgs args(
