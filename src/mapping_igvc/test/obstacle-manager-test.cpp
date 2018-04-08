@@ -428,7 +428,7 @@ TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_2_within_occ_gri
 // Test inflating a single point by 1 where the inflation radius extends beyound the edge
 // of the occupancy grid
 TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_1_partly_outside_occ_grid){
-    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(10, 20, 0, 0, 0, 1);
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 20, 0, 0, 0, 1);
 
     ObstacleManager::inflatePoint(occ_grid, Point2D(10,10), 1);
 
@@ -441,6 +441,17 @@ TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_1_partly_outside
     };
 
     checkOccupiedCells(occ_grid, expected_occupied_cells);
+}
+
+// Test inflating a point on a rotated and offset grid
+TEST_F(ObstacleManagerTest, inflate_single_point_offset_and_rotated_grid){
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(10, 20, 2, 3, -(M_PI/6), 1);
+
+    ObstacleManager::inflatePoint(occ_grid, Point2D(10,5), 1);
+
+    // TODO: YOU ARE HERE - FINISH ME!!
+    // center point after being translated and rotated is:
+    // (5.92820323027551, 5.732050807568877)
 }
 
 
