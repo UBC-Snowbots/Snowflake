@@ -15,19 +15,19 @@ MyClass::MyClass(int argc, char **argv, std::string node_name) {
     ros::NodeHandle private_nh("~");
 
     // Obtains character from the parameter server (or launch file), sets '!' as default
-    std::string parameter_name = "character";
+    std::string parameter_name    = "character";
     std::string default_character = "!";
     SB_getParam(private_nh, parameter_name, suffix, default_character);
 
-
     // Setup Subscriber(s)
     std::string topic_to_subscribe_to = "subscribe_topic";
-    int queue_size = 10;
-    my_subscriber = nh.subscribe(topic_to_subscribe_to, queue_size, &MyClass::subscriberCallBack, this);
+    int queue_size                    = 10;
+    my_subscriber                     = nh.subscribe(
+    topic_to_subscribe_to, queue_size, &MyClass::subscriberCallBack, this);
 
     // Setup Publisher(s)
     std::string topic = private_nh.resolveName("publish_topic");
-    queue_size = 1;
+    queue_size        = 1;
     my_publisher = private_nh.advertise<std_msgs::String>(topic, queue_size);
 }
 
