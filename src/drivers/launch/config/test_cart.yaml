@@ -1,3 +1,5 @@
+# This file defines physical parameters for the test cart (built for 2017-2018)
+
 # The radius of the wheels
 wheel_radius: 0.13
 
