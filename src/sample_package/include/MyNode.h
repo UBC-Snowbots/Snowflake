@@ -9,9 +9,14 @@
 #ifndef SAMPLE_PACKAGE_MYNODE_H
 #define SAMPLE_PACKAGE_MYNODE_H
 
+// STD Includes
 #include <iostream>
+
+// ROS Includes
 #include <std_msgs/String.h>
 #include <ros/ros.h>
+
+// Snowbots Includes
 #include <sb_utils.h>
 
 class MyClass {
