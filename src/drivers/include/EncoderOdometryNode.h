@@ -93,6 +93,10 @@ private:
     std::string left_encoder_joint_name;
     std::string right_encoder_joint_name;
 
+    // Whether or not to reverse the left/right encoder values
+    bool reverse_left_encoder;
+    bool reverse_right_encoder;
+
     // The current number of encoder ticks for the left and right encoders
     std::experimental::optional<int> left_encoder_num_ticks_curr;
     std::experimental::optional<int> right_encoder_num_ticks_curr;

@@ -3,12 +3,14 @@
 
     <!-- Start the Encoder to Odometry Node -->
     <node name="encoder_odometry_node" pkg="drivers" type="encoder_odometry_node" output="screen" >
-        <param name="left_encoder_joint_name" value="left_encoder" />
-        <param name="right_encoder_joint_name" value="right_encoder" />
-        <param name="wheel_radius" value="0.1" />
-        <param name="wheelbase_length" value="0.5" />
-        <param name="ticks_per_rotation" value="1000" />
-        <param name="odom_msg_refresh_rate" value="5" />
+        <rosparam param="left_encoder_joint_name"> "left_encoder" </rosparam>
+        <rosparam param="right_encoder_joint_name"> "right_encoder" </rosparam>
+        <rosparam param="reverse_left_encoder"> false </rosparam>
+        <rosparam param="reverse_right_encoder"> true </rosparam>
+        <rosparam param="wheel_radius"> 0.13 </rosparam>
+        <rosparam param="wheelbase_length"> 0.66 </rosparam>
+        <rosparam param="ticks_per_rotation"> 3600 </rosparam>
+        <rosparam param="odom_msg_refresh_rate"> 10 </rosparam>
     </node>
 
 </launch>

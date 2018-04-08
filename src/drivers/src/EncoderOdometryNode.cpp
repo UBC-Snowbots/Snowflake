@@ -16,10 +16,10 @@
 
 EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node_name):
     // Set current encoder ticks to "empty" as we haven't received any yet
-    left_encoder_num_ticks_curr({}),
-    right_encoder_num_ticks_curr({}),
-    left_encoder_num_ticks_prev({}),
-    right_encoder_num_ticks_prev({}),
+    left_encoder_num_ticks_curr(std::experimental::optional<int>{}),
+    right_encoder_num_ticks_curr(std::experimental::optional<int>{}),
+    left_encoder_num_ticks_prev(std::experimental::optional<int>{}),
+    right_encoder_num_ticks_prev(std::experimental::optional<int>{}),
     last_estimate(generateAllZeroOdometryMessage())
 {
     // Setup NodeHandles
@@ -30,6 +30,8 @@ EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node
     // Get Params
     SB_getParam(private_nh, "left_encoder_joint_name", left_encoder_joint_name, std::string("left_encoder"));
     SB_getParam(private_nh, "right_encoder_joint_name", right_encoder_joint_name, std::string("right_encoder"));
+    SB_getParam(private_nh, "reverse_left_encoder", reverse_left_encoder, false);
+    SB_getParam(private_nh, "reverse_right_encoder", reverse_right_encoder, false);
     SB_getParam(private_nh, "wheel_radius", wheel_radius, 0.1);
     SB_getParam(private_nh, "wheelbase_length", wheelbase_length, 0.7);
     SB_getParam(private_nh, "ticks_per_rotation", ticks_per_rotation, 1024);
@@ -46,7 +48,6 @@ EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node
     std::string odom_estimate_topic_name = nh.resolveName("/encoders/odom");
     odom_estimate_publisher = nh.advertise<nav_msgs::Odometry>(odom_estimate_topic_name, 10);
 
-    // Calculate our covariance
 }
 
 void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::ConstPtr joint_state_ptr) {
@@ -64,6 +65,9 @@ void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::Con
                 ROS_WARN("No \"position\" field for left encoder joint name found, so can't get number of ticks");
             } else {
                 left_encoder_num_ticks_curr = (int)joint_state.position[i];
+                if (reverse_left_encoder){
+                    *left_encoder_num_ticks_curr *= -1;
+                }
             }
         } else if (joint_state.name[i] == right_encoder_joint_name){
             // We expect that there will be a value in the `position` array
@@ -72,6 +76,9 @@ void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::Con
                 ROS_WARN("No \"position\" field for right encoder joint name found, so can't get number of ticks");
             } else {
                 right_encoder_num_ticks_curr = (int)joint_state.position[i];
+                if (reverse_right_encoder){
+                    *right_encoder_num_ticks_curr *= -1;
+                }
             }
         }
     }
@@ -80,10 +87,10 @@ void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::Con
 
 void EncoderOdometryNode::resetCallback(std_msgs::Empty::ConstPtr empty_msg) {
     // Reset encoder tick counts to "empty"
-    left_encoder_num_ticks_curr = {};
-    right_encoder_num_ticks_curr = {};
-    left_encoder_num_ticks_prev = {};
-    right_encoder_num_ticks_prev = {};
+    left_encoder_num_ticks_curr = std::experimental::optional<int>{};
+    right_encoder_num_ticks_curr = std::experimental::optional<int>{};
+    left_encoder_num_ticks_prev = std::experimental::optional<int>{};
+    right_encoder_num_ticks_prev = std::experimental::optional<int>{};
 
     // Reset our last estimate
     last_estimate = generateAllZeroOdometryMessage();
@@ -105,6 +112,8 @@ void EncoderOdometryNode::publishEstimatedOdomMsg() {
         // next call to this function
         left_encoder_num_ticks_prev = left_encoder_num_ticks_curr;
         right_encoder_num_ticks_prev = right_encoder_num_ticks_curr;
+
+        last_estimate.header.stamp = ros::Time::now();
 
         return;
     }
