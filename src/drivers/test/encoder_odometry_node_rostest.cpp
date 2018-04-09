@@ -32,11 +32,6 @@ protected:
             ticks_per_rotation(1000),
             wheelbase(0.5)
             {
-        // TODO: Delete me
-        //test_publisher = nh_.advertise<std_msgs::String>("subscribe_topic", 1);
-        //test_subscriber = nh_.subscribe("/my_node/publish_topic", 1, &EncoderOdometryNodeTest::odomMsgCallback, this);
-        // The publisher for our JointState message containing the encoder ticks
-
         // Setup Publishers and Subscribers
         encoder_joint_state_publisher = nh.advertise<sensor_msgs::JointState>("/encoders/joint_states", 1);
         // Note: We seem to need to set the queue size to be really large here in order to get the most recent
@@ -164,7 +159,7 @@ TEST_F(EncoderOdometryNodeTest, driving_straight_forward){
     ros::spinOnce();
 
     // We should now be ~62.83 cm ahead (wheel radius is 10cm)
-    EXPECT_NEAR(0.6283, odom_msg.pose.pose.position.x, 0.03);
+    EXPECT_NEAR(0.6283, odom_msg.pose.pose.position.x, 0.04);
     EXPECT_NEAR(0, odom_msg.pose.pose.position.y, 0.01);
     EXPECT_NEAR(0, tf::getYaw(odom_msg.pose.pose.orientation), 0.01);
 }
@@ -182,7 +177,7 @@ TEST_F(EncoderOdometryNodeTest, driving_straight_backwards){
     ros::spinOnce();
 
     // We should now be ~62.83 cm backwards (wheel radius is 10cm)
-    EXPECT_NEAR(-0.6283, odom_msg.pose.pose.position.x, 0.03);
+    EXPECT_NEAR(-0.6283, odom_msg.pose.pose.position.x, 0.04);
     EXPECT_NEAR(0, odom_msg.pose.pose.position.y, 0.01);
     EXPECT_NEAR(0, tf::getYaw(odom_msg.pose.pose.orientation), 0.01);
 }
@@ -215,7 +210,7 @@ TEST_F(EncoderOdometryNodeTest, turn_90_right){
 
     EXPECT_NEAR(2.25, odom_msg.pose.pose.position.x, 0.1);
     EXPECT_NEAR(-2.25, odom_msg.pose.pose.position.y, 0.1);
-    EXPECT_NEAR(-(M_PI/2), tf::getYaw(odom_msg.pose.pose.orientation), 0.05);
+    EXPECT_NEAR(-(M_PI/2), tf::getYaw(odom_msg.pose.pose.orientation), 0.06);
 }
 
 

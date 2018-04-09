@@ -39,15 +39,27 @@ EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node
     // TODO: Figure out actually reasonable variances
     SB_getParam(private_nh, "left_encoder_variance", left_encoder_variance, 0.1);
     SB_getParam(private_nh, "right_encoder_variance", right_encoder_variance, 0.1);
+    double odometry_estimate_refresh_rate;
+    SB_getParam(private_nh, "odom_msg_refresh_rate", odometry_estimate_refresh_rate, 10.0);
 
     // Setup Subscriber(s)
     joint_state_subscriber = nh.subscribe(std::string("/encoders/joint_states"), 10, &EncoderOdometryNode::encoderJointStateCallback, this);
     reset_subscriber = private_nh.subscribe(std::string("reset"), 1, &EncoderOdometryNode::resetCallback, this);
 
     // Setup Publisher(s)
+    // Note: We publish the encoder odometry on the global namespace under the
+    // `/encoders` namespace so the odometry is neatly associated with
+    // the encoders
     std::string odom_estimate_topic_name = nh.resolveName("/encoders/odom");
     odom_estimate_publisher = nh.advertise<nav_msgs::Odometry>(odom_estimate_topic_name, 10);
 
+    // Setup the timer that will publish our Odometry estimates at the set frequency
+    // NOTE: This acts similairly to a callback, expect that instead of being
+    // triggered when we receive a message, it is triggered after a set period
+    // of time
+    ros::Duration odom_estimate_period(1 / odometry_estimate_refresh_rate);
+    odom_estimate_timer = private_nh.createTimer(odom_estimate_period,
+                                                 &EncoderOdometryNode::publishEstimatedOdomMsg, this);
 }
 
 void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::ConstPtr joint_state_ptr) {
@@ -96,7 +108,8 @@ void EncoderOdometryNode::resetCallback(std_msgs::Empty::ConstPtr empty_msg) {
     last_estimate = generateAllZeroOdometryMessage();
 }
 
-void EncoderOdometryNode::publishEstimatedOdomMsg() {
+void
+EncoderOdometryNode::publishEstimatedOdomMsg(const ros::TimerEvent &timer_event) {
     // Check to make sure that we have some counts for both the left and right
     // encoders
     if (!left_encoder_num_ticks_curr || !right_encoder_num_ticks_curr){

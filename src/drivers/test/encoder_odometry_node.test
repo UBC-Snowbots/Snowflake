@@ -3,8 +3,7 @@
 <launch>
 
     <!-- Start the Encoder to Odometry Node -->
-    <!-- TODO: THis should *not* output to "screen" -->
-    <node name="encoder_odometry_node" pkg="drivers" type="encoder_odometry_node" output="screen" >
+    <node name="encoder_odometry_node" pkg="drivers" type="encoder_odometry_node">
         <param name="left_encoder_joint_name" value="left_encoder" />
         <param name="right_encoder_joint_name" value="right_encoder" />
         <param name="wheel_radius" value="0.1" />

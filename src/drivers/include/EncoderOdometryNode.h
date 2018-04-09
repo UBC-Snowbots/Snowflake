@@ -32,7 +32,7 @@ public:
      * found here:
      * https://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/16311/www/s07/labs/NXTLabs/Lab%203.html
      */
-    void publishEstimatedOdomMsg();
+    void publishEstimatedOdomMsg(const ros::TimerEvent &timer_event);
 
     /**
      * Calculate the Covariance for the Pose component of an Odometry message based on encoder variances
@@ -88,6 +88,12 @@ private:
 
     // The publisher that publishes our Odometry estimates
     ros::Publisher odom_estimate_publisher;
+
+    // The timer that we use to publish our Odometry estimates at a set frequency
+    // We use this because we want to make velocity predictions based off
+    // several sets of encoder readings (to allow for averaging and reduce
+    // estimation error)
+    ros::Timer odom_estimate_timer;
 
     // The joint names representing the left and right encoders
     std::string left_encoder_joint_name;
