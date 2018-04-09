@@ -428,7 +428,7 @@ TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_2_within_occ_gri
 // Test inflating a single point by 1 where the inflation radius extends beyound the edge
 // of the occupancy grid
 TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_1_partly_outside_occ_grid){
-    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 20, 0, 0, 0, 1);
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 10, 0, 0, 0, 1);
 
     ObstacleManager::inflatePoint(occ_grid, Point2D(10,10), 1);
 
@@ -445,13 +445,38 @@ TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_1_partly_outside
 
 // Test inflating a point on a rotated and offset grid
 TEST_F(ObstacleManagerTest, inflate_single_point_offset_and_rotated_grid){
-    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(10, 20, 2, 3, -(M_PI/6), 1);
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(10, 20, 2, 3, M_PI/6, 1);
 
     ObstacleManager::inflatePoint(occ_grid, Point2D(10,5), 1);
 
-    // TODO: YOU ARE HERE - FINISH ME!!
-    // center point after being translated and rotated is:
+    // The point (after being translated and rotated into the frame of reference
+    // of the occupancy grid) is:
     // (5.92820323027551, 5.732050807568877)
+    // We expect that this will be rounded to the closest cell: (6,6)
+
+    std::vector<std::pair<int,int>> expected_occupied_cells = {
+            std::make_pair(5,6),
+            std::make_pair(6,5),
+            std::make_pair(6,6),
+            std::make_pair(6,7),
+            std::make_pair(7,6),
+    };
+
+    checkOccupiedCells(occ_grid, expected_occupied_cells);
+}
+
+// TODO: Test point inflation on grid with scale other then 1
+// Test inflating a point on a grid with a floating point scale
+TEST_F(ObstacleManagerTest, inflate_single_point_on_grid_with_floating_point_scale){
+    double occ_grid_scale = 0.385;
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 20, 0, 0, 0, occ_grid_scale);
+
+    // Inflate a point by the size of a single cell
+    // (so it should inflate to directly adjacent cells)
+    ObstacleManager::inflatePoint(occ_grid, Point2D(2,2), occ_grid_scale);
+
+    // TODO: YOU ARE HERE - finish me
+    checkOccupiedCells(occ_grid, expected_occupied_cells);
 }
 
 
