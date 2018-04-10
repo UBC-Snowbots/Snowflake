@@ -2,9 +2,9 @@
 <!-- 
     This launch file is responsible for launching the entire localisation stack
 -->
-    
-    <!-- Translate NavSatFix Messages to Odometry Messages for the EKF -->
-    <include file="$(find localisation)/launch/gps_to_odom.launch"/>
+
+    <!-- Start all the sensors -->
+    <include file="$(find localisation)/launch/sensors.launch"/>
     
     <!--
         Start the EKF (Extended Kalman Filter) to translate all the sensor

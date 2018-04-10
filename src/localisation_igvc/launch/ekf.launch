@@ -23,8 +23,9 @@
         <!-- 3D Pose        | /vo      | nav_msgs/Odometry -->
         <param name="vo_used" value="false"/>
 
-        <remap from="gps" to="/gps_driver/odom" />
-        <remap from="imu_data" to="/imu" />
+        <remap from="/gps" to="/gps/odom" />
+        <remap from="/imu_data" to="/imu" />
+        <remap from="/odom" to="/encoders/odom" />
     </node>
 
 </launch>
