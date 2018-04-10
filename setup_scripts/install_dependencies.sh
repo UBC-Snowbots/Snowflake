@@ -1,5 +1,6 @@
 #!/bin/bash
 
+<<<<<<< HEAD
 <<<<<<< HEAD:setup_scripts/install_dependencies.sh
 #########################################################################
 # STOP: If the dependency you want to add is required for the project   #
@@ -9,12 +10,27 @@
 #       external packages or utilities                                  # 
 #########################################################################
 =======
+=======
+<<<<<<< HEAD:install_dependencies.sh
+>>>>>>> d31e49ad735e3af9590a92d05dc06ce63e9d8d1c
 #######################################################################
 # STOP: If the dependency you want to add is required for the project #
 #       to build, it should be added as a rosdep. This script should  #
 #       only contain other dependecies, like those required for gazebo#
 #######################################################################
+<<<<<<< HEAD
 >>>>>>> 0e4a72e1041e44de37ff50c0a0850392ee0a62f7:install_dependencies.sh
+=======
+=======
+#########################################################################
+# STOP: If the dependency you want to add is required for the project   #
+#       to build, it should be added as a rosdep (ie. a dependency      #
+#       specified in one of the packages `package.xml` files).          #
+#       This script should only contain other dependecies, like         #
+#       external packages or utilities                                  #
+#########################################################################
+>>>>>>> b9f7d59d3f99e19588842b499da18810dcaead06:setup_scripts/install_dependencies.sh
+>>>>>>> d31e49ad735e3af9590a92d05dc06ce63e9d8d1c
 
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -52,8 +68,13 @@ echo "Installing Project Dependent ROS packages."
 echo "================================================================"
 
 # Setup rosinstall
-mkdir -p extended_pkg
-rosinstall extended_pkg /opt/ros/kinetic .rosinstall
+# Setup directory for installing external pkgs
+mkdir -p external_pkgs
+# Telling rosinstall to install packages listed in .rosinstall into the external_pkgs directory
+# Also tells rosinstall where to link env variables to the ROS stack
+# This is all done in the process of merging .rosinstall files in the system; a functionality of rosinstall
+rosinstall external_pkgs /opt/ros/kinetic .rosinstall
+# Install from merged .rosinstall files
 rosinstall .
 
 echo "================================================================"
@@ -63,8 +84,8 @@ echo "================================================================"
 # Setup udev rules
 sudo cp extended_pkg/phidgets_api/share/udev/99-phidgets.rules /etc/udev/rules.d
 echo "Phidgets udev rules have been copied to /etc/udev/rules.d"
-# The reason the script isn't used is because stupid bash/sh doesn't know which directory it's in
-# The actual script that comes with phidget is under /usr/share/ros/phidgets_api/share/setup-udev.sh
+# Phidgets_api pkg does this, but it has to be run in right folder, since we are automating
+# we will manually do the copying ourselves
 
 echo "================================================================"
 echo "Finished Installing Utilities"

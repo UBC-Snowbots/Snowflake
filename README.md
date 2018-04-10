@@ -51,23 +51,31 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
 
 ### Zed Configuration
-- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) This repository already contains `zed_ros_wrapper` as a ~~submodule~~ standalone package in `/usr/share/ros/zed_ros_wrapper`(As of 2/25/2018 submodules have been migrated to rosinstall)
+- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) This repository already contains `zed_ros_wrapper` as a ~~submodule~~ standalone package in `external_pkgs/zed_ros_wrapper`(As of 2/25/2018 submodules have been migrated to rosinstall)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ### Nodelets Quick Guide
 See [here](nodelets.md)
 =======
+=======
+>>>>>>> d31e49ad735e3af9590a92d05dc06ce63e9d8d1c
 ### Rosinstall
 
-As of Feb 26,2018, Snowflake has migrated from git submodules to rosinstall files. Due to a conflict between .rosinstall and wstool, `rosinstall init .`. 
-This is due to the removal of the ros installation directory from the .rosinstall file as Travis CI uses wstool to generate a new set of .rosinstall during integration tests. 
-Therefore to correctly manually install dependent packages using rosinstall, run `rosinstall INSTALL_PATH PRE-EXISTING_ROS_DIR CUSTOM_ROSINSTALL_FILE` 
+To manually install dependent packages using rosinstall, run `rosinstall INSTALL_PATH PRE-EXISTING_ROS_DIR CUSTOM_ROSINSTALL_FILE` 
 i.e on most systems, it will be `rosinstall /usr/share/ros /opt/ros/kinetic .rosinstall` 
  
 Rostinstall is addressed and run in `install_dependencies.sh`, should there be any need to run manual, rosinstall should be run after all steps from installation and setup has been completed. 
 
+<<<<<<< HEAD
 >>>>>>> 0e4a72e1041e44de37ff50c0a0850392ee0a62f7
+=======
+=======
+### Nodelets Quick Guide
+See [here](nodelets.md)
+>>>>>>> b9f7d59d3f99e19588842b499da18810dcaead06
+>>>>>>> d31e49ad735e3af9590a92d05dc06ce63e9d8d1c
 
 ## New Members
 We've put together a seperate `README` file that should help to get you up and running. You can find it here: [README_NEWMEMBERS.md](README_NEWMEMBERS.md)
