@@ -3,3 +3,10 @@
 # IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
 # USE THE rosinstall TOOL INSTEAD.
 # IF YOU CHANGE IT, USE rosinstall FOR THE CHANGES TO TAKE EFFECT
+- git: {local-name: extended_pkg/phidgets_api, uri: 'https://github.com/ros-drivers-gbp/phidgets_drivers-release.git',
+    version: release/kinetic/phidgets_api/0.7.5-0}
+- git: {local-name: extended_pkg/sicktoolbox, uri: 'https://github.com/ros-drivers/sicktoolbox.git'}
+- git: {local-name: extended_pkg/sicktoolbox_wrapper, uri: 'https://github.com/ros-drivers/sicktoolbox_wrapper.git'}
+- git: {local-name: extended_pkg/zed-ros-wrapper, uri: 'https://github.com/UBC-Snowbots/zed-ros-wrapper.git'}
+- git: {local-name: extended_pkg/ros_arduino_bridge, uri: 'https://github.com/UBC-Snowbots/ros_arduino_bridge.git'}
+- git: {local-name: extended_pkg/nmea_navsat_driver, uri: 'https://github.com/UBC-Snowbots/nmea_navsat_driver.git'}
