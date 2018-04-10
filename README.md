@@ -8,6 +8,7 @@ UBC Snowbots Repository for competitions.
   - [Important Notes](#important-notes)
   - [Zed Configuration](#zed-configuration)
   - [Rosinstall](#rosinstall)
+  - [Nodelets](#nodelets-quick-guide)
 - [New Members](#new-members)
 - [Conventions](#conventions)
   - [Github](#github-conventions)
