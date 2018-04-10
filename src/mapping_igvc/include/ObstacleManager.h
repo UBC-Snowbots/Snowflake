@@ -127,9 +127,8 @@ public:
      */
     nav_msgs::OccupancyGrid generateOccupancyGrid();
 
-    // TODO: Test me
     /**
-     * Inflates the given point (`point`) in `occ_grid` in a circle with `inflation_radius`
+     * Inflates the given point (`point`) in `occ_grid` in a circle with radius: `inflation_radius`
      *
      * This will set all grid cells within `inflation_radius` of `point` to 100
      * @param occ_grid

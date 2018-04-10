@@ -274,7 +274,7 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
         // Calculate `y` as a floating point distance
         double y = std::sqrt(std::pow(inflation_radius_num_of_cells,2) - std::pow(x,2));
         // Return the equivalent number of cells
-        return (int)std::floor(y / occ_grid.info.resolution);
+        return (int)std::floor(y);
     };
 
     // Find the closest cell to the given point
@@ -288,14 +288,14 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
             point.x() - occ_grid.info.origin.position.x,
             point.y() - occ_grid.info.origin.position.y
     );
-    Point2D rotated_point(
+    Point2D translated_and_rotated_point(
             cos(graph_rotation) * translated_point.x() - sin(graph_rotation) * translated_point.y(),
             sin(graph_rotation) * translated_point.x() + cos(graph_rotation) * translated_point.y()
     );
 
     // Round the point to the nearest cell
-    auto center_cell_x = (int)std::round(rotated_point.x() / occ_grid.info.resolution);
-    auto center_cell_y = (int)std::round(rotated_point.y() / occ_grid.info.resolution);
+    auto center_cell_x = (int)std::round(translated_and_rotated_point.x() / occ_grid.info.resolution);
+    auto center_cell_y = (int)std::round(translated_and_rotated_point.y() / occ_grid.info.resolution);
 
     // Iterate over the area this point is to be inflated to
     int min_x = center_cell_x - inflation_radius_num_of_cells;

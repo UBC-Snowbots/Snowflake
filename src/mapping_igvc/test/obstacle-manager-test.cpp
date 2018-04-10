@@ -465,19 +465,43 @@ TEST_F(ObstacleManagerTest, inflate_single_point_offset_and_rotated_grid){
     checkOccupiedCells(occ_grid, expected_occupied_cells);
 }
 
-// TODO: Test point inflation on grid with scale other then 1
-// Test inflating a point on a grid with a floating point scale
+// Test inflating a point on a grid with a floating point scale not equal to 1
 TEST_F(ObstacleManagerTest, inflate_single_point_on_grid_with_floating_point_scale){
     double occ_grid_scale = 0.385;
     nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 20, 0, 0, 0, occ_grid_scale);
 
-    // Inflate a point by the size of a single cell
+    // Inflate a point by just below the size of a single cell
     // (so it should inflate to directly adjacent cells)
-    ObstacleManager::inflatePoint(occ_grid, Point2D(2,2), occ_grid_scale);
+    Point2D inflated_point(2,2);
+    ObstacleManager::inflatePoint(occ_grid, inflated_point, occ_grid_scale - 0.0001);
 
-    // TODO: YOU ARE HERE - finish me
+    // Calculate what the closest cell to the point we inflated is
+    int expected_center_cell_x = (int)std::round(inflated_point.x() / occ_grid_scale);
+    int expected_center_cell_y = (int)std::round(inflated_point.y() / occ_grid_scale);
+
+    std::vector<std::pair<int,int>> expected_occupied_cells = {
+            std::make_pair(expected_center_cell_x - 1, expected_center_cell_y),
+            std::make_pair(expected_center_cell_x, expected_center_cell_y-1),
+            std::make_pair(expected_center_cell_x, expected_center_cell_y),
+            std::make_pair(expected_center_cell_x, expected_center_cell_y+1),
+            std::make_pair(expected_center_cell_x + 1, expected_center_cell_y),
+    };
+
     checkOccupiedCells(occ_grid, expected_occupied_cells);
 }
+
+// Test generating an occupancy grid with a single cone
+TEST_F(ObstacleManagerTest, generate_occ_grid_with_single_cone){
+    ObstacleManager obstacle_manager(1, 1, 0.2, 0.1);
+
+    obstacle_manager.addObstacle(Cone(10, 13, 0.1));
+
+    nav_msgs::OccupancyGrid generated_occ_grid = obstacle_manager.generateOccupancyGrid();
+}
+
+// TODO: Test generating an occupancy grid with a single line
+
+// TODO: Test generating an occupancy grid with a line and a cone (maybe overlapping once inflated?)
 
 
 // TODO: Delete me, not a real test
