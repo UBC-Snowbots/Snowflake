@@ -1,27 +1,5 @@
 #!/bin/bash
 
-<<<<<<< HEAD
-<<<<<<< HEAD:setup_scripts/install_dependencies.sh
-#########################################################################
-# STOP: If the dependency you want to add is required for the project   #
-#       to build, it should be added as a rosdep (ie. a dependency      #
-#       specified in one of the packages `package.xml` files).          # 
-#       This script should only contain other dependecies, like         # 
-#       external packages or utilities                                  # 
-#########################################################################
-=======
-=======
-<<<<<<< HEAD:install_dependencies.sh
->>>>>>> d31e49ad735e3af9590a92d05dc06ce63e9d8d1c
-#######################################################################
-# STOP: If the dependency you want to add is required for the project #
-#       to build, it should be added as a rosdep. This script should  #
-#       only contain other dependecies, like those required for gazebo#
-#######################################################################
-<<<<<<< HEAD
->>>>>>> 0e4a72e1041e44de37ff50c0a0850392ee0a62f7:install_dependencies.sh
-=======
-=======
 #########################################################################
 # STOP: If the dependency you want to add is required for the project   #
 #       to build, it should be added as a rosdep (ie. a dependency      #
@@ -29,8 +7,6 @@
 #       This script should only contain other dependecies, like         #
 #       external packages or utilities                                  #
 #########################################################################
->>>>>>> b9f7d59d3f99e19588842b499da18810dcaead06:setup_scripts/install_dependencies.sh
->>>>>>> d31e49ad735e3af9590a92d05dc06ce63e9d8d1c
 
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
