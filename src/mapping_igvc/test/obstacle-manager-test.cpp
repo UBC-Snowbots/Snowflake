@@ -56,6 +56,39 @@ protected:
     }
 
     /**
+     * Represents if a given cell is occupied
+     *
+     * Used to allow better visual representations of expected occupancy grids
+     * `X` - occupied
+     * `_` - not occupied
+     */
+    enum OccupiedOrNot {
+        _, X
+    };
+    /**
+     * Checks that a given occupancy grid has the expected cells marked as "occupied"
+     *
+     * @param occ_grid the occupancy grid we're validating
+     * @param expected_grid the expected grid, where `true` means occupied
+     * (a value of 100 in the cell), and `false` means unoccupied
+     * (a value of 0 in the cell)
+     */
+    void checkOccupiedCells(nav_msgs::OccupancyGrid occ_grid,
+                            std::vector<std::vector<OccupiedOrNot >> expected_grid){
+        // (x,y) pairs representing cells we expect to be occupied
+        std::vector<std::pair<int,int>> expected_occupied_cells;
+        for (int y = 0; y < expected_grid.size(); y++){
+            for (int x = 0; x < expected_grid[y].size(); x++){
+                if (expected_grid[y][x] == X){
+                    expected_occupied_cells.emplace_back(std::make_pair(x,y));
+                }
+            }
+        }
+
+        checkOccupiedCells(occ_grid, expected_occupied_cells);
+    }
+
+    /**
      * Checks whether a given set of cells are occupied
      *
      * "occupied" is assumed to mean a value of 100 in the cell, all other cells are presumed
@@ -63,6 +96,7 @@ protected:
      *
      * @param occ_grid the occupancy grid to check for occupied and unoccupied cells
      * @param expected_occupied_cells the cells that we expect to be occupied
+     * (represented as (x,y) pairs)
      */
     void checkOccupiedCells(nav_msgs::OccupancyGrid occ_grid,
                             std::vector<std::pair<int,int>> expected_occupied_cells){
@@ -80,6 +114,19 @@ protected:
                 EXPECT_EQ(expected_cell_val, (int)occ_grid.data[y * occ_grid.info.width + x])
                                     << "Failed on cell: (" << x << "," << y << ")" << std::endl;
             }
+        }
+
+        // Check that every cell we expected to be occupied is within the
+        // bounds of the graph
+        for (auto& cell : expected_occupied_cells){
+            EXPECT_TRUE(
+                    cell.first > 0 &&
+                    cell.first < occ_grid.info.width &&
+                    cell.second > 0 &&
+                    cell.second < occ_grid.info.height
+            ) << "Cell: (" << cell.first << "," << cell.second
+              << ") not in graph bounds: (0,0)" << " to ("
+              << occ_grid.info.width << "," << occ_grid.info.height << ")";
         }
     }
 };
@@ -382,65 +429,83 @@ TEST_F(ObstacleManagerTest, adding_single_line_to_lots_of_lines){
 // Test inflating a single point by 1 where the inflation radius does not extend beyound the edge
 // of the occupancy grid
 TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_1_within_occ_grid){
-    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 20, 0, 0, 0, 1);
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(5, 5, 0, 0, 0, 1);
 
-    ObstacleManager::inflatePoint(occ_grid, Point2D(10,10), 1);
+    ObstacleManager::inflatePoint(occ_grid, Point2D(2,2), 1);
 
-    // all the cells we expect to be marked as "occupied" in pairs: (x,y)
-    std::vector<std::pair<int,int>> expected_occupied_cells = {
-            std::make_pair(9,10),
-            std::make_pair(10,9),
-            std::make_pair(10,10),
-            std::make_pair(10,11),
-            std::make_pair(11,10),
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {_,_,_,_,_},
+            {_,_,X,_,_},
+            {_,X,X,X,_},
+            {_,_,X,_,_},
+            {_,_,_,_,_},
     };
 
-    checkOccupiedCells(occ_grid, expected_occupied_cells);
+    checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 
 // Test inflating a single point by 2 where the inflation radius does not extend beyound the edge
 // of the occupancy grid
 TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_2_within_occ_grid){
-    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 20, 0, 0, 0, 1);
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(10, 10, 0, 0, 0, 1);
 
-    ObstacleManager::inflatePoint(occ_grid, Point2D(10,10), 2);
+    ObstacleManager::inflatePoint(occ_grid, Point2D(5,5), 2);
 
-    // all the cells we expect to be marked as "occupied" in pairs: (x,y)
-    std::vector<std::pair<int,int>> expected_occupied_cells = {
-            std::make_pair(8,10),
-            std::make_pair(9,9),
-            std::make_pair(9,10),
-            std::make_pair(9,11),
-            std::make_pair(10,8),
-            std::make_pair(10,9),
-            std::make_pair(10,10),
-            std::make_pair(10,11),
-            std::make_pair(10,12),
-            std::make_pair(11,9),
-            std::make_pair(11,10),
-            std::make_pair(11,11),
-            std::make_pair(12,10),
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,X,_,_,_,_},
+            {_,_,_,_,X,X,X,_,_,_},
+            {_,_,_,X,X,X,X,X,_,_},
+            {_,_,_,_,X,X,X,_,_,_},
+            {_,_,_,_,_,X,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
     };
 
-    checkOccupiedCells(occ_grid, expected_occupied_cells);
+    checkOccupiedCells(occ_grid, expected_occ_grid);
+}
+
+// Test inflating a single point by 3 where the inflation radius does not extend beyound the edge
+// of the occupancy grid
+TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_3_within_occ_grid){
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(10, 10, 0, 0, 0, 1);
+
+    ObstacleManager::inflatePoint(occ_grid, Point2D(5,5), 3);
+
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,X,_,_,_,_},
+            {_,_,_,X,X,X,X,X,_,_},
+            {_,_,_,X,X,X,X,X,_,_},
+            {_,_,X,X,X,X,X,X,X,_},
+            {_,_,_,X,X,X,X,X,_,_},
+            {_,_,_,X,X,X,X,X,_,_},
+            {_,_,_,_,_,X,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+    };
+
+    checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 
 // Test inflating a single point by 1 where the inflation radius extends beyound the edge
 // of the occupancy grid
 TEST_F(ObstacleManagerTest, inflate_single_point_inflate_radius_1_partly_outside_occ_grid){
-    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(20, 10, 0, 0, 0, 1);
+    nav_msgs::OccupancyGrid occ_grid = generateEmptyOccGrid(10, 5, 0, 0, 0, 1);
 
-    ObstacleManager::inflatePoint(occ_grid, Point2D(10,10), 1);
+    ObstacleManager::inflatePoint(occ_grid, Point2D(5,4), 1);
 
-    // all the cells we expect to be marked as "occupied" in pairs: (x,y)
-    std::vector<std::pair<int,int>> expected_occupied_cells = {
-            std::make_pair(9,10),
-            std::make_pair(10,9),
-            std::make_pair(10,10),
-            std::make_pair(10,11),
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,X,_,_,_,_},
+            {_,_,_,_,X,X,X,_,_,_},
     };
 
-    checkOccupiedCells(occ_grid, expected_occupied_cells);
+    checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 
 // Test inflating a point on a rotated and offset grid
@@ -463,6 +528,31 @@ TEST_F(ObstacleManagerTest, inflate_single_point_offset_and_rotated_grid){
     };
 
     checkOccupiedCells(occ_grid, expected_occupied_cells);
+
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,X,_,_,_},
+            {_,_,_,_,_,X,X,X,_,_},
+            {_,_,_,_,_,_,X,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+            {_,_,_,_,_,_,_,_,_,_},
+    };
+
+    checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 
 // Test inflating a point on a grid with a floating point scale not equal to 1
@@ -492,11 +582,22 @@ TEST_F(ObstacleManagerTest, inflate_single_point_on_grid_with_floating_point_sca
 
 // Test generating an occupancy grid with a single cone
 TEST_F(ObstacleManagerTest, generate_occ_grid_with_single_cone){
-    ObstacleManager obstacle_manager(1, 1, 0.2, 0.1);
+    float occ_grid_resolution = 0.1;
+    ObstacleManager obstacle_manager(1, 1, 0.1, occ_grid_resolution);
 
     obstacle_manager.addObstacle(Cone(10, 13, 0.1));
 
-    nav_msgs::OccupancyGrid generated_occ_grid = obstacle_manager.generateOccupancyGrid();
+    nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
+
+    // What we expect the occupancy grid to be
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {_,_,_},
+            {_,X,_},
+            {_,_,_},
+    };
+
+    // TODO: FIX ME
+    checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 
 // TODO: Test generating an occupancy grid with a single line

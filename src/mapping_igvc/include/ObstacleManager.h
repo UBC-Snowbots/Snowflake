@@ -103,18 +103,21 @@ public:
 
     /**
      * Add a given line to our map of the world
+     *
      * @param line_obstacle the line to add
      */
     void addObstacle(sb_geom::Spline line_obstacle);
 
     /**
      * Get all the cones in our world
+     *
      * @return a list of all known cones in our world
      */
     std::vector<Cone> getConeObstacles();
 
     /**
      * Get all the lines in our world
+     *
      * @return a list of all known lines in our world
      */
     std::vector<sb_geom::Spline> getLineObstacles();
@@ -122,6 +125,10 @@ public:
     // TODO: test me
     /**
      * Generates an occupancy grid with all known obstacles
+     *
+     * Does *NOT* set the time on the occupancy grid (to allow this class to
+     * work without ROS running). `info.map_load_time` should be set to current
+     * ROS time (`ros::Time::now()`) before publishing
      *
      * @return an occupancy grid containing all known obstacles
      */

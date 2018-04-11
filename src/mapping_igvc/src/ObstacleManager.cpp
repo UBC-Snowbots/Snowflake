@@ -25,7 +25,8 @@ ObstacleManager::ObstacleManager(double cone_merging_tolerance,
                                  double occ_grid_cell_size) :
 cone_merging_tolerance(cone_merging_tolerance),
 line_merging_tolerance(line_merging_tolerance),
-obstacle_inflation_buffer(obstacle_inflation_buffer)
+obstacle_inflation_buffer(obstacle_inflation_buffer),
+occ_grid_cell_size(occ_grid_cell_size)
 {}
 
 std::vector<Cone> ObstacleManager::getConeObstacles() {
@@ -194,14 +195,20 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
     }
 
     for (auto& cone : cones){
+        // This function returns the `y` value (in # of cells) of the cone for a given
+        // `x` value (also in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
+        auto circle = [&](int x) {
+            // Calculate `y` as a floating point distance
+            double y = std::sqrt(std::pow(cone.radius,2) - std::pow(x,2));
+            // Return the equivalent number of cells
+            return (int)std::ceil(y);
+        };
         // Iterate over the cone in 2D
-        // figure out the width of the cone (in # of cells)
-        auto cone_width_num_cells = (int)std::ceil(cone.radius * 2 / occ_grid_cell_size);
-        for (int x = 0; x < cone_width_num_cells; x++){
+        auto cone_radius_num_cells = (int)std::floor(cone.radius / occ_grid_cell_size);
+        for (int x = -cone_radius_num_cells; x < cone_radius_num_cells + 1; x++){
             // figure out the height of the cone (value of y) at the current x value
             // (in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
-            auto cone_height_num_cells =
-                    2 * (sqrt(std::pow(cone.radius, 2) - (x*occ_grid_cell_size)));
+            auto cone_height_num_cells = circle(x*occ_grid_cell_size);
             for (int y = 0; y < cone_height_num_cells; y++){
                 occupied_points.emplace_back(Point2D(
                         cone.x + x * occ_grid_cell_size,
@@ -211,54 +218,64 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
         }
     }
 
-    // Find the max/min x and y values in the occupied points
-    // these will define the extents of the generate occupancy grid
-    Point2D point_max_x = *std::max_element(occupied_points.begin(), occupied_points.end(),
-                                    [&](Point2D p1, Point2D p2){
-                                            return p1.x() > p2.x();
-                                        });
-    double max_x = point_max_x.x();
-    Point2D point_max_y = *std::max_element(occupied_points.begin(), occupied_points.end(),
-                                            [&](Point2D p1, Point2D p2){
-                                                return p1.y() > p2.y();
-                                            });
-    double max_y = point_max_y.y();
-    Point2D point_min_x = *std::min_element(occupied_points.begin(), occupied_points.end(),
-                                            [&](Point2D p1, Point2D p2){
-                                                return p1.x() > p2.x();
-                                            });
-    double min_x = point_min_x.x();
-    Point2D point_min_y = *std::min_element(occupied_points.begin(), occupied_points.end(),
-                                            [&](Point2D p1, Point2D p2){
-                                                return p1.y() > p2.y();
-                                            });
-    double min_y = point_min_y.y();
-
     nav_msgs::OccupancyGrid occ_grid;
 
     // TODO: Set header
 
     // Set MapMetaData
-    occ_grid.info.map_load_time = ros::Time::now();
+    occ_grid.info.map_load_time = ros::Time(0);
     occ_grid.info.resolution = (float)occ_grid_cell_size;
-    // Convert our min/max extents into a width and height in # of cells
-    occ_grid.info.width = (unsigned int)std::ceil((max_x - min_x) / occ_grid_cell_size);
-    occ_grid.info.height = (unsigned int)std::ceil((max_y - min_y) / occ_grid_cell_size);
-    occ_grid.info.origin.orientation.x = 0;
-    occ_grid.info.origin.orientation.y = 0;
-    occ_grid.info.origin.orientation.z = 0;
-    occ_grid.info.origin.orientation.w = 0;
-    occ_grid.info.origin.position.x = min_x;
-    occ_grid.info.origin.position.y = min_y;
+    // Initially, set all values to 0
+    occ_grid.info.width = 0;
+    occ_grid.info.height = 0;
+    occ_grid.info.origin.orientation = tf::createQuaternionMsgFromYaw(0);
+    occ_grid.info.origin.position.x = 0;
+    occ_grid.info.origin.position.y = 0;
 
-    // Populate the occupancy grid with all 0 initially (unoccupied)
-    occ_grid.data = std::vector<int8_t>(occ_grid.info.width * occ_grid.info.height);
-    std::fill(occ_grid.data.begin(), occ_grid.data.end(), 0);
+    // If we have occupied points, then expand and fill the occupancy
+    // grid accordingly
+    if (!occupied_points.empty()){
+        // Find the max/min x and y values in the occupied points
+        // these will define the extents of the generate occupancy grid
+        // We also add a buffer around the min/max to account for edge points
+        // being inflated
+        Point2D point_max_x = *std::max_element(occupied_points.begin(), occupied_points.end(),
+                                                [&](Point2D p1, Point2D p2){
+                                                    return p1.x() > p2.x();
+                                                });
+        double max_x = point_max_x.x() + obstacle_inflation_buffer;
+        Point2D point_max_y = *std::max_element(occupied_points.begin(), occupied_points.end(),
+                                                [&](Point2D p1, Point2D p2){
+                                                    return p1.y() > p2.y();
+                                                });
+        double max_y = point_max_y.y() + obstacle_inflation_buffer;
+        Point2D point_min_x = *std::min_element(occupied_points.begin(), occupied_points.end(),
+                                                [&](Point2D p1, Point2D p2){
+                                                    return p1.x() > p2.x();
+                                                });
+        double min_x = point_min_x.x() - obstacle_inflation_buffer;
+        Point2D point_min_y = *std::min_element(occupied_points.begin(), occupied_points.end(),
+                                                [&](Point2D p1, Point2D p2){
+                                                    return p1.y() > p2.y();
+                                                });
+        double min_y = point_min_y.y() - obstacle_inflation_buffer;
 
-    // Inflate the obstacles (and thus mark sections of the grid as occupied)
-    // TODO: If this is slow, we may want to more intelligently inflate lines and cones
-    for (auto& point: occupied_points){
-        inflatePoint(occ_grid, point, obstacle_inflation_buffer);
+
+        // Convert our min/max extents into a width and height in # of cells
+        occ_grid.info.width = (unsigned int)std::ceil((max_x - min_x) / occ_grid_cell_size) + 2;
+        occ_grid.info.height = (unsigned int)std::ceil((max_y - min_y) / occ_grid_cell_size) + 2;
+        occ_grid.info.origin.position.x = min_x;
+        occ_grid.info.origin.position.y = min_y;
+
+        // Populate the occupancy grid with all 0 initially (unoccupied)
+        occ_grid.data = std::vector<int8_t>(occ_grid.info.width * occ_grid.info.height);
+        std::fill(occ_grid.data.begin(), occ_grid.data.end(), 0);
+
+        // Inflate the obstacles (and thus mark sections of the grid as occupied)
+        // TODO: If this is slow, we may want to more intelligently inflate lines and cones
+        for (auto& point: occupied_points){
+            inflatePoint(occ_grid, point, obstacle_inflation_buffer);
+        }
     }
 
     return occ_grid;
@@ -297,7 +314,8 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
     auto center_cell_x = (int)std::round(translated_and_rotated_point.x() / occ_grid.info.resolution);
     auto center_cell_y = (int)std::round(translated_and_rotated_point.y() / occ_grid.info.resolution);
 
-    // Iterate over the area this point is to be inflated to
+    // Iterate over the area this point is to be inflated to,
+    // marking all the cells as "occupied"
     int min_x = center_cell_x - inflation_radius_num_of_cells;
     int max_x = center_cell_x + inflation_radius_num_of_cells;
     for (int x = min_x; x <= max_x; x++){
