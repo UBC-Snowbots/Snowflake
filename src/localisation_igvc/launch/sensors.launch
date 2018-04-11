@@ -12,7 +12,7 @@
     <include file="$(find drivers)/launch/imu.launch" />
     
     <!-- GPS -->
-    <include file="$(find localisation)/launch/gps.launch"/>
+    <include file="$(find localisation_igvc)/launch/gps.launch"/>
     
 </launch>
 

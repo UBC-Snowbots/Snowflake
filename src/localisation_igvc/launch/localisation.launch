@@ -4,13 +4,13 @@
 -->
 
     <!-- Start all the sensors -->
-    <include file="$(find localisation)/launch/sensors.launch"/>
+    <include file="$(find localisation_igvc)/launch/sensors.launch"/>
     
     <!--
         Start the EKF (Extended Kalman Filter) to translate all the sensor
         data into a estimate of our current state (an Odometry message)
     -->
-    <include file="$(find localisation)/launch/ekf.launch"/>
+    <include file="$(find localisation_igvc)/launch/ekf.launch"/>
 
 </launch>
 

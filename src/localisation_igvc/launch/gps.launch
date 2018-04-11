@@ -4,6 +4,6 @@
     <include file="$(find nmea_navsat_driver)/launch/nmea_gps.launch" />
 
     <!-- Translate the GPS Messages to Odometry Messages for `robot_pose_ekf` -->
-    <include file="$(find localisation)/launch/gps_to_odom.launch"/>
+    <include file="$(find localisation_igvc)/launch/gps_to_odom.launch"/>
 
 </launch>
