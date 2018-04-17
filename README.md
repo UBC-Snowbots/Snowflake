@@ -7,7 +7,7 @@ UBC Snowbots Repository for competitions.
 - [Installation and Setup](#installation-and-setup)
   - [Important Notes](#important-notes)
   - [Zed Configuration](#zed-configuration)
-  - [Rosinstall](#external-packages-with-rosinstall)
+  - [External Packages](#external-packages)
   - [Nodelets](#nodelets-quick-guide)
 - [New Members](#new-members)
 - [Conventions](#conventions)
@@ -55,7 +55,9 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) This repository already contains `zed_ros_wrapper` as a ~~submodule~~ standalone package in `external_pkgs/zed_ros_wrapper`(As of 2/25/2018 submodules have been migrated to rosinstall)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
 
-### External Packages with Rosinstall
+### External Packages
+
+To run external packages prepared for the system, you will need to `source external_pkgs/setup.sh`
 
 To manually install external packages using rosinstall, run `rosinstall INSTALL_PATH PRE-EXISTING_ROS_DIR CUSTOM_ROSINSTALL_FILE` 
 i.e on our system, it will be `rosinstall external_pkgs /opt/ros/kinetic .rosinstall` 
