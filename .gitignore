@@ -19,3 +19,5 @@ cmake-build-debug
 *_REMOTE_*.txt
 *.orig
 
+.rosinstall.bak
+external_pkgs/

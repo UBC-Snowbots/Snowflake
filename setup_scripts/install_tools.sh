@@ -26,6 +26,8 @@ SHELL_CONFIG_FILES=(
 declare -a new_shell_config_lines=(
     # Source the ROS Environment Variables Automatically
     "source /opt/ros/kinetic/setup.sh"\
+    # Setup for rosinstall, sources env setup of packages installed through .rosinstall
+    "source $DIR/external_pkgs/setup.sh"
     # Make sure that all shells know where to find our custom gazebo models,
     # plugins, and resources. Make sure to preserve the path that already exists as well
     "export GAZEBO_MODEL_PATH=$DIR/src/sb_gazebo/models:${GAZEBO_MODEL_PATH}"\
@@ -39,14 +41,14 @@ declare -a new_shell_config_lines=(
 
 # Add all of our new shell config options to all the shell
 # config files, but only if they don't already have them
-for file_name in "${SHELL_CONFIG_FILES[@]}"; 
+for file_name in "${SHELL_CONFIG_FILES[@]}";
 do
     echo "Setting up $file_name"
-    for line in "${new_shell_config_lines[@]}"; 
+    for line in "${new_shell_config_lines[@]}";
     do
-        if ! grep -Fq "$line" $file_name 
+        if ! grep -Fq "$line" $file_name
         then
-            echo "$line" >> $file_name 
+            echo "$line" >> $file_name
         fi
     done
 done

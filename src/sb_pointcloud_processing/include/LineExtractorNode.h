@@ -55,12 +55,6 @@ class LineExtractorNode {
     ros::Publisher rviz_cluster_publisher;
 
     /*
-     * @dbscan takes in a PointCloud and clusters them into a vector of
-     * PointClouds
-     */
-    DBSCAN dbscan;
-
-    /*
      * @regression takes in the output from @dbscan and outputs a LineObstacle
      * for each cluster.
      * A line has the same index as its corresponding cluster
@@ -106,6 +100,11 @@ class LineExtractorNode {
     float scale;
 
     /*
+     * frame_id for rviz markers
+     */
+    std::string frame_id;
+
+    /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
      * been converted from sensor_msgs PointCloud2
      */
@@ -139,7 +138,7 @@ class LineExtractorNode {
      * geometry_msgs:Point and then merges all of them into a single
      * vector.
      */
-    std::vector<std::vector<geometry_msgs::Point>> convertLineObstaclesToPoints(
+    std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(
     std::vector<mapping_igvc::LineObstacle> line_obstacles);
 
     /*
