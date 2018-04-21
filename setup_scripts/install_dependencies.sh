@@ -20,12 +20,6 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB0
 sudo apt-get update
 sudo apt-get install ros-kinetic-desktop-full
 
-echo "================================================================"
-echo "Installing other ROS dependencies specified by our packages"
-echo "================================================================"
-
-# Update Rosdeps
-rosdep update
 
 
 echo "================================================================"
@@ -47,6 +41,13 @@ mkdir -p external_pkgs
 # Install from merged .rosinstall files
 rosinstall .
 
+
+echo "================================================================"
+echo "Installing other ROS dependencies specified by our packages"
+echo "================================================================"
+
+# Update Rosdeps
+rosdep update
 # Install all required dependencies to build this repo
 rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic -y
 
