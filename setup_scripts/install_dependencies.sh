@@ -46,10 +46,6 @@ echo "================================================================"
 # Setup rosinstall
 # Setup directory for installing external pkgs
 mkdir -p external_pkgs
-# Telling rosinstall to install packages listed in .rosinstall into the external_pkgs directory
-# Also tells rosinstall where to link env variables to the ROS stack
-# This is all done in the process of merging .rosinstall files in the system; a functionality of rosinstall
-rosinstall external_pkgs /opt/ros/kinetic .rosinstall
 # Install from merged .rosinstall files
 rosinstall .
 
