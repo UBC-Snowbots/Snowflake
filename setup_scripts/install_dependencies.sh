@@ -27,8 +27,6 @@ echo "================================================================"
 # Update Rosdeps
 rosdep update
 
-# Install all required dependencies to build this repo
-rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic -y
 
 echo "================================================================"
 echo "Installing Misc. Utilities"
@@ -48,6 +46,9 @@ echo "================================================================"
 mkdir -p external_pkgs
 # Install from merged .rosinstall files
 rosinstall .
+
+# Install all required dependencies to build this repo
+rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic -y
 
 echo "================================================================"
 echo "Installing Udev rules for phidgets"
