@@ -14,6 +14,7 @@ sudo apt-key adv --keyserver keys.gnupg.net --recv-key 6F3EFCDE
 sudo apt-get update
 sudo apt-get install librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg librealsense2
 
+ls /usr/lib/x86_64-linux/gnu/cmake/
 
 echo "================================================================"
 echo "Finished configuring realsense. "
