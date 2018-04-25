@@ -20,3 +20,5 @@ cmake-build-release
 *_REMOTE_*.txt
 *.orig
 
+.rosinstall.bak
+external_pkgs/
