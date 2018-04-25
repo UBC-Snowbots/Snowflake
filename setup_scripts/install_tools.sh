@@ -77,12 +77,6 @@ cd $DIR
 cd $DIR
 ./setup_udev_rules.sh
 
-##############################
-# Installs Realsense Drivers #
-##############################
-cd $DIR
-./setup_realsense.sh
-
 echo "================================================================"
 echo "Finished first time installation and setup; you're good to go!"
 echo "If you're working with arduino, or any usb devices, please log"

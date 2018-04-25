@@ -11,7 +11,8 @@
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "================================================================" echo "Installing ROS Kinetic"
+echo "================================================================" 
+echo "Installing ROS Kinetic"
 echo "================================================================"
 
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -28,6 +29,11 @@ rosdep update
 # Install all required dependencies to build this repo
 rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic --skip-keys=librealsense2 -y 
 
+echo "================================================================"
+echo "Installing other dependencies specified by our packages"
+echo "================================================================"
+cd $CURR_DIR
+./setup_realsense.sh
 
 echo "================================================================"
 echo "Installing Misc. Utilities"
@@ -44,8 +50,8 @@ echo "================================================================"
 
 # Setup rosinstall
 # Setup directory for installing external pkgs
-mkdir -p external_pkgs
 # Install from merged .rosinstall files
+cd $CURR_DIR/..
 rosinstall .
 
 
@@ -54,7 +60,7 @@ echo "Installing Udev rules for phidgets"
 echo "================================================================"
 
 # Setup udev rules
-sudo cp extended_pkg/phidgets_api/share/udev/99-phidgets.rules /etc/udev/rules.d
+sudo cp $CURR_DIR/../src/extended_pkgs/phidgets_api/share/udev/99-phidgets.rules /etc/udev/rules.d
 echo "Phidgets udev rules have been copied to /etc/udev/rules.d"
 # Phidgets_api pkg does this, but it has to be run in right folder, since we are automating
 # we will manually do the copying ourselves
