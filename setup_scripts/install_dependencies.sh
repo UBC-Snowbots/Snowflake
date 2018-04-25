@@ -11,8 +11,7 @@
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "================================================================"
-echo "Installing ROS Kinetic"
+echo "================================================================" echo "Installing ROS Kinetic"
 echo "================================================================"
 
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -27,7 +26,7 @@ echo "================================================================"
 # Update Rosdeps
 rosdep update
 # Install all required dependencies to build this repo
-rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic -y
+rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic --skip-keys=realsense2 -y 
 
 
 echo "================================================================"
