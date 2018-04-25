@@ -26,7 +26,7 @@ echo "================================================================"
 # Update Rosdeps
 rosdep update
 # Install all required dependencies to build this repo
-rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic --skip-keys=realsense2 -y 
+rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic --skip-keys=librealsense2 -y 
 
 
 echo "================================================================"
