@@ -39,7 +39,6 @@ std::vector<sb_geom::Spline> ObstacleManager::getLineObstacles() {
 
 void ObstacleManager::addObstacle(Cone cone) {
 
-    // TODO: maybe prune obstacles outside a given distance from us?
 
     // Find the distance to every known cone from this one
     std::vector<std::pair<double,int>> distances;
@@ -180,6 +179,9 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
 }
 
 nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
+
+    // TODO: maybe prune obstacles outside a given distance from us? (might want a seperate function for this)
+
     // Find what cells are directly occupied (ie. overlapping) with
     // known obstacles
     std::vector<Point2D> occupied_points;
@@ -241,29 +243,29 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
         // being inflated
         Point2D point_max_x = *std::max_element(occupied_points.begin(), occupied_points.end(),
                                                 [&](Point2D p1, Point2D p2){
-                                                    return p1.x() > p2.x();
+                                                    return p1.x() < p2.x();
                                                 });
         double max_x = point_max_x.x() + obstacle_inflation_buffer;
         Point2D point_max_y = *std::max_element(occupied_points.begin(), occupied_points.end(),
                                                 [&](Point2D p1, Point2D p2){
-                                                    return p1.y() > p2.y();
+                                                    return p1.y() < p2.y();
                                                 });
         double max_y = point_max_y.y() + obstacle_inflation_buffer;
         Point2D point_min_x = *std::min_element(occupied_points.begin(), occupied_points.end(),
                                                 [&](Point2D p1, Point2D p2){
-                                                    return p1.x() > p2.x();
+                                                    return p1.x() < p2.x();
                                                 });
         double min_x = point_min_x.x() - obstacle_inflation_buffer;
         Point2D point_min_y = *std::min_element(occupied_points.begin(), occupied_points.end(),
                                                 [&](Point2D p1, Point2D p2){
-                                                    return p1.y() > p2.y();
+                                                    return p1.y() < p2.y();
                                                 });
         double min_y = point_min_y.y() - obstacle_inflation_buffer;
 
 
         // Convert our min/max extents into a width and height in # of cells
-        occ_grid.info.width = (unsigned int)std::ceil((max_x - min_x) / occ_grid_cell_size) + 2;
-        occ_grid.info.height = (unsigned int)std::ceil((max_y - min_y) / occ_grid_cell_size) + 2;
+        occ_grid.info.width = (unsigned int)std::ceil((max_x - min_x) / occ_grid_cell_size)+1;
+        occ_grid.info.height = (unsigned int)std::ceil((max_y - min_y) / occ_grid_cell_size)+1;
         occ_grid.info.origin.position.x = min_x;
         occ_grid.info.origin.position.y = min_y;
 
@@ -323,8 +325,8 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
         int max_y = center_cell_y + inflationCircle(center_cell_x - x);
         for (int y = min_y; y <= max_y; y++){
             // Check that (x,y) is actually on the grid
-            if (y > 0 && y < occ_grid.info.height &&
-                    x > 0 && x < occ_grid.info.width){
+            if (y >= 0 && y < occ_grid.info.height &&
+                    x >= 0 && x < occ_grid.info.width){
                 occ_grid.data[y * occ_grid.info.width + x] = 100;
             }
         }
