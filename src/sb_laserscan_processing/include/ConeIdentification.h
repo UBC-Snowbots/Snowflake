@@ -17,16 +17,18 @@
 class ConeIdentification {
     public:
         /**
-         * Identifies the cones in a given laserscan message
+         * Identifies the cones in a given laserscan message. Note that all cones will have radius of the expected radius, and only cones that
+         * have a calculated radius within radius_tol of expected radius will be added to the resulting identified cones.
          * @param laser_msg laserscan message to analyze
-         * @param tolerance max distance between points to be considered that are part of one cone
+         * @param dist_tol max distance between points to be considered that are part of one cone
+         * @param radius_exp expected radius of cone
+         * @param radius_tol maximum difference between calculated cone radius and expected cone radius
          * @return a vector of cone obstacle messages identified
          */
-        static std::vector<mapping_igvc::ConeObstacle> identifyCones(const sensor_msgs::LaserScan &laser_msg, float tolerance);
+        static std::vector<mapping_igvc::ConeObstacle> identifyCones(const sensor_msgs::LaserScan &laser_msg, float dist_tol, float radius_exp, float radius_tol);
 
         /**
-        * TODO: Add indicator if cone does not match expected (nullptr?)
-        * Converts a cluster of edge points to a cone obstacle
+        * Converts a cluster of edge points to a cone obstacle with a predicted radius
         * @param edge_points should have size >= 3 and be in the order they appear in the object
         * @return a cone formed by edge points
         */

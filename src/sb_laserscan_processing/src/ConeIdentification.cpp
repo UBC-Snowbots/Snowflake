@@ -6,29 +6,38 @@
 #include <ConeIdentification.h>
 
 
-std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const sensor_msgs::LaserScan &laser_msg, float tolerance){
+std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const sensor_msgs::LaserScan &laser_msg, float dist_tol, float radius_exp, float radius_tol){
     std::vector<mapping_igvc::ConeObstacle> identified_cones;
     std::vector<mapping_igvc::Point2D> edge_points; //Represents points in a potential cluster
 
     int numIndices = (laser_msg.angle_max - laser_msg.angle_min) / laser_msg.angle_increment;
     for (int i=0; i<numIndices; i++){
-        if (laser_msg.ranges[i] > laser_msg.range_max || laser_msg.ranges[i] < laser_msg.range_min) { //Check for invalid ranges (points)
-            if (edge_points.size() >= 3) {
-                identified_cones.push_back(edgeToCone(edge_points));
+        if (laser_msg.ranges[i] > laser_msg.range_max || laser_msg.ranges[i] < laser_msg.range_min) { //Check if curr laserscan point is in invalid range
+            if (edge_points.size() >= 3) { //Ignore edge clusters of 2 or less, consider edge points so far
+                mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
+                if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within dist_tol
+                    potential_cone.radius = radius_exp;
+                    identified_cones.push_back(potential_cone);
+                }
             }
             edge_points.clear();
             continue;
         }
 
-        mapping_igvc::Point2D point = laserToPoint(laser_msg.ranges[i], laser_msg.angle_min + i * laser_msg.angle_increment);
-        //Out of tolerance or end of points, analyze edge points so far to create cone, and clear edge_points
-        if ((!edge_points.empty() && getDist(edge_points.back(), point) > tolerance) || i == numIndices - 1){
-            if (edge_points.size() >= 3) { //Ignore edge clusters of 2 or less, can't accurately analyze
-                identified_cones.push_back(edgeToCone(edge_points));
+        mapping_igvc::Point2D point = laserToPoint(laser_msg.ranges[i], laser_msg.angle_min + i * laser_msg.angle_increment); //Convert to x-y point
+        edge_points.push_back(point);
+
+        //Out of dist_tol or end of points, analyze edge points so far to create cone, and clear edge_points
+        if ((getDist(edge_points.back(), point) > dist_tol) || i == numIndices - 1){
+            if (edge_points.size() >= 3) { //Ignore edge clusters of 2 or less
+                mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
+                if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within dist_tol
+                    potential_cone.radius = radius_exp;
+                    identified_cones.push_back(potential_cone);
+                }
             }
             edge_points.clear();
         }
-        edge_points.push_back(point);
     }
 
     return identified_cones;
@@ -82,9 +91,5 @@ mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapp
     cone.radius = total_radius / (end_i + 1);
 
     return cone;
-
-    //TODO: Compare radius to what we expect and toss if its off
     //TODO: create header
-
-    return cone;
 }

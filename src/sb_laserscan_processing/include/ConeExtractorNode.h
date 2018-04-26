@@ -28,6 +28,8 @@ class ConeExtractorNode {
         void laserCallBack(const sensor_msgs::LaserScan::ConstPtr& ptr);
 
         float cone_dist_tol; //Distance tolerance between cones in cluster
+        float cone_rad_exp; //Expected cone radius
+        float cone_rad_tol; //Tolerance for cone radius (max diff between calculated and expected values)
 };
 
 #endif //LASERSCAN_CONE_MANAGER_H
