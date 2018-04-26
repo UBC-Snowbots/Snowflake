@@ -42,16 +42,15 @@
     <param name="use_mag" value="true"/>
 
     <!-- Setup the estimate of the transform from the IMU to the world -->
+    <!-- TODO: Are we publishing this TF? Update comment below.... -->
     <!-- Don't publish a TF because we publish a static one -->
-    <param name="publish_tf" value="true" />
+    <param name="publish_tf" value="false" />
     <param name="world_frame" value="ned" />
     <param name="fixed_frame" value="base_link" />
 
   </node>
 
   <!-- Define a transform from the IMU to the base of the robot -->
-  <!--
-  <node pkg="tf" type="static_transform_publisher" name="imu_static_transform" args="0 0 0 0 0 0 1 imu map 100" />
-  -->
+  <node pkg="tf" type="static_transform_publisher" name="imu_static_transform" args="0.25 0 0.25 0 0 0 1 base_link imu 100" />
 
 </launch>
