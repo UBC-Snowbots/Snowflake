@@ -36,9 +36,15 @@ EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "wheelbase_length", wheelbase_length, 0.7);
     SB_getParam(private_nh, "ticks_per_rotation", ticks_per_rotation, 1024);
     SB_getParam(private_nh, "odom_frame", odom_frame_id, std::string("encoder"));
-    // TODO: Figure out actually reasonable variances
-    SB_getParam(private_nh, "left_encoder_variance", left_encoder_variance, 0.1);
-    SB_getParam(private_nh, "right_encoder_variance", right_encoder_variance, 0.1);
+    // The variance of the x, y, and theta measurements.
+    // These values should be determined experimentally
+    // TODO: Link to markdown file explaining how to determine these
+    double x_variance;
+    double y_variance;
+    double theta_variance;
+    SB_getParam(private_nh, "x_variance", x_variance, 0.1);
+    SB_getParam(private_nh, "y_variance", y_variance, 0.1);
+    SB_getParam(private_nh, "theta_variance", theta_variance, 0.1);
     double odometry_estimate_refresh_rate;
     SB_getParam(private_nh, "odom_msg_refresh_rate", odometry_estimate_refresh_rate, 10.0);
 
@@ -60,6 +66,18 @@ EncoderOdometryNode::EncoderOdometryNode(int argc, char **argv, std::string node
     ros::Duration odom_estimate_period(1 / odometry_estimate_refresh_rate);
     odom_estimate_timer = private_nh.createTimer(odom_estimate_period,
                                                  &EncoderOdometryNode::publishEstimatedOdomMsg, this);
+
+    // Set the covariance on our Odometry messages. Since this is static, we only need to set it once
+    // We set all values to 0, expect for the diagonal, on which we set the variance for
+    // linear.x, linear.y, and angular.z, and set all other values to a very high number (indicating that
+    // we don't have a measurement for that part of the message)
+    std::fill(last_estimate.pose.covariance.begin(), last_estimate.pose.covariance.end(), 0);
+    last_estimate.pose.covariance[6*0 + 0] = x_variance;
+    last_estimate.pose.covariance[6*1 + 1] = y_variance;
+    last_estimate.pose.covariance[6*2 + 2] = std::numeric_limits<double>::max();
+    last_estimate.pose.covariance[6*3 + 3] = std::numeric_limits<double>::max();
+    last_estimate.pose.covariance[6*4 + 4] = std::numeric_limits<double>::max();
+    last_estimate.pose.covariance[6*5 + 5] = theta_variance;
 }
 
 void EncoderOdometryNode::encoderJointStateCallback(sensor_msgs::JointState::ConstPtr joint_state_ptr) {
@@ -126,6 +144,8 @@ EncoderOdometryNode::publishEstimatedOdomMsg(const ros::TimerEvent &timer_event)
         left_encoder_num_ticks_prev = left_encoder_num_ticks_curr;
         right_encoder_num_ticks_prev = right_encoder_num_ticks_curr;
 
+        // Save the time so that next time we get ticks, we can
+        // generate a state estimate
         last_estimate.header.stamp = ros::Time::now();
 
         return;
@@ -176,7 +196,6 @@ EncoderOdometryNode::publishEstimatedOdomMsg(const ros::TimerEvent &timer_event)
     last_estimate.pose.pose.position.x = x;
     last_estimate.pose.pose.position.y = y;
     tf::quaternionTFToMsg(tf::createQuaternionFromYaw(yaw), last_estimate.pose.pose.orientation);
-    last_estimate.pose.covariance = calculatePoseCovariance(left_encoder_ticks, right_encoder_ticks, prev_yaw);
     last_estimate.twist.twist.linear.x = x_vel;
     last_estimate.twist.twist.linear.y = y_vel;
     last_estimate.twist.twist.angular.z = w;
@@ -205,86 +224,5 @@ nav_msgs::Odometry EncoderOdometryNode::generateAllZeroOdometryMessage() {
     odom_msg.twist.twist.angular.z = 0;
 
     return odom_msg;
-}
-
-geometry_msgs::PoseWithCovariance::_covariance_type EncoderOdometryNode::calculatePoseCovariance(
-        int left_wheel_ticks,
-        int right_wheel_ticks,
-        double prev_yaw) {
-
-    // All math taken from: http://digital.csic.es/bitstream/10261/30337/1/Onto%20computing.pdf
-    // namely pages 1342 and 1343
-
-    // Compute displacement of the left and right wheels (relative to last estimate)
-    double wheel_circumference = 2 * M_PI * wheel_radius;
-    double d_l = left_wheel_ticks * wheel_circumference / ticks_per_rotation;
-    double d_r = right_wheel_ticks * wheel_circumference / ticks_per_rotation;
-
-    // TODO: Detailed doc comments here
-    // let p_t be the change from the previous state (x,y,theta): p_t = [x_t; y_t; theta_t]
-
-    // Cov[p_t] = E[p_t * transpose(p_t)] - E[p_t] * E[transpose(p_t)]
-
-    // Compute E[p_t * transpose(p_t)] - E[p_t]
-    double k_1 = std::pow(d_r, 2) + std::pow(d_l, 2);
-    double k_2 = std::pow(d_r, 2) - std::pow(d_l, 2);
-    double k_3 = d_r * d_l;
-    double k_4 = left_encoder_variance + right_encoder_variance;
-    double k_5 = left_encoder_variance - right_encoder_variance;
-
-    // let c_ij be the element at (i,j) in E[p_t * transpose(p_t)] - E[p_t]
-    double c_11 = (k_1 + 2*k_3 + k_4)/4 * cos(prev_yaw) * cos(prev_yaw);
-    double c_12 = (k_1 + 2*k_3 + k_4)/4 * cos(prev_yaw) * sin(prev_yaw);
-    double c_13 = (k_2 + k_5)/(2 * wheelbase_length) * cos(prev_yaw);
-    double c_21 = c_12;
-    double c_22 = (k_1 + 2*k_3 + k_4)/4 * sin(prev_yaw) * sin(prev_yaw);
-    double c_23 = (k_2 + k_5)/(2 * wheelbase_length) * sin(prev_yaw);
-    double c_31 = c_13;
-    double c_32 = c_23;
-    double c_33 = (k_2 + k_5)/(2 * wheelbase_length) * sin(prev_yaw);
-
-    // Compute E[p_t] * E[transpose(p_t)]
-    double k_6 = (d_r + d_l)/2 * cos(prev_yaw);
-    double k_7 = (d_r + d_l)/2 * sin(prev_yaw);
-    double k_8 = (d_r - d_l)/wheelbase_length;
-
-    // let d_ij be the element at (i,j) in E[p_t] * E[transpose(p_t)]
-    double d_11 = k_6*k_6;
-    double d_12 = k_6*k_7;
-    double d_13 = k_6*k_8;
-    double d_21 = d_12;
-    double d_22 = k_7*k_7;
-    double d_23 = k_7*k_8;
-    double d_31 = d_13;
-    double d_32 = d_23;
-    double d_33 = k_8 * k_8;
-
-    // Cov[p_t] = E[p_t * transpose(p_t)] - E[p_t] * E[transpose(p_t)]
-    // Let cov_A_B be the covariance between A and B
-    double cov_x_x = c_11 - d_11;
-    double cov_y_y = c_22 - d_22;
-    double cov_theta_theta = c_33 - d_33;
-    double cov_x_y = c_12 - d_12;
-    double cov_y_x = c_21 - d_21;
-    double cov_x_theta = c_13 - d_13;
-    double cov_theta_x = c_31 - d_31;
-    double cov_y_theta = c_23 - d_23;
-    double cov_theta_y = c_32 - d_32;
-
-    // Set the covariances at the correct places in the array
-    // (since the array also includes linear z and angular x and y)
-    geometry_msgs::PoseWithCovariance::_covariance_type covariances;
-    covariances.fill(0);
-    covariances[0*6 + 0] = cov_x_x;
-    covariances[0*6 + 1] = cov_x_y;
-    covariances[0*6 + 5] = cov_x_theta;
-    covariances[1*6 + 0] = cov_y_x;
-    covariances[1*6 + 1] = cov_y_y;
-    covariances[1*6 + 2] = cov_y_theta;
-    covariances[5*6 + 0] = cov_theta_x;
-    covariances[5*6 + 1] = cov_theta_y;
-    covariances[5*6 + 5] = cov_theta_theta;
-
-    return covariances;
 }
 

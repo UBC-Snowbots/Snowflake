@@ -9,9 +9,15 @@
             Joints 0 to 3 are from left to right (looking down at the board 
             with the green connector oriented to the left)
         -->
-        <rosparam param="joint0_name">left_encoder</rosparam>
-        <rosparam param="joint1_name">right_encoder</rosparam>
+
+        <rosparam param="joint0_name"> left_encoder </rosparam>
+        <rosparam param="joint1_name"> right_encoder </rosparam>
+
+        <rosparam param="joint0_tick2rad"> 1 </rosparam>
+        <rosparam param="joint1_tick2rad"> 1 </rosparam>
+
         <remap from="/joint_states" to="/encoders/joint_states" />
+
     </node>
 
 </launch>

@@ -17,8 +17,10 @@ ticks_per_rotation: 3600
 reverse_left_encoder: false
 reverse_right_encoder: true
 
-# The variance of the left and right encoders.
-# TODO: This could use a more comprehensive comment about what variance is and how to determine it 
-left_encoder_variance: 0.1
-right_encoder_variance: 0.1
+# The variance of the `linear.x`, `linear.y`, and `angular.z` values.
+# For instructions on how to calculate these, see TODO: Link to instructions here
+x_variance: 0.313
+y_variance: 0.168
+theta_variance: 0.142
+
 
