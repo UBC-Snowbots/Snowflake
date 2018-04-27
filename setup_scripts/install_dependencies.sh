@@ -48,11 +48,11 @@ echo "================================================================"
 echo "Installing Project Dependent ROS packages."
 echo "================================================================"
 
-# Setup rosinstall
-# Setup directory for installing external pkgs
-# Install from merged .rosinstall files
+# Setup the workspace
+# Setup directory for pulling external pkgs
+# Download packages from merged .rosinstall files
 cd $CURR_DIR/..
-rosinstall .
+wstool update
 
 
 echo "================================================================"

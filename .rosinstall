@@ -3,7 +3,6 @@
 # IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
 # USE THE rosinstall TOOL INSTEAD.
 # IF YOU CHANGE IT, USE rosinstall FOR THE CHANGES TO TAKE EFFECT
-- setup-file: {local-name: /opt/ros/kinetic/setup.sh}
 - git: {local-name: src/external_pkgs/sicktoolbox, uri: 'https://github.com/ros-drivers/sicktoolbox.git'}
 - git: {local-name: src/external_pkgs/sicktoolbox_wrapper, uri: 'https://github.com/ros-drivers/sicktoolbox_wrapper.git'}
 - git: {local-name: src/external_pkgs/zed-ros-wrapper, uri: 'https://github.com/UBC-Snowbots/zed-ros-wrapper.git'}
