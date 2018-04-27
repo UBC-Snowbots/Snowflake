@@ -21,4 +21,4 @@ cmake-build-release
 *.orig
 
 .rosinstall.bak
-external_pkgs/
+src/external_pkgs/

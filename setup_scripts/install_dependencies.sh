@@ -11,7 +11,7 @@
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "================================================================"
+echo "================================================================" 
 echo "Installing ROS Kinetic"
 echo "================================================================"
 
@@ -26,9 +26,14 @@ echo "================================================================"
 
 # Update Rosdeps
 rosdep update
-
 # Install all required dependencies to build this repo
-rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic -y
+rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic --skip-keys=librealsense2 -y 
+
+echo "================================================================"
+echo "Installing other dependencies specified by our packages"
+echo "================================================================"
+cd $CURR_DIR
+./setup_realsense.sh
 
 echo "================================================================"
 echo "Installing Misc. Utilities"
@@ -43,22 +48,19 @@ echo "================================================================"
 echo "Installing Project Dependent ROS packages."
 echo "================================================================"
 
-# Setup rosinstall
-# Setup directory for installing external pkgs
-mkdir -p external_pkgs
-# Telling rosinstall to install packages listed in .rosinstall into the external_pkgs directory
-# Also tells rosinstall where to link env variables to the ROS stack
-# This is all done in the process of merging .rosinstall files in the system; a functionality of rosinstall
-rosinstall external_pkgs /opt/ros/kinetic .rosinstall
-# Install from merged .rosinstall files
-rosinstall .
+# Setup the workspace
+# Setup directory for pulling external pkgs
+# Download packages from merged .rosinstall files
+cd $CURR_DIR/..
+wstool update
+
 
 echo "================================================================"
 echo "Installing Udev rules for phidgets"
 echo "================================================================"
 
 # Setup udev rules
-sudo cp extended_pkg/phidgets_api/share/udev/99-phidgets.rules /etc/udev/rules.d
+sudo cp $CURR_DIR/../src/extended_pkgs/phidgets_api/share/udev/99-phidgets.rules /etc/udev/rules.d
 echo "Phidgets udev rules have been copied to /etc/udev/rules.d"
 # Phidgets_api pkg does this, but it has to be run in right folder, since we are automating
 # we will manually do the copying ourselves

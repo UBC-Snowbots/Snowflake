@@ -26,13 +26,11 @@ SHELL_CONFIG_FILES=(
 declare -a new_shell_config_lines=(
     # Source the ROS Environment Variables Automatically
     "source /opt/ros/kinetic/setup.sh"\
-    # Setup for rosinstall, sources env setup of packages installed through .rosinstall
-    "source $DIR/external_pkgs/setup.sh"
     # Make sure that all shells know where to find our custom gazebo models,
     # plugins, and resources. Make sure to preserve the path that already exists as well
-    "export GAZEBO_MODEL_PATH=$DIR/src/sb_gazebo/models:${GAZEBO_MODEL_PATH}"\
-    "export GAZEBO_PLUGIN_PATH=$DIR/src/sb_gazebo/lib:${GAZEBO_PLUGIN_PATH}"\
-    "export GAZEBO_RESOURCE_PATH=$DIR/src/sb_gazebo/models:${GAZEBO_RESOURCE_PATH}"\
+    "export GAZEBO_MODEL_PATH=$DIR/../src/sb_gazebo/models:${GAZEBO_MODEL_PATH}"\
+    "export GAZEBO_PLUGIN_PATH=$DIR/../src/sb_gazebo/lib:${GAZEBO_PLUGIN_PATH}"\
+    "export GAZEBO_RESOURCE_PATH=$DIR/../src/sb_gazebo/models:${GAZEBO_RESOURCE_PATH}"\
     # Aliases to make development easier
     "alias clion=\"clion & disown && exit\""\
     "alias rviz=\"rviz & disown && exit\""\
