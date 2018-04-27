@@ -9,6 +9,14 @@ endif()
 
 add_definitions(-std=c++14)
 
+find_package(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -136,6 +144,9 @@ if (CATKIN_ENABLE_TESTING)
       src/Regression.cpp
       )
     target_link_libraries(line_extractor_rostest ${catkin_LIBRARIES})
+    add_dependencies(line_extractor_rostest
+      ${mapping_igvc_EXPORTED_TARGETS}
+      )
 
     add_rostest_gtest(pointcloud_nodelet_filters_rostest test/pointcloud_nodelet_filters.test test/pointcloud_nodelet_filters_rostest.cpp)
     target_link_libraries(pointcloud_nodelet_filters_rostest ${catkin_LIBRARIES} ${PCL_LIBRARIES})
