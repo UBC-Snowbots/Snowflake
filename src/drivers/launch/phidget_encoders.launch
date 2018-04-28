@@ -3,11 +3,21 @@
 
     <!-- Start the encoder node that gets encoder ticks over serial -->
     <node name="encoders_driver" pkg="phidgets_high_speed_encoder" type="phidgets_high_speed_encoder" output="screen">
+        <!--
+            Using the "PhidgetEncoder HighSpeed 4-Input" (1047_1b)
+            (https://www.phidgets.com/?tier=3&catid=4&pcid=2&prodid=1017)
+            Joints 0 to 3 are from left to right (looking down at the board 
+            with the green connector oriented to the left)
+        -->
+
         <rosparam param="joint0_name"> left_encoder </rosparam>
         <rosparam param="joint1_name"> right_encoder </rosparam>
+
         <rosparam param="joint0_tick2rad"> 1 </rosparam>
         <rosparam param="joint1_tick2rad"> 1 </rosparam>
+
         <remap from="/joint_states" to="/encoders/joint_states" />
+
     </node>
 
 </launch>
