@@ -38,14 +38,16 @@ echo "================================================================"
 FILE="/etc/udev/rules.d/99-phidgets.rules"
 if [ -e "$FILE" ]
 then
-  echo "Delete the existing Snowbots udev rules"
+  echo "Delete the existing Phidgets udev rules"
   
-  # Delete the old snowbots udev rules
+  # Delete the old phidgets udev rules
   sudo rm /etc/udev/rules.d/99-phidgets.rules
 fi
 
-# Copy the new snowbots udev rules to the rule folder
-sudo cp $CURR_DIR/99-phidgets.rules $FILE
+# Copy the new phidgets udev rules to the rule folder
+# From the installation to the udev folder
+# Apt should theoretically do this but it doesn't
+sudo cp /opt/ros/kinetic/share/phidgets_api/udev/99-phidgets.rules $FILE
 
 echo "================================================================"
 echo "Finished Installing phidgets udev rules"
