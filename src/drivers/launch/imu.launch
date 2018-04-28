@@ -45,7 +45,7 @@
     <!-- TODO: Are we publishing this TF? Update comment below.... -->
     <!-- Don't publish a TF because we publish a static one -->
     <param name="publish_tf" value="false" />
-    <param name="world_frame" value="ned" />
+    <param name="world_frame" value="nwu" />
     <param name="fixed_frame" value="base_link" />
 
   </node>
