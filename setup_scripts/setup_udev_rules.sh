@@ -6,7 +6,7 @@
 ######################################################################
 
 echo "================================================================"
-echo "Adding snowbots udev rules to dev folder..."
+echo "Adding snowbots udev rules to udev folder..."
 echo "================================================================"
 
 # The current directory
@@ -27,5 +27,27 @@ sudo cp $CURR_DIR/10-snowbots.rules $FILE
 
 echo "================================================================"
 echo "Finished Installing snowbots udev rules"
+echo "================================================================"
+
+echo "================================================================"
+echo "Adding phidgets udev rules to udev folder..."
+echo "================================================================"
+
+
+# Target file directory
+FILE="/etc/udev/rules.d/99-phidgets.rules"
+if [ -e "$FILE" ]
+then
+  echo "Delete the existing Snowbots udev rules"
+  
+  # Delete the old snowbots udev rules
+  sudo rm /etc/udev/rules.d/99-phidgets.rules
+fi
+
+# Copy the new snowbots udev rules to the rule folder
+sudo cp $CURR_DIR/99-phidgets.rules $FILE
+
+echo "================================================================"
+echo "Finished Installing phidgets udev rules"
 echo "================================================================"
 
