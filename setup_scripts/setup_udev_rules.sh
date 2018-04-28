@@ -16,7 +16,7 @@ CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 FILE="/etc/udev/rules.d/10-snowbots.rules"
 if [ -e "$FILE" ]
 then
-  echo "Delete the existing Snowbots udev rules"
+  echo "Deleting the existing Snowbots udev rules"
   
   # Delete the old snowbots udev rules
   sudo rm /etc/udev/rules.d/10-snowbots.rules
@@ -38,7 +38,7 @@ echo "================================================================"
 FILE="/etc/udev/rules.d/99-phidgets.rules"
 if [ -e "$FILE" ]
 then
-  echo "Delete the existing Phidgets udev rules"
+  echo "Deleting the existing Phidgets udev rules"
   
   # Delete the old phidgets udev rules
   sudo rm /etc/udev/rules.d/99-phidgets.rules
