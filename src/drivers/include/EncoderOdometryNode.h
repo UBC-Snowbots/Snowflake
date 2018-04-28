@@ -10,32 +10,32 @@
 #define DRIVERS_ENCODER_ODOMETRY_NODE_H
 
 // STD Includes
-#include <iostream>
 #include <experimental/optional>
+#include <iostream>
 
 // ROS Includes
-#include <sensor_msgs/JointState.h>
 #include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
+#include <sensor_msgs/JointState.h>
 
 // Snowbots Includes
 #include <sb_utils.h>
 
 class EncoderOdometryNode {
-public:
-    EncoderOdometryNode(int argc, char **argv, std::string node_name);
+  public:
+    EncoderOdometryNode(int argc, char** argv, std::string node_name);
 
     /**
-     * Publishes an estimate of the current state of the robot as an Odometry msg
+     * Publishes an estimate of the current state of the robot as an Odometry
+     * msg
      *
      * Estimates are based on current encoder wheel count. Math used may be
      * found here:
      * https://www.cs.cmu.edu/afs/cs.cmu.edu/academic/class/16311/www/s07/labs/NXTLabs/Lab%203.html
      */
-    void publishEstimatedOdomMsg(const ros::TimerEvent &timer_event);
+    void publishEstimatedOdomMsg(const ros::TimerEvent& timer_event);
 
-private:
-
+  private:
     /**
      * The callback function for the JointState messages from the Encoders
      *
@@ -43,7 +43,8 @@ private:
      *
      * @param joint_state_ptr
      */
-    void encoderJointStateCallback(sensor_msgs::JointState::ConstPtr joint_state_ptr);
+    void encoderJointStateCallback(
+    sensor_msgs::JointState::ConstPtr joint_state_ptr);
 
     /**
      * The callback function for the Joints
@@ -72,7 +73,8 @@ private:
     // The publisher that publishes our Odometry estimates
     ros::Publisher odom_estimate_publisher;
 
-    // The timer that we use to publish our Odometry estimates at a set frequency
+    // The timer that we use to publish our Odometry estimates at a set
+    // frequency
     // We use this because we want to make velocity predictions based off
     // several sets of encoder readings (to allow for averaging and reduce
     // estimation error)
@@ -110,6 +112,5 @@ private:
 
     // The frame of reference the odom message should be published in
     std::string odom_frame_id;
-
 };
-#endif //DRIVERS_ENCODER_ODOMETRY_NODE_H
+#endif // DRIVERS_ENCODER_ODOMETRY_NODE_H
