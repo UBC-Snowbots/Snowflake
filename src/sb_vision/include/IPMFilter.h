@@ -16,7 +16,7 @@
 
 // I/O
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 
 // ROS
 #include <ros/console.h>
@@ -26,7 +26,7 @@
 #include <sb_utils.h>
 
 // Objects
-#include <IPM.h>
+#include "IPM.h"
 
 class IPMFilter {
   public:

@@ -41,7 +41,7 @@
                 (we get one best fit line per group) -->
             <rosparam param="cone_grouping_tolerance"> 1.8 </rosparam>
             <!-- Whether or not we will prioritise lines found to the right
-                (otherwise will proritise lines on the left) -->
+                (otherwise will prioritise lines on the left) -->
             <rosparam param="line_to_the_right"> true </rosparam>
             <!-- The maximum distance from the robot we will look for a line -->
             <rosparam param="max_distance_from_robot"> 2 </rosparam>

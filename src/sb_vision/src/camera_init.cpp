@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
     image_transport::Publisher camera_pub =
-    it.advertise("/robot/camera1/raw_image", 1);
+    it.advertise("robot/camera1/raw_image", 1);
 
     Mat inputImage;
 

@@ -5,8 +5,7 @@
  *              then publishes the new filtered image.
  */
 
-#include <HSVFilterNode.h>
-#include <ros/ros.h>
+#include "HSVFilterNode.h"
 
 int main(int argc, char** argv) {
     // Setup your ROS node

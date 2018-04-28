@@ -21,8 +21,8 @@ LaneFollow::LaneFollow(int argc, char **argv, std::string node_name) {
     image_transport::ImageTransport it(nh);
 
     // setup topics
-    std::string input_topic  = "/robot/vision/ipm_filtered_image";
-    std::string output_topic = "/robot/lane_follow/recommended_steer";
+    std::string input_topic  = "vision/complete_filtered_image";
+    std::string output_topic = "lane_follow/recommended_steer";
 
     uint32_t queue_size = 1;
 

@@ -8,11 +8,11 @@ find_package(catkin REQUIRED COMPONENTS
     rospy
     image_transport
     cv_bridge
+    sb_vision
+    sb_utils
     )
 
 find_package(OpenCV REQUIRED)
-find_package(sb_utils REQUIRED)
-find_package(sb_vision REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 add_definitions(-std=c++14)
@@ -21,7 +21,7 @@ catkin_package(
     INCLUDE_DIRS include
     DEPENDS
     EIGEN3
-)
+    )
 
 ###########
 ## Build ##
@@ -32,13 +32,11 @@ catkin_package(
 # include_directories(include)
 include_directories(
     ${catkin_INCLUDE_DIRS}
-    ${sb_utils_INCLUDE_DIRS}
     ${OpenCV_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIRS}
     ${EIGEN3_LIBRARIES}
-    ${sb_vision_INCLUDE_DIRS}
     ./include
-)
+    )
 
 ## Declare a C++ executable
 # add_executable(sample_package_node src/sample_package_node.cpp)
@@ -57,8 +55,6 @@ add_executable(lane_follow
 target_link_libraries(lane_follow
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
-    ${sb_utils_LIBRARIES}
-    ${sb_vision_LIBRARIES}
     )
 
 #############
@@ -71,9 +67,21 @@ target_link_libraries(lane_follow
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 if (CATKIN_ENABLE_TESTING)
-    # Adding gtests to the package
-    catkin_add_gtest(line-detect-test test/line-detect-test.cpp src/LineDetect.cpp src/LaneFollow.cpp)
-    catkin_add_gtest(lane-follow-test test/lane-follow-test.cpp src/LaneFollow.cpp src/LineDetect.cpp)
-    target_link_libraries(lane-follow-test ${catkin_LIBRARIES})
-    target_link_libraries(line-detect-test ${catkin_LIBRARIES})
+    # Adding gtests
+    catkin_add_gtest(line-detect-test
+        test/line-detect-test.cpp
+        src/LineDetect.cpp
+        src/LaneFollow.cpp)
+    target_link_libraries(line-detect-test
+            ${catkin_LIBRARIES})
+    catkin_add_gtest(lane-follow-test
+        test/lane-follow-test.cpp
+        src/LaneFollow.cpp
+        src/LineDetect.cpp)
+    target_link_libraries(lane-follow-test
+        ${catkin_LIBRARIES})
+
+    # Checking launch files for common errors
+    find_package(roslaunch REQUIRED)
+    roslaunch_add_file_check(launch)
 endif ()

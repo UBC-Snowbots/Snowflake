@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef GREEN_FILTER_H
-#define GREEN_FILTER_H
+#ifndef HSV_FILTER_HSVFILTER_H
+#define HSV_FILTER_HSVFILTER_H
 
 // OpenCV
 #include <opencv2/core/core.hpp>
@@ -37,8 +37,8 @@
 #include <stdio.h>
 
 // Snowbots
-#include <HSVFilter.h>
-#include <sb_utils.h>
+#include "HSVFilter.h"
+#include "sb_utils.h"
 
 using namespace cv;
 
@@ -64,7 +64,6 @@ class HSVFilterNode {
 
     /**
      * Update filter values
-     *
      */
     void updateFilter();
 
@@ -88,7 +87,7 @@ class HSVFilterNode {
     /**
      * Publishes the filtered image
      */
-    image_transport::Publisher filter_pub;
+    image_transport::Publisher hsv_filter_pub;
 
     // Frequency handling
     ros::Time last_published;

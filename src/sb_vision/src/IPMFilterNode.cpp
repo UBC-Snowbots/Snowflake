@@ -5,7 +5,7 @@
  *
  */
 
-#include <IPMFilterNode.h>
+#include "IPMFilterNode.h"
 
 using namespace cv;
 using namespace cv_bridge;
@@ -14,8 +14,8 @@ IPMFilterNode::IPMFilterNode(int argc, char** argv, std::string node_name) {
     receivedFirstImage = false;
 
     // Set topics
-    std::string image_topic  = "/vision/hsv_filtered_image";
-    std::string output_topic = "/vision/ipm_filtered_image";
+    std::string image_topic  = "vision/ipm_input_image";
+    std::string output_topic = "vision/ipm_output_image";
 
     // ROS
     ros::init(argc, argv, node_name);
