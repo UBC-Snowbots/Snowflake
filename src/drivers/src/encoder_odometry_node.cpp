@@ -8,8 +8,7 @@
 
 #include <EncoderOdometryNode.h>
 
-
-int main(int argc, char **argv){
+int main(int argc, char** argv) {
     std::string node_name = "encoder_to_odometry";
 
     // Setup our Encoder -> Odometry conversion node
