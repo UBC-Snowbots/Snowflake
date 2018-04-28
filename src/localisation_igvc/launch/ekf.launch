@@ -20,7 +20,7 @@
 
         <!-- Source: GPS (translated to a Odometry message) -->
         <!-- 2D Pose        | /gps      | nav_msgs/Odometry -->
-        <param name="gps_used" value="false" />
+        <param name="gps_used" value="true" />
         
         <!-- 3D Pose        | /vo      | nav_msgs/Odometry -->
         <param name="vo_used" value="false"/>
