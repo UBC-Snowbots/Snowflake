@@ -39,15 +39,17 @@ class DBSCAN {
     unordered_map<unsigned int, bool> _expanded;
 
     /*
-     * Key: index of a point in the PointCloud
+     * Stores the neighbours of each point
+     * Index: index of a point in the PointCloud
      * Value: a vector containing all of the point's neighbors
      * (A neighbour is a point that is within @_radius of a point of interest)
      */
-    unordered_map<unsigned int, vector<unsigned int>> _neighbors;
+    vector<unsigned int>* _neighbors;
 
-    // TODO: fine-tune parameters with real data
     int _min_neighbors = 5;
     float _radius      = 5;
+
+    unsigned int _sequential_cut_off = 1000;
 
   public:
     /*
@@ -68,7 +70,7 @@ class DBSCAN {
     void setRadius(float new_radius);
 
   private:
-    double dist(pcl::PointXYZ p1, pcl::PointXYZ p2);
+    static double dist(pcl::PointXYZ p1, pcl::PointXYZ p2);
     bool isPointVisited(unsigned int p_index);
     bool isPointExpanded(unsigned int p_index);
 
