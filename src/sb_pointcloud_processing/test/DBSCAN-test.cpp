@@ -32,9 +32,6 @@ TEST(DBSCAN, ClusterTwoNearPoints) {
     dbscan.findClusters(pcl_ptr);
     ASSERT_EQ(1, clusters.size());
     ASSERT_EQ(2, clusters[0].size());
-
-    EXPECT_EQ(1, clusters[0][0].x);
-    EXPECT_FLOAT_EQ(1.1, clusters[0][1].x);
 }
 
 TEST(DBSCAN, TestClusterTwoFarPoints) {

@@ -49,8 +49,7 @@ LineExtractorNode::LineExtractorNode(int argc,
 
     if (areParamsInvalid()) {
         ROS_DEBUG(
-        "At least one of your parameters are negative; they should be "
-        "positive!");
+        "Detected invalid params - make sure all params are positive");
         ros::shutdown();
     }
 

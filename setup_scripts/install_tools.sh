@@ -28,9 +28,9 @@ declare -a new_shell_config_lines=(
     "source /opt/ros/kinetic/setup.sh"\
     # Make sure that all shells know where to find our custom gazebo models,
     # plugins, and resources. Make sure to preserve the path that already exists as well
-    "export GAZEBO_MODEL_PATH=$DIR/src/sb_gazebo/models:${GAZEBO_MODEL_PATH}"\
-    "export GAZEBO_PLUGIN_PATH=$DIR/src/sb_gazebo/lib:${GAZEBO_PLUGIN_PATH}"\
-    "export GAZEBO_RESOURCE_PATH=$DIR/src/sb_gazebo/models:${GAZEBO_RESOURCE_PATH}"\
+    "export GAZEBO_MODEL_PATH=$DIR/../src/sb_gazebo/models:${GAZEBO_MODEL_PATH}"\
+    "export GAZEBO_PLUGIN_PATH=$DIR/../src/sb_gazebo/lib:${GAZEBO_PLUGIN_PATH}"\
+    "export GAZEBO_RESOURCE_PATH=$DIR/../src/sb_gazebo/models:${GAZEBO_RESOURCE_PATH}"\
     # Aliases to make development easier
     "alias clion=\"clion & disown && exit\""\
     "alias rviz=\"rviz & disown && exit\""\
@@ -39,14 +39,14 @@ declare -a new_shell_config_lines=(
 
 # Add all of our new shell config options to all the shell
 # config files, but only if they don't already have them
-for file_name in "${SHELL_CONFIG_FILES[@]}"; 
+for file_name in "${SHELL_CONFIG_FILES[@]}";
 do
     echo "Setting up $file_name"
-    for line in "${new_shell_config_lines[@]}"; 
+    for line in "${new_shell_config_lines[@]}";
     do
-        if ! grep -Fq "$line" $file_name 
+        if ! grep -Fq "$line" $file_name
         then
-            echo "$line" >> $file_name 
+            echo "$line" >> $file_name
         fi
     done
 done

@@ -7,6 +7,8 @@ UBC Snowbots Repository for competitions.
 - [Installation and Setup](#installation-and-setup)
   - [Important Notes](#important-notes)
   - [Zed Configuration](#zed-configuration)
+  - [External Packages](#external-packages)
+  - [Nodelets](#nodelets-quick-guide)
 - [New Members](#new-members)
 - [Conventions](#conventions)
   - [Github](#github-conventions)
@@ -50,8 +52,27 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
 
 ### Zed Configuration
-- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
+- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) This repository already contains `zed_ros_wrapper` as a ~~submodule~~ standalone package in `src/external_pkgs/zed_ros_wrapper`(As of 4/27/2018 submodules have been migrated to wstool)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
+
+### External Packages
+Note: External packages are defined as packages which does not have an installable build from apt.
+
+To manually install external packages using wstool, run `wstool set src/external_pkgs/<pkg_name> https://github.com/some_org/<pkg_name>.git --git` in the workspace root.
+The full syntax and options can be found with `wstool set -h`
+
+To pull in the external package we call `wstool update` 
+
+ 
+Note: `wstool` is addressed and run in `install_dependencies.sh`, should there be any need to run manual, `wstool` should be run after all steps from installation and setup has been completed. 
+
+Current packages included under wstool: 
+- Sicktoolbox: Drivers for interacting with Sick Lidars 
+- Sicktoolbox_wrapper: Interface for Sick Lidar drivers integration into ROS
+- ROS_Arduino_bridge: Arduino driver for ROS
+- NMEA_Navsat_Driver: NMEA msg driver
+- Zed_ROS_Wrapper: Wrapper for interfacing Zed Stereo Cam with ROS
+- realsense: Wrapper for interfacing the Realsense D415 with ROS
 
 ### Nodelets Quick Guide
 See [here](nodelets.md)
