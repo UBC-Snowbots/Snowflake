@@ -7,6 +7,8 @@ UBC Snowbots Repository for competitions.
 - [Installation and Setup](#installation-and-setup)
   - [Important Notes](#important-notes)
   - [Zed Configuration](#zed-configuration)
+  - [External Packages](#external-packages)
+  - [Nodelets](#nodelets-quick-guide)
 - [New Members](#new-members)
 - [Conventions](#conventions)
   - [Github](#github-conventions)
@@ -40,7 +42,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 4. Boot into Ubuntu for the remaining steps
 5. Install git by running `sudo apt-get install git`
 6. Fork this repository by heading over to the GitHub page and click the fork button on the top right
-7. Clone your server-side repository from the terminal by running git clone https://github.com/YOUR_USERNAME/Snowflake.git (YOUR_USERNAME is your github username)
+7. Clone your server-side repository from the terminal by running `git clone --recursive https://github.com/YOUR_USERNAME/Snowflake.git` (`YOUR_USERNAME` is your github username)
 8. To start the setup run `cd ~/Snowflake && ./setup_scripts/install_tools.sh` (Do not run this script as root).
     - *Just choose yes and enter your password when the terminal prompts you*
 9. If everything compiles correctly and you don't get any errors, then you're good to go!
@@ -50,8 +52,30 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 - CLion will not support auto-completion in your *.cpp* and *.h* files until you've added them to the CMake file
 
 ### Zed Configuration
-- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) (this package already contains `zed_ros_wrapper` as a submodule in `src/zed_ros_wrapper`)
+- Follow the instructions on [this github page](https://github.com/stereolabs/zed-ros-wrapper) This repository already contains `zed_ros_wrapper` as a ~~submodule~~ standalone package in `src/external_pkgs/zed_ros_wrapper`(As of 4/27/2018 submodules have been migrated to wstool)
 - Download ZED calibration file from the link indicated when you run `zed.launch` and place it in the folder `/usr/local/zed/settings/`
+
+### External Packages
+Note: External packages are defined as packages which does not have an installable build from apt.
+
+To manually install external packages using wstool, run `wstool set src/external_pkgs/<pkg_name> https://github.com/some_org/<pkg_name>.git --git` in the workspace root.
+The full syntax and options can be found with `wstool set -h`
+
+To pull in the external package we call `wstool update` 
+
+ 
+Note: `wstool` is addressed and run in `install_dependencies.sh`, should there be any need to run manual, `wstool` should be run after all steps from installation and setup has been completed. 
+
+Current packages included under wstool: 
+- Sicktoolbox: Drivers for interacting with Sick Lidars 
+- Sicktoolbox_wrapper: Interface for Sick Lidar drivers integration into ROS
+- ROS_Arduino_bridge: Arduino driver for ROS
+- NMEA_Navsat_Driver: NMEA msg driver
+- Zed_ROS_Wrapper: Wrapper for interfacing Zed Stereo Cam with ROS
+- realsense: Wrapper for interfacing the Realsense D415 with ROS
+
+### Nodelets Quick Guide
+See [here](nodelets.md)
 
 ## New Members
 We've put together a seperate `README` file that should help to get you up and running. You can find it here: [README_NEWMEMBERS.md](README_NEWMEMBERS.md)
@@ -59,7 +83,9 @@ We've put together a seperate `README` file that should help to get you up and r
 ## Conventions
 
 ### Github Conventions
-- We follow the Forking Workflow: here is what it is [here](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow) and how to use it [here](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
+- We follow the Forking Workflow:
+    - [what it is](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow)
+    - [how to use it](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
 - All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
     - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
