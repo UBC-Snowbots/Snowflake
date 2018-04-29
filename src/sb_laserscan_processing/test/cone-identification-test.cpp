@@ -164,9 +164,13 @@ TEST(ConeIdentification, oneValidCones) {
     std::cout<<std::endl;
 }*/
 
-/*
+
 TEST(ConeIdentification, fourCones) {
-    float dist_tol = 0.05;
+    float dist_tol = 0.5;
+    float radius_exp = 1;
+    float radius_tol = 1;
+    int line_point_dist = 3;
+    double ang_threshold = M_PI/2;
 
     sensor_msgs::LaserScan laser_msg;
     ulong num_rays        = 300;
@@ -178,28 +182,46 @@ TEST(ConeIdentification, fourCones) {
     laser_msg.range_min = 0.02;
     laser_msg.range_max = 5.6;
     // Add the obstacles
-    std::fill(
-            laser_msg.ranges.begin(), laser_msg.ranges.begin() + 8, 0.75); // cone1
-    std::fill(
-            laser_msg.ranges.begin() + 88, laser_msg.ranges.begin() + 93, 1.25); // cone2
-    std::fill(
-            laser_msg.ranges.begin() + 115, laser_msg.ranges.begin() + 118, 2.13); // cone3
-    std::fill(
-            laser_msg.ranges.begin() + 126, laser_msg.ranges.begin() + 128, 3.09); // cone4
+    std::fill(laser_msg.ranges.begin(), laser_msg.ranges.begin() + 8, 0.75); // cone1
+    std::fill(laser_msg.ranges.begin() + 88, laser_msg.ranges.begin() + 93, 1.25); // cone2
+    std::fill(laser_msg.ranges.begin() + 115, laser_msg.ranges.begin() + 118, 2.13); // cone3
+    std::fill(laser_msg.ranges.begin() + 126, laser_msg.ranges.begin() + 128, 3.09); // cone4 (this one not being detected since there's only 2 points)
 
     // Make some ranges outside the min and max of the scan
-    std::fill(
-            laser_msg.ranges.begin() + 150, laser_msg.ranges.begin() + 160, 45.123);
+    std::fill(laser_msg.ranges.begin() + 150, laser_msg.ranges.begin() + 160, 45.123);
     std::fill(laser_msg.ranges.begin() + 50, laser_msg.ranges.begin() + 70, 0.01);
 
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+
+    /*
     for (int i=0; i<cones.size(); i++){
         std::cout<<"X: "<<cones[i].center.x<<std::endl;
         std::cout<<"Y: "<<cones[i].center.y<<std::endl;
         std::cout<<"RADIUS: "<<cones[i].radius<<std::endl;
-    }
-}*/
+    }*/
+}
+
+//Requires splitting, 2 cones in a cluster
+TEST(ConeIdentification, twoConeCluster){
+    float dist_tol = 0.5;
+    float radius_exp = 1;
+    float radius_tol = 1;
+    int line_point_dist = 3;
+    double ang_threshold = M_PI/2;
+
+    sensor_msgs::LaserScan laser_msg;
+    ulong num_rays        = 300;
+    laser_msg.angle_min       = (float) -M_PI / 2;
+    laser_msg.angle_max       = (float) M_PI / 2;
+    laser_msg.angle_increment = (laser_msg.angle_max - laser_msg.angle_min) / num_rays;
+    // Set all the ranges to 0 initially
+    laser_msg.ranges    = std::vector<float>(num_rays, 0);
+    laser_msg.range_min = 0.02;
+    laser_msg.range_max = 5.6;
+
+    
+}
 
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);

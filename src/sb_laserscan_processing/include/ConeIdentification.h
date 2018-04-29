@@ -13,7 +13,6 @@
 #include <math.h>
 
 
-
 class ConeIdentification {
     public:
         /**
@@ -23,9 +22,22 @@ class ConeIdentification {
          * @param dist_tol max distance between points to be considered that are part of one cone
          * @param radius_exp expected radius of cone
          * @param radius_tol maximum difference between calculated cone radius and expected cone radius
+         * @param line_point_dist the number of points to take before and after each edge point to form a line and test angle (for splitting edge clusters that
+         * may contain multiple cones), should be <= 1/2 laser point scans
+         * @param ang_tol the max angle for a split to be considered (in radians)
          * @return a vector of cone obstacle messages identified
          */
-        static std::vector<mapping_igvc::ConeObstacle> identifyCones(const sensor_msgs::LaserScan &laser_msg, float dist_tol, float radius_exp, float radius_tol);
+        static std::vector<mapping_igvc::ConeObstacle> identifyCones(const sensor_msgs::LaserScan &laser_msg, double dist_tol, double radius_exp, double radius_tol, int line_point_dist, double ang_threshold);
+
+        /**
+        * Splits a cluster of edge points such that points forming multiple cones extremely close to one another will be returned
+        * as vectors of points where each vector represents one cone
+        * @param edge_points
+        * @param line_point_dist the number of points to take before and after each edge point to form a line and test angle
+        * @param ang_tol the max angle for a split to be considered (in radians)
+        * @return a vector consisting of split edge point vectors
+        */
+        static std::vector<std::vector<mapping_igvc::Point2D>> splitEdge(const std::vector<mapping_igvc::Point2D> &edge_points, int line_point_dist, double ang_threshold);
 
         /**
         * Converts a cluster of edge points to a cone obstacle with a predicted radius
@@ -42,7 +54,7 @@ class ConeIdentification {
          * @param ang angle reading, should be in valid min-max angle of laser scan
          * @return point in 2d
          */
-        static mapping_igvc::Point2D laserToPoint(float dist, float ang);
+        static mapping_igvc::Point2D laserToPoint(double dist, double ang);
 
         /**
          * Gets the distance between 2 points
@@ -50,7 +62,7 @@ class ConeIdentification {
          * @param p2 point 2
          * @return distance between points
          */
-        static float getDist(const mapping_igvc::Point2D &p1, const mapping_igvc::Point2D &p2);
+        static double getDist(const mapping_igvc::Point2D &p1, const mapping_igvc::Point2D &p2);
 };
 
 

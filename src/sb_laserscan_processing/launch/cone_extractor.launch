@@ -8,5 +8,12 @@
 
         <!-- tolerance for difference between expected cone radius and calculated cone radius -->
         <param name="cone_rad_tol" value="3.0" type="double" />
+
+        <!-- index difference between points used in edge cluster splitting algorithm -->
+        <param name="line_point_dist" value="3" type="int" />
+
+        <!-- max angle needed to split edge clusters -->
+        <param name="ang_threshold" value="1.570796327" type="double" />
+
     </node>
 </launch>
