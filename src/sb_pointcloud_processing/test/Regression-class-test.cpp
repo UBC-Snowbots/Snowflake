@@ -117,7 +117,7 @@ TEST(Regression, OneNonLinearFitWithNoise) {
 
     float x_min                     = 0;
     float x_max                     = 99;
-    float x_delta                   = 1;
+    float x_delta                   = 0.01;
     std::vector<float> coefficients = {1000, 7, -0.7, 0.007};
     LineExtractor::TestUtils::LineArgs args(
     coefficients, x_min, x_max, x_delta);
