@@ -29,11 +29,16 @@ IGVCVisualizerNode::IGVCVisualizerNode(int argc, char **argv, std::string node_n
     // Initialise margin of error and image update rate
     retrieveVisualizerParameters(private_nh);
 
-    // Setup subscriber
-    std::string pcl_topic = "/zed/point_cloud/cloud_registered";
+    // Setup raw pcl subscriber
+    std::string raw_pcl_topic = "/zed/point_cloud/cloud_registered";
     uint32_t queue_size = 1;
-    image_sub = nh.subscribe<sensor_msgs::PointCloud2>(pcl_topic, queue_size, &IGVCVisualizerNode::rawPCLCallBack,
+    raw_pcl_sub = nh.subscribe<sensor_msgs::PointCloud2>(raw_pcl_topic, queue_size, &IGVCVisualizerNode::rawPCLCallBack,
                                                        this);
+
+    // Setup filtered pcl subscriber
+    std::string filtered_pcl_topic = "d";
+    filtered_pcl_sub = nh.subscribe<sensor_msgs::PointCloud2>(filtered_pcl_topic, queue_size, &IGVCVisualizerNode::filteredPCLCallBack,
+                                                         this);
 
     // Setup timer callback for updating the camera
     timer = nh.createTimer(ros::Duration(image_update_rate), &IGVCVisualizerNode::updateVisualizerCallback, this);
@@ -67,6 +72,31 @@ void IGVCVisualizerNode::rawPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr
         // Setup how big the points are in the point cloud
         viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1.0,
                                                  "visualized_cloud");
+    }
+}
+
+void IGVCVisualizerNode::filteredPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr &input) {
+    // Only update point cloud if system is not paused
+    if (!isPaused) {
+        // Obtain the ROS pointcloud and convert into PCL Pointcloud2
+        pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
+        pcl_conversions::toPCL(*(input), *(pcl_input));
+
+        // Converts from the Pointcloud2 format to PointcloudRGB
+        pcl::PointCloud<pcl::PointXYZRGB>::Ptr filtered_pcl_rgb(
+                new pcl::PointCloud<pcl::PointXYZRGB>());
+        pcl::fromPCLPointCloud2(*pcl_input, *filtered_pcl_rgb);
+
+
+        // Remove all old point clouds from the view
+        viewer->removeAllPointClouds(1);
+
+        // Show the new filtered cloud retrieved from the camera
+        viewer->addPointCloud(filtered_pcl_rgb, "filtered_pcl_rgb", 1);
+
+        // Setup how big the points are in the point cloud
+        viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1.0,
+                                                 "filtered_pcl_rgb");
     }
 }
 

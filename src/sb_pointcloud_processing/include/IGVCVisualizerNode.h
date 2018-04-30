@@ -43,6 +43,13 @@ private:
     void rawPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr &input);
 
     /**
+     * Callback for the filtered pointcloud
+     *
+     * @param address of filtered point cloud
+     */
+    void filteredPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr &input);
+
+    /**
      * Initialization of the filter
      */
     boost::shared_ptr<pcl::visualization::PCLVisualizer> setUpPCLVisualizer();
@@ -103,7 +110,8 @@ private:
      */
     static void setParameter(std::string node_name, std::string param_name, float val);
 
-    ros::Subscriber image_sub;
+    ros::Subscriber raw_pcl_sub;
+    ros::Subscriber filtered_pcl_sub;
 
     // Timer Variables
     ros::Timer timer;
