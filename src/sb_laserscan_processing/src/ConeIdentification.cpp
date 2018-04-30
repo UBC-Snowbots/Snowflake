@@ -20,6 +20,7 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                     mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
 
                     //Testing
+                    std::cout<<"Split Result"<<std::endl;
                     std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                     std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
                     std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
@@ -35,6 +36,7 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                 mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
 
                 //Testing
+                std::cout<<"No Split Result"<<std::endl;
                 std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                 std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
                 std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
@@ -62,6 +64,7 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                         mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
 
                         //Testing
+                        std::cout<<"Split Result"<<std::endl;
                         std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                         std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
                         std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
@@ -77,6 +80,7 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                     mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
 
                     //Testing
+                    std::cout<<"No Split Result"<<std::endl;
                     std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                     std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
                     std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;

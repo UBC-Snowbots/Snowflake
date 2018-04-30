@@ -5,6 +5,7 @@
  */
 
 #include <ConeIdentification.h>
+#include "./LaserscanBuilder.h"
 #include <gtest/gtest.h>
 
 // Test 3 points->cone in an edge (forming a semi circle) - points are evenly distributed
@@ -211,16 +212,14 @@ TEST(ConeIdentification, twoConeCluster){
     double ang_threshold = M_PI/2;
 
     sensor_msgs::LaserScan laser_msg;
-    ulong num_rays        = 300;
-    laser_msg.angle_min       = (float) -M_PI / 2;
-    laser_msg.angle_max       = (float) M_PI / 2;
-    laser_msg.angle_increment = (laser_msg.angle_max - laser_msg.angle_min) / num_rays;
-    // Set all the ranges to 0 initially
-    laser_msg.ranges    = std::vector<float>(num_rays, 0);
-    laser_msg.range_min = 0.02;
-    laser_msg.range_max = 5.6;
+    LaserscanBuilder::LaserscanBuilder builder;
+    builder.addCone(3,3,1); //x y radius
 
-    
+    builder.addCone (3,-3,1);
+    laser_msg = builder.getLaserscan();
+
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+
 }
 
 int main(int argc, char** argv) {

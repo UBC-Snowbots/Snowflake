@@ -59,7 +59,7 @@ if (CATKIN_ENABLE_TESTING)
     #catkin_add_gtest(laserscan-cone-manager-test test/laserscan-cone-manager-test.cpp src/LaserscanConeManager.cpp)
     #target_link_libraries(laserscan-cone-manager-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(cone-identification-test test/cone-identification-test.cpp src/ConeIdentification.cpp)
+    catkin_add_gtest(cone-identification-test test/cone-identification-test.cpp src/ConeIdentification.cpp test/LaserscanBuilder.h)
     target_link_libraries(cone-identification-test ${catkin_LIBRARIES})
 
     # Adding rostest to the package

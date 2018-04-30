@@ -46,9 +46,7 @@ class ConeIdentification {
         */
         static mapping_igvc::ConeObstacle edgeToCone(const std::vector<mapping_igvc::Point2D> &edge_points);
 
-
-    private:
-        /**
+         /**
          * Converts a laserscan reading to a point
          * @param dist distance reading, should be in valid min-max range of laser scan
          * @param ang angle reading, should be in valid min-max angle of laser scan
