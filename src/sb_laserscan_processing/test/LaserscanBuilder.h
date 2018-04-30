@@ -47,8 +47,10 @@ namespace LaserscanBuilder {
                 for (double range = laser_msg.range_min; range <= laser_msg.range_max; range += 0.01) {
                     mapping_igvc::Point2D point = ConeIdentification::laserToPoint(range, ang);
                     if (fabs(ConeIdentification::getDist(coneCenter, point) - radius) <= point_tol) {
-                        if (range < laser_msg.ranges[i]) //Only add if not currently occupied by a closer range
+                        if (range < laser_msg.ranges[i]) { //Only add if not currently occupied by a closer range
                             laser_msg.ranges[i] = range;
+                            //std::cout<<"("<<point.x<<","<<point.y<<")"<<std::endl;
+                        }
                         break; //If we find the edge, we are done for this ray
                     }
                 }

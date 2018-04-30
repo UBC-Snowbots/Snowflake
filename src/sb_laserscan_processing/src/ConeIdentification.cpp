@@ -20,11 +20,15 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                     mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
 
                     //Testing
-                    std::cout<<"Split Result"<<std::endl;
+                    for (int j=0 ;j < split_edges[i].size(); j++){
+                        std::cout<<"("<<split_edges[i][j].x<<","<<split_edges[i][j].y<<")"<<std::endl; //Print points in edge
+                    }
+                    std::cout<<"Split Result, Out of Range"<<std::endl;
                     std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                     std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
                     std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
                     std::cout<<std::endl;
+                    //
 
                     if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius
                         potential_cone.radius = radius_exp;
@@ -36,7 +40,7 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                 mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
 
                 //Testing
-                std::cout<<"No Split Result"<<std::endl;
+                std::cout<<"No Split Result, Out of Range"<<std::endl;
                 std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                 std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
                 std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
@@ -64,7 +68,10 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                         mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
 
                         //Testing
-                        std::cout<<"Split Result"<<std::endl;
+                        for (int j=0 ;j < split_edges[i].size(); j++){
+                            std::cout<<"("<<split_edges[i][j].x<<","<<split_edges[i][j].y<<")"<<std::endl;
+                        }
+                        std::cout<<"Split Result, out of points or tol"<<std::endl;
                         std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                         std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
                         std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
@@ -80,7 +87,7 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                     mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
 
                     //Testing
-                    std::cout<<"No Split Result"<<std::endl;
+                    std::cout<<"No Split Result, out of points or tol"<<std::endl;
                     std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                     std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
                     std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
