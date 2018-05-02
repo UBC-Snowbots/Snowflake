@@ -17,12 +17,14 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
             if (edge_points.size() >= line_point_dist * 2 + 1) { // Don't bother splitting edges with too few points
                 std::vector<std::vector<mapping_igvc::Point2D>> split_edges = splitEdge(edge_points, line_point_dist, ang_threshold); //Split edge points if multiple cones detected (Temp values right now as params)
                 for (int i = 0; i < split_edges.size(); i++){
+                    
                     mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
 
                     //Testing
+                    /*
                     for (int j=0 ;j < split_edges[i].size(); j++){
                         std::cout<<"("<<split_edges[i][j].x<<","<<split_edges[i][j].y<<")"<<std::endl; //Print points in edge
-                    }
+                    }*/
                     std::cout<<"Split Result, Out of Range"<<std::endl;
                     std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                     std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
@@ -68,9 +70,10 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                         mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
 
                         //Testing
+                        /*
                         for (int j=0 ;j < split_edges[i].size(); j++){
                             std::cout<<"("<<split_edges[i][j].x<<","<<split_edges[i][j].y<<")"<<std::endl;
-                        }
+                        }*/
                         std::cout<<"Split Result, out of points or tol"<<std::endl;
                         std::cout<<"X: "<<potential_cone.center.x<<std::endl;
                         std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
@@ -166,36 +169,54 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
 mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapping_igvc::Point2D> &edge_points){
     mapping_igvc::ConeObstacle cone = mapping_igvc::ConeObstacle();
 
-    //We can assume there's at least 3 points at the edge of the cone
-    int start_i = 0; //First index
-    int end_i = edge_points.size()-1; //Last index
+    /*
+    int center_i = edge_points.size()/2;
+    int first_i = 0; //First index
+    int last_i = edge_points.size()-1; //Last index
 
     double total_x = 0;
     double total_y = 0;
     double total_radius = 0;
+    int counter = 0;
 
-    /* Formula from http://paulbourke.net/geometry/circlesphere/ */
     //Get avg center
-    for (int i = 1; i < end_i; i++) {
-        double slopeA = (edge_points[i].y - edge_points[start_i].y) / (edge_points[i].x - edge_points[start_i].x);
-        double slopeB = (edge_points[end_i].y - edge_points[i].y) / (edge_points[end_i].x - edge_points[i].x);
-        total_x += (((slopeA * slopeB) * (edge_points[start_i].y - edge_points[end_i].y)) +
-                         slopeB * (edge_points[start_i].x + edge_points[i].x) -
-                         slopeA * (edge_points[i].x + edge_points[end_i].x)) /
+    for (int i = last_i/4 + 1; i <= last_i * 3 / 4; i++) {
+        double slopeA = (edge_points[i].y - edge_points[first_i].y) / (edge_points[i].x - edge_points[first_i].x);
+        double slopeB = (edge_points[last_i].y - edge_points[i].y) / (edge_points[last_i].x - edge_points[i].x);
+        total_x += (((slopeA * slopeB) * (edge_points[first_i].y - edge_points[last_i].y)) +
+                         slopeB * (edge_points[first_i].x + edge_points[i].x) -
+                         slopeA * (edge_points[i].x + edge_points[last_i].x)) /
                         (2 * (slopeB - slopeA));
-        total_y += -(((total_x / i) - (edge_points[start_i].x + edge_points[i].x) / 2) / slopeA) +
-                        ((edge_points[start_i].y + edge_points[i].y) / 2);
+        total_y += -(((total_x / i) - (edge_points[first_i].x + edge_points[i].x) / 2) / slopeA) +
+                        ((edge_points[first_i].y + edge_points[i].y) / 2);
+        counter ++;
     }
 
-    cone.center.x = total_x / (end_i - 1);
-    cone.center.y = total_y / (end_i - 1);
+    cone.center.x = total_x / counter;
+    cone.center.y = total_y / counter;
 
     //Get avg radius
-    for (int i=0; i <= end_i; i++){
+    for (int i=0; i < edge_points.size(); i++){
         total_radius += getDist(edge_points[i], cone.center);
     }
-    cone.radius = total_radius / (end_i + 1);
+    cone.radius = total_radius / (edge_points.size());
 
     return cone;
     //TODO: create header
+    */
+
+    int mid_i = edge_points.size()/2;
+    double slopeA = (edge_points[mid_i].y - edge_points[0].y) / (edge_points[mid_i].x - edge_points[0].x);
+    double slopeB = (edge_points[edge_points.size()-1].y - edge_points[mid_i].y) / (edge_points[edge_points.size()-1].x - edge_points[mid_i].x);
+    cone.center.x = (((slopeA * slopeB) * (edge_points[0].y - edge_points[edge_points.size()-1].y)) +
+                slopeB * (edge_points[0].x + edge_points[mid_i].x) -
+                slopeA * (edge_points[mid_i].x + edge_points[edge_points.size()-1].x)) /
+               (2 * (slopeB - slopeA));
+    cone.center.y =  -((cone.center.x - (edge_points[0].x + edge_points[mid_i].x) / 2) / slopeA) +
+               ((edge_points[0].y + edge_points[mid_i].y) / 2);
+
+    cone.radius = getDist(edge_points[mid_i], cone.center);
+
+    return cone;
+
 }

@@ -216,30 +216,29 @@ TEST(ConeIdentification, fourValidCones){
     sensor_msgs::LaserScan laser_msg;
     LaserscanBuilder::LaserscanBuilder builder;
 
-    //builder.addCone(3, 1, 0.5); //x y radius
-    //builder.addCone(3, -1, 0.5);
+    builder.addCone(3, 1, 0.5); //x y radius
+    builder.addCone(3, -1, 0.5);
     builder.addCone(0, 3, 0.5);
     builder.addCone (0, -3, 0.5); //ISSUE WITH THIS (Appears to be bug with detecting cones along the negative y line)
     laser_msg = builder.getLaserscan();
 
     std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
 
-    /*
     EXPECT_NEAR(cones[0].radius, 0.5, 0.01);
     EXPECT_NEAR(cones[0].center.x, 0, 0.1);
     EXPECT_NEAR(cones[0].center.y, -3.0, 0.1);
 
     EXPECT_NEAR(cones[1].radius, 0.5, 0.01);
-    EXPECT_NEAR(cones[1].center.x, 0, 0.1);
-    EXPECT_NEAR(cones[1].center.y, 3.0, 0.1);
+    EXPECT_NEAR(cones[1].center.x, 3.0, 0.1);
+    EXPECT_NEAR(cones[1].center.y, -1.0, 0.1);
 
     EXPECT_NEAR(cones[2].radius, 0.5, 0.01);
     EXPECT_NEAR(cones[2].center.x, 3.0, 0.1);
-    EXPECT_NEAR(cones[2].center.y, -1.0, 0.1);
+    EXPECT_NEAR(cones[2].center.y, 1.0, 0.1);
 
     EXPECT_NEAR(cones[3].radius, 0.5, 0.01);
-    EXPECT_NEAR(cones[3].center.x, 3.0, 0.1);
-    EXPECT_NEAR(cones[3].center.y, 1.0, 0.1);*/
+    EXPECT_NEAR(cones[3].center.x, 0.0, 0.1);
+    EXPECT_NEAR(cones[3].center.y, 3.0, 0.1);
 }
 
 int main(int argc, char** argv) {
