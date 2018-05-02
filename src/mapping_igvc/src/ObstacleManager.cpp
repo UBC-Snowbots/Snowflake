@@ -203,7 +203,7 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
             // Calculate `y` as a floating point distance
             double y = std::sqrt(std::pow(cone.radius,2) - std::pow(x,2));
             // Return the equivalent number of cells
-            return (int)std::ceil(y);
+            return (int)std::floor(y);
         };
         // Iterate over the cone in 2D
         auto cone_radius_num_cells = (int)std::floor(cone.radius / occ_grid_cell_size);
@@ -211,7 +211,7 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
             // figure out the height of the cone (value of y) at the current x value
             // (in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
             auto cone_height_num_cells = circle(x*occ_grid_cell_size);
-            for (int y = 0; y < cone_height_num_cells; y++){
+            for (int y = -cone_height_num_cells; y < cone_height_num_cells; y++){
                 occupied_points.emplace_back(Point2D(
                         cone.x + x * occ_grid_cell_size,
                         cone.y + y * occ_grid_cell_size

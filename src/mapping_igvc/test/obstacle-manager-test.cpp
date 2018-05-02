@@ -602,35 +602,54 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_single_cone){
 TEST_F(ObstacleManagerTest, generate_occ_grid_with_single_line){
     ObstacleManager obstacle_manager(1, 1, 0.5, 0.5);
 
-    obstacle_manager.addObstacle(Spline({{1,1}, {3,1}, {4,3}}));
+    obstacle_manager.addObstacle(Spline({{1,1}, {3,1}, {4,3}, {7,0}}));
 
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
     std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
-            {_,X,X,X,X,X,_,_,_,},
-            {X,X,X,X,X,X,X,_,_,},
-            {_,X,X,X,X,X,X,X,_,},
-            {_,_,_,_,_,X,X,X,_,},
-            {_,_,_,_,_,_,X,X,X,},
-            {_,_,_,_,_,_,X,X,X,},
-            {_,_,_,_,_,_,_,X,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,X,_,},
+            {_,_,X,X,X,X,_,_,_,_,_,_,X,X,X,},
+            {_,X,X,X,X,X,X,_,_,_,_,_,X,X,_,},
+            {X,X,X,X,X,X,X,_,_,_,_,X,X,X,_,},
+            {_,X,_,_,X,X,X,_,_,_,X,_,X,_,_,},
+            {_,_,_,_,_,X,X,X,X,X,X,X,_,_,_,},
+            {_,_,_,_,_,X,X,X,X,X,X,_,_,_,_,},
+            {_,_,_,_,_,_,X,X,X,X,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,X,X,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
     };
 
     checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 
-// Test generating an occupancy grid with a line and a cone that are overlapping
-TEST_F(ObstacleManagerTest, generate_occ_grid_with_overlapping_line_and_cone){
+// Test generating an occupancy grid with a line and a cone that are seperate
+TEST_F(ObstacleManagerTest, generate_occ_grid_with_seperate_line_and_cone){
     ObstacleManager obstacle_manager(1, 1, 0, 0.5);
 
     obstacle_manager.addObstacle(Spline({{1,3}, {9,3}}));
-    obstacle_manager.addObstacle(Cone(4, 3, 2));
+    obstacle_manager.addObstacle(Cone(4, 10, 2));
 
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
     std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
             {X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,},
             {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,},
+            {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,},
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
