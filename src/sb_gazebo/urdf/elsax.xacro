@@ -80,8 +80,8 @@
   <caster_wheel lr="back" tY="0" fb="back" wheel_displacement="-0.35"/>
 
   <!-- Vertical Tower Uprights -->
-  <tower_vert lr="left" tY="1"/>
-  <tower_vert lr="right" tY="-1"/>
+  <tower_vert lr="left" tY="1" tX="1"/>
+  <tower_vert lr="right" tY="-1" tX="1"/>
 
 
   <!-- Horizontal Tower Top Bar -->
@@ -89,7 +89,7 @@
     <parent link="chassis"/>
     <child link="tower_top_bar"/>
     <origin
-        xyz="${-(chassis_length/2) + (tower_thickness/2)} 0 ${chassis_height + chassis_elevation + tower_height - (tower_thickness/2)}"
+        xyz="${(chassis_length/2) - (tower_thickness/2)} 0 ${chassis_height + chassis_elevation + tower_height - (tower_thickness/2)}"
         rpy="0 0 0"/>
   </joint>
 
@@ -123,7 +123,7 @@
   <joint name="camera_joint" type="fixed">
     <parent link="chassis"/>
     <child link="camera"/>
-    <origin xyz="${-(chassis_length/2)} 0 ${chassis_height + chassis_elevation + tower_height + camera_size}"
+    <origin xyz="${(chassis_length/2)} 0 ${chassis_height + chassis_elevation + tower_height + camera_size}"
             rpy="0 ${camera_angle} 0"/>
   </joint>
 

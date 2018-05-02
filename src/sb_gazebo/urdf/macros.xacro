@@ -148,12 +148,12 @@
 </xacro:macro>
 
 <!-- Macro to generate vertical tower uprights -->
-<xacro:macro name="tower_vert" params="lr tY">
+<xacro:macro name="tower_vert" params="lr tX:=-1 tY">
 
 <joint name="${lr}_tower_joint" type="fixed">
   <parent link="chassis"/>
   <child link="tower_${lr}"/>
-  <origin xyz="${-(chassis_length/2) + (tower_thickness/2)} ${tY * ((chassis_width/2) - (tower_thickness/2))} ${chassis_height + chassis_elevation + (tower_height/2)}" rpy="0 0 0"/> 
+  <origin xyz="${tX * ((chassis_length/2) - (tower_thickness/2))} ${tY * ((chassis_width/2) - (tower_thickness/2))} ${chassis_height + chassis_elevation + (tower_height/2)}" rpy="0 0 0"/> 
 </joint>
 
 <link name='tower_${lr}'>
