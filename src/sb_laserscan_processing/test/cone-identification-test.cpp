@@ -241,6 +241,61 @@ TEST(ConeIdentification, fourValidCones){
     EXPECT_NEAR(cones[3].center.y, 3.0, 0.1);
 }
 
+//Test identifyCones with 2 cones in a cluster (their laserscan points overlap)
+TEST(ConeIdentification, twoOverlappingCones){
+    float dist_tol = 0.01;
+    float radius_exp = 1.0;
+    float radius_tol = 0.05;
+    int line_point_dist = 3;
+    double ang_threshold = 2.3; //Low as possible
+
+    sensor_msgs::LaserScan laser_msg;
+    LaserscanBuilder::LaserscanBuilder builder;
+    builder.addCone(3, 0.5, 1); //x y radius
+    builder.addCone (3, -0.5, 1);
+    laser_msg = builder.getLaserscan();
+
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+
+    EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[0].center.x, 3.0, 0.01);
+    EXPECT_NEAR(cones[0].center.y, -0.5, 0.01);
+
+    EXPECT_NEAR(cones[1].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[1].center.x, 3.0, 0.01);
+    EXPECT_NEAR(cones[1].center.y, 0.5, 0.01);
+}
+
+//Test identifyCones with 3 cones in a cluster (their laserscan points overlap)
+TEST(ConeIdentification, threeOverlappingCones){
+    float dist_tol = 0.01;
+    float radius_exp = 1.0;
+    float radius_tol = 0.15;
+    int line_point_dist = 3;
+    double ang_threshold = 2.3;
+
+    sensor_msgs::LaserScan laser_msg;
+    LaserscanBuilder::LaserscanBuilder builder;
+    builder.addCone(3.5, 0, 1); //x y radius
+    builder.addCone(2, -1.3, 1); //x y radius
+    builder.addCone (2, 1.3, 1);
+    laser_msg = builder.getLaserscan();
+
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+
+    EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[0].center.x, 2.0, 0.1);
+    EXPECT_NEAR(cones[0].center.y, -1.3, 0.1);
+
+    EXPECT_NEAR(cones[1].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[1].center.x, 3.5, 0.15); //Is this error acceptable?
+    EXPECT_NEAR(cones[1].center.y, 0, 0.1);
+
+    EXPECT_NEAR(cones[2].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[2].center.x, 2.0, 0.1);
+    EXPECT_NEAR(cones[2].center.y, 1.3, 0.1);
+}
+
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

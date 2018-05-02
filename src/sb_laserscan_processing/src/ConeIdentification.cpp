@@ -146,9 +146,16 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
     //Find local mins, then check if they are below threshold
     std::vector<size_t> splitIndices;
     for (int i = 1; i < angles.size() - 1; i++){
+
         //TODO: May have to enforce local minima harder and force angle to smaller than many around it
-        if (angles[i] < angles[i-1] && angles[i] < angles[i+1] && angles[i] < ang_threshold)
+        //std::cout<<"Angle: "<<angles[i]<<std::endl;
+
+        if (angles[i] < ang_threshold && angles[i] < angles[i-1] && angles[i] < angles[i+1] &&
+            angles[i] < angles[i-2] && angles[i] < angles[i+2] &&
+            angles[i] < angles[i-3] && angles[i] < angles[i+3]) {
+            //std::cout<<"SPLIT!"<<std::endl;
             splitIndices.push_back(i + line_point_dist);
+        }
     }
 
     //Split edges based on qualified local mins
