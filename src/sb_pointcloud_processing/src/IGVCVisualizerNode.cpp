@@ -123,6 +123,7 @@ void IGVCVisualizerNode::updateVisualizerCallback(
 const ros::TimerEvent& event) {
     // Update the viewer
     viewer->spinOnce(100);
+    // Should sleep so keyboard and mouse callbacks can occur.
     boost::this_thread::sleep(boost::posix_time::microseconds(100000));
 }
 
