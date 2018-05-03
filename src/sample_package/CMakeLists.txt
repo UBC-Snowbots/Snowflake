@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sample_package)
 
+# Build in "Release" (with lots of compiler optimizations) by default
+# (If built in "Debug", some functions can take orders of magnitude longer)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+endif()
+
+add_definitions(-std=c++14)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -9,8 +17,6 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 find_package(sb_utils REQUIRED)
-
-add_definitions(-std=c++14)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

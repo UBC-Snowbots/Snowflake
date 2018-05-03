@@ -1,0 +1,7 @@
+<launch>
+    <node 
+         name="pointcloud_processing" 
+         pkg="sb_pointcloud_processing" 
+         type="nodelet_launch.sh" 
+         output="screen" />
+</launch>

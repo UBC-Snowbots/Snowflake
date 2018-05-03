@@ -48,17 +48,14 @@ DBSCAN::findClusters(pcl::PointCloud<pcl::PointXYZ>::Ptr pclPtr) {
 }
 
 bool DBSCAN::isCore(unsigned int center_index) {
-    unordered_map<unsigned int, vector<unsigned int>>::const_iterator it =
-    this->_neighbors.find(center_index);
-    return (it->second).size() >= this->_min_neighbors;
+    return this->_neighbors[center_index].size() >= this->_min_neighbors;
 }
 
 void DBSCAN::expand(unsigned int center_index,
                     pcl::PointCloud<pcl::PointXYZ>& cluster) {
     this->_expanded.insert({center_index, true});
 
-    vector<unsigned int> neighbors =
-    this->_neighbors.find(center_index)->second;
+    vector<unsigned int> neighbors = this->_neighbors[center_index];
 
     // iterate through all the neighbors of the point
     for (unsigned int i = 0; i < neighbors.size(); i++) {
@@ -83,6 +80,15 @@ void DBSCAN::expand(unsigned int center_index,
 }
 
 void DBSCAN::findNeighbors() {
+    this->_neighbors = new vector<unsigned int>[this->_pcl.size()];
+
+//    Run the following loops in parallel if the size of the point cloud is
+//    bigger than
+//    this->_sequential_cut_off. If there aren't enough points in the point
+//    cloud, then
+//    the overhead in creating multiple threads can overpower time gained from
+//    multi threading.
+#pragma omp parallel for if (this->_pcl.size() > this->_sequential_cut_off)
     for (unsigned int i = 0; i < this->_pcl.size(); i++) {
         vector<unsigned int> neighbors;
         pcl::PointXYZ current_point = this->_pcl[i];
@@ -98,7 +104,7 @@ void DBSCAN::findNeighbors() {
         }
 
         // store the list of neighbours
-        this->_neighbors.insert({i, neighbors});
+        this->_neighbors[i] = neighbors;
     }
 }
 
