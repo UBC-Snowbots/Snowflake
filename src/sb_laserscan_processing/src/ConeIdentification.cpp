@@ -147,13 +147,17 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
     std::vector<size_t> splitIndices;
     for (int i = 1; i < angles.size() - 1; i++){
 
-        //TODO: May have to enforce local minima harder and force angle to smaller than many around it
         //std::cout<<"Angle: "<<angles[i]<<std::endl;
+        bool isLocalMin = true;
+        for (int j = i - line_point_dist; j <= i + line_point_dist; j++){
+            if (angles[j] < angles[i]) {
+                isLocalMin = false;
+                break;
+            }
+        }
 
-        if (angles[i] < ang_threshold && angles[i] < angles[i-1] && angles[i] < angles[i+1] &&
-            angles[i] < angles[i-2] && angles[i] < angles[i+2] &&
-            angles[i] < angles[i-3] && angles[i] < angles[i+3]) {
-            //std::cout<<"SPLIT!"<<std::endl;
+        if (angles[i] < ang_threshold && isLocalMin) {
+            //std::cout<<"SPLIT"<<std::endl;
             splitIndices.push_back(i + line_point_dist);
         }
     }
@@ -176,42 +180,11 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
 mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapping_igvc::Point2D> &edge_points){
     mapping_igvc::ConeObstacle cone = mapping_igvc::ConeObstacle();
 
-    /*
-    int center_i = edge_points.size()/2;
-    int first_i = 0; //First index
-    int last_i = edge_points.size()-1; //Last index
 
-    double total_x = 0;
-    double total_y = 0;
-    double total_radius = 0;
-    int counter = 0;
-
-    //Get avg center
-    for (int i = last_i/4 + 1; i <= last_i * 3 / 4; i++) {
-        double slopeA = (edge_points[i].y - edge_points[first_i].y) / (edge_points[i].x - edge_points[first_i].x);
-        double slopeB = (edge_points[last_i].y - edge_points[i].y) / (edge_points[last_i].x - edge_points[i].x);
-        total_x += (((slopeA * slopeB) * (edge_points[first_i].y - edge_points[last_i].y)) +
-                         slopeB * (edge_points[first_i].x + edge_points[i].x) -
-                         slopeA * (edge_points[i].x + edge_points[last_i].x)) /
-                        (2 * (slopeB - slopeA));
-        total_y += -(((total_x / i) - (edge_points[first_i].x + edge_points[i].x) / 2) / slopeA) +
-                        ((edge_points[first_i].y + edge_points[i].y) / 2);
-        counter ++;
-    }
-
-    cone.center.x = total_x / counter;
-    cone.center.y = total_y / counter;
-
-    //Get avg radius
-    for (int i=0; i < edge_points.size(); i++){
-        total_radius += getDist(edge_points[i], cone.center);
-    }
-    cone.radius = total_radius / (edge_points.size());
-
-    return cone;
     //TODO: create header
-    */
 
+    /* Single Sampling Method*/
+    /*
     int mid_i = edge_points.size()/2;
     double slopeA = (edge_points[mid_i].y - edge_points[0].y) / (edge_points[mid_i].x - edge_points[0].x);
     double slopeB = (edge_points[edge_points.size()-1].y - edge_points[mid_i].y) / (edge_points[edge_points.size()-1].x - edge_points[mid_i].x);
@@ -224,6 +197,97 @@ mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapp
 
     cone.radius = getDist(edge_points[mid_i], cone.center);
 
-    return cone;
+    return cone;*/
 
+
+    /* Hyper-fit circle fitting method by Nikolai Chernov */
+    /* Taken from https://github.com/SohranEliassi/Circle-Fitting-Hyper-Fit/blob/master/CircleFitByHyper.cpp */
+
+    int i,iter,IterMAX=99;
+
+    double Xi,Yi,Zi;
+    double Mz,Mxy,Mxx,Myy,Mxz,Myz,Mzz,Cov_xy,Var_z;
+    double A0,A1,A2,A22;
+    double Dy,xnew,x,ynew,y;
+    double DET,Xcenter,Ycenter;
+
+    // Compute x- and y- sample means (via a function in the class "data")
+    double meanX = getMeanX(edge_points);
+    double meanY = getMeanY(edge_points);
+
+    // computing moments
+    Mxx=Myy=Mxy=Mxz=Myz=Mzz=0.;
+    for (i=0; i<edge_points.size(); i++) {
+        Xi = edge_points[i].x - meanX;   //  centered x-coordinates
+        Yi = edge_points[i].y - meanY;   //  centered y-coordinates
+        Zi = Xi*Xi + Yi*Yi;
+
+        Mxy += Xi*Yi;
+        Mxx += Xi*Xi;
+        Myy += Yi*Yi;
+        Mxz += Xi*Zi;
+        Myz += Yi*Zi;
+        Mzz += Zi*Zi;
+    }
+    Mxx /= edge_points.size();
+    Myy /= edge_points.size();
+    Mxy /= edge_points.size();
+    Mxz /= edge_points.size();
+    Myz /= edge_points.size();
+    Mzz /= edge_points.size();
+
+    // computing the coefficients of the characteristic polynomial
+    Mz = Mxx + Myy;
+    Cov_xy = Mxx*Myy - Mxy*Mxy;
+    Var_z = Mzz - Mz*Mz;
+
+    A2 = 4*Cov_xy - 3*Mz*Mz - Mzz;
+    A1 = Var_z*Mz + 4*Cov_xy*Mz - Mxz*Mxz - Myz*Myz;
+    A0 = Mxz*(Mxz*Myy - Myz*Mxy) + Myz*(Myz*Mxx - Mxz*Mxy) - Var_z*Cov_xy;
+    A22 = A2 + A2;
+
+    // finding the root of the characteristic polynomial
+    // using Newton's method starting at x=0
+    // (it is guaranteed to converge to the right root)
+
+    for (x=0.,y=A0,iter=0; iter<IterMAX; iter++)  // usually, 4-6 iterations are enough
+    {
+        Dy = A1 + x*(A22 + 16.*x*x);
+        xnew = x - y/Dy;
+        if ((xnew == x)||(!std::isfinite(xnew))) break;
+        ynew = A0 + xnew*(A1 + xnew*(A2 + 4*xnew*xnew));
+        if (abs(ynew)>=abs(y))  break;
+        x = xnew;  y = ynew;
+    }
+
+    // computing paramters of the fitting circle
+
+    DET = x*x - x*Mz + Cov_xy;
+    Xcenter = (Mxz*(Myy - x) - Myz*Mxy)/DET/2;
+    Ycenter = (Myz*(Mxx - x) - Mxz*Mxy)/DET/2;
+
+    // assembling the output
+    cone.center.x = Xcenter + meanX; // estimated x position
+    cone.center.y = Ycenter + meanY; //estimated y position
+    cone.radius = sqrt(Xcenter*Xcenter + Ycenter*Ycenter + Mz - x - x); //estimated radius
+
+    return cone;
+}
+
+
+double ConeIdentification::getMeanX(const std::vector<mapping_igvc::Point2D> &edge_points){
+    double tot_x = 0;
+    for (int i=0; i<edge_points.size(); i++){
+        tot_x += edge_points[i].x;
+    }
+    return tot_x / edge_points.size();
+}
+
+
+double ConeIdentification::getMeanY(const std::vector<mapping_igvc::Point2D> &edge_points){
+    double tot_y = 0;
+    for (int i=0; i<edge_points.size(); i++){
+        tot_y += edge_points[i].y;
+    }
+    return tot_y / edge_points.size();
 }

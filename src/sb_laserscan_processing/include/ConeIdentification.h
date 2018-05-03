@@ -61,6 +61,11 @@ class ConeIdentification {
          * @return distance between points
          */
         static double getDist(const mapping_igvc::Point2D &p1, const mapping_igvc::Point2D &p2);
+
+        static double getMeanX(const std::vector<mapping_igvc::Point2D> &edge_points);
+
+        static double getMeanY(const std::vector<mapping_igvc::Point2D> &edge_points);
+
 };
 
 

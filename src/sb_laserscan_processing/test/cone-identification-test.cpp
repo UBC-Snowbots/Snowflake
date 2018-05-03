@@ -129,7 +129,7 @@ TEST(ConeIdentification, coneOutRange) {
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 3; //For splitting
+    int line_point_dist = 5; //For splitting
     double ang_threshold = M_PI/2; //For splitting
 
     sensor_msgs::LaserScan laser_msg;
@@ -142,13 +142,13 @@ TEST(ConeIdentification, coneOutRange) {
     EXPECT_TRUE(cones.empty());
 }
 
-// Test identifyCones with no valid cones in image (there is one object with radius too large)
+// Test identifyCones with no valid cones in image (there is one object with radius too large, of 1.5m instead of 1m)
 TEST(ConeIdentification, coneTooLarge) {
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 3; //For splitting
-    double ang_threshold = M_PI/2; //For splitting
+    int line_point_dist = 5; //For splitting (not needed in this test)
+    double ang_threshold = M_PI/2; //For splitting (not needed in this test)
 
     sensor_msgs::LaserScan laser_msg;
     LaserscanBuilder::LaserscanBuilder builder;
@@ -165,7 +165,7 @@ TEST(ConeIdentification, oneValidCone) {
     float dist_tol = 0.01;
     float radius_exp = 1.5;
     float radius_tol = 0.05;
-    int line_point_dist = 3;
+    int line_point_dist = 5;
     double ang_threshold = M_PI/2;
 
     sensor_msgs::LaserScan laser_msg;
@@ -185,7 +185,7 @@ TEST(ConeIdentification, twoValidCones){
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 3;
+    int line_point_dist = 5;
     double ang_threshold = M_PI/2;
 
     sensor_msgs::LaserScan laser_msg;
@@ -210,7 +210,7 @@ TEST(ConeIdentification, fourValidCones){
     float dist_tol = 0.005;
     float radius_exp = 0.5;
     float radius_tol = 0.1;
-    int line_point_dist = 3;
+    int line_point_dist = 5;
     double ang_threshold = M_PI/2;
 
     sensor_msgs::LaserScan laser_msg;
@@ -246,7 +246,7 @@ TEST(ConeIdentification, twoOverlappingCones){
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 3;
+    int line_point_dist = 5;
     double ang_threshold = 2.3; //Low as possible
 
     sensor_msgs::LaserScan laser_msg;
@@ -271,7 +271,7 @@ TEST(ConeIdentification, threeOverlappingCones){
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.15;
-    int line_point_dist = 3;
+    int line_point_dist = 5;
     double ang_threshold = 2.3;
 
     sensor_msgs::LaserScan laser_msg;
@@ -284,16 +284,66 @@ TEST(ConeIdentification, threeOverlappingCones){
     std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
-    EXPECT_NEAR(cones[0].center.x, 2.0, 0.1);
-    EXPECT_NEAR(cones[0].center.y, -1.3, 0.1);
+    EXPECT_NEAR(cones[0].center.x, 2.0, 0.03);
+    EXPECT_NEAR(cones[0].center.y, -1.3, 0.03);
 
     EXPECT_NEAR(cones[1].radius, 1.0, 0.01);
-    EXPECT_NEAR(cones[1].center.x, 3.5, 0.15); //Is this error acceptable?
-    EXPECT_NEAR(cones[1].center.y, 0, 0.1);
+    EXPECT_NEAR(cones[1].center.x, 3.5, 0.03);
+    EXPECT_NEAR(cones[1].center.y, 0, 0.03);
 
     EXPECT_NEAR(cones[2].radius, 1.0, 0.01);
-    EXPECT_NEAR(cones[2].center.x, 2.0, 0.1);
-    EXPECT_NEAR(cones[2].center.y, 1.3, 0.1);
+    EXPECT_NEAR(cones[2].center.x, 2.0, 0.03);
+    EXPECT_NEAR(cones[2].center.y, 1.3, 0.03);
+}
+
+//Test identifyCones with 2 cones in a cluster (their laserscan points "connect", horizontal relative to the robot)
+TEST(ConeIdentification, twoConnectedConesHorizontal){
+    float dist_tol = 0.01;
+    float radius_exp = 1.0;
+    float radius_tol = 0.05;
+    int line_point_dist = 5;
+    double ang_threshold = 2.3; //Low as possible
+
+    sensor_msgs::LaserScan laser_msg;
+    LaserscanBuilder::LaserscanBuilder builder;
+    builder.addCone(3, 1, 1); //x y radius
+    builder.addCone (3, -1, 1);
+    laser_msg = builder.getLaserscan();
+
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+
+    EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[0].center.x, 3.0, 0.03);
+    EXPECT_NEAR(cones[0].center.y, -1, 0.03);
+
+    EXPECT_NEAR(cones[1].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[1].center.x, 3.0, 0.03);
+    EXPECT_NEAR(cones[1].center.y, 1, 0.03);
+}
+
+//Test identifyCones with 2 cones in a diagonal orientation (though not physically connected)
+TEST(ConeIdentification, twoConesDiagonal){
+    float dist_tol = 0.01;
+    float radius_exp = 1.0;
+    float radius_tol = 0.2;
+    int line_point_dist = 5;
+    double ang_threshold = 2.3; //Low as possible
+
+    sensor_msgs::LaserScan laser_msg;
+    LaserscanBuilder::LaserscanBuilder builder;
+    builder.addCone(2, 1, 1); //x y radius
+    builder.addCone (3, -1, 1);
+    laser_msg = builder.getLaserscan();
+
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+
+    EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[0].center.x, 3.0, 0.03);
+    EXPECT_NEAR(cones[0].center.y, -1, 0.03);
+
+    EXPECT_NEAR(cones[1].radius, 1.0, 0.01);
+    EXPECT_NEAR(cones[1].center.x, 2.0, 0.08); //large-ish error here
+    EXPECT_NEAR(cones[1].center.y, 1, 0.05);
 }
 
 int main(int argc, char** argv) {
