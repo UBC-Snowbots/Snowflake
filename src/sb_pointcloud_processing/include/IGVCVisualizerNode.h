@@ -1,7 +1,14 @@
-//
-// Created by robyn on 08/03/18.
-//
-
+/**
+ * Created by: Robyn Castro
+ * Created on: 2018/4/29
+ * Description: A class which visualizes point clouds, and allows
+ *              dynamic reconfiguring of pointclouds.
+ * References:
+ *      Tutorial for pcl_visualizer -
+ *          http://pointclouds.org/documentation/tutorials/pcl_visualizer.php
+ *      Dynamic Reconfigure for C++ -
+ *          http://wiki.ros.org/hokuyo_node/Tutorials/UsingDynparamToChangeHokuyoLaserParameters#PythonAPI
+ */
 #ifndef SB_POINTCLOUD_PROCESSING_IGVCVISUALIZERNODE_H
 #define SB_POINTCLOUD_PROCESSING_IGVCVISUALIZERNODE_H
 
@@ -113,6 +120,10 @@ private:
     ros::Subscriber raw_pcl_sub;
     ros::Subscriber filtered_pcl_sub;
 
+    // Viewport Channels
+    int raw_channel;
+    int filtered_channel;
+
     // Timer Variables
     ros::Timer timer;
     float image_update_rate;
@@ -122,10 +133,14 @@ private:
     static float s_margin_of_error;
     static float v_margin_of_error;
 
-    // Visualizer Variables
+    // Determines whether or not viewer should be updated
     static bool isPaused;
+
+    // The viewer object that controls the pcl visualizer
     static boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
-    static pcl::PointCloud<pcl::PointXYZRGB>::Ptr visualized_cloud;
+
+    // The point cloud to be displayed onto the raw_channel
+    static pcl::PointCloud<pcl::PointXYZRGB>::Ptr raw_visualized_cloud;
 
 };
 

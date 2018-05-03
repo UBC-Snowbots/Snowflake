@@ -1,6 +1,14 @@
-//
-// Created by robyn on 08/03/18.
-//
+/**
+ * Created by: Robyn Castro
+ * Created on: 2018/4/29
+ * Description: A class which visualizes point clouds, and allows
+ *              dynamic reconfiguring of pointclouds.
+ * References:
+ *      Tutorial for pcl_visualizer -
+ *          http://pointclouds.org/documentation/tutorials/pcl_visualizer.php
+ *      Dynamic Reconfigure for C++ -
+ *          http://wiki.ros.org/hokuyo_node/Tutorials/UsingDynparamToChangeHokuyoLaserParameters#PythonAPI
+ */
 
 #include "IGVCVisualizerNode.h"
 
@@ -11,7 +19,7 @@ float IGVCVisualizerNode::s_margin_of_error;
 float IGVCVisualizerNode::v_margin_of_error;
 
 boost::shared_ptr<pcl::visualization::PCLVisualizer> IGVCVisualizerNode::viewer;
-pcl::PointCloud<pcl::PointXYZRGB>::Ptr IGVCVisualizerNode::visualized_cloud;
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr IGVCVisualizerNode::raw_visualized_cloud;
 bool IGVCVisualizerNode::isPaused;
 
 IGVCVisualizerNode::IGVCVisualizerNode(int argc, char **argv, std::string node_name) {
@@ -36,7 +44,7 @@ IGVCVisualizerNode::IGVCVisualizerNode(int argc, char **argv, std::string node_n
                                                        this);
 
     // Setup filtered pcl subscriber
-    std::string filtered_pcl_topic = "d";
+    std::string filtered_pcl_topic = "/height_filter/output";
     filtered_pcl_sub = nh.subscribe<sensor_msgs::PointCloud2>(filtered_pcl_topic, queue_size, &IGVCVisualizerNode::filteredPCLCallBack,
                                                          this);
 
@@ -61,43 +69,44 @@ void IGVCVisualizerNode::rawPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr
         pcl::removeNaNFromPointCloud(*pcl_rgb, *pcl_rgb, indices);
 
         // Renew pcl point data
-        visualized_cloud = pcl_rgb;
+        raw_visualized_cloud = pcl_rgb;
 
+        raw_channel = 0;
         // Remove all old point clouds from the view
-        viewer->removeAllPointClouds(0);
+        viewer->removeAllPointClouds(raw_channel);
 
         // Show the new point cloud retrieved from the camera
-        viewer->addPointCloud(visualized_cloud, "visualized_cloud");
+        viewer->addPointCloud(raw_visualized_cloud, "raw_visualized_cloud", raw_channel);
 
         // Setup how big the points are in the point cloud
         viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1.0,
-                                                 "visualized_cloud");
+                                                 "raw_visualized_cloud");
     }
 }
 
 void IGVCVisualizerNode::filteredPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr &input) {
-    // Only update point cloud if system is not paused
-    if (!isPaused) {
-        // Obtain the ROS pointcloud and convert into PCL Pointcloud2
-        pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
-        pcl_conversions::toPCL(*(input), *(pcl_input));
-
-        // Converts from the Pointcloud2 format to PointcloudRGB
-        pcl::PointCloud<pcl::PointXYZRGB>::Ptr filtered_pcl_rgb(
-                new pcl::PointCloud<pcl::PointXYZRGB>());
-        pcl::fromPCLPointCloud2(*pcl_input, *filtered_pcl_rgb);
-
-
-        // Remove all old point clouds from the view
-        viewer->removeAllPointClouds(1);
-
-        // Show the new filtered cloud retrieved from the camera
-        viewer->addPointCloud(filtered_pcl_rgb, "filtered_pcl_rgb", 1);
-
-        // Setup how big the points are in the point cloud
-        viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1.0,
-                                                 "filtered_pcl_rgb");
-    }
+//    // Only update point cloud if system is not paused
+//    if (!isPaused) {
+//        // Obtain the ROS pointcloud and convert into PCL Pointcloud2
+//        pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
+//        pcl_conversions::toPCL(*(input), *(pcl_input));
+//
+//        // Converts from the Pointcloud2 format to PointcloudRGB
+//        pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_pcl(
+//                new pcl::PointCloud<pcl::PointXYZ>());
+//        pcl::fromPCLPointCloud2(*pcl_input, *filtered_pcl);
+//
+//
+//        // Remove all old point clouds from the view
+//        viewer->removeAllPointClouds(filtered_channel);
+//
+//        // Show the new filtered cloud retrieved from the camera
+//        viewer->addPointCloud(filtered_pcl, "filtered_pcl_rgb", filtered_channel);
+//
+//        // Setup how big the points are in the point cloud
+//        viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1.0,
+//                                                 "filtered_pcl_rgb");
+//    }
 }
 
 void IGVCVisualizerNode::updateVisualizerCallback(const ros::TimerEvent &event) {
@@ -111,6 +120,12 @@ boost::shared_ptr<pcl::visualization::PCLVisualizer> IGVCVisualizerNode::setUpPC
     viewer->registerPointPickingCallback(pointPickEventOccurred, (void *) viewer.get());
     viewer->registerKeyboardCallback(keyboardEventOccurred, (void *) viewer.get());
     viewer->initCameraParameters();
+
+    viewer->createViewPort(0.0, 0.0, 0.5, 1.0, raw_channel);
+    viewer->addText("Raw Point Cloud", 10, 10, "raw_channel text", raw_channel);
+
+    viewer->createViewPort(0.5, 0.0, 1.0, 1.0, filtered_channel);
+    viewer->addText("Filtered Point Cloud", 10, 10, "filtered_channel text", filtered_channel);
 
     return viewer;
 }
@@ -141,13 +156,17 @@ void IGVCVisualizerNode::updateFilterParams(float h, float s, float v) {
 void IGVCVisualizerNode::setParameter(std::string node_name, std::string param_name, float val) {
     // Run command line arguments to dynamically reconfigure parameter
     std::string set_command = std::string("rosrun dynamic_reconfigure dynparam set");
-    system((set_command + " " + node_name + " " + param_name + " " + std::to_string(val)).c_str());
+    int err = system((set_command + " " + node_name + " " + param_name + " " + std::to_string(val)).c_str());
     // More detailed info can be found here http://wiki.ros.org/dynamic_reconfigure
+
+    if (err) {
+        std::cout << "Error occured when setting" << param_name << "for" << node_name << std::endl;
+    }
 }
 
 void IGVCVisualizerNode::pointPickEventOccurred(const pcl::visualization::PointPickingEvent &event, void *viewer_void) {
     // Retrieve the RGB point that was selected
-    pcl::PointXYZRGB rgb_point = visualized_cloud->points.at(event.getPointIndex());
+    pcl::PointXYZRGB rgb_point = raw_visualized_cloud->points.at(event.getPointIndex());
     pcl::PointXYZHSV hsv_point;
 
     // Convert retrieved RGB point to HSV
@@ -159,8 +178,6 @@ void IGVCVisualizerNode::pointPickEventOccurred(const pcl::visualization::PointP
 
     // Highlight current selected point
     viewer->addSphere(rgb_point, 0.05, 0, 0, 255, "rgb_point", 0);
-
-    std::cout << "POINT PICKED!" << std::endl;
 
     // Dynamically reconfigure filter parameters
     updateFilterParams(hsv_point.h, hsv_point.s, hsv_point.z);
