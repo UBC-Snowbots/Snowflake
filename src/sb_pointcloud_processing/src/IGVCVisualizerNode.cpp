@@ -71,7 +71,6 @@ void IGVCVisualizerNode::rawPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr
         // Renew pcl point data
         raw_visualized_cloud = pcl_rgb;
 
-        raw_channel = 0;
         // Remove all old point clouds from the view
         viewer->removeAllPointClouds(raw_channel);
 
@@ -85,28 +84,28 @@ void IGVCVisualizerNode::rawPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr
 }
 
 void IGVCVisualizerNode::filteredPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr &input) {
-//    // Only update point cloud if system is not paused
-//    if (!isPaused) {
-//        // Obtain the ROS pointcloud and convert into PCL Pointcloud2
-//        pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
-//        pcl_conversions::toPCL(*(input), *(pcl_input));
-//
-//        // Converts from the Pointcloud2 format to PointcloudRGB
-//        pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_pcl(
-//                new pcl::PointCloud<pcl::PointXYZ>());
-//        pcl::fromPCLPointCloud2(*pcl_input, *filtered_pcl);
-//
-//
-//        // Remove all old point clouds from the view
-//        viewer->removeAllPointClouds(filtered_channel);
-//
-//        // Show the new filtered cloud retrieved from the camera
-//        viewer->addPointCloud(filtered_pcl, "filtered_pcl_rgb", filtered_channel);
-//
-//        // Setup how big the points are in the point cloud
-//        viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1.0,
-//                                                 "filtered_pcl_rgb");
-//    }
+    // Only update point cloud if system is not paused
+    if (!isPaused) {
+        // Obtain the ROS pointcloud and convert into PCL Pointcloud2
+        pcl::PCLPointCloud2::Ptr pcl_input(new pcl::PCLPointCloud2);
+        pcl_conversions::toPCL(*(input), *(pcl_input));
+
+        // Converts from the Pointcloud2 format to PointcloudRGB
+        pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_pcl(
+                new pcl::PointCloud<pcl::PointXYZ>());
+        pcl::fromPCLPointCloud2(*pcl_input, *filtered_pcl);
+
+
+        // Remove all old point clouds from the view
+        viewer->removeAllPointClouds(filtered_channel);
+
+        // Show the new filtered cloud retrieved from the camera
+        viewer->addPointCloud(filtered_pcl, "filtered_pcl_rgb", filtered_channel);
+
+        // Setup how big the points are in the point cloud
+        viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1.0,
+                                                 "filtered_pcl_rgb");
+    }
 }
 
 void IGVCVisualizerNode::updateVisualizerCallback(const ros::TimerEvent &event) {
