@@ -27,7 +27,7 @@
       <wheelDiameter>${2*wheel_radius}</wheelDiameter>
       <wheelTorque>3</wheelTorque>
       <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
+      <odometryTopic>/encoders/odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <robotBaseFrame>base_link</robotBaseFrame>
       <legacyMode>False</legacyMode>
@@ -40,7 +40,7 @@
       <alwaysOn>true</alwaysOn>
       <updateRate>50.0</updateRate>
       <bodyName>chassis</bodyName>
-      <topicName>/imu</topicName>
+      <topicName>/imu/data</topicName>
       <gaussianNoise>2.89e-08</gaussianNoise>
       <xyzOffsets>0 0 0</xyzOffsets>
       <rpyOffsets>0 0 0</rpyOffsets>
