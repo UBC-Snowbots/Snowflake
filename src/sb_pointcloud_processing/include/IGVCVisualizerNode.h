@@ -12,16 +12,16 @@
 #ifndef SB_POINTCLOUD_PROCESSING_IGVCVISUALIZERNODE_H
 #define SB_POINTCLOUD_PROCESSING_IGVCVISUALIZERNODE_H
 
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 
 // Pointcloud
 #include <pcl/common/common_headers.h>
+#include <pcl/filters/filter.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl_ros/filters/filter.h>
-#include <pcl/point_types.h>
-#include <pcl/filters/filter.h>
 
 // ROS
 #include <nodelet/nodelet.h>
@@ -35,26 +35,26 @@
 #include "sb_utils.h"
 
 class IGVCVisualizerNode {
-public:
+  public:
     /**
      * Constructor
      */
     IGVCVisualizerNode(int argc, char** argv, std::string node_name);
 
-private:
+  private:
     /**
      * Callback for the raw pointcloud
      *
      * @param address of raw point cloud
      */
-    void rawPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr &input);
+    void rawPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr& input);
 
     /**
      * Callback for the filtered pointcloud
      *
      * @param address of filtered point cloud
      */
-    void filteredPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr &input);
+    void filteredPCLCallBack(const sensor_msgs::PointCloud2::ConstPtr& input);
 
     /**
      * Initialization of the filter
@@ -63,7 +63,7 @@ private:
 
     /**
      * Whenever a timer event occurs, the image is updated
-     * 
+     *
      * @param event timer based event based on image_update_rate
      */
     void updateVisualizerCallback(const ros::TimerEvent& event);
@@ -76,14 +76,16 @@ private:
     void retrieveVisualizerParameters(ros::NodeHandle private_nh);
 
     /**
-     * Whenever a point is clicked, it will dynamically reconfigure filter values
+     * Whenever a point is clicked, it will dynamically reconfigure filter
+     * values
      * for h, s, and v based on the point clicked.
      *
      * @param event the point picking event
      * @param viewer_void void pointer of the viewer
      */
-    static void pointPickEventOccurred (const pcl::visualization::PointPickingEvent &event,
-                                 void* viewer_void);
+    static void
+    pointPickEventOccurred(const pcl::visualization::PointPickingEvent& event,
+                           void* viewer_void);
 
     /**
      * When "h" is pressed, help documentation is printed out.
@@ -93,8 +95,9 @@ private:
      * @param event the keyboard press event
      * @param viewer_void void pointer of the viewer
      */
-    static void keyboardEventOccurred(const pcl::visualization::KeyboardEvent &event, void* viewer_void);
-
+    static void
+    keyboardEventOccurred(const pcl::visualization::KeyboardEvent& event,
+                          void* viewer_void);
 
     /**
      * Dynamically reconfigures hue, saturation and value filter parameters.
@@ -115,7 +118,8 @@ private:
      * @param param_name name of the parameter to reconfigure
      * @param val new value of the parameter
      */
-    static void setParameter(std::string node_name, std::string param_name, float val);
+    static void
+    setParameter(std::string node_name, std::string param_name, float val);
 
     ros::Subscriber raw_pcl_sub;
     ros::Subscriber filtered_pcl_sub;
@@ -141,8 +145,6 @@ private:
 
     // The point cloud to be displayed onto the raw_channel
     static pcl::PointCloud<pcl::PointXYZRGB>::Ptr raw_visualized_cloud;
-
 };
 
-
-#endif //SB_POINTCLOUD_PROCESSING_IGVCVISUALIZERNODE_H
+#endif // SB_POINTCLOUD_PROCESSING_IGVCVISUALIZERNODE_H
