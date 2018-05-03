@@ -1,0 +1,18 @@
+<!-- ROSTests for the encoder_odometry_node -->
+
+<launch>
+
+    <!-- Start the Encoder to Odometry Node -->
+    <node name="encoder_odometry_node" pkg="drivers" type="encoder_odometry_node">
+        <param name="left_encoder_joint_name" value="left_encoder" />
+        <param name="right_encoder_joint_name" value="right_encoder" />
+        <param name="wheel_radius" value="0.1" />
+        <param name="wheelbase_length" value="0.5" />
+        <param name="ticks_per_rotation" value="1000" />
+        <param name="odom_msg_refresh_rate" value="5" />
+    </node>
+
+    <!-- Start the test node -->
+    <test test-name="encoder_odometry_node_rostest" pkg="drivers" type="encoder_odometry_node_rostest" />
+
+</launch>

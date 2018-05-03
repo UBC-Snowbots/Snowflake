@@ -32,9 +32,6 @@ TEST(DBSCAN, ClusterTwoNearPoints) {
     dbscan.findClusters(pcl_ptr);
     ASSERT_EQ(1, clusters.size());
     ASSERT_EQ(2, clusters[0].size());
-
-    EXPECT_EQ(1, clusters[0][0].x);
-    EXPECT_FLOAT_EQ(1.1, clusters[0][1].x);
 }
 
 TEST(DBSCAN, TestClusterTwoFarPoints) {
@@ -194,7 +191,7 @@ TEST(DBSCAN, TestClusterTwoLongHorizontalLines) {
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
     float x_min                = -10;
-    float x_max                = 489;
+    float x_max                = 9989;
     float x_delta              = 1;
     vector<float> coefficients = {3};
     LineExtractor::TestUtils::LineArgs args(

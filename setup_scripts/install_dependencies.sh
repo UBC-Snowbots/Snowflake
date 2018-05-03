@@ -3,15 +3,15 @@
 #########################################################################
 # STOP: If the dependency you want to add is required for the project   #
 #       to build, it should be added as a rosdep (ie. a dependency      #
-#       specified in one of the packages `package.xml` files).          # 
-#       This script should only contain other dependecies, like         # 
-#       external packages or utilities                                  # 
+#       specified in one of the packages `package.xml` files).          #
+#       This script should only contain other dependecies, like         #
+#       external packages or utilities                                  #
 #########################################################################
 
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "================================================================"
+echo "================================================================" 
 echo "Installing ROS Kinetic"
 echo "================================================================"
 
@@ -26,16 +26,34 @@ echo "================================================================"
 
 # Update Rosdeps
 rosdep update
-
 # Install all required dependencies to build this repo
-rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic -y
+rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic --skip-keys=librealsense2 -y 
+
+echo "================================================================"
+echo "Installing other dependencies specified by our packages"
+echo "================================================================"
+cd $CURR_DIR
+./setup_realsense.sh
 
 echo "================================================================"
 echo "Installing Misc. Utilities"
 echo "================================================================"
 
 sudo apt-get install -y\
-    clang-format
+    clang-format\
+    python-rosinstall
+
+
+echo "================================================================"
+echo "Installing Project Dependent ROS packages."
+echo "================================================================"
+
+# Setup the workspace
+# Setup directory for pulling external pkgs
+# Download packages from merged .rosinstall files
+cd $CURR_DIR/..
+wstool update
+
 
 echo "================================================================"
 echo "Finished Installing Utilities"

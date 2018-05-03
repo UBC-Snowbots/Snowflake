@@ -43,10 +43,13 @@ LineExtractorNode::LineExtractorNode(int argc,
     float default_scale     = 0.1;
     SB_getParam(private_nh, scale_param, this->scale, default_scale);
 
+    std::string frame_id_param   = "frame_id";
+    std::string default_frame_id = "line_extractor_test";
+    SB_getParam(private_nh, frame_id_param, this->frame_id, default_frame_id);
+
     if (areParamsInvalid()) {
         ROS_DEBUG(
-        "At least one of your parameters are negative; they should be "
-        "positive!");
+        "Detected invalid params - make sure all params are positive");
         ros::shutdown();
     }
 
@@ -62,15 +65,12 @@ LineExtractorNode::LineExtractorNode(int argc,
     topic_to_publish_to, queue_size);
 
     std::string rviz_line_topic = "debug/output_line_obstacle";
-    rviz_line_publisher = private_nh.advertise<visualization_msgs::MarkerArray>(
+    rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(
     rviz_line_topic, queue_size);
 
     std::string rviz_cluster_topic = "debug/clusters";
     rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
     rviz_cluster_topic, queue_size);
-
-    this->dbscan.setRadius(this->radius);
-    this->dbscan.setMinNeighbours(this->minNeighbours);
 }
 
 void LineExtractorNode::pclCallBack(
@@ -96,11 +96,11 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 }
 
 void LineExtractorNode::extractLines() {
-    this->clusters = this->dbscan.findClusters(this->pclPtr);
-    visualizeClusters();
+    DBSCAN dbscan(this->minNeighbours, this->radius);
+    this->clusters = dbscan.findClusters(this->pclPtr);
 
-    std::vector<Eigen::VectorXf> lines =
-    regression.getLinesOfBestFit(this->clusters, this->degreePoly);
+    std::vector<Eigen::VectorXf> lines = regression.getLinesOfBestFit(
+    this->clusters, this->degreePoly, this->lambda);
 
     std::vector<mapping_igvc::LineObstacle> line_obstacles =
     vectorsToMsgs(lines);
@@ -109,6 +109,7 @@ void LineExtractorNode::extractLines() {
         publisher.publish(line_obstacles[i]);
     }
 
+    visualizeClusters();
     visualizeLineObstacles(line_obstacles);
 
     return;
@@ -123,11 +124,10 @@ void LineExtractorNode::visualizeClusters() {
     snowbots::RvizUtils::createrMarkerScale(
     this->scale, this->scale, this->scale);
 
-    std::string frame_id = "base_link";
-    std::string ns       = "debug";
+    std::string ns = "debug";
 
     visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
-    cluster_points, colors, scale, frame_id, ns);
+    cluster_points, colors, scale, this->frame_id, ns);
 
     rviz_cluster_publisher.publish(marker);
 }
@@ -167,7 +167,7 @@ std::vector<std_msgs::ColorRGBA>& colors) {
 
 void LineExtractorNode::visualizeLineObstacles(
 std::vector<mapping_igvc::LineObstacle> line_obstacles) {
-    std::vector<std::vector<geometry_msgs::Point>> lines_points =
+    std::vector<geometry_msgs::Point> lines_points =
     convertLineObstaclesToPoints(line_obstacles);
 
     visualization_msgs::Marker::_color_type color =
@@ -176,29 +176,26 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     snowbots::RvizUtils::createrMarkerScale(
     this->scale, this->scale, this->scale);
 
-    std::string frame_id = "base_link";
-    std::string ns       = "debug";
+    std::string ns = "debug";
 
-    visualization_msgs::MarkerArray markerArray =
-    snowbots::RvizUtils::createMarkerArray(
-    lines_points,
-    color,
-    scale,
-    frame_id,
-    ns,
-    visualization_msgs::Marker::LINE_STRIP);
+    visualization_msgs::Marker marker =
+    snowbots::RvizUtils::createMarker(lines_points,
+                                      color,
+                                      scale,
+                                      this->frame_id,
+                                      ns,
+                                      visualization_msgs::Marker::POINTS);
 
-    rviz_line_publisher.publish(markerArray);
+    rviz_line_publisher.publish(marker);
 }
 
-std::vector<std::vector<geometry_msgs::Point>>
+std::vector<geometry_msgs::Point>
 LineExtractorNode::convertLineObstaclesToPoints(
 std::vector<mapping_igvc::LineObstacle> line_obstacles) {
-    std::vector<std::vector<geometry_msgs::Point>> lines_points;
+    std::vector<geometry_msgs::Point> line_points;
     // iterate through all lines
     for (unsigned int i = 0; i < line_obstacles.size(); i++) {
         mapping_igvc::LineObstacle line_obstacle = line_obstacles[i];
-        std::vector<geometry_msgs::Point> line_points;
 
         // draw the line as a series of points
         for (float x = line_obstacle.x_min; x < line_obstacle.x_max;
@@ -214,11 +211,9 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
 
             line_points.push_back(p);
         }
-
-        lines_points.push_back(line_points);
     }
 
-    return lines_points;
+    return line_points;
 }
 
 bool LineExtractorNode::areParamsInvalid() {
