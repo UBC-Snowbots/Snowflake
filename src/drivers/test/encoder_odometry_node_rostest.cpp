@@ -222,9 +222,9 @@ TEST_F(EncoderOdometryNodeTest, turn_90_right) {
     // http://answers.ros.org/question/11887/significance-of-rosspinonce/
     ros::spinOnce();
 
-    EXPECT_NEAR(2.25, odom_msg.pose.pose.position.x, 0.1);
-    EXPECT_NEAR(-2.25, odom_msg.pose.pose.position.y, 0.1);
-    EXPECT_NEAR(-(M_PI / 2), tf::getYaw(odom_msg.pose.pose.orientation), 0.06);
+    EXPECT_NEAR(2.25, odom_msg.pose.pose.position.x, 0.2);
+    EXPECT_NEAR(-2.25, odom_msg.pose.pose.position.y, 0.2);
+    EXPECT_NEAR(-(M_PI / 2), tf::getYaw(odom_msg.pose.pose.orientation), 0.08);
 }
 
 int main(int argc, char** argv) {
