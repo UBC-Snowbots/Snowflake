@@ -225,8 +225,10 @@ const pcl::visualization::PointPickingEvent& event, void* viewer_void) {
 
     // Print point information
     std::cout << "Point picked with values..." << std::endl;
-    std::cout << "R: " << (int) rgb_point.r << ", G: " << (int) rgb_point.g << ", B: " << (int) rgb_point.b << std::endl;
-    std::cout << "H: " << hsv_point.h << ", S: " << hsv_point.s << ", V: " << hsv_point.v << std::endl;
+    std::cout << "R: " << (int) rgb_point.r << ", G: " << (int) rgb_point.g
+              << ", B: " << (int) rgb_point.b << std::endl;
+    std::cout << "H: " << hsv_point.h << ", S: " << hsv_point.s
+              << ", V: " << hsv_point.v << std::endl;
     std::cout << std::endl;
 
     std::cout << "Updating filter parameters..." << std::endl;
