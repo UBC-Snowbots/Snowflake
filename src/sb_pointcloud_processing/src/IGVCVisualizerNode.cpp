@@ -205,6 +205,9 @@ void IGVCVisualizerNode::setParameter(std::string node_name,
 
 void IGVCVisualizerNode::pointPickEventOccurred(
 const pcl::visualization::PointPickingEvent& event, void* viewer_void) {
+    // Pause any updates to the visualizer
+    isPaused = true;
+
     // Retrieve the RGB point that was selected
     pcl::PointXYZRGB rgb_point =
     raw_visualized_cloud->points.at(event.getPointIndex());
@@ -222,6 +225,9 @@ const pcl::visualization::PointPickingEvent& event, void* viewer_void) {
 
     // Dynamically reconfigure filter parameters
     updateFilterParams(hsv_point.h, hsv_point.s, hsv_point.z);
+
+    // Resume any updates to the visualizer
+    isPaused = false;
 }
 
 void IGVCVisualizerNode::keyboardEventOccurred(
