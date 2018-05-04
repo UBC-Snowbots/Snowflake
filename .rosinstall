@@ -17,3 +17,7 @@
 - git:
     local-name: src/external_pkgs/zed-ros-wrapper
     uri: https://github.com/UBC-Snowbots/zed-ros-wrapper.git
+- git: 
+    local-name: src/external_pkgs/navigation
+    uri: 'https://github.com/UBC-Snowbots/navigation.git'
+
