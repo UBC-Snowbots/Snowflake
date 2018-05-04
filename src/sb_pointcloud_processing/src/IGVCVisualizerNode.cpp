@@ -223,8 +223,16 @@ const pcl::visualization::PointPickingEvent& event, void* viewer_void) {
     // Highlight current selected point
     viewer->addSphere(rgb_point, 0.05, 0, 0, 255, "rgb_point", 0);
 
+    // Print point information
+    std::cout << "Point picked with values..." << std::endl;
+    std::cout << "R: " << (int) rgb_point.r << ", G: " << (int) rgb_point.g << ", B: " << (int) rgb_point.b << std::endl;
+    std::cout << "H: " << hsv_point.h << ", S: " << hsv_point.s << ", V: " << hsv_point.v << std::endl;
+    std::cout << std::endl;
+
+    std::cout << "Updating filter parameters..." << std::endl;
     // Dynamically reconfigure filter parameters
     updateFilterParams(hsv_point.h, hsv_point.s, hsv_point.z);
+    std::cout << "Finished updating filter parameters." << std::endl;
 
     // Resume any updates to the visualizer
     isPaused = false;
