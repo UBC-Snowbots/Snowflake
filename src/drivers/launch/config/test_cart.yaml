@@ -1,0 +1,26 @@
+# This file defines physical parameters for the test cart (built for 2017-2018)
+
+# The radius of the wheels
+wheel_radius: 0.13
+
+# The distance between the wheels
+wheelbase_length: 0.66
+
+# The number of ticks for a single rotation of a wheel
+# This will depend on both the number of ticks the encoder reads 
+# and the gear ratio between the encoders and the wheels
+ticks_per_rotation: 3600
+
+# If set to `true` this node assumes that *positive* encoder
+# ticks mean the wheel is moving *forward*. If the encoders are 
+# mirrored, it is likely one of them will need to be reversed
+reverse_left_encoder: false
+reverse_right_encoder: true
+
+# The variance of the `linear.x`, `linear.y`, and `angular.z` values.
+# For instructions on how to calculate these, see `src/drivers/README.md`
+x_variance: 0.0096484731
+y_variance: 0.0008124738
+theta_variance: 0.0004089889
+
+
