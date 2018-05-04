@@ -29,7 +29,7 @@ obstacle_inflation_buffer(obstacle_inflation_buffer),
 occ_grid_cell_size(occ_grid_cell_size)
 {}
 
-std::vector<Cone> ObstacleManager::getConeObstacles() {
+std::vector<mapping_igvc::ConeObstacle> ObstacleManager::getConeObstacles() {
     return cones;
 }
 
@@ -37,15 +37,15 @@ std::vector<sb_geom::Spline> ObstacleManager::getLineObstacles() {
     return lines;
 }
 
-void ObstacleManager::addObstacle(Cone cone) {
+void ObstacleManager::addObstacle(mapping_igvc::ConeObstacle cone) {
 
 
     // Find the distance to every known cone from this one
     std::vector<std::pair<double,int>> distances;
     for (int known_cone_index = 0; known_cone_index < cones.size(); known_cone_index++){
-        Cone& known_cone = cones[known_cone_index];
-        double dx = cone.x - known_cone.x;
-        double dy = cone.y - known_cone.y;
+        mapping_igvc::ConeObstacle& known_cone = cones[known_cone_index];
+        double dx = cone.center.x - known_cone.center.x;
+        double dy = cone.center.y - known_cone.center.y;
         double distance = std::sqrt(std::pow(dx,2) + std::pow(dy,2));
         distances.emplace_back(std::make_pair(distance, known_cone_index));
     }
@@ -213,8 +213,8 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
             auto cone_height_num_cells = circle(x*occ_grid_cell_size);
             for (int y = -cone_height_num_cells; y < cone_height_num_cells; y++){
                 occupied_points.emplace_back(Point2D(
-                        cone.x + x * occ_grid_cell_size,
-                        cone.y + y * occ_grid_cell_size
+                        cone.center.x + x * occ_grid_cell_size,
+                        cone.center.y + y * occ_grid_cell_size
                 ));
             }
         }

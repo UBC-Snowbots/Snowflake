@@ -14,41 +14,42 @@
 #include <sb_geom/Spline.h>
 #include <sb_geom/Polynomial.h>
 #include <sb_geom/PolynomialSegment.h>
+#include <mapping_igvc/ConeObstacle.h>
 
 // ROS Includes
 #include <nav_msgs/OccupancyGrid.h>
 
 // TODO: Should this class be in it's own file? (probably...)
-class Cone {
-public:
-    /**
-     * Create a Cone with default x,y position and radius
-     */
-    Cone() : Cone(0,0,0) {};
-
-    /**
-     * Create a cone with a given x,y position and radius
-     * @param x
-     * @param y
-     * @param radius
-     */
-    Cone(double x, double y, double radius)
-    : x(x),
-      y(y),
-      radius(radius)
-    {}
-
-    double x;
-    double y;
-    double radius;
-
-};
+//class Cone {
+//public:
+//    /**
+//     * Create a Cone with default x,y position and radius
+//     */
+//    Cone() : Cone(0,0,0) {};
+//
+//    /**
+//     * Create a cone with a given x,y position and radius
+//     * @param x
+//     * @param y
+//     * @param radius
+//     */
+//    Cone(double x, double y, double radius)
+//    : x(x),
+//      y(y),
+//      radius(radius)
+//    {}
+//
+//    double x;
+//    double y;
+//    double radius;
+//
+//};
 
 // Implementation of the `==` operator for Cone
-inline bool operator==(const Cone& lhs, const Cone& rhs){
+inline bool operator==(const mapping_igvc::ConeObstacle& lhs, const mapping_igvc::ConeObstacle& rhs){
     return (
-            lhs.x == rhs.x &&
-            lhs.y == rhs.y &&
+            lhs.center.x == rhs.center.x &&
+            lhs.center.y == rhs.center.y &&
             lhs.radius == rhs.radius
     );
 }
@@ -76,6 +77,7 @@ public:
     explicit ObstacleManager(double cone_merging_tolerance, double line_merging_tolerance):
         ObstacleManager(cone_merging_tolerance, line_merging_tolerance, 0, 0.1) {};
 
+    // TODO: We may not need `obstacle_inflation_buffer` if it's handled by pathfinding
     /**
      * Creates a ObstacleManager
      *
@@ -99,8 +101,9 @@ public:
      * Add a given cone to our map of the world
      * @param cone the cone to add
      */
-    void addObstacle(Cone cone);
+    void addObstacle(mapping_igvc::ConeObstacle cone);
 
+    // TODO: Should this take a obstacle msg instead?
     /**
      * Add a given line to our map of the world
      *
@@ -113,7 +116,7 @@ public:
      *
      * @return a list of all known cones in our world
      */
-    std::vector<Cone> getConeObstacles();
+    std::vector<mapping_igvc::ConeObstacle> getConeObstacles();
 
     /**
      * Get all the lines in our world
@@ -175,7 +178,7 @@ private:
     double occ_grid_cell_size;
 
     // all known cones in our world
-    std::vector<Cone> cones;
+    std::vector<mapping_igvc::ConeObstacle> cones;
 
     // all known lines in our world
     std::vector<sb_geom::Spline> lines;

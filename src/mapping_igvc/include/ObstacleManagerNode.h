@@ -9,14 +9,43 @@
 #ifndef MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H
 #define MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H
 
+// ROS Includes
 #include <ros/ros.h>
+
+// Snowbots Includes
 #include <sb_utils.h>
+#include "ObstacleManager.h"
+#include "mapping_igvc/ConeObstacle.h"
+#include "mapping_igvc/LineObstacle.h"
 
 class ObstacleManagerNode {
 public:
     ObstacleManagerNode(int argc, char **argv, std::string node_name);
 
 private:
+    /**
+     * Callback function for cone obstacles
+     *
+     * @param cone_msg the cone obstacle
+     */
+    void coneObstacleCallback(const mapping_igvc::ConeObstacle::ConstPtr& cone_msg);
+
+    /**
+     * Callback function for line obstacles
+     *
+     * @param line_msg the line obstacle
+     */
+    void lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr& line_msg);
+
+    // TODO: Comment here
+    ObstacleManager obstacle_manager;
+
+    // Subscribers for obstacles
+    ros::Subscriber cone_obstacle_subscriber;
+    ros::Subscriber line_obstacle_subscriber;
+
+    // Publisher for the generated occupancy grid
+    ros::Publisher occ_grid_publisher;
 
 };
 #endif //MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H

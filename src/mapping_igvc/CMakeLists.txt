@@ -85,6 +85,8 @@ add_executable(obstacle_manager_node
 target_link_libraries(obstacle_manager_node
         ${catkin_LIBRARIES}
         )
+add_dependencies(obstacle_manager_node ${catkin_EXPORTED_TARGETS})
+add_dependencies(obstacle_manager_node mapping_igvc_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
