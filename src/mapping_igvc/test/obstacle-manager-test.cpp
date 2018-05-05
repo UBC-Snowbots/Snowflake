@@ -13,6 +13,19 @@
 #include <tf/transform_datatypes.h>
 
 using namespace sb_geom;
+using namespace mapping_igvc;
+
+namespace mapping_igvc {
+    // Implementation of the `==` operator for ConeObstacle
+    inline bool operator==(const mapping_igvc::ConeObstacle& lhs, const mapping_igvc::ConeObstacle& rhs){
+        return (
+                lhs.center.x == rhs.center.x &&
+                lhs.center.y == rhs.center.y &&
+                lhs.radius == rhs.radius
+        );
+    }
+}
+
 
 class ObstacleManagerTest : public testing::Test {
 protected:
@@ -21,10 +34,28 @@ protected:
             {}
 
     virtual void SetUp() {
-        obstacle_manager_with_one_cone.addObstacle(Cone(0,0,0.2));
+        obstacle_manager_with_one_cone.addObstacle(generateConeObstacle(0,0,0.2));
     }
 
     ObstacleManager obstacle_manager_with_one_cone;
+
+    /**
+     * Creates a ConeObstacle msg with given values
+     *
+     * @param x
+     * @param y
+     * @param radius
+     *
+     * @return the ConeObstacle msg with the given values
+     */
+    static ConeObstacle generateConeObstacle(double x, double y, double radius){
+        ConeObstacle cone_obstacle;
+        cone_obstacle.center.x = x;
+        cone_obstacle.center.y = y;
+        cone_obstacle.radius = radius;
+
+        return cone_obstacle;
+    }
 
     /**
      * Generates an empty Occupancy Grid
@@ -132,19 +163,19 @@ protected:
 };
 
 TEST_F(ObstacleManagerTest, add_single_cone){
-    std::vector<Cone> actual = obstacle_manager_with_one_cone.getConeObstacles();
+    std::vector<ConeObstacle> actual = obstacle_manager_with_one_cone.getConeObstacles();
     EXPECT_EQ(1, actual.size());
 }
 
 TEST_F(ObstacleManagerTest, add_cone_outside_of_merging_tolerance_positive_coordinates){
     // Expected obstacles are the current obstacles with our new one appended
-    Cone cone2(0.4,0.31,0.4);
-    std::vector<Cone> expected = obstacle_manager_with_one_cone.getConeObstacles();
+    ConeObstacle cone2 = generateConeObstacle(0.4,0.31,0.4);
+    std::vector<ConeObstacle> expected = obstacle_manager_with_one_cone.getConeObstacles();
     expected.push_back(cone2);
 
     // Add a second cone just outside of the merging tolerance
     obstacle_manager_with_one_cone.addObstacle(cone2);
-    std::vector<Cone> actual = obstacle_manager_with_one_cone.getConeObstacles();
+    std::vector<ConeObstacle> actual = obstacle_manager_with_one_cone.getConeObstacles();
 
     EXPECT_EQ(2, actual.size());
     EXPECT_EQ(expected, actual);
@@ -152,13 +183,13 @@ TEST_F(ObstacleManagerTest, add_cone_outside_of_merging_tolerance_positive_coord
 
 TEST_F(ObstacleManagerTest, add_cone_outside_of_merging_tolerance_negative_coordinates){
     // Expected obstacles are the current obstacles with our new one appended
-    Cone cone2(0.4,-0.31,0.4);
-    std::vector<Cone> expected = obstacle_manager_with_one_cone.getConeObstacles();
+    ConeObstacle cone2 = generateConeObstacle(0.4,-0.31,0.4);
+    std::vector<ConeObstacle> expected = obstacle_manager_with_one_cone.getConeObstacles();
     expected.push_back(cone2);
 
     // Add a second cone just outside of the merging tolerance
     obstacle_manager_with_one_cone.addObstacle(cone2);
-    std::vector<Cone> actual = obstacle_manager_with_one_cone.getConeObstacles();
+    std::vector<ConeObstacle> actual = obstacle_manager_with_one_cone.getConeObstacles();
 
     EXPECT_EQ(2, actual.size());
     EXPECT_EQ(expected, actual);
@@ -168,12 +199,12 @@ TEST_F(ObstacleManagerTest, add_cone_within_of_merging_tolerance_positive_coordi
     // Since this cone is within merging tolerance, we expect that it will be
     // merged (which will overwrite the coordinates of the already present
     // cone with cone2)
-    Cone cone2(0.4,0.29,0.4);
-    std::vector<Cone> expected = {cone2};
+    ConeObstacle cone2 = generateConeObstacle(0.4,0.29,0.4);
+    std::vector<ConeObstacle> expected = {cone2};
 
     // Add a second cone just outside of the merging tolerance
     obstacle_manager_with_one_cone.addObstacle(cone2);
-    std::vector<Cone> actual = obstacle_manager_with_one_cone.getConeObstacles();
+    std::vector<ConeObstacle> actual = obstacle_manager_with_one_cone.getConeObstacles();
 
     EXPECT_EQ(1, actual.size());
     EXPECT_EQ(expected, actual);
@@ -183,12 +214,12 @@ TEST_F(ObstacleManagerTest, add_cone_within_of_merging_tolerance_negative_coordi
     // Since this cone is within merging tolerance, we expect that it will be
     // merged (which will overwrite the coordinates of the already present
     // cone with cone2)
-    Cone cone2(-0.4,-0.29,0.4);
-    std::vector<Cone> expected = {cone2};
+    ConeObstacle cone2 = generateConeObstacle(-0.4,-0.29,0.4);
+    std::vector<ConeObstacle> expected = {cone2};
 
     // Add a second cone just outside of the merging tolerance
     obstacle_manager_with_one_cone.addObstacle(cone2);
-    std::vector<Cone> actual = obstacle_manager_with_one_cone.getConeObstacles();
+    std::vector<ConeObstacle> actual = obstacle_manager_with_one_cone.getConeObstacles();
 
     EXPECT_EQ(1, actual.size());
     EXPECT_EQ(expected, actual);
@@ -198,19 +229,19 @@ TEST_F(ObstacleManagerTest, add_several_cones){
     ObstacleManager obstacle_manager(1,0);
 
     // A list of a cones, all within merging tolerance of each other
-    std::vector<Cone> cones_within_merging_tolerance = {
-            Cone(5,5,0.2),
-            Cone(5.5,5,0.2),
-            Cone(5.2,5.1,0.2),
-            Cone(4.9,5.3,0.2)
+    std::vector<ConeObstacle> cones_within_merging_tolerance = {
+            generateConeObstacle(5,5,0.2),
+            generateConeObstacle(5.5,5,0.2),
+            generateConeObstacle(5.2,5.1,0.2),
+            generateConeObstacle(4.9,5.3,0.2)
     };
 
     // A list of cones, all far enough from each other to not be merged
-    std::vector<Cone> cones_outside_merging_tolerance = {
-            Cone(0,0,0.3),
-            Cone(-10,-5,0.4),
-            Cone(-200,400000,0.4),
-            Cone(-10,100,0.4)
+    std::vector<ConeObstacle> cones_outside_merging_tolerance = {
+            generateConeObstacle(0,0,0.3),
+            generateConeObstacle(-10,-5,0.4),
+            generateConeObstacle(-200,400000,0.4),
+            generateConeObstacle(-10,100,0.4)
     };
 
     // Add all the cones, alternating between the two lists
@@ -219,7 +250,7 @@ TEST_F(ObstacleManagerTest, add_several_cones){
         obstacle_manager.addObstacle(cones_outside_merging_tolerance[i]);
     }
 
-    std::vector<Cone> expected;
+    std::vector<ConeObstacle> expected;
 
     // We expect that all the cones within merging tolerance were merged,
     // with the final cone that was added taking priority over all prior
@@ -231,7 +262,7 @@ TEST_F(ObstacleManagerTest, add_several_cones){
                     cones_outside_merging_tolerance.begin(),
                     cones_outside_merging_tolerance.end());
 
-    std::vector<Cone> actual = obstacle_manager.getConeObstacles();
+    std::vector<ConeObstacle> actual = obstacle_manager.getConeObstacles();
     // TODO: Use googleMock to compare lists without ordering (gMock supported by catkin in 0.7.9 but not in ubuntu PPA yet)
     EXPECT_EQ(expected, actual);
 }
@@ -584,7 +615,7 @@ TEST_F(ObstacleManagerTest, inflate_single_point_on_grid_with_floating_point_sca
 TEST_F(ObstacleManagerTest, generate_occ_grid_with_single_cone){
     ObstacleManager obstacle_manager(1, 1, 0.1, 0.1);
 
-    obstacle_manager.addObstacle(Cone(10, 13, 0.099));
+    obstacle_manager.addObstacle(generateConeObstacle(10, 13, 0.099));
 
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
@@ -629,31 +660,31 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_seperate_line_and_cone){
     ObstacleManager obstacle_manager(1, 1, 0, 0.5);
 
     obstacle_manager.addObstacle(Spline({{1,3}, {9,3}}));
-    obstacle_manager.addObstacle(Cone(4, 10, 2));
+    obstacle_manager.addObstacle(generateConeObstacle(4, 10, 2));
 
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
     std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
-            {X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,},
-            {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,}, /* 0 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 1 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 2 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 3 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 4 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 5 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 6 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 7 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 8 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 9 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 10 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 11 */
+            {_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,}, /* 12 */
+            {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,}, /* 13 */
+            {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,}, /* 14 */
+            {_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,}, /* 15 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 16 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 17 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 18 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 19 */
     };
 
     // TODO: YOU ARE HERE -  this is clearly wrong.... fix me!

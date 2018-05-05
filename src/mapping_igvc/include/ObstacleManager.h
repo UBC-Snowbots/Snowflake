@@ -45,15 +45,6 @@
 //
 //};
 
-// Implementation of the `==` operator for Cone
-inline bool operator==(const mapping_igvc::ConeObstacle& lhs, const mapping_igvc::ConeObstacle& rhs){
-    return (
-            lhs.center.x == rhs.center.x &&
-            lhs.center.y == rhs.center.y &&
-            lhs.radius == rhs.radius
-    );
-}
-
 
 class ObstacleManager {
 public:
