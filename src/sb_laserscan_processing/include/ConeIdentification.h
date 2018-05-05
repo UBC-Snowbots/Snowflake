@@ -22,12 +22,24 @@ class ConeIdentification {
          * @param dist_tol max distance between points to be considered that are part of one cone
          * @param radius_exp expected radius of cone
          * @param radius_tol maximum difference between calculated cone radius and expected cone radius
-         * @param line_point_dist the number of points to take before and after each edge point to form a line and test angle (for splitting edge clusters that
-         * may contain multiple cones), should be <= 1/2 laser point scans
+         * @param line_point_dist a parameter for the number of points distance to be used in cluster splitting
          * @param ang_tol the max angle for a split to be considered (in radians)
          * @return a vector of cone obstacle messages identified
          */
         static std::vector<mapping_igvc::ConeObstacle> identifyCones(const sensor_msgs::LaserScan &laser_msg, double dist_tol, double radius_exp, double radius_tol, int line_point_dist, double ang_threshold);
+
+        /**
+         * Identifies valid cones that can be made from points in edge_points and adds it to the identified_cones vector
+         * Note that multiple cones may be added in this function call
+         * @param identified_cones cones identified so far
+         * @param edge_points edge points (in a cluster) to analyze
+         * @param radius_exp expected radius of cone
+         * @param radius_tol maximum difference between calculated and expected cone radius
+         * @param line_point_dist a parameter for the number of points distance to be used in cluster splitting
+         * @param ang_threshold the max angle for a split to be considered (in radians)
+         * @param frame_id frame id used to generate edge_points (typically same as the laserscan msg)
+         */
+        static void addConesInEdgeCluster(std::vector<mapping_igvc::ConeObstacle> &identified_cones, std::vector<mapping_igvc::Point2D> &edge_points, double radius_exp, double radius_tol, int line_point_dist, double ang_threshold, std::string frame_id);
 
         /**
         * Splits a cluster of edge points such that points forming multiple cones extremely close to one another will be returned
@@ -62,8 +74,18 @@ class ConeIdentification {
          */
         static double getDist(const mapping_igvc::Point2D &p1, const mapping_igvc::Point2D &p2);
 
+        /**
+         * Get the mean x coordinate of points in edge_points
+         * @param edge_points
+         * @return mean x coordinate
+         */
         static double getMeanX(const std::vector<mapping_igvc::Point2D> &edge_points);
 
+        /**
+         * Get the mean y coordinate of points in edge_points
+         * @param edge_points
+         * @return mean y coordinate
+         */
         static double getMeanY(const std::vector<mapping_igvc::Point2D> &edge_points);
 
 };

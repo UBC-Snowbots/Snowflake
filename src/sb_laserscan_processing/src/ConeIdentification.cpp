@@ -9,105 +9,54 @@
 std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const sensor_msgs::LaserScan &laser_msg, double dist_tol, double radius_exp, double radius_tol, int line_point_dist, double ang_threshold){
     std::vector<mapping_igvc::ConeObstacle> identified_cones;
     std::vector<mapping_igvc::Point2D> edge_points; //Represents points in a potential cluster
+    std::string frame_id = laser_msg.header.frame_id;
 
     int numIndices = (laser_msg.angle_max - laser_msg.angle_min) / laser_msg.angle_increment;
     for (int i=0; i<numIndices; i++){
         if (laser_msg.ranges[i] > laser_msg.range_max || laser_msg.ranges[i] < laser_msg.range_min) { //Check if curr laserscan point is in invalid range
-
-            if (edge_points.size() >= line_point_dist * 2 + 1) { // Don't bother splitting edges with too few points
-                std::vector<std::vector<mapping_igvc::Point2D>> split_edges = splitEdge(edge_points, line_point_dist, ang_threshold); //Split edge points if multiple cones detected (Temp values right now as params)
-                for (int i = 0; i < split_edges.size(); i++){
-                    
-                    mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
-
-                    //Testing
-                    /*
-                    for (int j=0 ;j < split_edges[i].size(); j++){
-                        std::cout<<"("<<split_edges[i][j].x<<","<<split_edges[i][j].y<<")"<<std::endl; //Print points in edge
-                    }*/
-                    std::cout<<"Split Result, Out of Range"<<std::endl;
-                    std::cout<<"X: "<<potential_cone.center.x<<std::endl;
-                    std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
-                    std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
-                    std::cout<<std::endl;
-                    //
-
-                    if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius
-                        potential_cone.radius = radius_exp;
-                        identified_cones.push_back(potential_cone);
-                    }
-                }
-            }
-            else if (edge_points.size() >= 3) { //Directly make the cone if not enough points to split (cone still needs at least 3 edge points though)
-                mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
-
-                //Testing
-                std::cout<<"No Split Result, Out of Range"<<std::endl;
-                std::cout<<"X: "<<potential_cone.center.x<<std::endl;
-                std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
-                std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
-                std::cout<<std::endl;
-
-                if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius
-                    potential_cone.radius = radius_exp;
-                    identified_cones.push_back(potential_cone);
-                }
-            }
-
+            addConesInEdgeCluster(identified_cones, edge_points, radius_exp, radius_tol, line_point_dist, ang_threshold, frame_id);
             edge_points.clear();
         }
-
         else { //Laserscan point in range
             mapping_igvc::Point2D point = laserToPoint(laser_msg.ranges[i], laser_msg.angle_min + i * laser_msg.angle_increment); //Convert to x-y point
             edge_points.push_back(point);
 
-            //Out of dist_tol or end of points, analyze edge points so far to create cone, and clear edge_points
-            if ((getDist(edge_points.back(), point) > dist_tol) || i == numIndices - 1){
-
-                if (edge_points.size() >= line_point_dist * 2 + 1) { // Don't bother splitting edges with too few points
-                    std::vector<std::vector<mapping_igvc::Point2D>> split_edges = splitEdge(edge_points, line_point_dist, ang_threshold); //Split edge points if multiple cones detected (Temp values right now as params)
-                    for (int i = 0; i < split_edges.size(); i++){
-                        mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
-
-                        //Testing
-                        /*
-                        for (int j=0 ;j < split_edges[i].size(); j++){
-                            std::cout<<"("<<split_edges[i][j].x<<","<<split_edges[i][j].y<<")"<<std::endl;
-                        }*/
-                        std::cout<<"Split Result, out of points or tol"<<std::endl;
-                        std::cout<<"X: "<<potential_cone.center.x<<std::endl;
-                        std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
-                        std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
-                        std::cout<<std::endl;
-
-                        if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius
-                            potential_cone.radius = radius_exp;
-                            identified_cones.push_back(potential_cone);
-                        }
-                    }
-                }
-                else if (edge_points.size() >= 3) { //Directly make the cone if not enough points to split (cone still needs at least 3 edge points though)
-                    mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
-
-                    //Testing
-                    std::cout<<"No Split Result, out of points or tol"<<std::endl;
-                    std::cout<<"X: "<<potential_cone.center.x<<std::endl;
-                    std::cout<<"Y: "<<potential_cone.center.y<<std::endl;
-                    std::cout<<"RADIUS: "<<potential_cone.radius<<std::endl;
-                    std::cout<<std::endl;
-
-                    if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius
-                        potential_cone.radius = radius_exp;
-                        identified_cones.push_back(potential_cone);
-                    }
-                }
-
+            //If out of dist_tol or end of points, analyze edge points so far to create cone, and clear edge_points
+            if ((getDist(edge_points.back(), point) > dist_tol) || i == numIndices - 1) {
+                addConesInEdgeCluster(identified_cones, edge_points, radius_exp, radius_tol, line_point_dist,
+                                      ang_threshold, frame_id);
                 edge_points.clear();
             }
         }
     }
-
     return identified_cones;
+}
+
+
+void ConeIdentification::addConesInEdgeCluster(std::vector<mapping_igvc::ConeObstacle> &identified_cones, std::vector<mapping_igvc::Point2D> &edge_points, double radius_exp, double radius_tol, int line_point_dist, double ang_threshold, std::string frame_id){
+    if (edge_points.size() >= line_point_dist * 2 + 1) { // Don't bother splitting edges with too few points
+        std::vector<std::vector<mapping_igvc::Point2D>> split_edges = splitEdge(edge_points, line_point_dist, ang_threshold); //Split edge points if multiple cones detected (Temp values right now as params)
+        for (int i = 0; i < split_edges.size(); i++){
+            mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
+
+            if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius, valid cone
+                potential_cone.radius = radius_exp;
+                potential_cone.header.frame_id = frame_id;
+                potential_cone.header.stamp = ros::Time::now();
+                identified_cones.push_back(potential_cone);
+            }
+        }
+    }
+    else if (edge_points.size() >= 3) { //Directly make the cone if not enough points to split (cone still needs at least 3 edge points though)
+        mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
+
+        if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius, valid cone
+            potential_cone.radius = radius_exp;
+            potential_cone.header.frame_id = frame_id;
+            potential_cone.header.stamp = ros::Time::now();
+            identified_cones.push_back(potential_cone);
+        }
+    }
 }
 
 
@@ -146,8 +95,6 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
     //Find local mins, then check if they are below threshold
     std::vector<size_t> splitIndices;
     for (int i = 1; i < angles.size() - 1; i++){
-
-        //std::cout<<"Angle: "<<angles[i]<<std::endl;
         bool isLocalMin = true;
         for (int j = i - line_point_dist; j <= i + line_point_dist; j++){
             if (angles[j] < angles[i]) {
@@ -155,11 +102,8 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
                 break;
             }
         }
-
-        if (angles[i] < ang_threshold && isLocalMin) {
-            //std::cout<<"SPLIT"<<std::endl;
+        if (angles[i] < ang_threshold && isLocalMin)
             splitIndices.push_back(i + line_point_dist);
-        }
     }
 
     //Split edges based on qualified local mins
@@ -180,43 +124,20 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
 mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapping_igvc::Point2D> &edge_points){
     mapping_igvc::ConeObstacle cone = mapping_igvc::ConeObstacle();
 
+    int i, iter, IterMAX = 99;
 
-    //TODO: create header
-
-    /* Single Sampling Method*/
-    /*
-    int mid_i = edge_points.size()/2;
-    double slopeA = (edge_points[mid_i].y - edge_points[0].y) / (edge_points[mid_i].x - edge_points[0].x);
-    double slopeB = (edge_points[edge_points.size()-1].y - edge_points[mid_i].y) / (edge_points[edge_points.size()-1].x - edge_points[mid_i].x);
-    cone.center.x = (((slopeA * slopeB) * (edge_points[0].y - edge_points[edge_points.size()-1].y)) +
-                slopeB * (edge_points[0].x + edge_points[mid_i].x) -
-                slopeA * (edge_points[mid_i].x + edge_points[edge_points.size()-1].x)) /
-               (2 * (slopeB - slopeA));
-    cone.center.y =  -((cone.center.x - (edge_points[0].x + edge_points[mid_i].x) / 2) / slopeA) +
-               ((edge_points[0].y + edge_points[mid_i].y) / 2);
-
-    cone.radius = getDist(edge_points[mid_i], cone.center);
-
-    return cone;*/
-
-
-    /* Hyper-fit circle fitting method by Nikolai Chernov */
-    /* Taken from https://github.com/SohranEliassi/Circle-Fitting-Hyper-Fit/blob/master/CircleFitByHyper.cpp */
-
-    int i,iter,IterMAX=99;
-
-    double Xi,Yi,Zi;
-    double Mz,Mxy,Mxx,Myy,Mxz,Myz,Mzz,Cov_xy,Var_z;
-    double A0,A1,A2,A22;
-    double Dy,xnew,x,ynew,y;
-    double DET,Xcenter,Ycenter;
+    double Xi, Yi, Zi;
+    double Mz, Mxy, Mxx, Myy, Mxz, Myz, Mzz, Cov_xy, Var_z;
+    double A0, A1, A2, A22;
+    double Dy, xnew, x, ynew, y;
+    double DET, Xcenter, Ycenter;
 
     // Compute x- and y- sample means (via a function in the class "data")
     double meanX = getMeanX(edge_points);
     double meanY = getMeanY(edge_points);
 
     // computing moments
-    Mxx=Myy=Mxy=Mxz=Myz=Mzz=0.;
+    Mxx = Myy = Mxy = Mxz = Myz = Mzz = 0.;
     for (i=0; i<edge_points.size(); i++) {
         Xi = edge_points[i].x - meanX;   //  centered x-coordinates
         Yi = edge_points[i].y - meanY;   //  centered y-coordinates
@@ -246,10 +167,8 @@ mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapp
     A0 = Mxz*(Mxz*Myy - Myz*Mxy) + Myz*(Myz*Mxx - Mxz*Mxy) - Var_z*Cov_xy;
     A22 = A2 + A2;
 
-    // finding the root of the characteristic polynomial
-    // using Newton's method starting at x=0
+    // find the root of the characteristic polynomial using Newton's method starting at x=0
     // (it is guaranteed to converge to the right root)
-
     for (x=0.,y=A0,iter=0; iter<IterMAX; iter++)  // usually, 4-6 iterations are enough
     {
         Dy = A1 + x*(A22 + 16.*x*x);
@@ -260,13 +179,12 @@ mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapp
         x = xnew;  y = ynew;
     }
 
-    // computing paramters of the fitting circle
-
+    // compute parameters of the fitting circle
     DET = x*x - x*Mz + Cov_xy;
     Xcenter = (Mxz*(Myy - x) - Myz*Mxy)/DET/2;
     Ycenter = (Myz*(Mxx - x) - Mxz*Mxy)/DET/2;
 
-    // assembling the output
+    // assemble the output
     cone.center.x = Xcenter + meanX; // estimated x position
     cone.center.y = Ycenter + meanY; //estimated y position
     cone.radius = sqrt(Xcenter*Xcenter + Ycenter*Ycenter + Mz - x - x); //estimated radius
