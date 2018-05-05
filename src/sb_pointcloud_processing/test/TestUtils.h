@@ -14,6 +14,14 @@
 namespace LineExtractor {
 class TestUtils {
   public:
+    /**
+     * LineArgs is a struct representing a mathematical line.
+     * @param coefficients coefficients of the mathematical line, where the
+     * index
+     * of a coefficient corresponds to its degree
+     * @param x_min, x_max domain of the line
+     * @param x_delta the distance between adjacent points on the line
+     */
     struct LineArgs {
         std::vector<float> coefficients;
         float x_min;
@@ -29,6 +37,11 @@ class TestUtils {
             x_delta(x_delta){};
     };
 
+    /**
+     * Adds given line to the given point cloud
+     * @param args struct representing a mathematical line within a domain
+     * @param pcl point cloud to add the line to
+     */
     static void addLineToPointCloud(LineArgs args,
                                     pcl::PointCloud<pcl::PointXYZ>& pcl) {
         for (float x = args.x_min; x <= args.x_max; x += args.x_delta) {
@@ -44,11 +57,23 @@ class TestUtils {
         }
     };
 
+    /**
+     * Adds given line with added noise to the given point cloud
+     * @param args struct representing a mathematical line within a domain
+     * @param pcl point cloud to add the line to
+     * @param max_noise_x maximum deviation of a point from the line in x
+     * direction
+     * @param max_noise_y maximum deviation of a point from the line in y
+     * direction
+     * @param seed seed for rand()
+     */
     static void addLineToPointCloud(LineArgs args,
                                     pcl::PointCloud<pcl::PointXYZ>& pcl,
                                     float max_noise_x,
-                                    float max_noise_y) {
-        srand(123);
+                                    float max_noise_y,
+                                    unsigned int seed = 123) {
+        srand(seed);
+
         for (float x = args.x_min; x <= args.x_max; x += args.x_delta) {
             float true_x = x;
             float true_y = 0;
@@ -70,10 +95,22 @@ class TestUtils {
         }
     };
 
+    /**
+     * Gets the number of points that form the line based on its domain and
+     * distance between adjacent points
+     * @param args representation of the line in a struct
+     * @return the number of points that form the given line
+     */
     unsigned int static getNumPoints(LineArgs args) {
         return (args.x_max - args.x_min) / args.x_delta + 1;
     }
 
+    /**
+     * Gets the minimum and maximum values of x of the point cloud
+     * @param min_x variable to store the minimum value
+     * @param max_x variable to store the maximum value
+     * @param pcl point cloud
+     */
     static void getMinAndMaxOfPointCloud(float& min_x,
                                          float& max_x,
                                          pcl::PointCloud<pcl::PointXYZ> pcl) {

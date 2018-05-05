@@ -1,0 +1,11 @@
+<library path="lib/libsb_pointcloud_processing">
+
+    <class name="sb_pointcloud_processing/rgb_to_hsv"
+           type="RGBtoHSV"
+           base_class_type="nodelet::Nodelet">
+        <description>
+            Transforms a pcl pointcloud from the RGB colourspace to the HSV colourspace
+        </description>
+    </class>
+
+</library>
