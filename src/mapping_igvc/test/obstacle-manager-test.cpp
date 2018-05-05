@@ -621,9 +621,11 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_single_cone){
 
     // What we expect the occupancy grid to be
     std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
-            {_,X,_},
-            {X,X,X},
-            {_,X,_},
+            {_,_,X,_,_,_,_},
+            {_,X,X,X,_,_,_},
+            {X,X,X,X,X,_,_},
+            {_,X,X,X,_,_,_},
+            {_,_,X,_,_,_,_},
     };
 
     checkOccupiedCells(occ_grid, expected_occ_grid);
@@ -660,7 +662,7 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_seperate_line_and_cone){
     ObstacleManager obstacle_manager(1, 1, 0, 0.5);
 
     obstacle_manager.addObstacle(Spline({{1,3}, {9,3}}));
-    obstacle_manager.addObstacle(generateConeObstacle(4, 10, 2));
+    obstacle_manager.addObstacle(generateConeObstacle(4, 10, 1.49));
 
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
@@ -676,19 +678,17 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_seperate_line_and_cone){
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 8 */
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 9 */
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 10 */
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 11 */
-            {_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,}, /* 12 */
-            {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,}, /* 13 */
+            {_,_,_,_,_,_,X,_,_,_,_,_,_,_,_,_,_,_,}, /* 11 */
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,}, /* 12 */
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,}, /* 13 */
             {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,}, /* 14 */
-            {_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,}, /* 15 */
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 16 */
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 17 */
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,}, /* 15 */
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,}, /* 16 */
+            {_,_,_,_,_,_,X,_,_,_,_,_,_,_,_,_,_,_,}, /* 17 */
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 18 */
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 19 */
     };
 
-    // TODO: YOU ARE HERE -  this is clearly wrong.... fix me!
-    // TODO: (ie. test is passing but the above result isn't really what we would expect...)
     checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 

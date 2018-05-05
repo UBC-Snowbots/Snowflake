@@ -197,25 +197,18 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
     }
 
     for (auto& cone : cones){
-        // This function returns the `y` value (in # of cells) of the cone for a given
-        // `x` value (also in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
-        auto circle = [&](int x) {
-            // Calculate `y` as a floating point distance
-            double y = std::sqrt(std::pow(cone.radius,2) - std::pow(x,2));
-            // Return the equivalent number of cells
-            return (int)std::floor(y);
-        };
         // Iterate over the cone in 2D
-        auto cone_radius_num_cells = (int)std::floor(cone.radius / occ_grid_cell_size);
-        for (int x = -cone_radius_num_cells; x < cone_radius_num_cells + 1; x++){
-            // figure out the height of the cone (value of y) at the current x value
-            // (in # of cells) using the equation for a circle: `y = sqrt(r^2 - x^2)`
-            auto cone_height_num_cells = circle(x*occ_grid_cell_size);
-            for (int y = -cone_height_num_cells; y < cone_height_num_cells; y++){
-                occupied_points.emplace_back(Point2D(
-                        cone.center.x + x * occ_grid_cell_size,
-                        cone.center.y + y * occ_grid_cell_size
-                ));
+        auto cone_radius_num_cells = (int)std::ceil(cone.radius / occ_grid_cell_size);
+        for (int x = -cone_radius_num_cells; x <= cone_radius_num_cells; x++){
+            for (int y = -cone_radius_num_cells; y <= cone_radius_num_cells; y++) {
+                // Check that the point is within the circle by using the equation of
+                // a circle: (x^2 + y^2 = r^2)
+                if ((std::pow(x, 2) + std::pow(y,2)) <= std::pow(cone_radius_num_cells,2)){
+                    occupied_points.emplace_back(Point2D(
+                            cone.center.x + x * occ_grid_cell_size,
+                            cone.center.y + y * occ_grid_cell_size
+                    ));
+                }
             }
         }
     }
