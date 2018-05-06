@@ -120,6 +120,24 @@ protected:
     }
 
     /**
+     * Prints out a given occupancy grid in human readable format
+     * @param occ_grid the occupancy grid to print
+     */
+    void printOccGrid(nav_msgs::OccupancyGrid occ_grid){
+        for (int y = 0; y < occ_grid.info.height; y++){
+            std::cout << std::endl;
+            for (int x = 0; x < occ_grid.info.width; x++){
+                if (occ_grid.data[y * occ_grid.info.width + x] != 0){
+                    std::cout << "X";
+                } else {
+                    std::cout << ".";
+                }
+            }
+        }
+        std::cout << std::endl;
+    };
+
+    /**
      * Checks whether a given set of cells are occupied
      *
      * "occupied" is assumed to mean a value of 100 in the cell, all other cells are presumed
@@ -128,9 +146,15 @@ protected:
      * @param occ_grid the occupancy grid to check for occupied and unoccupied cells
      * @param expected_occupied_cells the cells that we expect to be occupied
      * (represented as (x,y) pairs)
+     *
+     * @return if all the points we expect to be occupied were occupied
      */
-    void checkOccupiedCells(nav_msgs::OccupancyGrid occ_grid,
+    bool checkOccupiedCells(nav_msgs::OccupancyGrid occ_grid,
                             std::vector<std::pair<int,int>> expected_occupied_cells){
+
+        // We use this to determine whether to print out the given occupancy grid on failure
+        bool print_occ_grid = false;
+
         // Iterate over all the cells
         for (int x = 0; x < occ_grid.info.width; x++){
             for (int y = 0; y < occ_grid.info.height; y++){
@@ -144,6 +168,9 @@ protected:
                 // Check that the cell contains the value we expect
                 EXPECT_EQ(expected_cell_val, (int)occ_grid.data[y * occ_grid.info.width + x])
                                     << "Failed on cell: (" << x << "," << y << ")" << std::endl;
+                if (expected_cell_val != (int)occ_grid.data[y * occ_grid.info.width + x]){
+                    print_occ_grid = true;
+                }
             }
         }
 
@@ -158,6 +185,11 @@ protected:
             ) << "Cell: (" << cell.first << "," << cell.second
               << ") not in graph bounds: (0,0)" << " to ("
               << occ_grid.info.width << "," << occ_grid.info.height << ")";
+        }
+
+        if (print_occ_grid){
+            std::cout << "ACTUAL OCCUPANCY GRID:";
+            printOccGrid(occ_grid);
         }
     }
 };
@@ -621,11 +653,11 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_single_cone){
 
     // What we expect the occupancy grid to be
     std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
-            {_,_,X,_,_,_,_},
-            {_,X,X,X,_,_,_},
-            {X,X,X,X,X,_,_},
-            {_,X,X,X,_,_,_},
-            {_,_,X,_,_,_,_},
+            {_,_,X,_,_,},
+            {_,X,X,X,_,},
+            {X,X,X,X,X,},
+            {_,X,X,X,_,},
+            {_,_,X,_,_,},
     };
 
     checkOccupiedCells(occ_grid, expected_occ_grid);
@@ -687,6 +719,30 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_seperate_line_and_cone){
             {_,_,_,_,_,_,X,_,_,_,_,_,_,_,_,_,_,_,}, /* 17 */
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 18 */
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 19 */
+    };
+
+    checkOccupiedCells(occ_grid, expected_occ_grid);
+}
+
+// Test generating an occupancy grid with a line and a cone that are overlapping
+TEST_F(ObstacleManagerTest, generate_occ_grid_with_overlapping_line_and_cone){
+    ObstacleManager obstacle_manager(1, 1, 0, 0.5);
+
+    obstacle_manager.addObstacle(Spline({{1,3}, {9,3}}));
+    obstacle_manager.addObstacle(generateConeObstacle(4, 3, 1.49));
+
+    nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
+
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {_,_,_,_,_,_,X,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,},
+            {X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,},
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,X,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
     };
 
     checkOccupiedCells(occ_grid, expected_occ_grid);
