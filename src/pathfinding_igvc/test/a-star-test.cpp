@@ -8,7 +8,7 @@
 #include <tf/transform_datatypes.h>
 
 TEST(AStar, TestChangeOfFrame) {
-    AStar astar = AStar();
+    AStar a_star = AStar();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -43,14 +43,14 @@ TEST(AStar, TestChangeOfFrame) {
     // set mapMetaData
     grid.info = mapMetaData;
 
-    astar.setOccupancyGrid(grid);
+    a_star.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 5.0;
     point.y = 6.0;
     point.z = 0.0;
 
-    geometry_msgs::Point point_on_grid = astar.transformToGridFrame(point);
+    geometry_msgs::Point point_on_grid = a_star.transformToGridFrame(point);
 
     EXPECT_EQ(point_on_grid.x, point.x - origin.position.x);
     EXPECT_EQ(point_on_grid.y, point.y - origin.position.y);
