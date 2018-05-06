@@ -98,7 +98,7 @@ TEST(AStar, TestChangeOfFrameWith90Rotation) {
     EXPECT_FLOAT_EQ(point_on_grid.y, 3.0);
 }
 
-TEST(AStar, TestChangeOfFrameWith45Rotation) {
+TEST(AStar, TestChangeOfFrameWith30Rotation) {
     AStar a_star = AStar();
 
     /* origin of OccupancyGrid */
