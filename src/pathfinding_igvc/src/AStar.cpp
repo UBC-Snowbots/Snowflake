@@ -9,10 +9,22 @@ void AStar::setOccupancyGrid(nav_msgs::OccupancyGrid grid) {
     this->_occupancy_grid = grid;
 
     // setup transformation matrix from map to grid frame
+    // convert geometry_msgs::Point to tf::Vector3
     tf::Vector3 origin_position = pointToVector(grid.info.origin.position);
+    // convert geometry_msgs::Quaternion to tf::Quaternion
     tf::Quaternion origin_quaternion;
     tf::quaternionMsgToTF(grid.info.origin.orientation, origin_quaternion);
+
     this->_transformation_to_grid = tf::Transform(origin_quaternion, origin_position).inverse();
+}
+
+void AStar::getRowAndCol(geometry_msgs::Point point, int &row, int &col) {
+    geometry_msgs::Point point_in_grid_frame = transformToGridFrame(point);
+
+    // assumes that cell (0,0) is in the bottom left of the grid
+    // TODO: ensure this is true
+    row = point_in_grid_frame.y / this->_occupancy_grid.info.resolution;
+    col = point_in_grid_frame.x / this->_occupancy_grid.info.resolution;
 }
 
 geometry_msgs::Point AStar::transformToGridFrame(geometry_msgs::Point point) {

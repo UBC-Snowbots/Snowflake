@@ -17,6 +17,8 @@ public:
 
     void setOccupancyGrid(nav_msgs::OccupancyGrid grid);
 
+    void getRowAndCol(geometry_msgs::Point point, int &row, int &col);
+
     geometry_msgs::Point transformToGridFrame(geometry_msgs::Point point);
 
 private:
