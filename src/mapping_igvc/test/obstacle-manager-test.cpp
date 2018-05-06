@@ -742,11 +742,91 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_overlapping_line_and_cone){
             {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,},
             {_,_,_,_,_,_,X,_,_,_,_,_,_,_,_,_,_,_,},
             {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
     };
 
     checkOccupiedCells(occ_grid, expected_occ_grid);
 }
+
+// Test adding a cone and then adding a cone within "equality" distance of the first
+// the obstacle manager should just treat the second cone as the "true" cone and
+// the occupancy grid should reflect this
+TEST_F(ObstacleManagerTest, generate_occ_grid_slightly_move_cone){
+    ObstacleManager obstacle_manager(1, 1, 0, 0.5);
+
+    // This spline is here for force the obstacle manager to generate a larger grid
+    obstacle_manager.addObstacle(Spline({{1,3}, {9,3}}));
+
+
+    obstacle_manager.addObstacle(generateConeObstacle(3.1, 10, 1.49));
+    obstacle_manager.addObstacle(generateConeObstacle(4, 10, 1.49));
+
+    nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
+
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,}, /* 0 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 1 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 2 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 3 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 4 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 5 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 6 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 7 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 8 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 9 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 10 */
+            {_,_,_,_,_,_,X,_,_,_,_,_,_,_,_,_,_,_,}, /* 11 */
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,}, /* 12 */
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,}, /* 13 */
+            {_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,}, /* 14 */
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,}, /* 15 */
+            {_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,}, /* 16 */
+            {_,_,_,_,_,_,X,_,_,_,_,_,_,_,_,_,_,_,}, /* 17 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 18 */
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,}, /* 19 */
+    };
+
+    checkOccupiedCells(occ_grid, expected_occ_grid);
+}
+
+// Test adding two lines within merging distance and checking that they're
+// merged properly in the output occ_grid
+TEST_F(ObstacleManagerTest, generate_occ_grid_merged_lines){
+    ObstacleManager obstacle_manager(1, 1, 0.5, 0.5);
+
+    // Add the first line
+    obstacle_manager.addObstacle(Spline({{1,1}, {3,1}, {10, 1}, {13,1}}));
+    nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
+
+    std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
+            {_,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,},
+            {X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,},
+            {_,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,},
+    };
+
+    checkOccupiedCells(occ_grid, expected_occ_grid);
+
+    // Add the second line
+    obstacle_manager.addObstacle(Spline({{1,1}, {3,1}, {4,3}, {7,0}}));
+    occ_grid = obstacle_manager.generateOccupancyGrid();
+
+    expected_occ_grid = {
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,X,_,},
+            {_,_,X,X,X,X,_,_,_,_,_,_,X,X,X,},
+            {_,X,X,X,X,X,X,_,_,_,_,_,X,X,_,},
+            {X,X,X,X,X,X,X,_,_,_,_,X,X,X,_,},
+            {_,X,_,_,X,X,X,_,_,_,X,_,X,_,_,},
+            {_,_,_,_,_,X,X,X,X,X,X,X,_,_,_,},
+            {_,_,_,_,_,X,X,X,X,X,X,_,_,_,_,},
+            {_,_,_,_,_,_,X,X,X,X,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,X,X,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+    };
+
+    //checkOccupiedCells(occ_grid, expected_occ_grid);
+}
+
 
 
 // TODO: Delete me, not a real test
