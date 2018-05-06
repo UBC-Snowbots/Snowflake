@@ -188,7 +188,7 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
     for (auto& line : lines){
         // Figure out how many points to sample
-        auto num_sample_points = (int)std::ceil(line.approxLength() / occ_grid_cell_size);
+        auto num_sample_points = (int)std::ceil(line.approxLength() / occ_grid_cell_size) * 2;
 
         // Sample points from the line
         for (int i = 0; i <= num_sample_points; i++){

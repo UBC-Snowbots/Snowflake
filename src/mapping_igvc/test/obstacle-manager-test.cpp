@@ -674,9 +674,9 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_with_single_line){
     std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
             {_,_,_,_,_,_,_,_,_,_,_,_,_,X,_,},
             {_,_,X,X,X,X,_,_,_,_,_,_,X,X,X,},
-            {_,X,X,X,X,X,X,_,_,_,_,_,X,X,_,},
+            {_,X,X,X,X,X,X,_,_,_,_,X,X,X,_,},
             {X,X,X,X,X,X,X,_,_,_,_,X,X,X,_,},
-            {_,X,_,_,X,X,X,_,_,_,X,_,X,_,_,},
+            {_,X,_,_,X,X,X,_,_,_,X,X,X,_,_,},
             {_,_,_,_,_,X,X,X,X,X,X,X,_,_,_,},
             {_,_,_,_,_,X,X,X,X,X,X,_,_,_,_,},
             {_,_,_,_,_,_,X,X,X,X,_,_,_,_,_,},
@@ -798,9 +798,9 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_merged_lines){
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
     std::vector<std::vector<OccupiedOrNot>> expected_occ_grid = {
-            {_,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,},
-            {X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,},
-            {_,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,},
+            {_,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,_,},
+            {X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,},
+            {_,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,_,},
     };
 
     checkOccupiedCells(occ_grid, expected_occ_grid);
@@ -810,21 +810,21 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_merged_lines){
     occ_grid = obstacle_manager.generateOccupancyGrid();
 
     expected_occ_grid = {
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,X,_,},
-            {_,_,X,X,X,X,_,_,_,_,_,_,X,X,X,},
-            {_,X,X,X,X,X,X,_,_,_,_,_,X,X,_,},
-            {X,X,X,X,X,X,X,_,_,_,_,X,X,X,_,},
-            {_,X,_,_,X,X,X,_,_,_,X,_,X,_,_,},
-            {_,_,_,_,_,X,X,X,X,X,X,X,_,_,_,},
-            {_,_,_,_,_,X,X,X,X,X,X,_,_,_,_,},
-            {_,_,_,_,_,_,X,X,X,X,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,X,X,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
-            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,X,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,_,_,},
+            {_,X,X,X,X,X,_,_,_,_,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,X,_,_,},
+            {X,X,X,X,X,X,X,_,_,X,X,X,X,_,_,X,X,X,X,X,X,X,X,X,X,X,X,_,},
+            {_,X,X,X,X,X,X,X,_,X,X,X,_,_,_,_,_,_,X,X,X,X,X,X,X,X,_,_,},
+            {_,_,_,_,_,X,X,X,X,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,X,X,X,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,X,X,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,X,X,X,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
+            {_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,},
     };
 
-    //checkOccupiedCells(occ_grid, expected_occ_grid);
+    checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 
 
