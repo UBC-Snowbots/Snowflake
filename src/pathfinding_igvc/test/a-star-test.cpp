@@ -325,6 +325,144 @@ TEST(AStar, TestResizeMapExpandLeft) {
     EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
 }
 
+TEST(AStar, TestResizeMapExpandUp) {
+    AStar a_star = AStar();
+
+    /* origin of OccupancyGrid */
+    // initialize origin of occupancy grid
+    geometry_msgs::Pose origin;
+
+    // set position of the origin
+    geometry_msgs::Point position;
+    position.x = 3.0;
+    position.y = 3.0;
+    position.z = 0.0;
+    origin.position = position;
+
+    // set orientation of the origin
+    tf::Quaternion q;
+    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
+    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
+    rotationMatrix.getRotation(q);
+    tf::quaternionTFToMsg(q, origin.orientation);
+
+    /* mapMetaData of OccupancyGrid */
+    // initialize mapMetaData
+    nav_msgs::MapMetaData mapMetaData;
+    mapMetaData.resolution = 2.0;
+    mapMetaData.width = 2;
+    mapMetaData.height = 3;
+    // add origin to mapMetaData
+    mapMetaData.origin = origin;
+
+    /* OccupancyGrid */
+    // initialize occupancy grid
+    nav_msgs::OccupancyGrid grid;
+    // set mapMetaData
+    grid.info = mapMetaData;
+    grid.data = std::vector<int8_t>(6, OCC_GRID_OCCUPIED);
+
+    a_star.setOccupancyGrid(grid);
+
+    geometry_msgs::Point point;
+    point.x = 3.0;
+    point.y = 12.0;
+    point.z = 0.0;
+
+    AStar::GridPoint grid_point = a_star.convertToGridPoint(point);
+
+    EXPECT_NEAR(grid_point.col, 0.0, 0.01);
+    EXPECT_NEAR(grid_point.row, 4.0, 0.01);
+
+    a_star.resizeMapToFitGoal(grid_point);
+
+    EXPECT_EQ(a_star._occupancy_grid.data.size(), 10);
+    EXPECT_EQ(a_star._occupancy_grid.info.width, 2);
+    EXPECT_EQ(a_star._occupancy_grid.info.height, 5);
+    EXPECT_EQ(a_star._occupancy_grid.info.resolution, 2.0);
+    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.x, position.x);
+    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.y, position.y);
+
+    std::vector<int8_t> expected_data = {
+            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
+            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
+            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
+            OCC_GRID_FREE, OCC_GRID_FREE,
+            OCC_GRID_FREE, OCC_GRID_FREE,
+    };
+
+    EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
+}
+
+TEST(AStar, TestResizeMapExpandDown) {
+    AStar a_star = AStar();
+
+    /* origin of OccupancyGrid */
+    // initialize origin of occupancy grid
+    geometry_msgs::Pose origin;
+
+    // set position of the origin
+    geometry_msgs::Point position;
+    position.x = 3.0;
+    position.y = 3.0;
+    position.z = 0.0;
+    origin.position = position;
+
+    // set orientation of the origin
+    tf::Quaternion q;
+    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
+    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
+    rotationMatrix.getRotation(q);
+    tf::quaternionTFToMsg(q, origin.orientation);
+
+    /* mapMetaData of OccupancyGrid */
+    // initialize mapMetaData
+    nav_msgs::MapMetaData mapMetaData;
+    mapMetaData.resolution = 2.0;
+    mapMetaData.width = 2;
+    mapMetaData.height = 3;
+    // add origin to mapMetaData
+    mapMetaData.origin = origin;
+
+    /* OccupancyGrid */
+    // initialize occupancy grid
+    nav_msgs::OccupancyGrid grid;
+    // set mapMetaData
+    grid.info = mapMetaData;
+    grid.data = std::vector<int8_t>(6, OCC_GRID_OCCUPIED);
+
+    a_star.setOccupancyGrid(grid);
+
+    geometry_msgs::Point point;
+    point.x = 3.0;
+    point.y = 0.0;
+    point.z = 0.0;
+
+    AStar::GridPoint grid_point = a_star.convertToGridPoint(point);
+
+    EXPECT_NEAR(grid_point.col, 0.0, 0.01);
+    EXPECT_NEAR(grid_point.row, -2.0, 0.01);
+
+    a_star.resizeMapToFitGoal(grid_point);
+
+    EXPECT_EQ(a_star._occupancy_grid.data.size(), 10);
+    EXPECT_EQ(a_star._occupancy_grid.info.width, 2);
+    EXPECT_EQ(a_star._occupancy_grid.info.height, 5);
+    EXPECT_EQ(a_star._occupancy_grid.info.resolution, 2.0);
+    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.x, 3.0);
+    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.y, -1.0);
+
+    std::vector<int8_t> expected_data = {
+            OCC_GRID_FREE, OCC_GRID_FREE,
+            OCC_GRID_FREE, OCC_GRID_FREE,
+            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
+            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
+            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
+    };
+
+    EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
+}
+
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

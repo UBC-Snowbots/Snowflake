@@ -43,6 +43,23 @@ void AStar::resizeMapToFitGoal(AStar::GridPoint goal) {
         this->_occupancy_grid.info.width += col_diff;
         this->_occupancy_grid.info.origin.position.x -= col_diff * this->_occupancy_grid.info.resolution;
     }
+
+    if (goal.row >= (int)this->_occupancy_grid.info.height) {
+        unsigned int row_diff = goal.row - this->_occupancy_grid.info.height + 1;
+        unsigned int num_additional_cells = row_diff * this->_occupancy_grid.info.width;
+
+        this->_occupancy_grid.data.insert(this->_occupancy_grid.data.end(), num_additional_cells, OCC_GRID_FREE);
+
+        this->_occupancy_grid.info.height += row_diff;
+    } else if (goal.row < 0) {
+        unsigned int row_diff = abs(goal.row);
+        unsigned int num_additional_cells = row_diff * this->_occupancy_grid.info.width;
+
+        this->_occupancy_grid.data.insert(this->_occupancy_grid.data.begin(), num_additional_cells, OCC_GRID_FREE);
+
+        this->_occupancy_grid.info.height += row_diff;
+        this->_occupancy_grid.info.origin.position.y -= row_diff * this->_occupancy_grid.info.resolution;
+    }
 }
 
 AStar::GridPoint AStar::convertToGridPoint(geometry_msgs::Point point) {
