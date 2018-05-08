@@ -10,14 +10,25 @@
 #include <geometry_msgs/Point.h>
 #include <tf/LinearMath/Transform.h>
 
+#define OCC_GRID_FREE 0
+#define OCC_GRID_OCCUPIED 100
+
 class AStar {
 public:
+    struct GridPoint {
+        int col;
+        int row;
+        GridPoint(int c, int r) : col(c), row(r) {};
+    };
+
     nav_msgs::OccupancyGrid _occupancy_grid;
     tf::Transform _transformation_to_grid;
 
     void setOccupancyGrid(nav_msgs::OccupancyGrid grid);
 
-    void getRowAndCol(geometry_msgs::Point point, int &row, int &col);
+    void resizeMapToFitGoal(GridPoint goal);
+
+    GridPoint convertToGridPoint(geometry_msgs::Point point);
 
     geometry_msgs::Point transformToGridFrame(geometry_msgs::Point point);
 

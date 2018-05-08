@@ -18,13 +18,45 @@ void AStar::setOccupancyGrid(nav_msgs::OccupancyGrid grid) {
     this->_transformation_to_grid = tf::Transform(origin_quaternion, origin_position).inverse();
 }
 
-void AStar::getRowAndCol(geometry_msgs::Point point, int &row, int &col) {
+void AStar::resizeMapToFitGoal(AStar::GridPoint goal) {
+    if (goal.col >= (int)this->_occupancy_grid.info.width) {
+        unsigned int col_diff = goal.col - this->_occupancy_grid.info.width + 1;
+
+        auto it = this->_occupancy_grid.data.begin() + this->_occupancy_grid.info.width;
+
+        for (unsigned int row = 0; row < this->_occupancy_grid.info.height; row++) {
+            it = this->_occupancy_grid.data.insert(it, col_diff, OCC_GRID_FREE);
+            it += this->_occupancy_grid.info.width + col_diff;
+        }
+
+        this->_occupancy_grid.info.width += col_diff;
+    } else if (goal.col < 0) {
+        unsigned int col_diff = abs(goal.col);
+
+        auto it = this->_occupancy_grid.data.begin();
+
+        for (unsigned int row = 0; row < this->_occupancy_grid.info.height; row++) {
+            it = this->_occupancy_grid.data.insert(it, col_diff, OCC_GRID_FREE);
+            it += this->_occupancy_grid.info.width + col_diff;
+        }
+
+        this->_occupancy_grid.info.width += col_diff;
+        this->_occupancy_grid.info.origin.position.x -= col_diff * this->_occupancy_grid.info.resolution;
+    }
+}
+
+AStar::GridPoint AStar::convertToGridPoint(geometry_msgs::Point point) {
     geometry_msgs::Point point_in_grid_frame = transformToGridFrame(point);
 
     // assumes that cell (0,0) is in the bottom left of the grid
     // TODO: ensure this is true
-    row = point_in_grid_frame.y / this->_occupancy_grid.info.resolution;
-    col = point_in_grid_frame.x / this->_occupancy_grid.info.resolution;
+    int col = point_in_grid_frame.x / this->_occupancy_grid.info.resolution;
+    int row = point_in_grid_frame.y / this->_occupancy_grid.info.resolution;
+
+    col = col < 0 ? col - 1 : col;
+    row = row < 0 ? row - 1 : row;
+
+    return AStar::GridPoint(col, row);
 }
 
 geometry_msgs::Point AStar::transformToGridFrame(geometry_msgs::Point point) {
