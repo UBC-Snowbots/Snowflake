@@ -5,6 +5,21 @@
 #include <AStar.h>
 #include <tf/transform_datatypes.h>
 
+// MAIN ENTRY FUNCTION
+nav_msgs::Path AStar::perform(geometry_msgs::Point start, geometry_msgs::Point goal, nav_msgs::OccupancyGrid grid) {
+    setOccupancyGrid(grid);
+    AStar::GridPoint start_on_grid = convertToGridPoint(start);
+    AStar::GridPoint goal_on_grid = convertToGridPoint(goal);
+    resizeMapToFitGoal(goal_on_grid);
+    return calculatePath(start_on_grid, goal_on_grid);
+}
+
+// ASTAR ALGO
+nav_msgs::Path AStar::calculatePath(AStar::GridPoint start, AStar::GridPoint goal) {
+    //TODO
+    return nav_msgs::Path();
+}
+
 void AStar::setOccupancyGrid(nav_msgs::OccupancyGrid grid) {
     this->_occupancy_grid = grid;
 

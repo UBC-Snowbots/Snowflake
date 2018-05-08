@@ -24,6 +24,12 @@ public:
     nav_msgs::OccupancyGrid _occupancy_grid;
     tf::Transform _transformation_to_grid;
 
+    // MAIN ENTRY FUNCTION
+    nav_msgs::Path perform(geometry_msgs::Point start, geometry_msgs::Point goal, nav_msgs::OccupancyGrid grid);
+
+    // ASTAR ALGO
+    nav_msgs::Path calculatePath(AStar::GridPoint start, AStar::GridPoint goal);
+
     void setOccupancyGrid(nav_msgs::OccupancyGrid grid);
 
     void resizeMapToFitGoal(GridPoint goal);
