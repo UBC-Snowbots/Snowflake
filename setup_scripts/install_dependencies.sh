@@ -56,16 +56,6 @@ wstool update
 
 
 echo "================================================================"
-echo "Installing Udev rules for phidgets"
-echo "================================================================"
-
-# Setup udev rules
-sudo cp $CURR_DIR/../src/extended_pkgs/phidgets_api/share/udev/99-phidgets.rules /etc/udev/rules.d
-echo "Phidgets udev rules have been copied to /etc/udev/rules.d"
-# Phidgets_api pkg does this, but it has to be run in right folder, since we are automating
-# we will manually do the copying ourselves
-
-echo "================================================================"
 echo "Finished Installing Utilities"
 echo "================================================================"
 

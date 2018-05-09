@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     string inputWindow = "Camera";
     namedWindow(inputWindow, CV_WINDOW_AUTOSIZE);
 
-    VideoCapture cap(0); // captures the first camera
+    VideoCapture cap(1); // captures the first camera
 
     if (!cap.isOpened()) {
         cout << "Camera cannot be opened" << endl;

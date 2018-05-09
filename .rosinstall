@@ -1,11 +1,23 @@
-# IT IS UNLIKELY YOU WANT TO EDIT THIS FILE BY HAND,
-# UNLESS FOR REMOVING ENTRIES.
-# IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
-# USE THE rosinstall TOOL INSTEAD.
-# IF YOU CHANGE IT, USE rosinstall FOR THE CHANGES TO TAKE EFFECT
-- git: {local-name: src/external_pkgs/sicktoolbox, uri: 'https://github.com/ros-drivers/sicktoolbox.git'}
-- git: {local-name: src/external_pkgs/sicktoolbox_wrapper, uri: 'https://github.com/ros-drivers/sicktoolbox_wrapper.git'}
-- git: {local-name: src/external_pkgs/zed-ros-wrapper, uri: 'https://github.com/UBC-Snowbots/zed-ros-wrapper.git'}
-- git: {local-name: src/external_pkgs/ros_arduino_bridge, uri: 'https://github.com/UBC-Snowbots/ros_arduino_bridge.git'}
-- git: {local-name: src/external_pkgs/nmea_navsat_driver, uri: 'https://github.com/UBC-Snowbots/nmea_navsat_driver.git'}
-- git: {local-name: src/external_pkgs/realsense, uri: 'https://github.com/UBC-Snowbots/realsense.git'}
+- git:
+    local-name: src/external_pkgs/nmea_navsat_driver
+    uri: https://github.com/UBC-Snowbots/nmea_navsat_driver.git
+- git:
+    local-name: src/external_pkgs/realsense
+    uri: https://github.com/intel-ros/realsense.git
+    version: 2.0.3
+- git:
+    local-name: src/external_pkgs/ros_arduino_bridge
+    uri: https://github.com/UBC-Snowbots/ros_arduino_bridge.git
+- git:
+    local-name: src/external_pkgs/sicktoolbox
+    uri: https://github.com/ros-drivers/sicktoolbox.git
+- git:
+    local-name: src/external_pkgs/sicktoolbox_wrapper
+    uri: https://github.com/ros-drivers/sicktoolbox_wrapper.git
+- git:
+    local-name: src/external_pkgs/zed-ros-wrapper
+    uri: https://github.com/UBC-Snowbots/zed-ros-wrapper.git
+- git: 
+    local-name: src/external_pkgs/navigation
+    uri: 'https://github.com/UBC-Snowbots/navigation.git'
+

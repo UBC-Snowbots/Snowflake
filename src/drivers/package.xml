@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <name>drivers</name>
+  <version>0.0.0</version>
+  <description>The drivers package</description>
+
+  <maintainer email="gareth@todo.todo">gareth</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>libserial-dev</build_depend>
+  <build_depend>sb_utils</build_depend>
+  <build_depend>phidgets_high_speed_encoder</build_depend>
+
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>libserial-dev</run_depend>
+  <run_depend>sb_utils</run_depend>
+  <run_depend>phidgets_high_speed_encoder</run_depend>
+
+
+</package>
