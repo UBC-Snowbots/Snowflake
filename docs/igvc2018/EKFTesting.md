@@ -1,8 +1,6 @@
 # Localisation Testing
 Documents how we tested for the EKF for IGVC 2018
 
-## Table of Contents
-
 # Installation and Setup (Software)
 
 1. Run 'cd ~/Snowflake && git checkout master'
