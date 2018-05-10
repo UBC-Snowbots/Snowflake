@@ -8,9 +8,11 @@
     <param name="axis_deadman" value="10"/>
     <param name="axis_linear" value="1"/>
     <param name="axis_angular" value="0"/>
-    <remap from="turtlebot_teleop_joystick/cmd_vel" to="robot/cmd_vel"/>
+    <remap from="turtlebot_teleop_joystick/cmd_vel" to="/cmd_vel"/>
   </node>
 
-  <node pkg="joy" type="joy_node" name="joystick"/>
+  <node pkg="joy" type="joy_node" name="joystick">
+    <param name="dev" value="/dev/input/js0" />
+  </node>
 
 </launch>
