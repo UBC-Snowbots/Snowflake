@@ -8,7 +8,7 @@
 #include <AStar.h>
 
 TEST(PathFinder, TestChangeOfFrame) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -40,21 +40,21 @@ TEST(PathFinder, TestChangeOfFrame) {
     // set mapMetaData
     grid.info = mapMetaData;
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 5.0;
     point.y = 6.0;
     point.z = 0.0;
 
-    geometry_msgs::Point point_on_grid = a_star.transformToGridFrame(point);
+    geometry_msgs::Point point_on_grid = path_finder.transformToGridFrame(point);
 
     EXPECT_FLOAT_EQ(point_on_grid.x, point.x - origin.position.x);
     EXPECT_FLOAT_EQ(point_on_grid.y, point.y - origin.position.y);
 }
 
 TEST(PathFinder, TestChangeOfFrameWith90Rotation) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -86,21 +86,21 @@ TEST(PathFinder, TestChangeOfFrameWith90Rotation) {
     // set mapMetaData
     grid.info = mapMetaData;
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 2.0;
     point.y = 6.0;
     point.z = 0.0;
 
-    geometry_msgs::Point point_on_grid = a_star.transformToGridFrame(point);
+    geometry_msgs::Point point_on_grid = path_finder.transformToGridFrame(point);
 
     EXPECT_FLOAT_EQ(point_on_grid.x, 1.0);
     EXPECT_FLOAT_EQ(point_on_grid.y, 3.0);
 }
 
 TEST(PathFinder, TestChangeOfFrameWith30Rotation) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -132,21 +132,21 @@ TEST(PathFinder, TestChangeOfFrameWith30Rotation) {
     // set mapMetaData
     grid.info = mapMetaData;
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 3.0 + sqrt(3.0);
     point.y = 3.0 + 1.0;
     point.z = 0.0;
 
-    geometry_msgs::Point point_on_grid = a_star.transformToGridFrame(point);
+    geometry_msgs::Point point_on_grid = path_finder.transformToGridFrame(point);
 
     EXPECT_NEAR(point_on_grid.x, 2.0, 0.01);
     EXPECT_NEAR(point_on_grid.y, 0.0, 0.01);
 }
 
 TEST(PathFinder, TestChangeOfFrameWith30RotationToMap) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -178,13 +178,13 @@ TEST(PathFinder, TestChangeOfFrameWith30RotationToMap) {
     // set mapMetaData
     grid.info = mapMetaData;
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point_on_grid;
     point_on_grid.x = 2.0;
     point_on_grid.y = 0.0;
 
-    geometry_msgs::Point point_on_map = a_star.transformToMapFrame(point_on_grid);
+    geometry_msgs::Point point_on_map = path_finder.transformToMapFrame(point_on_grid);
 
     EXPECT_NEAR(point_on_map.x, 3.0 + sqrt(3.0), 0.01);
     EXPECT_NEAR(point_on_map.y, 3.0 + 1.0, 0.01);
@@ -192,7 +192,7 @@ TEST(PathFinder, TestChangeOfFrameWith30RotationToMap) {
 
 
 TEST(PathFinder, TestIndexOfPointInGrid) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -227,21 +227,21 @@ TEST(PathFinder, TestIndexOfPointInGrid) {
     // set mapMetaData
     grid.info = mapMetaData;
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 6.2;
     point.y = 3.1;
     point.z = 0.0;
 
-    AStar::GridPoint grid_point = a_star.convertToGridPoint(point);
+    AStar::GridPoint grid_point = path_finder.convertToGridPoint(point);
 
     EXPECT_EQ(grid_point.col, 1);
     EXPECT_EQ(grid_point.row, 0);
 }
 
 TEST(PathFinder, TestResizeMapExpandRight) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -275,39 +275,39 @@ TEST(PathFinder, TestResizeMapExpandRight) {
     nav_msgs::OccupancyGrid grid;
     // set mapMetaData
     grid.info = mapMetaData;
-    grid.data = std::vector<int8_t>(6, OCC_GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 8.0;
     point.y = 3.0;
     point.z = 0.0;
 
-    AStar::GridPoint grid_point = a_star.convertToGridPoint(point);
+    AStar::GridPoint grid_point = path_finder.convertToGridPoint(point);
 
     EXPECT_NEAR(grid_point.col, 2.0, 0.01);
     EXPECT_NEAR(grid_point.row, 0.0, 0.01);
 
-    a_star.resizeMapToFitGoal(grid_point);
+    path_finder.resizeMapToFitGoal(grid_point);
 
-    EXPECT_EQ(a_star._occupancy_grid.data.size(), 9);
-    EXPECT_EQ(a_star._occupancy_grid.info.width, 3);
-    EXPECT_EQ(a_star._occupancy_grid.info.height, 3);
-    EXPECT_EQ(a_star._occupancy_grid.info.resolution, 2.0);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.x, position.x);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.y, position.y);
+    EXPECT_EQ(path_finder._occupancy_grid.data.size(), 9);
+    EXPECT_EQ(path_finder._occupancy_grid.info.width, 3);
+    EXPECT_EQ(path_finder._occupancy_grid.info.height, 3);
+    EXPECT_EQ(path_finder._occupancy_grid.info.resolution, 2.0);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, position.x);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, position.y);
 
     std::vector<int8_t> expected_data = {
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED, OCC_GRID_FREE,
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED, OCC_GRID_FREE,
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED, OCC_GRID_FREE
+            GRID_OCCUPIED, GRID_OCCUPIED, GRID_FREE,
+            GRID_OCCUPIED, GRID_OCCUPIED, GRID_FREE,
+            GRID_OCCUPIED, GRID_OCCUPIED, GRID_FREE
     };
-    EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
+    EXPECT_EQ(path_finder._occupancy_grid.data, expected_data);
 }
 
 TEST(PathFinder, TestResizeMapExpandLeft) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -341,39 +341,39 @@ TEST(PathFinder, TestResizeMapExpandLeft) {
     nav_msgs::OccupancyGrid grid;
     // set mapMetaData
     grid.info = mapMetaData;
-    grid.data = std::vector<int8_t>(6, OCC_GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 0.0;
     point.y = 3.0;
     point.z = 0.0;
 
-    AStar::GridPoint grid_point = a_star.convertToGridPoint(point);
+    AStar::GridPoint grid_point = path_finder.convertToGridPoint(point);
 
     ASSERT_NEAR(grid_point.col, -2.0, 0.01);
     ASSERT_NEAR(grid_point.row, 0.0, 0.01);
 
-    a_star.resizeMapToFitGoal(grid_point);
+    path_finder.resizeMapToFitGoal(grid_point);
 
-    EXPECT_EQ(a_star._occupancy_grid.data.size(), 12);
-    EXPECT_EQ(a_star._occupancy_grid.info.width, 4);
-    EXPECT_EQ(a_star._occupancy_grid.info.height, 3);
-    EXPECT_EQ(a_star._occupancy_grid.info.resolution, 2.0);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.x, -1.0);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.y, 3.0);
+    EXPECT_EQ(path_finder._occupancy_grid.data.size(), 12);
+    EXPECT_EQ(path_finder._occupancy_grid.info.width, 4);
+    EXPECT_EQ(path_finder._occupancy_grid.info.height, 3);
+    EXPECT_EQ(path_finder._occupancy_grid.info.resolution, 2.0);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, -1.0);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, 3.0);
 
     std::vector<int8_t> expected_data = {
-            OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED
+            GRID_FREE, GRID_FREE, GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_FREE, GRID_FREE, GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_FREE, GRID_FREE, GRID_OCCUPIED, GRID_OCCUPIED
     };
-    EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
+    EXPECT_EQ(path_finder._occupancy_grid.data, expected_data);
 }
 
 TEST(PathFinder, TestResizeMapExpandUp) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -407,42 +407,42 @@ TEST(PathFinder, TestResizeMapExpandUp) {
     nav_msgs::OccupancyGrid grid;
     // set mapMetaData
     grid.info = mapMetaData;
-    grid.data = std::vector<int8_t>(6, OCC_GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 3.0;
     point.y = 12.0;
     point.z = 0.0;
 
-    AStar::GridPoint grid_point = a_star.convertToGridPoint(point);
+    AStar::GridPoint grid_point = path_finder.convertToGridPoint(point);
 
     EXPECT_NEAR(grid_point.col, 0.0, 0.01);
     EXPECT_NEAR(grid_point.row, 4.0, 0.01);
 
-    a_star.resizeMapToFitGoal(grid_point);
+    path_finder.resizeMapToFitGoal(grid_point);
 
-    EXPECT_EQ(a_star._occupancy_grid.data.size(), 10);
-    EXPECT_EQ(a_star._occupancy_grid.info.width, 2);
-    EXPECT_EQ(a_star._occupancy_grid.info.height, 5);
-    EXPECT_EQ(a_star._occupancy_grid.info.resolution, 2.0);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.x, position.x);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.y, position.y);
+    EXPECT_EQ(path_finder._occupancy_grid.data.size(), 10);
+    EXPECT_EQ(path_finder._occupancy_grid.info.width, 2);
+    EXPECT_EQ(path_finder._occupancy_grid.info.height, 5);
+    EXPECT_EQ(path_finder._occupancy_grid.info.resolution, 2.0);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, position.x);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, position.y);
 
     std::vector<int8_t> expected_data = {
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_FREE, OCC_GRID_FREE,
-            OCC_GRID_FREE, OCC_GRID_FREE,
+            GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_FREE, GRID_FREE,
+            GRID_FREE, GRID_FREE,
     };
 
-    EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
+    EXPECT_EQ(path_finder._occupancy_grid.data, expected_data);
 }
 
 TEST(PathFinder, TestResizeMapExpandDown) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -476,42 +476,42 @@ TEST(PathFinder, TestResizeMapExpandDown) {
     nav_msgs::OccupancyGrid grid;
     // set mapMetaData
     grid.info = mapMetaData;
-    grid.data = std::vector<int8_t>(6, OCC_GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 3.0;
     point.y = 0.0;
     point.z = 0.0;
 
-    AStar::GridPoint grid_point = a_star.convertToGridPoint(point);
+    AStar::GridPoint grid_point = path_finder.convertToGridPoint(point);
 
     EXPECT_NEAR(grid_point.col, 0.0, 0.01);
     EXPECT_NEAR(grid_point.row, -2.0, 0.01);
 
-    a_star.resizeMapToFitGoal(grid_point);
+    path_finder.resizeMapToFitGoal(grid_point);
 
-    EXPECT_EQ(a_star._occupancy_grid.data.size(), 10);
-    EXPECT_EQ(a_star._occupancy_grid.info.width, 2);
-    EXPECT_EQ(a_star._occupancy_grid.info.height, 5);
-    EXPECT_EQ(a_star._occupancy_grid.info.resolution, 2.0);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.x, 3.0);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.y, -1.0);
+    EXPECT_EQ(path_finder._occupancy_grid.data.size(), 10);
+    EXPECT_EQ(path_finder._occupancy_grid.info.width, 2);
+    EXPECT_EQ(path_finder._occupancy_grid.info.height, 5);
+    EXPECT_EQ(path_finder._occupancy_grid.info.resolution, 2.0);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, 3.0);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, -1.0);
 
     std::vector<int8_t> expected_data = {
-            OCC_GRID_FREE, OCC_GRID_FREE,
-            OCC_GRID_FREE, OCC_GRID_FREE,
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
+            GRID_FREE, GRID_FREE,
+            GRID_FREE, GRID_FREE,
+            GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_OCCUPIED, GRID_OCCUPIED,
     };
 
-    EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
+    EXPECT_EQ(path_finder._occupancy_grid.data, expected_data);
 }
 
 TEST(PathFinder, TestResizeMapExpandLeftAndDown) {
-    PathFinder a_star = PathFinder();
+    PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -545,38 +545,38 @@ TEST(PathFinder, TestResizeMapExpandLeftAndDown) {
     nav_msgs::OccupancyGrid grid;
     // set mapMetaData
     grid.info = mapMetaData;
-    grid.data = std::vector<int8_t>(6, OCC_GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
 
-    a_star.setOccupancyGrid(grid);
+    path_finder.setOccupancyGrid(grid);
 
     geometry_msgs::Point point;
     point.x = 0.0;
     point.y = 0.0;
     point.z = 0.0;
 
-    AStar::GridPoint grid_point = a_star.convertToGridPoint(point);
+    AStar::GridPoint grid_point = path_finder.convertToGridPoint(point);
 
     EXPECT_NEAR(grid_point.col, -2.0, 0.01);
     EXPECT_NEAR(grid_point.row, -2.0, 0.01);
 
-    a_star.resizeMapToFitGoal(grid_point);
+    path_finder.resizeMapToFitGoal(grid_point);
 
-    EXPECT_EQ(a_star._occupancy_grid.data.size(), 20);
-    EXPECT_EQ(a_star._occupancy_grid.info.width, 4);
-    EXPECT_EQ(a_star._occupancy_grid.info.height, 5);
-    EXPECT_EQ(a_star._occupancy_grid.info.resolution, 2.0);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.x, -1.0);
-    EXPECT_EQ(a_star._occupancy_grid.info.origin.position.y, -1.0);
+    EXPECT_EQ(path_finder._occupancy_grid.data.size(), 20);
+    EXPECT_EQ(path_finder._occupancy_grid.info.width, 4);
+    EXPECT_EQ(path_finder._occupancy_grid.info.height, 5);
+    EXPECT_EQ(path_finder._occupancy_grid.info.resolution, 2.0);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, -1.0);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, -1.0);
 
     std::vector<int8_t> expected_data = {
-            OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_FREE,
-            OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_FREE,
-            OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
-            OCC_GRID_FREE, OCC_GRID_FREE, OCC_GRID_OCCUPIED, OCC_GRID_OCCUPIED,
+            GRID_FREE, GRID_FREE, GRID_FREE, GRID_FREE,
+            GRID_FREE, GRID_FREE, GRID_FREE, GRID_FREE,
+            GRID_FREE, GRID_FREE, GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_FREE, GRID_FREE, GRID_OCCUPIED, GRID_OCCUPIED,
+            GRID_FREE, GRID_FREE, GRID_OCCUPIED, GRID_OCCUPIED,
     };
 
-    EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
+    EXPECT_EQ(path_finder._occupancy_grid.data, expected_data);
 }
 
 int main(int argc, char** argv) {

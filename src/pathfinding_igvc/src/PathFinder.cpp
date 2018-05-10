@@ -16,7 +16,8 @@ nav_msgs::Path PathFinder::perform(geometry_msgs::Point start, geometry_msgs::Po
 // ASTAR ALGO
 nav_msgs::Path PathFinder::calculatePath(AStar::GridPoint start, AStar::GridPoint goal) {
     //TODO
-    return nav_msgs::Path();
+    AStar a_star = AStar();
+    return a_star.run(this->_occupancy_grid, start, goal);
 }
 
 void PathFinder::setOccupancyGrid(nav_msgs::OccupancyGrid grid) {
@@ -40,7 +41,7 @@ void PathFinder::resizeMapToFitGoal(AStar::GridPoint goal) {
         auto it = this->_occupancy_grid.data.begin() + this->_occupancy_grid.info.width;
 
         for (unsigned int row = 0; row < this->_occupancy_grid.info.height; row++) {
-            it = this->_occupancy_grid.data.insert(it, col_diff, OCC_GRID_FREE);
+            it = this->_occupancy_grid.data.insert(it, col_diff, GRID_FREE);
             it += this->_occupancy_grid.info.width + col_diff;
         }
 
@@ -51,7 +52,7 @@ void PathFinder::resizeMapToFitGoal(AStar::GridPoint goal) {
         auto it = this->_occupancy_grid.data.begin();
 
         for (unsigned int row = 0; row < this->_occupancy_grid.info.height; row++) {
-            it = this->_occupancy_grid.data.insert(it, col_diff, OCC_GRID_FREE);
+            it = this->_occupancy_grid.data.insert(it, col_diff, GRID_FREE);
             it += this->_occupancy_grid.info.width + col_diff;
         }
 
@@ -63,14 +64,14 @@ void PathFinder::resizeMapToFitGoal(AStar::GridPoint goal) {
         unsigned int row_diff = goal.row - this->_occupancy_grid.info.height + 1;
         unsigned int num_additional_cells = row_diff * this->_occupancy_grid.info.width;
 
-        this->_occupancy_grid.data.insert(this->_occupancy_grid.data.end(), num_additional_cells, OCC_GRID_FREE);
+        this->_occupancy_grid.data.insert(this->_occupancy_grid.data.end(), num_additional_cells, GRID_FREE);
 
         this->_occupancy_grid.info.height += row_diff;
     } else if (goal.row < 0) {
         unsigned int row_diff = abs(goal.row);
         unsigned int num_additional_cells = row_diff * this->_occupancy_grid.info.width;
 
-        this->_occupancy_grid.data.insert(this->_occupancy_grid.data.begin(), num_additional_cells, OCC_GRID_FREE);
+        this->_occupancy_grid.data.insert(this->_occupancy_grid.data.begin(), num_additional_cells, GRID_FREE);
 
         this->_occupancy_grid.info.height += row_diff;
         this->_occupancy_grid.info.origin.position.y -= row_diff * this->_occupancy_grid.info.resolution;

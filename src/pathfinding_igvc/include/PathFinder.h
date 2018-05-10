@@ -12,9 +12,6 @@
 #include <tf/transform_datatypes.h>
 #include <AStar.h>
 
-#define OCC_GRID_FREE 0
-#define OCC_GRID_OCCUPIED 100
-
 class PathFinder {
 public:
     nav_msgs::OccupancyGrid _occupancy_grid;

@@ -6,6 +6,10 @@
 #define PATHFINDING_IGVC_ASTAR_H
 
 #include <nav_msgs/Path.h>
+#include <nav_msgs/OccupancyGrid.h>
+
+#define GRID_FREE 0
+#define GRID_OCCUPIED 100
 
 class AStar {
 public:
@@ -15,7 +19,7 @@ public:
         GridPoint(int c, int r) : col(c), row(r) {};
     };
 
-    nav_msgs::Path aStarSearch(std::vector<int8_t> grid, GridPoint start, GridPoint goal);
+    nav_msgs::Path run(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start, GridPoint goal);
 };
 
 #endif //PATHFINDING_IGVC_ASTAR_H
