@@ -2,7 +2,7 @@
 // Created by min on 05/05/18.
 //
 
-#include <AStar.h>
+#include <PathFinder.h>
 #include "ros/ros.h" // TODO: include this is Node class instead
 
 int main(int argc, char** argv) {

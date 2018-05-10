@@ -38,11 +38,11 @@ add_executable(path_finding
         include/PathFinding.h
         )
 
-add_executable(a_star
-  src/AStar.cpp
-  src/a_star.cpp
-  include/AStar.h
-  )
+add_executable(path_finder
+  src/PathFinder.cpp
+  src/path_finder.cpp
+  include/PathFinder.h
+  include/AStar.h src/AStar.cpp)
 
 
 ## Specify libraries to link a library or executable target against
@@ -54,7 +54,7 @@ target_link_libraries(path_finding
         ${sb_utils_LIBRARIES}
         )
 
-target_link_libraries(a_star
+target_link_libraries(path_finder
   ${catkin_LIBRARIES}
   ${sb_utils_LIBRARIES}
   )
@@ -70,8 +70,8 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(path-finding-test test/path-finding-test.cpp src/PathFinding.cpp)
     target_link_libraries(path-finding-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(a-star-test test/a-star-test.cpp src/AStar.cpp)
-    target_link_libraries(a-star-test ${catkin_LIBRARIES})
+    catkin_add_gtest(path-finder-test test/path-finder-test.cpp src/PathFinder.cpp)
+    target_link_libraries(path-finder-test ${catkin_LIBRARIES})
 
     # Adding rostest to the package
     find_package(rostest REQUIRED)

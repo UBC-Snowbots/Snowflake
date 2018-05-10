@@ -2,12 +2,13 @@
 // Created by min on 05/05/18.
 //
 
-#include <AStar.h>
 #include <gtest/gtest.h>
 #include <tf/transform_datatypes.h>
+#include <PathFinder.h>
+#include <AStar.h>
 
-TEST(AStar, TestChangeOfFrame) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestChangeOfFrame) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -52,8 +53,8 @@ TEST(AStar, TestChangeOfFrame) {
     EXPECT_FLOAT_EQ(point_on_grid.y, point.y - origin.position.y);
 }
 
-TEST(AStar, TestChangeOfFrameWith90Rotation) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestChangeOfFrameWith90Rotation) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -98,8 +99,8 @@ TEST(AStar, TestChangeOfFrameWith90Rotation) {
     EXPECT_FLOAT_EQ(point_on_grid.y, 3.0);
 }
 
-TEST(AStar, TestChangeOfFrameWith30Rotation) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestChangeOfFrameWith30Rotation) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -144,8 +145,8 @@ TEST(AStar, TestChangeOfFrameWith30Rotation) {
     EXPECT_NEAR(point_on_grid.y, 0.0, 0.01);
 }
 
-TEST(AStar, TestChangeOfFrameWith30RotationToMap) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestChangeOfFrameWith30RotationToMap) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -190,8 +191,8 @@ TEST(AStar, TestChangeOfFrameWith30RotationToMap) {
 }
 
 
-TEST(AStar, TestIndexOfPointInGrid) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestIndexOfPointInGrid) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -239,8 +240,8 @@ TEST(AStar, TestIndexOfPointInGrid) {
     EXPECT_EQ(grid_point.row, 0);
 }
 
-TEST(AStar, TestResizeMapExpandRight) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestResizeMapExpandRight) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -305,8 +306,8 @@ TEST(AStar, TestResizeMapExpandRight) {
     EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
 }
 
-TEST(AStar, TestResizeMapExpandLeft) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestResizeMapExpandLeft) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -371,8 +372,8 @@ TEST(AStar, TestResizeMapExpandLeft) {
     EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
 }
 
-TEST(AStar, TestResizeMapExpandUp) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestResizeMapExpandUp) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -440,8 +441,8 @@ TEST(AStar, TestResizeMapExpandUp) {
     EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
 }
 
-TEST(AStar, TestResizeMapExpandDown) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestResizeMapExpandDown) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -509,8 +510,8 @@ TEST(AStar, TestResizeMapExpandDown) {
     EXPECT_EQ(a_star._occupancy_grid.data, expected_data);
 }
 
-TEST(AStar, TestResizeMapExpandLeftAndDown) {
-    AStar a_star = AStar();
+TEST(PathFinder, TestResizeMapExpandLeftAndDown) {
+    PathFinder a_star = PathFinder();
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
