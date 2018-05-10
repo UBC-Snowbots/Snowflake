@@ -1,0 +1,18 @@
+<launch>
+
+<!-- 
+    This launch file is responsible for launching all the sensors needed for
+    localisation
+-->
+
+    <!-- Wheel Encoders -->
+    <include file="$(find drivers)/launch/encoders.launch" />
+
+    <!-- IMU -->
+    <include file="$(find drivers)/launch/imu.launch" />
+    
+    <!-- GPS -->
+    <include file="$(find localisation_igvc)/launch/gps.launch"/>
+    
+</launch>
+
