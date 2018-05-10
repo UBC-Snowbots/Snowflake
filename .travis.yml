@@ -39,15 +39,6 @@ install:
       /bin/bash -c "/root/$REPOSITORY_NAME/travis_ci.sh"
 
 env:
-<<<<<<< HEAD
-  matrix:
-    - ROS_DISTRO=kinetic ROS_REPO=ros UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-    - ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-    - TEST_CLANG_FORMAT=TRUE ROS_DISTRO=kinetic UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-matrix:
-  allow_failures:
-      - env: ROS_DISTRO=kinetic ROS_REPO=ros UPSTREAM_WORKSPACE=https://raw.githubusercontent.com/UBC-Snowbots/Snowflake/$TRAVIS_BRANCH/.rosinstall
-=======
   # Global Variables that are set at the start of every CI run
   global:
     # Get the name of this repository from the `TRAVIS_REPO_SLUG`
