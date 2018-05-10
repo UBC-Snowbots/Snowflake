@@ -22,7 +22,9 @@ public:
     };
 
     nav_msgs::OccupancyGrid _occupancy_grid;
+
     tf::Transform _transformation_to_grid;
+    tf::Transform _transformation_to_map;
 
     // MAIN ENTRY FUNCTION
     nav_msgs::Path perform(geometry_msgs::Point start, geometry_msgs::Point goal, nav_msgs::OccupancyGrid grid);
@@ -37,6 +39,8 @@ public:
     GridPoint convertToGridPoint(geometry_msgs::Point point);
 
     geometry_msgs::Point transformToGridFrame(geometry_msgs::Point point);
+
+    geometry_msgs::Point transformToMapFrame(geometry_msgs::Point point);
 
 private:
     tf::Vector3 pointToVector(geometry_msgs::Point point);

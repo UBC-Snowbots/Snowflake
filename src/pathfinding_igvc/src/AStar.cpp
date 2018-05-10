@@ -30,7 +30,8 @@ void AStar::setOccupancyGrid(nav_msgs::OccupancyGrid grid) {
     tf::Quaternion origin_quaternion;
     tf::quaternionMsgToTF(grid.info.origin.orientation, origin_quaternion);
 
-    this->_transformation_to_grid = tf::Transform(origin_quaternion, origin_position).inverse();
+    this->_transformation_to_map = tf::Transform(origin_quaternion, origin_position);
+    this->_transformation_to_grid = this->_transformation_to_map.inverse();
 }
 
 void AStar::resizeMapToFitGoal(AStar::GridPoint goal) {
@@ -95,6 +96,12 @@ geometry_msgs::Point AStar::transformToGridFrame(geometry_msgs::Point point) {
     tf::Vector3 map_point = pointToVector(point);
     tf::Vector3 grid_point = this->_transformation_to_grid * map_point;
     return vectorToPoint(grid_point);
+}
+
+geometry_msgs::Point AStar::transformToMapFrame(geometry_msgs::Point point) {
+    tf::Vector3 grid_point = pointToVector(point);
+    tf::Vector3 map_point = this->_transformation_to_map * grid_point;
+    return vectorToPoint(map_point);
 }
 
 tf::Vector3 AStar::pointToVector(geometry_msgs::Point point) {
