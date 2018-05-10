@@ -169,7 +169,7 @@ TEST_F(EncoderOdometryNodeTest, driving_straight_forward) {
     ros::spinOnce();
 
     // We should now be ~62.83 cm ahead (wheel radius is 10cm)
-    EXPECT_NEAR(0.6283, odom_msg.pose.pose.position.x, 0.04);
+    EXPECT_NEAR(0.6283, odom_msg.pose.pose.position.x, 0.05);
     EXPECT_NEAR(0, odom_msg.pose.pose.position.y, 0.01);
     EXPECT_NEAR(0, tf::getYaw(odom_msg.pose.pose.orientation), 0.01);
 }
@@ -188,7 +188,7 @@ TEST_F(EncoderOdometryNodeTest, driving_straight_backwards) {
     ros::spinOnce();
 
     // We should now be ~62.83 cm backwards (wheel radius is 10cm)
-    EXPECT_NEAR(-0.6283, odom_msg.pose.pose.position.x, 0.04);
+    EXPECT_NEAR(-0.6283, odom_msg.pose.pose.position.x, 0.05);
     EXPECT_NEAR(0, odom_msg.pose.pose.position.y, 0.01);
     EXPECT_NEAR(0, tf::getYaw(odom_msg.pose.pose.orientation), 0.01);
 }
