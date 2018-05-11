@@ -29,9 +29,6 @@ class ColourspaceConverter {
      */
     void setInputCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr input);
 
-  private:
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_;
-
     /**
      * Converts an RGB point to the HSV colourspace
      * Implementation taken from PCL
@@ -41,6 +38,9 @@ class ColourspaceConverter {
      */
     void PointXYZRGBAtoXYZHSV(const pcl::PointXYZRGB& in,
                               pcl::PointXYZHSV& out);
+
+  private:
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_;
 };
 
 #endif // SB_POINTCLOUD_PROCESSING_COLOURSPACE_CONVERTER_H
