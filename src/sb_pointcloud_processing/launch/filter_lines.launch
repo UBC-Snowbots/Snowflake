@@ -1,6 +1,16 @@
 <launch>
     <include file="$(find sb_pointcloud_processing)/launch/pointcloud_filters.launch" />
     <include file="$(find sb_pointcloud_processing)/launch/line_extractor.launch" />
+
+<!-- Defines the transform from the camera to base_link -->
+<!-- Realsense -->
+    <node pkg="tf" type="static_transform_publisher" name="camera_to_base_link_tf" args="0 0 0.8 -1.57 0 -2.2 base_link camera_color_optical_frame 10000" />
+
+<!-- ZED --> 
+<!-- 
+    <node pkg="tf" type="static_transform_publisher" name="camera_to_base_link_tf" args="0 0 0.5 0 0.29 0 base_link zed_center 10000" />
+-->
+
 </launch>
 
 
