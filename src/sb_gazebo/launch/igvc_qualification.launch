@@ -8,7 +8,7 @@
         <arg name="x_start_coordinate" value="0"/>
         <arg name="y_start_coordinate" value="-12"/>
         <arg name="initial_rotation" value="1.5707"/>
-        <arg name="robot" value="jfrost"/>
+        <arg name="robot" value="elsax"/>
     </include>
      
 </launch>
