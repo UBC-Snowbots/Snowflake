@@ -7,7 +7,7 @@
 #include <PathFinder.h>
 #include <AStar.h>
 
-TEST(PathFinder, TestGetQuaternionBetweenPoints) {
+TEST(PathFinder, TestGetAngleBetweenPoints) {
     geometry_msgs::Point from;
     from.x = -99.0;
     from.y = -99.0;
@@ -18,11 +18,12 @@ TEST(PathFinder, TestGetQuaternionBetweenPoints) {
     to.y = from.y - 1.0;
     to.z = 0.0;
 
-    tf::Quaternion q = PathFinder::getQuaternionBetweenPoints(from, to);
+    double angle = PathFinder::getAngleBetweenPoints(from, to);
+    tf::Quaternion q = PathFinder::getQuaternionFromAngle(angle);
     EXPECT_FLOAT_EQ(M_PI + M_PI/6, q.getAngle());
 }
 
-TEST(PathFinder, TestProcessPath) {
+TEST(PathFinder, TestConstructPath) {
     PathFinder path_finder = PathFinder();
 
     /* origin of OccupancyGrid */
@@ -62,45 +63,25 @@ TEST(PathFinder, TestProcessPath) {
 
     /* first point */
 
-    geometry_msgs::Point point1;
-    point1.x = -99;
-    point1.y = -99;
-    point1.z = 0.0;
-
-    geometry_msgs::Pose pose1;
-    pose1.position = point1;
-
-    geometry_msgs::PoseStamped pose_stamped1;
-    pose_stamped1.pose = pose1;
+    AStar::GridPoint point1(-99 - sqrt(3), -99 - 1);
 
     /* second point */
 
-    geometry_msgs::Point point2;
-    point2.x = point1.x - sqrt(3);
-    point2.y = point1.y - 1.0;
-    point2.z = 0.0;
-
-    geometry_msgs::Pose pose2;
-    pose2.position = point2;
-
-    geometry_msgs::PoseStamped pose_stamped2;
-    pose_stamped2.pose = pose2;
+    AStar::GridPoint point2(-99, -99);
 
     /* add points to path */
-    nav_msgs::Path path;
-    path.poses.push_back(pose_stamped1);
-    path.poses.push_back(pose_stamped2);
 
-    path_finder.processPath(path);
+    std::stack<AStar::GridPoint> points;
+    points.push(point1);
+    points.push(point2);
+
+    nav_msgs::Path path = path_finder.constructPath(points);
 
     tf::Quaternion q1;
     tf::quaternionMsgToTF(path.poses[0].pose.orientation, q1);
-    EXPECT_FLOAT_EQ(q1.getAngle(), M_PI + M_PI/6);
 
-//    AStar::GridPoint grid_point = path_finder.convertToGridPoint(point);
-//
-//    EXPECT_EQ(grid_point.col, 1);
-//    EXPECT_EQ(grid_point.row, 0);
+    /* we lose resolution by converting a point into a grid, so allow more error */
+    EXPECT_NEAR(q1.getAngle(), M_PI + M_PI/6, 0.5);
 }
 
 TEST(PathFinder, TestChangeOfFrame) {

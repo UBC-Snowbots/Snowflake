@@ -7,6 +7,7 @@
 
 #include <nav_msgs/Path.h>
 #include <nav_msgs/OccupancyGrid.h>
+#include <stack>
 
 #define GRID_FREE 0
 #define GRID_OCCUPIED 100
@@ -19,7 +20,7 @@ public:
         GridPoint(int c, int r) : col(c), row(r) {};
     };
 
-    nav_msgs::Path run(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start, GridPoint goal);
+    std::stack<GridPoint> run(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start, GridPoint goal);
 };
 
 #endif //PATHFINDING_IGVC_ASTAR_H

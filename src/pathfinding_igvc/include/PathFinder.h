@@ -29,11 +29,17 @@ public:
 
     void resizeMapToFitGoal(AStar::GridPoint goal);
 
-    void processPath(nav_msgs::Path &path);
+    nav_msgs::Path constructPath(std::stack<AStar::GridPoint> points);
 
-    static tf::Quaternion getQuaternionBetweenPoints(geometry_msgs::Point from, geometry_msgs::Point to);
+    geometry_msgs::PoseStamped constructPoseStamped(geometry_msgs::Point point, double angle);
+
+    static double getAngleBetweenPoints(geometry_msgs::Point from, geometry_msgs::Point to);
+
+    static tf::Quaternion getQuaternionFromAngle(double angle);
 
     AStar::GridPoint convertToGridPoint(geometry_msgs::Point point);
+
+    geometry_msgs::Point convertToMapPoint(AStar::GridPoint point);
 
     geometry_msgs::Point transformToGridFrame(geometry_msgs::Point point);
 

@@ -4,6 +4,6 @@
 
 #include <AStar.h>
 
-nav_msgs::Path AStar::run(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start, GridPoint goal) {
-    return nav_msgs::Path();
+std::stack<AStar::GridPoint> AStar::run(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start, GridPoint goal) {
+    return std::stack<GridPoint>();
 }

@@ -16,36 +16,49 @@ nav_msgs::Path PathFinder::perform(geometry_msgs::Point start, geometry_msgs::Po
 // ASTAR ALGO
 nav_msgs::Path PathFinder::calculatePath(AStar::GridPoint start, AStar::GridPoint goal) {
     AStar a_star = AStar();
-    nav_msgs::Path path = a_star.run(this->_occupancy_grid, start, goal);
-    processPath(path);
+    std::stack<AStar::GridPoint> points = a_star.run(this->_occupancy_grid, start, goal);
+    return constructPath(points);
+}
+
+nav_msgs::Path PathFinder::constructPath(std::stack<AStar::GridPoint> points) {
+    nav_msgs::Path path;
+
+    while (!points.empty()) {
+        geometry_msgs::Point current_point = convertToMapPoint(points.top());
+        points.pop();
+
+        double angle = 0.0;
+        if (!points.empty()) {
+            geometry_msgs::Point next_point = convertToMapPoint(points.top());
+            angle = getAngleBetweenPoints(current_point, next_point);
+        }
+
+        geometry_msgs::PoseStamped pose_stamped = constructPoseStamped(current_point, angle);
+        path.poses.push_back(pose_stamped);
+    }
+
     return path;
 }
 
-void PathFinder::processPath(nav_msgs::Path &path) {
-    for (auto it = path.poses.begin(); it != path.poses.end(); it++) {
-        geometry_msgs::PoseStamped pose_stamped = *it;
-        geometry_msgs::Pose pose = pose_stamped.pose;
-        geometry_msgs::Point position = pose.position;
+geometry_msgs::PoseStamped PathFinder::constructPoseStamped(geometry_msgs::Point point, double angle) {
+    geometry_msgs::Pose pose;
 
-        geometry_msgs::Pose new_pose;
-        new_pose.position = transformToMapFrame(position);
+    pose.position = point;
+    tf::Quaternion q = getQuaternionFromAngle(angle);
+    tf::quaternionTFToMsg(q, pose.orientation);
 
-        auto next_pointer = std::next(it);
-        if (next_pointer != path.poses.end()) {
-            geometry_msgs::Point next_position = transformToMapFrame(next_pointer->pose.position);
+    geometry_msgs::PoseStamped pose_stamped;
+    pose_stamped.pose = pose;
 
-            tf::Quaternion q = getQuaternionBetweenPoints(new_pose.position, next_position);
-            tf::quaternionTFToMsg(q, new_pose.orientation);
-        }
-
-        it->pose = new_pose;
-    }
+    return pose_stamped;
 }
 
-tf::Quaternion PathFinder::getQuaternionBetweenPoints(geometry_msgs::Point from, geometry_msgs::Point to) {
+double PathFinder::getAngleBetweenPoints(geometry_msgs::Point from, geometry_msgs::Point to) {
     tf::Vector3 vec = pointToVector(to) - pointToVector(from);
-    double angle = atan2(vec.y(), vec.x());
+    return atan2(vec.y(), vec.x());
+}
 
+tf::Quaternion PathFinder::getQuaternionFromAngle(double angle) {
     tf::Quaternion q;
     tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
     rotationMatrix.setEulerYPR(angle, 0.0, 0.0); // only set Z rotation since it's 2D
@@ -123,6 +136,14 @@ AStar::GridPoint PathFinder::convertToGridPoint(geometry_msgs::Point point) {
     row = row < 0 ? row - 1 : row;
 
     return AStar::GridPoint(col, row);
+}
+
+geometry_msgs::Point PathFinder::convertToMapPoint(AStar::GridPoint grid_point) {
+    geometry_msgs::Point point;
+    point.x = grid_point.col * this->_occupancy_grid.info.resolution;
+    point.y = grid_point.row * this->_occupancy_grid.info.resolution;
+
+    return transformToMapFrame(point);
 }
 
 geometry_msgs::Point PathFinder::transformToGridFrame(geometry_msgs::Point point) {
