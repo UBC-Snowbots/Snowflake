@@ -8,9 +8,9 @@
 #ifndef LANE_FOLLOW_LINEDETECT_H
 #define LANE_FOLLOW_LINEDETECT_H
 
-#include <opencv2/core.hpp>
-#include <iostream>
 #include <exception>
+#include <iostream>
+#include <opencv2/core.hpp>
 
 using namespace cv;
 
@@ -18,8 +18,8 @@ using namespace cv;
 // eg: ax^3 + bx^2 + cx + d
 // coefficients[0] = d, coefficients[1] = c, ... ,coefficients[3] = a
 struct Polynomial {
-     std::vector<double> coefficients;
- };
+    std::vector<double> coefficients;
+};
 
 // Defines a vector of integer type
 typedef std::vector<int> intvec;
@@ -30,12 +30,12 @@ struct Window {
     int center;
     int width;
     // window methods
-    int getLeftSide() { return (center - width/2); }
-    int getRightSide() { return (center + width/2); }
+    int getLeftSide() { return (center - width / 2); }
+    int getRightSide() { return (center + width / 2); }
 };
 
 class LineDetect {
-public:
+  public:
     // Constructor
     LineDetect();
 
@@ -47,7 +47,8 @@ public:
      *
      * @return intersection point
      */
-    cv::Point2d getIntersectionPoint(std::vector<Polynomial> lane_lines, int order);
+    cv::Point2d getIntersectionPoint(std::vector<Polynomial> lane_lines,
+                                     int order);
 
     /**
      * Creates lane lines from lane points
@@ -79,7 +80,7 @@ public:
      * @return left and right lane points
      */
     std::vector<std::vector<cv::Point2d>>
-    getLanePoints(cv::Mat &filtered_image);
+    getLanePoints(cv::Mat& filtered_image);
 
     /**
      * Creates two base windows to cover left and right lanes
@@ -88,7 +89,7 @@ public:
      *
      * @return left and right base windows
      */
-    std::vector<Window> getBaseWindows(cv::Mat &filtered_image);
+    std::vector<Window> getBaseWindows(cv::Mat& filtered_image);
 
     /**
      * Creates a histogram of region of interest (ROI)
@@ -99,7 +100,7 @@ public:
      *
      * @return histogram
      */
-    intvec getHistogram(cv::Mat &ROI);
+    intvec getHistogram(cv::Mat& ROI);
 
     /**
      * Finds the base histogram's peak positions
@@ -121,9 +122,9 @@ public:
      *
      * @return window slice
      */
-    cv::Mat getWindowSlice(cv::Mat &filtered_image,
-                          Window BaseWindow,
-                          int vertical_slice_index);
+    cv::Mat getWindowSlice(cv::Mat& filtered_image,
+                           Window BaseWindow,
+                           int vertical_slice_index);
 
     /**
      * Finds a window's peak position
@@ -135,7 +136,7 @@ public:
     int getWindowHistogramPeakPosition(intvec window_histogram);
 
     // Exception class to throw when no intersect roots exist
-    class NoLaneIntersectException: public std::exception {
+    class NoLaneIntersectException : public std::exception {
         virtual const char* what() const throw() {
             return "no lane intersects found - frame discarded";
         }
@@ -148,7 +149,7 @@ public:
      */
     int getDegree();
 
-private:
+  private:
     // white color value
     int white;
 

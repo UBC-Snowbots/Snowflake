@@ -32,9 +32,9 @@
 #include <vector>
 
 // I/O
+#include <cstdio>
 #include <fstream>
 #include <iostream>
-#include <cstdio>
 
 // Snowbots
 #include "IPMFilter.h"

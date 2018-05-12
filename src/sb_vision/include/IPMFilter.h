@@ -15,8 +15,8 @@
 #include <image_transport/image_transport.h>
 
 // I/O
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 
 // ROS
 #include <ros/console.h>

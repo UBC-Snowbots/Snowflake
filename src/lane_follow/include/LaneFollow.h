@@ -10,27 +10,27 @@
 #define LANE_FOLLOW_LANEFOLLOW_H
 
 // ROS
+#include <geometry_msgs/Twist.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
-#include <geometry_msgs/Twist.h>
 
 // Image Conversion
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 
 // Snowbots
-#include "LineDetect.h"
 #include "IPM.h"
+#include "LineDetect.h"
 
 using namespace ros;
 using namespace cv;
 
 class LaneFollow {
-    public:
+  public:
     // Constructor
-      LaneFollow(int argc, char** argv, std::string node_name);
+    LaneFollow(int argc, char** argv, std::string node_name);
 
-    private:
+  private:
     /**
      * Callback for the filtered image
      *
@@ -68,7 +68,7 @@ class LaneFollow {
 
     // Instantiate LineDetect to generate the lane lines
     LineDetect ld;
-  
+
     // Instantiate IPM to perform IPM on points
     IPM ipm;
 
@@ -80,7 +80,7 @@ class LaneFollow {
 
     // Image processing Mat pipeline
     cv::Mat filtered_image;
-    
+
     // Recommended steer to follow lane
     geometry_msgs::Twist steering_output;
 
