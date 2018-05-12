@@ -7,6 +7,102 @@
 #include <PathFinder.h>
 #include <AStar.h>
 
+TEST(PathFinder, TestGetQuaternionBetweenPoints) {
+    geometry_msgs::Point from;
+    from.x = -99.0;
+    from.y = -99.0;
+    from.z = 0.0;
+
+    geometry_msgs::Point to;
+    to.x = from.x - sqrt(3);
+    to.y = from.y - 1.0;
+    to.z = 0.0;
+
+    tf::Quaternion q = PathFinder::getQuaternionBetweenPoints(from, to);
+    EXPECT_FLOAT_EQ(M_PI + M_PI/6, q.getAngle());
+}
+
+TEST(PathFinder, TestProcessPath) {
+    PathFinder path_finder = PathFinder();
+
+    /* origin of OccupancyGrid */
+    // initialize origin of occupancy grid
+    geometry_msgs::Pose origin;
+
+    // set position of the origin
+    geometry_msgs::Point position;
+    position.x = 3.0;
+    position.y = 3.0;
+    position.z = 0.0;
+    origin.position = position;
+
+    // set orientation of the origin
+    tf::Quaternion q;
+    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
+    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
+    rotationMatrix.getRotation(q);
+    tf::quaternionTFToMsg(q, origin.orientation);
+
+    /* mapMetaData of OccupancyGrid */
+    // initialize mapMetaData
+    nav_msgs::MapMetaData mapMetaData;
+    mapMetaData.resolution = 2.0;
+    mapMetaData.width = 2;
+    mapMetaData.height = 2;
+    // add origin to mapMetaData
+    mapMetaData.origin = origin;
+
+    /* OccupancyGrid */
+    // initialize occupancy grid
+    nav_msgs::OccupancyGrid grid;
+    // set mapMetaData
+    grid.info = mapMetaData;
+
+    path_finder.setOccupancyGrid(grid);
+
+    /* first point */
+
+    geometry_msgs::Point point1;
+    point1.x = -99;
+    point1.y = -99;
+    point1.z = 0.0;
+
+    geometry_msgs::Pose pose1;
+    pose1.position = point1;
+
+    geometry_msgs::PoseStamped pose_stamped1;
+    pose_stamped1.pose = pose1;
+
+    /* second point */
+
+    geometry_msgs::Point point2;
+    point2.x = point1.x - sqrt(3);
+    point2.y = point1.y - 1.0;
+    point2.z = 0.0;
+
+    geometry_msgs::Pose pose2;
+    pose2.position = point2;
+
+    geometry_msgs::PoseStamped pose_stamped2;
+    pose_stamped2.pose = pose2;
+
+    /* add points to path */
+    nav_msgs::Path path;
+    path.poses.push_back(pose_stamped1);
+    path.poses.push_back(pose_stamped2);
+
+    path_finder.processPath(path);
+
+    tf::Quaternion q1;
+    tf::quaternionMsgToTF(path.poses[0].pose.orientation, q1);
+    EXPECT_FLOAT_EQ(q1.getAngle(), M_PI + M_PI/6);
+
+//    AStar::GridPoint grid_point = path_finder.convertToGridPoint(point);
+//
+//    EXPECT_EQ(grid_point.col, 1);
+//    EXPECT_EQ(grid_point.row, 0);
+}
+
 TEST(PathFinder, TestChangeOfFrame) {
     PathFinder path_finder = PathFinder();
 

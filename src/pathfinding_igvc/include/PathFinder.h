@@ -29,15 +29,18 @@ public:
 
     void resizeMapToFitGoal(AStar::GridPoint goal);
 
+    void processPath(nav_msgs::Path &path);
+
+    static tf::Quaternion getQuaternionBetweenPoints(geometry_msgs::Point from, geometry_msgs::Point to);
+
     AStar::GridPoint convertToGridPoint(geometry_msgs::Point point);
 
     geometry_msgs::Point transformToGridFrame(geometry_msgs::Point point);
 
     geometry_msgs::Point transformToMapFrame(geometry_msgs::Point point);
 
-private:
-    tf::Vector3 pointToVector(geometry_msgs::Point point);
-    geometry_msgs::Point vectorToPoint(tf::Vector3 vector3);
+    static tf::Vector3 pointToVector(geometry_msgs::Point point);
+    static geometry_msgs::Point vectorToPoint(tf::Vector3 vector3);
 };
 
 #endif //PATHFINDING_IGVC_PATHFINDER_H

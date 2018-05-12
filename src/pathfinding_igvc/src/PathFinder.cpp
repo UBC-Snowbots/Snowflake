@@ -15,9 +15,43 @@ nav_msgs::Path PathFinder::perform(geometry_msgs::Point start, geometry_msgs::Po
 
 // ASTAR ALGO
 nav_msgs::Path PathFinder::calculatePath(AStar::GridPoint start, AStar::GridPoint goal) {
-    //TODO
     AStar a_star = AStar();
-    return a_star.run(this->_occupancy_grid, start, goal);
+    nav_msgs::Path path = a_star.run(this->_occupancy_grid, start, goal);
+    processPath(path);
+    return path;
+}
+
+void PathFinder::processPath(nav_msgs::Path &path) {
+    for (auto it = path.poses.begin(); it != path.poses.end(); it++) {
+        geometry_msgs::PoseStamped pose_stamped = *it;
+        geometry_msgs::Pose pose = pose_stamped.pose;
+        geometry_msgs::Point position = pose.position;
+
+        geometry_msgs::Pose new_pose;
+        new_pose.position = transformToMapFrame(position);
+
+        auto next_pointer = std::next(it);
+        if (next_pointer != path.poses.end()) {
+            geometry_msgs::Point next_position = transformToMapFrame(next_pointer->pose.position);
+
+            tf::Quaternion q = getQuaternionBetweenPoints(new_pose.position, next_position);
+            tf::quaternionTFToMsg(q, new_pose.orientation);
+        }
+
+        it->pose = new_pose;
+    }
+}
+
+tf::Quaternion PathFinder::getQuaternionBetweenPoints(geometry_msgs::Point from, geometry_msgs::Point to) {
+    tf::Vector3 vec = pointToVector(to) - pointToVector(from);
+    double angle = atan2(vec.y(), vec.x());
+
+    tf::Quaternion q;
+    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
+    rotationMatrix.setEulerYPR(angle, 0.0, 0.0); // only set Z rotation since it's 2D
+    rotationMatrix.getRotation(q);
+
+    return q;
 }
 
 void PathFinder::setOccupancyGrid(nav_msgs::OccupancyGrid grid) {
@@ -81,8 +115,7 @@ void PathFinder::resizeMapToFitGoal(AStar::GridPoint goal) {
 AStar::GridPoint PathFinder::convertToGridPoint(geometry_msgs::Point point) {
     geometry_msgs::Point point_in_grid_frame = transformToGridFrame(point);
 
-    // assumes that cell (0,0) is in the bottom left of the grid
-    // TODO: ensure this is true
+    // cell (0,0) is in the bottom left of the grid
     int col = point_in_grid_frame.x / this->_occupancy_grid.info.resolution;
     int row = point_in_grid_frame.y / this->_occupancy_grid.info.resolution;
 
