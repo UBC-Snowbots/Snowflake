@@ -1,0 +1,13 @@
+
+<launch>
+
+    <!-- Start the drivers for the Phidget "High Speed" encoders -->
+    <include file="$(find drivers)/launch/phidget_encoders.launch" />
+
+    <!-- 
+        Start the node to translate the raw encoder readings into 
+        Odometry messages
+    -->
+    <include file="$(find drivers)/launch/encoder_odometry_node.launch" />
+
+</launch>

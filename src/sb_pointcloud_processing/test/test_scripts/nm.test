@@ -1,0 +1,9 @@
+<launch>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="nm"
+          args="manager"
+          output="screen" />
+
+</launch>

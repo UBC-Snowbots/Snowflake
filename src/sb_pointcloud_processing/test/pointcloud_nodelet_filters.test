@@ -1,0 +1,12 @@
+<launch>
+    <node name="pointcloud_processing_pipeline"
+          pkg="sb_pointcloud_processing"
+          type="nodelet_launch_rostest.sh"
+          output="screen"/>
+
+    <!-- Test transform  publisher -->
+    <node pkg="tf" type="static_transform_publisher" name="test_tf_broadcaster"
+          args="0 2 0 0 0 1.57079632679 input output 100" />
+
+    <test test-name="pointcloud_nodelet_filters_rostest" pkg="sb_pointcloud_processing" type="pointcloud_nodelet_filters_rostest" />
+</launch>
