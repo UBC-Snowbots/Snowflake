@@ -70,7 +70,7 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(path-finding-test test/path-finding-test.cpp src/PathFinding.cpp)
     target_link_libraries(path-finding-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(path-finder-test test/path-finder-test.cpp src/PathFinder.cpp src/AStar.cpp)
+    catkin_add_gtest(path-finder-test test/path-finder-test.cpp src/PathFinder.cpp src/AStar.cpp include/PathFinderTestUtils.h)
     target_link_libraries(path-finder-test ${catkin_LIBRARIES})
 
     # Adding rostest to the package

@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <tf/transform_datatypes.h>
 #include <PathFinder.h>
-#include <AStar.h>
+#include <PathFinderTestUtils.h>
 
 TEST(PathFinder, TestGetAngleBetweenPoints) {
     geometry_msgs::Point from;
@@ -28,21 +28,7 @@ TEST(PathFinder, TestConstructPath) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -61,16 +47,13 @@ TEST(PathFinder, TestConstructPath) {
 
     path_finder.setOccupancyGrid(grid);
 
-    /* first point */
-
+    /* first point in path*/
     AStar::GridPoint point1(-99 - sqrt(3), -99 - 1);
 
-    /* second point */
-
+    /* second point in path*/
     AStar::GridPoint point2(-99, -99);
 
     /* add points to path */
-
     std::stack<AStar::GridPoint> points;
     points.push(point1);
     points.push(point2);
@@ -89,21 +72,7 @@ TEST(PathFinder, TestChangeOfFrame) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 5.0;
-    position.y = 5.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(5.0, 5.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -135,21 +104,7 @@ TEST(PathFinder, TestChangeOfFrameWith90Rotation) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 5.0;
-    position.y = 5.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(M_PI/2, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(5.0, 5.0, M_PI/2);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -181,21 +136,7 @@ TEST(PathFinder, TestChangeOfFrameWith30Rotation) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(M_PI/6, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, M_PI/6);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -227,21 +168,7 @@ TEST(PathFinder, TestChangeOfFrameWith30RotationToMap) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(M_PI/6, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, M_PI/6);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -273,21 +200,7 @@ TEST(PathFinder, TestIndexOfPointInGrid) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -322,21 +235,7 @@ TEST(PathFinder, TestResizeMapExpandRight) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -372,8 +271,8 @@ TEST(PathFinder, TestResizeMapExpandRight) {
     EXPECT_EQ(path_finder._occupancy_grid.info.width, 3);
     EXPECT_EQ(path_finder._occupancy_grid.info.height, 3);
     EXPECT_EQ(path_finder._occupancy_grid.info.resolution, 2.0);
-    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, position.x);
-    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, position.y);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, origin.position.x);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, origin.position.y);
 
     std::vector<int8_t> expected_data = {
             GRID_OCCUPIED, GRID_OCCUPIED, GRID_FREE,
@@ -388,21 +287,7 @@ TEST(PathFinder, TestResizeMapExpandLeft) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -454,21 +339,7 @@ TEST(PathFinder, TestResizeMapExpandUp) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -504,8 +375,8 @@ TEST(PathFinder, TestResizeMapExpandUp) {
     EXPECT_EQ(path_finder._occupancy_grid.info.width, 2);
     EXPECT_EQ(path_finder._occupancy_grid.info.height, 5);
     EXPECT_EQ(path_finder._occupancy_grid.info.resolution, 2.0);
-    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, position.x);
-    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, position.y);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.x, origin.position.x);
+    EXPECT_EQ(path_finder._occupancy_grid.info.origin.position.y, origin.position.y);
 
     std::vector<int8_t> expected_data = {
             GRID_OCCUPIED, GRID_OCCUPIED,
@@ -523,21 +394,7 @@ TEST(PathFinder, TestResizeMapExpandDown) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -592,21 +449,7 @@ TEST(PathFinder, TestResizeMapExpandLeftAndDown) {
 
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
