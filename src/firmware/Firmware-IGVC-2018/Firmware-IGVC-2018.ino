@@ -82,32 +82,30 @@ ros::NodeHandle nh;
 // Assuming that counterclockwise turning is a positive angular z velocity
 void TwistCb( const geometry_msgs::Twist& twist_msg){
 
-map(twist_msg.linear.x, 0, 255, 0, 180);
-map(twist_msg.angular.z, 0, 255, 0, 180);
+    map(twist_msg.linear.x, 0, 255, 0, 180);
+    map(twist_msg.angular.z, 0, 255, 0, 180);
 
-setLinear = twist_msg.linear.x;
-setAngular = twist_msg.angular.z;
+    setLinear = twist_msg.linear.x;
+    setAngular = twist_msg.angular.z;
 
-if (setLinear < minMotorWrite) { setLinear = minMotorWrite;}
-if (setLinear > maxMotorWrite) { setLinear = maxMotorWrite;}
-if (setAngular < minMotorWrite) { setAngular = minMotorWrite;}
-if (setAngular > maxMotorWrite) { setAngular = maxMotorWrite;}
-
+    if (setLinear < minMotorWrite) { setLinear = minMotorWrite;}
+    if (setLinear > maxMotorWrite) { setLinear = maxMotorWrite;}
+    if (setAngular < minMotorWrite) { setAngular = minMotorWrite;}
+    if (setAngular > maxMotorWrite) { setAngular = maxMotorWrite;}
 }
 
 void OdomCb( const nav_msgs::Odometry& odom_msg) {
 
-map(odom_msg.twist.twist.linear.x, 0, 255, 0, 180);
-map(odom_msg.twist.twist.angular.z, 0, 255, 0, 180);
+    map(odom_msg.twist.twist.linear.x, 0, 255, 0, 180);
+    map(odom_msg.twist.twist.angular.z, 0, 255, 0, 180);
 
-inputLinear = odom_msg.twist.twist.linear.x;
-inputAngular = odom_msg.twist.twist.angular.z;
+    inputLinear = odom_msg.twist.twist.linear.x;
+    inputAngular = odom_msg.twist.twist.angular.z;
 
-if (inputLinear < minMotorWrite) { inputLinear = minMotorWrite;}
-if (inputLinear > maxMotorWrite) { inputLinear = maxMotorWrite;}
-if (inputAngular < minMotorWrite) { inputAngular = minMotorWrite;}
-if (inputAngular > maxMotorWrite) { inputAngular = maxMotorWrite;}
-
+    if (inputLinear < minMotorWrite) { inputLinear = minMotorWrite;}
+    if (inputLinear > maxMotorWrite) { inputLinear = maxMotorWrite;}
+    if (inputAngular < minMotorWrite) { inputAngular = minMotorWrite;}
+    if (inputAngular > maxMotorWrite) { inputAngular = maxMotorWrite;}
 }
 
 
@@ -117,39 +115,36 @@ ros::Subscriber<nav_msgs::Odometry> odom("/encoder/odom", &OdomCb);
 
 
 void setup() {
-pinMode(leftMotorPin, OUTPUT);
-pinMode(rightMotorPin, OUTPUT);
-leftMotor.attach(leftMotorPin, minPWM, maxPWM);
-rightMotor.attach(rightMotorPin, minPWM, maxPWM);
+    pinMode(leftMotorPin, OUTPUT);
+    pinMode(rightMotorPin, OUTPUT);
+    leftMotor.attach(leftMotorPin, minPWM, maxPWM);
+    rightMotor.attach(rightMotorPin, minPWM, maxPWM);
 
 
-linearPID.SetMode(AUTOMATIC);
-angularPID.SetMode(AUTOMATIC);
+    linearPID.SetMode(AUTOMATIC);
+    angularPID.SetMode(AUTOMATIC);
 
-
-
-nh.initNode();
-nh.subscribe(twist);
-nh.subscribe(odom);
+    nh.initNode();
+    nh.subscribe(twist);
+    nh.subscribe(odom);
 }
 
 void loop() {
-nh.spinOnce();
+    nh.spinOnce();
 
-linearPID.Compute();
-angularPID.Compute();
+    linearPID.Compute();
+    angularPID.Compute();
 
-if (outputLinear < minMotorWrite) { outputLinear = minMotorWrite;}
-if (outputLinear > maxMotorWrite) { outputLinear = maxMotorWrite;}
-if (outputAngular < minMotorWrite) { outputAngular = minMotorWrite;}
-if (outputAngular > maxMotorWrite) { outputAngular = maxMotorWrite;}
+    if (outputLinear < minMotorWrite) { outputLinear = minMotorWrite;}
+    if (outputLinear > maxMotorWrite) { outputLinear = maxMotorWrite;}
+    if (outputAngular < minMotorWrite) { outputAngular = minMotorWrite;}
+    if (outputAngular > maxMotorWrite) { outputAngular = maxMotorWrite;}
 
-setLeftMotor = ((outputLinear - outputAngular - 90)/2) + 90;
-setRightMotor = ((outputLinear + outputAngular - 90)/2) + 90;
+    setLeftMotor = ((outputLinear - outputAngular - 90)/2) + 90;
+    setRightMotor = ((outputLinear + outputAngular - 90)/2) + 90;
 
-leftMotor.write(setLeftMotor);
-rightMotor.write(setRightMotor);
-
+    leftMotor.write(setLeftMotor);
+    rightMotor.write(setRightMotor);
 }
 
 
