@@ -59,10 +59,6 @@ double outputAngular = 90;
 int setLeftMotor = 90;
 int setRightMotor = 90;
 
-
-// Setpoint for PID loop
-double Setpoint = 100;
-
 //Tuning parameters for the PID controllers:
 int linearKp = 2;
 int linearKi = 5;
@@ -72,8 +68,8 @@ int angularKi = 5;
 int angularKd = 1;
 
 // Specify links for PID controller
-PID linearPID(&inputLinear, &outputLinear, &Setpoint,linearKp,linearKi,linearKd, DIRECT);
-PID angularPID(&inputAngular, &outputAngular, &Setpoint,angularKp,angularKi,angularKd, DIRECT);
+PID linearPID(&inputLinear, &outputLinear, &setLinear,linearKp,linearKi,linearKd, DIRECT);
+PID angularPID(&inputAngular, &outputAngular, &setAngular,angularKp,angularKi,angularKd, DIRECT);
 
 
 ros::NodeHandle nh;
