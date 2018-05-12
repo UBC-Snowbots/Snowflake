@@ -35,12 +35,12 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
                 cone_rad_tol,
                 default_cone_rad_tol);
 
-    std::string line_point_dist_param = "line_point_dist";
-    int default_line_point_dist = 5; //Change later
+    std::string min_points_in_cone_param = "min_points_in_cone";
+    int default_min_points_in_cone = 5; //Change later
     SB_getParam(private_nh,
-                line_point_dist_param,
-                line_point_dist,
-                default_line_point_dist);
+                min_points_in_cone_param,
+                min_points_in_cone,
+                default_min_points_in_cone);
 
     std::string ang_threshold_param = "ang_threshold";
     double default_ang_threshold = 2.3; //Change later
@@ -49,7 +49,7 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
                 ang_threshold,
                 default_ang_threshold);
 
-    std::string subscribe_topic = "/laser"; // Setup subscriber to laserscan (Placeholder)
+    std::string subscribe_topic = "/scan"; // Setup subscriber to laserscan (Placeholder)
     laser_subscriber = nh.subscribe(subscribe_topic, refresh_rate, &ConeExtractorNode::laserCallBack, this);
 
     std::string publish_topic = "output_cone_obstacle"; //Placeholder
@@ -61,8 +61,16 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
 
 void ConeExtractorNode::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& ptr){
     sensor_msgs::LaserScan laser_msg = *ptr;
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, cone_dist_tol, cone_rad_exp, cone_rad_tol, line_point_dist, ang_threshold);
+
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, cone_dist_tol, cone_rad_exp, cone_rad_tol, min_points_in_cone, ang_threshold);
     for (int i=0; i<cones.size(); i++){ //Publish cones individually
         cone_publisher.publish(cones[i]);
+
+        /*
+        std::cout<<"Cone #:"<<i<<std::endl;
+        std::cout<<"X: "<<cones[i].center.x<<std::endl;
+        std::cout<<"Y: "<<cones[i].center.y<<std::endl;
+        std::cout<<"R: "<<cones[i].radius<<std::endl;
+        std::cout<<std::endl;*/
     }
 }

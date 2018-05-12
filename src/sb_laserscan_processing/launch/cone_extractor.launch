@@ -10,7 +10,7 @@
         <param name="cone_rad_tol" value="0.05" type="double" />
 
         <!-- index difference between points used in edge cluster splitting algorithm -->
-        <param name="line_point_dist" value="5" type="int" />
+        <param name="min_points_in_cone" value="5" type="int" />
 
         <!-- max angle needed to split edge clusters -->
         <param name="ang_threshold" value="2.3" type="double" />

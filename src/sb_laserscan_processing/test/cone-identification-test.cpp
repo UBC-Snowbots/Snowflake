@@ -8,6 +8,38 @@
 #include "./LaserscanBuilder.h"
 #include <gtest/gtest.h>
 
+TEST(ConeIdentification, testRegressionSlope1) {
+    std::vector<mapping_igvc::Point2D>edge_points;
+    mapping_igvc::Point2D p1; p1.x = 0; p1.y = 0;
+    mapping_igvc::Point2D p2; p2.x = 1; p2.y = 1;
+    mapping_igvc::Point2D p3; p3.x = 2; p3.y = 2;
+    edge_points.push_back(p1);
+    edge_points.push_back(p2);
+    edge_points.push_back(p3);
+
+    double slope = ConeIdentification::getRegressionSlope(edge_points);
+    EXPECT_NEAR(1.0, slope, 0.001);
+}
+
+TEST(ConeIdentification, testRegressionSlope2) {
+    std::vector<mapping_igvc::Point2D>edge_points;
+    mapping_igvc::Point2D p1; p1.x = 0; p1.y = 0;
+    mapping_igvc::Point2D p2; p2.x = 1; p2.y = 1.1;
+    mapping_igvc::Point2D p3; p3.x = 2; p3.y = 2.3;
+    mapping_igvc::Point2D p4; p4.x = 3; p4.y = 3.5;
+    mapping_igvc::Point2D p5; p5.x = 4; p5.y = 4.9;
+    mapping_igvc::Point2D p6; p6.x = 5; p6.y = 6.0;
+    edge_points.push_back(p1);
+    edge_points.push_back(p2);
+    edge_points.push_back(p3);
+    edge_points.push_back(p4);
+    edge_points.push_back(p5);
+    edge_points.push_back(p6);
+
+    double slope = ConeIdentification::getRegressionSlope(edge_points);
+    EXPECT_NEAR(1.217, slope, 0.02);
+}
+
 // Test 3 points->cone in an edge (forming a semi circle) - points are evenly distributed
 TEST(ConeIdentification, edgeToCone3Points) {
     std::vector<mapping_igvc::Point2D> edge_points;
@@ -129,15 +161,15 @@ TEST(ConeIdentification, coneOutRange) {
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 5; //For splitting
-    double ang_threshold = M_PI/2; //For splitting
+    int min_points_in_cone = 5;
+    double ang_threshold = 2.3; //For splitting
 
     sensor_msgs::LaserScan laser_msg;
     LaserscanBuilder::LaserscanBuilder builder;
     builder.addCone(7, 0, 1); //x y radius
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_TRUE(cones.empty());
 }
@@ -147,15 +179,15 @@ TEST(ConeIdentification, coneTooLarge) {
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 5; //For splitting (not needed in this test)
-    double ang_threshold = M_PI/2; //For splitting (not needed in this test)
+    int min_points_in_cone = 5;
+    double ang_threshold = 2.3;
 
     sensor_msgs::LaserScan laser_msg;
     LaserscanBuilder::LaserscanBuilder builder;
     builder.addCone(3, 0, 1.5); //x y radius
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_TRUE(cones.empty());
 }
@@ -165,15 +197,15 @@ TEST(ConeIdentification, oneValidCone) {
     float dist_tol = 0.01;
     float radius_exp = 1.5;
     float radius_tol = 0.05;
-    int line_point_dist = 5;
-    double ang_threshold = M_PI/2;
+    int min_points_in_cone = 5;
+    double ang_threshold = 2.3;
 
     sensor_msgs::LaserScan laser_msg;
     LaserscanBuilder::LaserscanBuilder builder;
     builder.addCone(0, 3, 1.5); //x y radius
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 1.5, 0.01);
     EXPECT_NEAR(cones[0].center.x, 0, 0.05);
@@ -185,8 +217,8 @@ TEST(ConeIdentification, twoValidCones){
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 5;
-    double ang_threshold = M_PI/2;
+    int min_points_in_cone = 5;
+    double ang_threshold = 2.3;
 
     sensor_msgs::LaserScan laser_msg;
     LaserscanBuilder::LaserscanBuilder builder;
@@ -194,7 +226,7 @@ TEST(ConeIdentification, twoValidCones){
     builder.addCone (3, -3, 1);
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
     EXPECT_NEAR(cones[0].center.x, 3.0, 0.01);
@@ -210,8 +242,8 @@ TEST(ConeIdentification, fourValidCones){
     float dist_tol = 0.005;
     float radius_exp = 0.5;
     float radius_tol = 0.1;
-    int line_point_dist = 5;
-    double ang_threshold = M_PI/2;
+    int min_points_in_cone = 5;
+    double ang_threshold = 2.3;
 
     sensor_msgs::LaserScan laser_msg;
     LaserscanBuilder::LaserscanBuilder builder;
@@ -222,7 +254,7 @@ TEST(ConeIdentification, fourValidCones){
     builder.addCone (0, -3, 0.5); //ISSUE WITH THIS (Appears to be bug with detecting cones along the negative y line)
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 0.5, 0.01);
     EXPECT_NEAR(cones[0].center.x, 0, 0.1);
@@ -246,7 +278,7 @@ TEST(ConeIdentification, twoOverlappingCones){
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 5;
+    int min_points_in_cone = 5;
     double ang_threshold = 2.3; //Low as possible
 
     sensor_msgs::LaserScan laser_msg;
@@ -255,7 +287,7 @@ TEST(ConeIdentification, twoOverlappingCones){
     builder.addCone (3, -0.5, 1);
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
     EXPECT_NEAR(cones[0].center.x, 3.0, 0.01);
@@ -271,7 +303,7 @@ TEST(ConeIdentification, threeOverlappingCones){
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.15;
-    int line_point_dist = 5;
+    int min_points_in_cone = 5;
     double ang_threshold = 2.3;
 
     sensor_msgs::LaserScan laser_msg;
@@ -281,7 +313,7 @@ TEST(ConeIdentification, threeOverlappingCones){
     builder.addCone (2, 1.3, 1);
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
     EXPECT_NEAR(cones[0].center.x, 2.0, 0.03);
@@ -301,7 +333,7 @@ TEST(ConeIdentification, twoConnectedConesHorizontal){
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.05;
-    int line_point_dist = 5;
+    int min_points_in_cone = 5;
     double ang_threshold = 2.3; //Low as possible
 
     sensor_msgs::LaserScan laser_msg;
@@ -310,7 +342,7 @@ TEST(ConeIdentification, twoConnectedConesHorizontal){
     builder.addCone (3, -1, 1);
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
     EXPECT_NEAR(cones[0].center.x, 3.0, 0.03);
@@ -326,7 +358,7 @@ TEST(ConeIdentification, twoConesDiagonal){
     float dist_tol = 0.01;
     float radius_exp = 1.0;
     float radius_tol = 0.2;
-    int line_point_dist = 5;
+    int min_points_in_cone = 5;
     double ang_threshold = 2.3; //Low as possible
 
     sensor_msgs::LaserScan laser_msg;
@@ -335,7 +367,7 @@ TEST(ConeIdentification, twoConesDiagonal){
     builder.addCone (3, -1, 1);
     laser_msg = builder.getLaserscan();
 
-    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, line_point_dist, ang_threshold);
+    std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, dist_tol, radius_exp, radius_tol, min_points_in_cone, ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
     EXPECT_NEAR(cones[0].center.x, 3.0, 0.03);

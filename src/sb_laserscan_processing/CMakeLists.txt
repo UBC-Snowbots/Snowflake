@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sb_laserscan_processing)
 
-add_compile_options(-std=c++14)
+# Build in "Release" (with lots of compiler optimizations) by default
+# (If built in "Debug", some functions can take orders of magnitude longer)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+endif()
+
+add_definitions(-std=c++14)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -13,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
         INCLUDE_DIRS include
+        LIBRARIES sb_laserscan_processing
 )
 
 ###########
@@ -23,12 +30,12 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
         ./include
+        ./test
         ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ executable
-# add_executable(sample_package_node src/sample_package_node.cpp)
-add_executable(sb_laserscan_processing
+add_executable(cone_extractor_node
         src/cone_extractor_node.cpp
         src/ConeExtractorNode.cpp
         include/ConeExtractorNode.h
@@ -41,11 +48,11 @@ add_executable(sb_laserscan_processing
 # target_link_libraries(sample_package_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(sb_laserscan_processing
+target_link_libraries(cone_extractor_node
         ${catkin_LIBRARIES}
         )
 
-add_dependencies(sb_laserscan_processing
+add_dependencies(cone_extractor_node
         ${catkin_EXPORTED_TARGETS})
 
 
