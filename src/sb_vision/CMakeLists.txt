@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sb_vision)
 
+# Build in "Release" (with lots of compiler optimizations) by default
+# (If built in "Debug", some functions can take orders of magnitude longer)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+endif()
+
+add_definitions(-std=c++14)
+
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS roscpp rospy cv_bridge image_transport )
 find_package(OpenCV REQUIRED)
 find_package(sb_utils REQUIRED)
-
-add_definitions(-std=c++14)
 
 catkin_package(
     #  INCLUDE_DIRS include
@@ -49,6 +55,12 @@ add_executable(ipm_filter
 
 add_executable(camera src/camera_init.cpp)
 
+add_executable(circle_detection
+        src/circle_detection.cpp
+        src/CircleDetection.cpp
+        include/CircleDetection.h
+        )
+
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(drivers_node
 #   ${catkin_LIBRARIES}
@@ -60,6 +72,12 @@ target_link_libraries(hsv_filter
         )
 
 target_link_libraries(ipm_filter
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBS}
+    ${sb_utils_LIBRARIES}
+    )
+
+target_link_libraries(circle_detection
         ${catkin_LIBRARIES}
         ${OpenCV_LIBS}
         ${sb_utils_LIBRARIES}
@@ -75,8 +93,19 @@ target_link_libraries(camera
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_utils_lib.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+if (CATKIN_ENABLE_TESTING)
+    # GTest
+    catkin_add_gtest(green-recognition-test 
+        test/green-recognition-test.cpp 
+        src/HSVFilter.cpp 
+        src/HSVFilterNode.cpp 
+        src/CircleDetection.cpp 
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
+        )
+    target_link_libraries(green-recognition-test
+        ${OpenCV_LIBS}
+        ${catkin_LIBRARIES}
+        )
+
+endif()
+

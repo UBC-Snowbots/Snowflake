@@ -1,0 +1,66 @@
+<launch>
+
+    <!-- These filters are trained to detect GREEN -->
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="rgb_to_hsv"
+          args="load sb_pointcloud_processing/rgb_to_hsv nm" output="screen">
+        <remap from="~/input" to="test_sub" />
+    </node>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="h"
+          args="load pcl/PassThrough nm" output="screen">
+        <remap from="~input" to="rgb_to_hsv/output" />
+        <rosparam>
+            filter_field_name: h
+            filter_limit_min: 115
+            filter_limit_max: 125
+            filter_limit_negative: False
+        </rosparam>
+    </node>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="s"
+          args="load pcl/PassThrough nm" output="screen">
+        <remap from="~input" to="/h/output" />
+        <rosparam>
+            filter_field_name: s
+            filter_limit_min: 0.735
+            filter_limit_max: 0.745
+            filter_limit_negative: False
+        </rosparam>
+    </node>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="v"
+          args="load pcl/PassThrough nm" output="screen">
+        <remap from="~input" to="/s/output" />
+        <rosparam>
+            filter_field_name: v
+            filter_limit_min: 0.675
+            filter_limit_max: 0.685
+            filter_limit_negative: False
+        </rosparam>
+    </node>
+
+    <node pkg="nodelet"
+          type="nodelet"
+          name="z"
+          args="load pcl/PassThrough nm" output="screen">
+        <remap from="~input" to="/v/output" />
+        <rosparam>
+            filter_field_name: z
+            filter_limit_min: 1
+            filter_limit_max: 2
+            filter_limit_negative: False
+            input_frame: output
+            output_frame: output
+        </rosparam>
+    </node>
+
+</launch>

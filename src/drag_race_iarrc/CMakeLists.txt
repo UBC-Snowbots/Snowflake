@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(drag_race_iarrc)
 
+# Build in "Release" (with lots of compiler optimizations) by default
+# (If built in "Debug", some functions can take orders of magnitude longer)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+endif()
+
 # This exports the compile commands so people using Vim with YouCompleteMe
 # can have easy autocompletion
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
