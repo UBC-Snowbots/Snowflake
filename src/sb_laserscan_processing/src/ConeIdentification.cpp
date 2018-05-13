@@ -18,14 +18,24 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
             edge_points.clear();
         }
         else { //Laserscan point in range
-            mapping_igvc::Point2D point = laserToPoint(laser_msg.ranges[i], laser_msg.angle_min + i * laser_msg.angle_increment); //Convert to x-y point
-            edge_points.push_back(point);
 
-            //If out of dist_tol or end of points, analyze edge points so far to create cone, and clear edge_points
-            if ((getDist(edge_points.back(), point) > dist_tol) || i == numIndices - 1) {
+            mapping_igvc::Point2D point = laserToPoint(laser_msg.ranges[i], laser_msg.angle_min + i * laser_msg.angle_increment); //Convert to x-y point
+
+            //If out of points, analyze edge points so far to create cone, and clear edge_points
+            if (i == numIndices - 1) {
+                edge_points.push_back(point);
                 addConesInEdgeCluster(identified_cones, edge_points, radius_exp, radius_tol, min_points_in_cone,
                                       ang_threshold, frame_id);
                 edge_points.clear();
+            }
+            else if (!edge_points.empty() && getDist(edge_points.back(), point) > dist_tol){ //If out of dist tolerance, analyze points so far, clear, then add new point
+                addConesInEdgeCluster(identified_cones, edge_points, radius_exp, radius_tol, min_points_in_cone,
+                                      ang_threshold, frame_id);
+                edge_points.clear();
+                edge_points.push_back(point);
+            }
+            else{
+                edge_points.push_back(point);
             }
         }
     }
@@ -34,28 +44,41 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
 
 
 void ConeIdentification::addConesInEdgeCluster(std::vector<mapping_igvc::ConeObstacle> &identified_cones, std::vector<mapping_igvc::Point2D> &edge_points, double radius_exp, double radius_tol, int min_points_in_cone, double ang_threshold, std::string frame_id){
-    if (edge_points.size() >= min_points_in_cone * 2 - 1) { // Needs minimum number of points to split a potential multi-cone cluster
+
+    if (edge_points.size() >= min_points_in_cone * 2 + 1) { // Needs minimum number of points to split a potential multi-cone cluster
+
         std::vector<std::vector<mapping_igvc::Point2D>> split_edges = splitEdge(edge_points, min_points_in_cone, ang_threshold); //Split edge points if multiple cones detected (Temp values right now as params)
+
         for (int i = 0; i < split_edges.size(); i++){
             mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
 
+            /* TODO: ADD BACK LATER
             if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius, valid cone
                 potential_cone.radius = radius_exp;
                 potential_cone.header.frame_id = frame_id;
                 potential_cone.header.stamp = ros::Time::now();
                 identified_cones.push_back(potential_cone);
-            }
+            }*/
+            potential_cone.header.frame_id = frame_id;
+            potential_cone.header.stamp = ros::Time::now();
+            if (std::isfinite(potential_cone.radius))
+                identified_cones.push_back(potential_cone);
         }
     }
     else if (edge_points.size() >= min_points_in_cone) { //Directly make the cone if not enough points to split (cone still needs at least 3 edge points though)
         mapping_igvc::ConeObstacle potential_cone = edgeToCone(edge_points);
 
+        /* TODO: ADD BACK LATER
         if (fabs(potential_cone.radius - radius_exp <= radius_tol)){ //Within expected radius, valid cone
             potential_cone.radius = radius_exp;
             potential_cone.header.frame_id = frame_id;
             potential_cone.header.stamp = ros::Time::now();
             identified_cones.push_back(potential_cone);
-        }
+        }*/
+        potential_cone.header.frame_id = frame_id;
+        potential_cone.header.stamp = ros::Time::now();
+        if (std::isfinite(potential_cone.radius))
+            identified_cones.push_back(potential_cone);
     }
 }
 
@@ -201,11 +224,11 @@ mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapp
     cone.center.y = Ycenter + meanY; //estimated y position
     cone.radius = sqrt(Xcenter*Xcenter + Ycenter*Ycenter + Mz - x - x); //estimated radius
 
-
+    /*
     std::cout<<"X: "<<cone.center.x<<std::endl;
     std::cout<<"Y: "<<cone.center.y<<std::endl;
     std::cout<<"R: "<<cone.radius<<std::endl;
-    std::cout<<std::endl;
+    std::cout<<std::endl;*/
 
     return cone;
 }

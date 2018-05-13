@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include <sb_utils.h>
 #include <sensor_msgs/LaserScan.h>
+#include <visualization_msgs/Marker.h>
 
 class ConeExtractorNode {
     public:
@@ -19,6 +20,8 @@ class ConeExtractorNode {
     private:
         ros::Subscriber laser_subscriber;
         ros::Publisher cone_publisher;
+        ros::Publisher rviz_publisher;
+
 
         /**
          * Callback function for receiving laser scan msgs. Publishes the cones found in the laserscan to
@@ -26,6 +29,13 @@ class ConeExtractorNode {
          * @param ptr
          */
         void laserCallBack(const sensor_msgs::LaserScan::ConstPtr& ptr);
+
+        /**
+         * Generate a visualization marker given a cone
+         * @param cone
+         * @return a visualization marker
+         */
+        visualization_msgs::Marker getMarker(mapping_igvc::ConeObstacle cone);
 
         double cone_dist_tol; //Distance tolerance between cones in cluster
         double cone_rad_exp; //Expected cone radius

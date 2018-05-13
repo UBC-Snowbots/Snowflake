@@ -11,7 +11,6 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
     uint32_t queue_size = 1;
-    int refresh_rate = 10;
 
     /* Get ros params */
     std::string cone_dist_tol_param = "cone_dist_tol";
@@ -50,10 +49,15 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
                 default_ang_threshold);
 
     std::string subscribe_topic = "/scan"; // Setup subscriber to laserscan (Placeholder)
-    laser_subscriber = nh.subscribe(subscribe_topic, refresh_rate, &ConeExtractorNode::laserCallBack, this);
+    laser_subscriber = nh.subscribe(subscribe_topic, queue_size, &ConeExtractorNode::laserCallBack, this);
 
-    std::string publish_topic = "output_cone_obstacle"; //Placeholder
+    std::string output_cone_topic = "output_cone_obstacle"; //Placeholder
     cone_publisher = private_nh.advertise<mapping_igvc::ConeObstacle>(
+            output_cone_topic, queue_size
+    );
+
+    std::string publish_topic = "markers"; //Placeholder
+    rviz_publisher = private_nh.advertise<visualization_msgs::Marker>(
             publish_topic, queue_size
     );
 }
@@ -66,11 +70,16 @@ void ConeExtractorNode::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& pt
     for (int i=0; i<cones.size(); i++){ //Publish cones individually
         cone_publisher.publish(cones[i]);
 
-        /*
         std::cout<<"Cone #:"<<i<<std::endl;
         std::cout<<"X: "<<cones[i].center.x<<std::endl;
         std::cout<<"Y: "<<cones[i].center.y<<std::endl;
         std::cout<<"R: "<<cones[i].radius<<std::endl;
-        std::cout<<std::endl;*/
+        std::cout<<std::endl;
     }
+    std::cout<<"================="<<std::endl;
+}
+
+
+visualization_msgs::Marker ConeExtractorNode::getMarker(mapping_igvc::ConeObstacle cone){
+
 }
