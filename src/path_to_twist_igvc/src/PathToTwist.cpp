@@ -5,9 +5,9 @@
  * message to send to the robot
  */
 
-#include <PathFinding.h>
+#include <PathToTwist.h>
 
-PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
+PathToTwist::PathToTwist(int argc, char** argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
@@ -19,11 +19,11 @@ PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
 
     std::string path_subscribe_topic = "/path"; // Setup subscriber to path
     path_subscriber                  = nh.subscribe(
-    path_subscribe_topic, queue_size, &PathFinding::pathCallBack, this);
+    path_subscribe_topic, queue_size, &PathToTwist::pathCallBack, this);
 
     std::string tf_subscribe_topic = "/tf"; // Setup subscriber to tf
     tf_subscriber                  = nh.subscribe(
-    tf_subscribe_topic, queue_size, &PathFinding::tfCallBack, this);
+    tf_subscribe_topic, queue_size, &PathToTwist::tfCallBack, this);
 
     std::string twist_publish_topic =
     private_nh.resolveName("/cmd_vel"); // setup Publisher to twist
@@ -38,10 +38,10 @@ PathFinding::PathFinding(int argc, char** argv, std::string node_name) {
     SB_getParam(private_nh, "num_poses", num_poses, 10);
 }
 
-void PathFinding::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
+void PathToTwist::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
     nav_msgs::Path path_msg =
     *path_ptr; // Take required information from received message
-    geometry_msgs::Twist twist_msg = pathToTwist(path_msg,
+    geometry_msgs::Twist twist_msg = getTwist(path_msg,
                                                  robot_x_pos,
                                                  robot_y_pos,
                                                  robot_orientation,
@@ -50,7 +50,7 @@ void PathFinding::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
     twist_publisher.publish(twist_msg);
 }
 
-void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
+void PathToTwist::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
     // Check if the tf_message contains the transform we're looking for
     for (geometry_msgs::TransformStamped tf_stamped : tf_message->transforms) {
         if (tf_stamped.header.frame_id == global_frame &&
@@ -77,7 +77,7 @@ void PathFinding::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
     }
 }
 
-geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg,
+geometry_msgs::Twist PathToTwist::getTwist(nav_msgs::Path path_msg,
                                               double x_pos,
                                               double y_pos,
                                               double orientation,
@@ -128,7 +128,7 @@ geometry_msgs::Twist PathFinding::pathToTwist(nav_msgs::Path path_msg,
     return twist_msg;
 }
 
-void PathFinding::calcVectors(
+void PathToTwist::calcVectors(
 const std::vector<geometry_msgs::PoseStamped>& poses,
 std::vector<float>& x_vectors,
 std::vector<float>& y_vectors,
@@ -145,7 +145,7 @@ double y_pos) {
     }
 }
 
-float PathFinding::weightedSum(const std::vector<float>& vectors,
+float PathToTwist::weightedSum(const std::vector<float>& vectors,
                                int num_to_sum) {
     float weighted_sum = 0;
     for (int i = 0; i < num_to_sum; i++) {

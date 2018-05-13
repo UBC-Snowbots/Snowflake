@@ -34,9 +34,9 @@ include_directories(
 ## Declare a C++ executable
 # add_executable(sample_package_node src/sample_package_node.cpp)
 add_executable(path_finding
-        src/path_finding.cpp
-        src/PathFinding.cpp
-        include/PathFinding.h
+        src/path_to_twist.cpp
+        src/PathToTwist.cpp
+        include/PathToTwist.h
         )
 
 
@@ -57,14 +57,14 @@ target_link_libraries(path_finding
 if (CATKIN_ENABLE_TESTING)
 
     # Adding gtests to the package
-    catkin_add_gtest(path-finding-test test/path-finding-test.cpp src/PathFinding.cpp)
+    catkin_add_gtest(path-finding-test test/path-to-twist-test.cpp src/PathToTwist.cpp)
     target_link_libraries(path-finding-test ${catkin_LIBRARIES})
 
     # Adding rostest to the package
     find_package(rostest REQUIRED)
     # name the test and link it to the .test file and the .cpp file itself, this will allow
     # "catkin_make run_tests" to be able to find and run this rostest
-    add_rostest_gtest(path_finding_rostest test/pathfinding_igvc_test.test test/path_finding_rostest.cpp)
+    add_rostest_gtest(path_finding_rostest test/path_to_twist_igvc_test.test test/path_to_twist_rostest.cpp)
     target_link_libraries(path_finding_rostest ${catkin_LIBRARIES})
 endif()
 

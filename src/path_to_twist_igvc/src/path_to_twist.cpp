@@ -5,14 +5,14 @@
  * message to send to the robot
  */
 
-#include <PathFinding.h>
+#include <PathToTwist.h>
 
 int main(int argc, char** argv) {
     // Setup your ROS node
     std::string node_name = "path_finding";
 
     // Create an instance of your class
-    PathFinding pf_node(argc, argv, node_name);
+    PathToTwist pt_node(argc, argv, node_name);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();
