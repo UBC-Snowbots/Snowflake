@@ -50,10 +50,14 @@ double Spline::approxLength(int num_sample_points) {
 
 std::vector<Point2D>
 Spline::getInterpolationPointsInRange(double start_u, double end_u) {
-    // If the start is after the end, just return an empty vector
-    if (start_u > end_u){
+    // If the start is after the end, or the range is out of bounds, just return an empty vector
+    if (start_u > end_u || start_u > 1 || end_u < 0){
         return std::vector<Point2D>();
     }
+
+    // Cap the u values
+    start_u = std::max(0.0, start_u);
+    end_u = std::min(1.0, end_u);
 
     // Scale the given u value from [0,1] -> [0,n-1] where n is the number of
     // points the spline interpolates through and round down and up respectively
@@ -88,26 +92,6 @@ Point2D Spline::getPointAtZeroToOneIndex(double u) {
     // the spline interpolates through
     u = u * (interpolation_points.size()-1);
     return Point2D(alglib::spline1dcalc(x_interpolant, u), alglib::spline1dcalc(y_interpolant, u));
-}
-
-std::pair<double, double> Spline::getDerivAtZeroToOneIndex(double u) {
-    if (u < 0 || u > 1){
-        // Throw an exception if u is outside of [0,1]
-        std::string err_msg = "u must be between 0 and 1, given: " + std::to_string(u);
-        throw std::out_of_range(err_msg);
-    }
-
-    // Scale the given u value from [0,1] -> [0,n] where n is the number of points
-    // the spline interpolates through
-    u = u * (interpolation_points.size()-1);
-
-    // Get the derivative of the spline with respect to x and y
-   double x, dx, d2x;
-   alglib::spline1ddiff(x_interpolant, u, x, dx, d2x);
-   double y, dy, d2y;
-   alglib::spline1ddiff(y_interpolant, u, y, dy, d2y);
-
-   return std::make_pair(dx, dy);
 }
 
 Point2D Spline::getPointAtZeroToNIndex(double u) {
