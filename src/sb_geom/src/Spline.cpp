@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 27, 2018
- * Description: TODO
+ * Description: A class representing a Spline in 2D space.
  */
 
 // Snowbots Includes
@@ -13,7 +13,6 @@
 
 using namespace sb_geom;
 
-// TODO: Probably don't want to be passing points in by reference
 Spline::Spline(std::vector<Point2D> points):
     interpolation_points(points)
 {
@@ -111,7 +110,14 @@ Point2D Spline::operator()(double u){
 }
 
 void Spline::interpolate() {
-    // TODO: Laymans comment here
+    /**
+     * Because a spline might curve back on itself (imagine a spiral) we can't define it
+     * in terms of x or y, as there could be multiple x values for a given y value, or vice-versa.
+     * Instead, we define it in terms of a third variable, u. The two splines we define here are basically
+     * x(u) and y(u). So if we want a point somewhere along the spline, we choose the appropriate
+     * u value, and then call x(u) and y(u) to get the (x,y) point at that u value.
+     */
+
     // Parametrize the points in terms of u in [0,n] where n=points.size()
     alglib::real_1d_array x;
     alglib::real_1d_array y;

@@ -70,8 +70,6 @@ std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly){
     // This is what our roots will be returned in
     double z[2*degree];
 
-    // TODO: Check return value, what if it is `GSL_EFAILED`? Throw an exception?
-    // TODO: See docs: https://www.gnu.org/software/gsl/manual/html_node/General-Polynomial-Equations.html
     // Solve for the roots of the polynomial
     int success = gsl_poly_complex_solve(coefficients, degree, workspace, z);
 
@@ -136,7 +134,6 @@ sb_geom::getInterpolationPointsFromPolySegment(PolynomialSegment poly_segment) {
     // Add an interpolation point for every critical point in the polynomial segment
     // We do this by find the roots of the first derivative
     std::vector<double> roots = findRealRoots(poly_segment.deriv(1));
-    // TODO: Do we need this sort?
     std::sort(roots.begin(), roots.end());
     for (double& root : roots){
         if (root > poly_segment.x_min() && root < poly_segment.x_max());

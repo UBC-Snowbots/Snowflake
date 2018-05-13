@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 27, 2018
- * Description:
+ * Description: A class representing a Spline in 2D space.
  */
 
 #ifndef SB_GEOM_SPLINELINE_H
