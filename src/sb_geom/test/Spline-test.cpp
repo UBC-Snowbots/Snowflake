@@ -133,18 +133,6 @@ TEST_F(SplineTest, approxLength_complex_polynomial){
     EXPECT_NEAR(153, spline.approxLength(), 3);
 }
 
-// TODO: Not a real test - delete me
-TEST_F(SplineTest, messing_about){
-    std::vector<sb_geom::Point2D> points = {
-            {0,0},
-            {2,2},
-            {0,3},
-            {10, 10},
-            {6,2}
-    };
-    sb_geom::Spline spline_line(points);
-}
-
 // Test with equal start_u/end_u points. Since we should be getting points
 // in a range that is inclusive (ie. in [start_u, end_u] ), we should be
 // able to get points
