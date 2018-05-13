@@ -108,6 +108,8 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(obstacle-manager-test
             ${catkin_LIBRARIES}
             )
+    add_dependencies(obstacle-manager-test ${catkin_EXPORTED_TARGETS})
+    add_dependencies(obstacle-manager-test mapping_igvc_generate_messages_cpp)
 
     # rostest
     # TODO: Maybe? Not sure if we need rostests for the ObstacleManager
