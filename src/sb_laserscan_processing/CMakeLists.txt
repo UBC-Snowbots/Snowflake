@@ -13,14 +13,15 @@ add_definitions(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
         roscpp
         std_msgs
-        mapping_igvc #For cone obstacle msg
+        mapping_igvc
         sb_utils
 )
 
 catkin_package(
-        INCLUDE_DIRS include
-        LIBRARIES sb_laserscan_processing
+    INCLUDE_DIRS include
+    CATKIN_DEPENDS roscpp
 )
+
 
 ###########
 ## Build ##
@@ -51,9 +52,6 @@ add_executable(cone_extractor_node
 target_link_libraries(cone_extractor_node
         ${catkin_LIBRARIES}
         )
-
-add_dependencies(cone_extractor_node
-        ${catkin_EXPORTED_TARGETS})
 
 
 #############
