@@ -4,8 +4,8 @@
  * Description: Class that provides helper functions for path-finder-test
  */
 
-#ifndef PROJECT_PATHFINDERTESTUTILS_H
-#define PROJECT_PATHFINDERTESTUTILS_H
+#ifndef PATHFINDING_IGVC_PATHFINDERTESTUTILS_H
+#define PATHFINDING_IGVC_PATHFINDERTESTUTILS_H
 
 #include <geometry_msgs/Pose.h>
 
@@ -32,4 +32,4 @@ public:
     }
 };
 
-#endif //PROJECT_PATHFINDERTESTUTILS_H
+#endif //PATHFINDING_IGVC_PATHFINDERTESTUTILS_H
