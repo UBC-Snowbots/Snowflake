@@ -1,0 +1,29 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find sb_gazebo)/config/elsax_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner"
+    pkg="controller_manager"
+    type="spawner" respawn="false"
+    output="screen" ns="/robot"
+    args="joint_state_controller
+      left_centre_wheel_controller
+      right_centre_wheel_controller"
+  />
+
+
+  <include file="$(find sb_gazebo)/launch/general_robot_control.launch">
+    <arg name="robot" value="elsax"/>
+  </include>
+
+  <!-- This is for jfrost's depthcamera/kinect/zed plugin -->
+  <node name="zed_transform" pkg="sb_gazebo" type="zed_transform" output="screen">
+    <rosparam param="output_frame"> "zed_pointcloud" </rosparam>
+    
+    <remap from="/input_pointcloud" to="/zed/camera/point_cloud/uncorrected_cloud_do_not_use"/>
+    <remap from="/output_pointcloud" to="/zed/camera/point_cloud/cloud_registered"/>
+  </node>
+
+</launch>
