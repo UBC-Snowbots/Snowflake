@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 27, 2018
- * Description: TODO
+ * Description: A Class representing a segment of a Polynomial Line
  */
 
 #ifndef SB_GEOM_POLYNOMIALSEGMENT_H
@@ -9,19 +9,23 @@
 
 #include "sb_geom_msgs/Polynomial.h"
 #include "sb_geom/Polynomial.h"
+#include "sb_geom/Point2D.h"
 
 namespace sb_geom {
 
     // A segment of a polnomial line
     class PolynomialSegment : public Polynomial {
     public:
-        // TODO: Comment?
+        /**
+         * Default constructor for a PolynomialSegment
+         *
+         * Defaults to a segment of length 0
+         */
         PolynomialSegment() :
                 _x_min(0),
                 _x_max(0)
         {};
 
-        // TODO: Test
         /**
          * Construct a Polynomial Line Segment
          * @param coefficients the coefficients of the polynomial line
@@ -33,32 +37,28 @@ namespace sb_geom {
                 _x_min(x_min),
                 _x_max(x_max) {};
 
-        // TODO: Test
         /**
          * Get the min x value of this line segment
          * @return the min x value of this line segment
          */
         inline double &x_min() { return _x_min; }
 
-        // TODO: Test
         /**
          * Get the max x value of this line segment
          * @return the max x value of this line segment
          */
         inline double &x_max() { return _x_max; }
 
-        // TODO: Test me
         /**
-         * Get the starting point of this segment
+         * Get the starting point (y-value) of this segment
          * @return the point on the polynomial at `x_min`
          */
         inline Point2D getStartPoint(){
             return Point2D(x_min(), operator()(x_min()));
         }
 
-        // TODO: Test me
         /**
-         * Get the ending point of this segment
+         * Get the ending point (y-value) of this segment
          * @return the point on the polynomial at `x_max`
          */
         inline Point2D getEndPoint(){

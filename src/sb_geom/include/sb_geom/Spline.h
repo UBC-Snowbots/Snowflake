@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 27, 2018
- * Description: TODO
+ * Description:
  */
 
 #ifndef SB_GEOM_SPLINELINE_H
@@ -16,9 +16,6 @@
 #include <libalglib/interpolation.h>
 
 namespace sb_geom {
-
-    // TODO: If we're using akima, might want to make a `Spline` interface and then a `AkimaSpline` subclass?
-    // TODO: This is more of a "curve" then a spline now? How to make this distinction?
 
     /**
      * The Spline class represents a Spline interpolated through some points
@@ -92,11 +89,9 @@ namespace sb_geom {
          */
         std::vector<Point2D> getInterpolationPointsInRange(double start_u, double end_u);
 
-        // TODO: Better name?
         /**
-         * Returns a point at some length along the spline
+         * Returns a point at some length in [0,1] along the spline
          *
-         * TODO: Code sample
          * @param u a value in [0,1], where:
          *          0 is the first point in the spline
          *          1 is the last point in the spline

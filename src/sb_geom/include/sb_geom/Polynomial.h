@@ -14,7 +14,14 @@ namespace sb_geom {
     /**
      * This class represents a n-ary polynomial line
      *
-     * TODO: example usage
+     * Example Usage:
+     * <code>
+     *      // y = 3 + 4x + 5x^2
+     *      std::vector<double> coeff = {3, 4, 5};
+     *      sb_geom::Polynomial y(coeff);
+
+     *      std::cout << y(5);
+     * </code>
      */
     class Polynomial {
     public:
@@ -30,7 +37,6 @@ namespace sb_geom {
          */
         Polynomial(sb_geom_msgs::Polynomial polynomial_msg);
 
-        // TODO: Should we be taking coefficients by reference?
         /**
          * Create a Polynomial with given coefficients
          * @param coefficients the coefficients of this polynomial
@@ -49,7 +55,6 @@ namespace sb_geom {
          */
         unsigned int getDegree();
 
-        // TODO: We should consider adding a function for this, then just having the operator call it
         /**
          * Override the () operator so that we can use it to get the y value for a given x
          * @param x the x value to get the y value of the line at
@@ -65,7 +70,6 @@ namespace sb_geom {
          */
         double deriv(double x, unsigned int degree);
 
-        // TODO: better name?
         /**
          * Return the derivative polynomial of this one to the given degree
          *
@@ -78,6 +82,5 @@ namespace sb_geom {
         std::vector<double> _coefficients;
     };
 }
-
 
 #endif //SB_GEOM_POLYNOMIAL_H
