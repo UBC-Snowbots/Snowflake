@@ -1,6 +1,8 @@
-//
-// Created by min on 12/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 12th 2018
+ * Description: Class that provides helper functions for path-finder-test
+ */
 
 #ifndef PROJECT_PATHFINDERTESTUTILS_H
 #define PROJECT_PATHFINDERTESTUTILS_H

@@ -1,6 +1,10 @@
-//
-// Created by min on 05/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 5th 2018
+ * Description: Class that acts as an interface between PathFinderNode and AStar.
+ *              Deals with a lot of frame transformations and data type conversions between ROS types and native types.
+ *              Does not actually calculate the path itself - depends on AStar to get the path.
+ */
 
 #ifndef PATHFINDING_IGVC_PATHFINDER_H
 #define PATHFINDING_IGVC_PATHFINDER_H

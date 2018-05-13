@@ -1,6 +1,8 @@
-//
-// Created by min on 05/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 5th 2018
+ * Description: Test class that tests various functions of PathFinder
+ */
 
 #include <gtest/gtest.h>
 #include <tf/transform_datatypes.h>

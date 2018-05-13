@@ -1,6 +1,8 @@
-//
-// Created by min on 09/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 9th 2018
+ * Description: Class that implements A* algorithm to find the shortest path between two points given an occupancy grid
+ */
 
 #include <AStar.h>
 
