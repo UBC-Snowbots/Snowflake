@@ -118,6 +118,13 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(Spline-test ${ALL_LIBRARIES})
     add_dependencies(Spline-test ${catkin_EXPORTED_TARGETS})
 
+    catkin_add_gtest(PolynomialSegment-test
+        test/PolynomialSegment-test.cpp
+        ${sb_geom_SRCS}
+        )
+    target_link_libraries(PolynomialSegment-test ${ALL_LIBRARIES})
+    add_dependencies(PolynomialSegment-test ${catkin_EXPORTED_TARGETS})
+
     catkin_add_gtest(utils-test
         test/utils-test.cpp
         ${sb_geom_SRCS}

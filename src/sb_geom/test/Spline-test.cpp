@@ -22,6 +22,20 @@ protected:
 
     virtual void SetUp() {
     }
+
+    /**
+     * Prints out a given number of values along a spline for debugging purposes
+     *
+     * @param s the spline to print
+     * @param num_points the number of points to print (will be spread out equally over the spline)
+     */
+    static void printSpline(Spline s, int num_points=100){
+        std::cout << "u,x,y" << std::endl;
+        for (int i = 0; i < num_points; i++){
+            double u = (double)i * 1.0/num_points;
+            std::cout << u << "," << s(u).x() << "," << s(u).y() << std::endl;
+        }
+    }
 };
 
 // Tests the version of the constructor that takes a vector of points
@@ -119,18 +133,6 @@ TEST_F(SplineTest, approxLength_complex_polynomial){
     EXPECT_NEAR(153, spline.approxLength(), 3);
 }
 
-// TODO: Not a real test - delete me
-TEST_F(SplineTest, messing_about){
-    std::vector<sb_geom::Point2D> points = {
-            {0,0},
-            {2,2},
-            {0,3},
-            {10, 10},
-            {6,2}
-    };
-    sb_geom::Spline spline_line(points);
-}
-
 // Test with equal start_u/end_u points. Since we should be getting points
 // in a range that is inclusive (ie. in [start_u, end_u] ), we should be
 // able to get points
@@ -212,8 +214,29 @@ TEST_F(SplineTest, getInterpolationPointsInRange_mid_section_of_spline){
     EXPECT_EQ(expected, spline.getInterpolationPointsInRange(0.2, 0.79));
 }
 
+// try to get a point outside the valid range of the spline
+TEST_F(SplineTest, getPointAtZeroToOneIndex_out_of_range){
+    Spline s({{0,0}, {3,3}});
+
+    EXPECT_THROW(s(1.1), std::out_of_range);
+    EXPECT_THROW(s(-0.1), std::out_of_range);
+}
+
 TEST_F(SplineTest, getInterpolationPointsInRange_out_of_bounds){
-    // TODO
+    Spline s({{0,0}, {3,3}});
+
+    std::vector<Point2D> expected_points;
+
+    // Test ranges entirely outside the spline
+    expected_points = {};
+    EXPECT_EQ(expected_points, s.getInterpolationPointsInRange(1.1,2));
+    EXPECT_EQ(expected_points, s.getInterpolationPointsInRange(-0.2,-0.1));
+
+    // Test a range overlapping the first point
+    expected_points = {{0,0}};
+    EXPECT_EQ(expected_points, s.getInterpolationPointsInRange(-0.1,0.1));
+    expected_points = {{3,3}};
+    EXPECT_EQ(expected_points, s.getInterpolationPointsInRange(0.9,2));
 }
 
 int main(int argc, char **argv) {

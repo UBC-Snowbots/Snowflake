@@ -101,7 +101,7 @@ TEST_F(PolynomialTest, deriv_get_value){
     std::vector<double> coeff = {3.2, 0, 9.3, 0, 3, 0, 0, 1};
     sb_geom::Polynomial polynomial(coeff);
 
-    // TODO: 0th degree
+    // 0th derivative
     EXPECT_DOUBLE_EQ(4722.097597699998, polynomial.deriv(3.3, 0));
 
     // 1st deriv. of y = 7x^6 + 12x^3 + 18.6x

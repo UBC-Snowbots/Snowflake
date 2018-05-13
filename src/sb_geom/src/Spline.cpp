@@ -1,7 +1,7 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 27, 2018
- * Description: TODO
+ * Description: A class representing a Spline in 2D space.
  */
 
 // Snowbots Includes
@@ -13,7 +13,6 @@
 
 using namespace sb_geom;
 
-// TODO: Probably don't want to be passing points in by reference
 Spline::Spline(std::vector<Point2D> points):
     interpolation_points(points)
 {
@@ -50,10 +49,14 @@ double Spline::approxLength(int num_sample_points) {
 
 std::vector<Point2D>
 Spline::getInterpolationPointsInRange(double start_u, double end_u) {
-    // If the start is after the end, just return an empty vector
-    if (start_u > end_u){
+    // If the start is after the end, or the range is out of bounds, just return an empty vector
+    if (start_u > end_u || start_u > 1 || end_u < 0){
         return std::vector<Point2D>();
     }
+
+    // Cap the u values
+    start_u = std::max(0.0, start_u);
+    end_u = std::min(1.0, end_u);
 
     // Scale the given u value from [0,1] -> [0,n-1] where n is the number of
     // points the spline interpolates through and round down and up respectively
@@ -90,26 +93,6 @@ Point2D Spline::getPointAtZeroToOneIndex(double u) {
     return Point2D(alglib::spline1dcalc(x_interpolant, u), alglib::spline1dcalc(y_interpolant, u));
 }
 
-std::pair<double, double> Spline::getDerivAtZeroToOneIndex(double u) {
-    if (u < 0 || u > 1){
-        // Throw an exception if u is outside of [0,1]
-        std::string err_msg = "u must be between 0 and 1, given: " + std::to_string(u);
-        throw std::out_of_range(err_msg);
-    }
-
-    // Scale the given u value from [0,1] -> [0,n] where n is the number of points
-    // the spline interpolates through
-    u = u * (interpolation_points.size()-1);
-
-    // Get the derivative of the spline with respect to x and y
-   double x, dx, d2x;
-   alglib::spline1ddiff(x_interpolant, u, x, dx, d2x);
-   double y, dy, d2y;
-   alglib::spline1ddiff(y_interpolant, u, y, dy, d2y);
-
-   return std::make_pair(dx, dy);
-}
-
 Point2D Spline::getPointAtZeroToNIndex(double u) {
     if (u < 0 || u > interpolation_points.size()-1){
         // Throw an exception if u is outside of [0,1]
@@ -127,7 +110,14 @@ Point2D Spline::operator()(double u){
 }
 
 void Spline::interpolate() {
-    // TODO: Laymans comment here
+    /**
+     * Because a spline might curve back on itself (imagine a spiral) we can't define it
+     * in terms of x or y, as there could be multiple x values for a given y value, or vice-versa.
+     * Instead, we define it in terms of a third variable, u. The two splines we define here are basically
+     * x(u) and y(u). So if we want a point somewhere along the spline, we choose the appropriate
+     * u value, and then call x(u) and y(u) to get the (x,y) point at that u value.
+     */
+
     // Parametrize the points in terms of u in [0,n] where n=points.size()
     alglib::real_1d_array x;
     alglib::real_1d_array y;

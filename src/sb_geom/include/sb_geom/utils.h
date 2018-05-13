@@ -5,10 +5,8 @@
  */
 
 
-// TODO: Should this file be called "utils.h" instead of "util.h"?
-
-#ifndef SB_GEOM_UTIL_H
-#define SB_GEOM_UTIL_H
+#ifndef SB_GEOM_UTILS_H
+#define SB_GEOM_UTILS_H
 
 // Snowbots Includes
 #include "sb_geom/Point2D.h"
@@ -16,7 +14,6 @@
 #include "sb_geom/Spline.h"
 
 namespace sb_geom {
-    // TODO: Add option for time constraint? dlib::find_min_global has one we can use...
     /**
      * Computes the minimum distance between two given splines
      *
@@ -30,7 +27,6 @@ namespace sb_geom {
      */
     double minDistanceBetweenSplines(Spline s1, Spline s2, unsigned int max_iter = 10);
 
-    // TODO: Should this go in the Polynomial class?
     /**
      * Find the real roots of a given polynomial
      *
@@ -41,7 +37,6 @@ namespace sb_geom {
      */
     std::vector<double> findRealRoots(Polynomial poly);
 
-    // TODO: Add option for time constraint? dlib::find_min_global has one we can use...
     /**
      * Finds the closest point on the given spline to the given point
      *
@@ -49,8 +44,8 @@ namespace sb_geom {
      * the given point, and then re-sampling the section of line between the two closest points
      * until the difference in distance from each of the two points to the given point is < `max_err`
      *
-     * @param spline TODO?
-     * @param point TODO?
+     * @param spline
+     * @param point
      * @param max_iter the maximum number of iterations of the global minima search to perform
      * increasing this will improve the final result (more likely to find the true global minimum point)
      * but will increase the computation time
@@ -78,4 +73,4 @@ namespace sb_geom {
     double distance(Point2D p1, Point2D p2);
 }
 
-#endif //SB_GEOM_UTIL_H
+#endif //SB_GEOM_UTILS_H

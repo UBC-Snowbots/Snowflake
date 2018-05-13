@@ -1,0 +1,45 @@
+<!-- launch file for visualizing clusters and lines calculated from a generated point cloud on rviz -->
+
+<launch>
+    <!-- the actual line extractor node that we want to test -->
+    <node name="line_extractor_node" pkg="sb_pointcloud_processing" type="line_extractor_node" output="screen">
+        <!-- degree of polynomial for line of best fit -->
+        <param name="degree_polynomial" value="5" type="int" />
+        <!-- regularization constant for line of best fit -->
+        <param name="lambda" value="1" type="double" />
+        <!-- density parameters for DBSCAN -->
+        <param name="min_neighbours" value="7" type="int" />
+        <param name="radius" value="0.3" type="double" />
+        <!-- density of lines for rviz; make sure this value is not too small or rviz will crash :( -->
+        <param name="x_delta" value="0.001" type="double" />
+        <!-- size of marker points for rviz -->
+        <param name="scale" value="0.02" type="double" />
+        <remap from="input_pointcloud" to="/height_filter/output" />
+        <param name="frame_id" value="zed_camera" type="string" />
+    </node>
+
+    <!-- node that generates the input point cloud for line extractor node -->
+    <node name="test_pcl_generator_node" pkg="sb_pointcloud_processing" type="test_pcl_generator_node" output="screen">
+        <!-- polynomial representation of first line -->
+        <rosparam param="first_line">[3.5, 0, -1.3, 0.3]</rosparam>
+        <!-- polynomial representation of second line -->
+        <rosparam param="second_line">[0, 0, -1.3, 0.3]</rosparam>
+        <!-- x_min and x_max defines the domain of all lines -->
+        <param name="x_min" value="-1" type="double" />
+        <param name="x_max" value="4" type="double" />
+        <!-- x_delta defines how far apart the points are for the first and second line -->
+        <param name="x_delta" value="0.005" type="double" />
+        <!-- max_noise_x/y defines the magnitude of random deviation from the actual mathematical line
+             for all lines (first, second, outlier)
+        -->
+        <param name="max_noise_x" value="0.5" type="double" />
+        <param name="max_noise_y" value="0.5" type="double" />
+        <!-- outlier defines whether we want another line to test outliers -->
+        <param name="outlier" value="true" type="bool" />
+        <!-- polynomial representation of outlier line. outlier must be true for it to be shown -->
+        <rosparam param="outlier_line">[5]</rosparam>
+        <!-- defines how far apart the points are for the outlier line -->
+        <param name="outlier_x_delta" value="0.1" type="double"></param>
+        <param name="frame_id" value="zed_camera" type="string" />
+    </node>
+</launch>

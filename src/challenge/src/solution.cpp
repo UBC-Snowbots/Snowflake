@@ -1,14 +1,12 @@
 #include <ros/ros.h>
 
-int main(int argc, char **argv){
+int main(int argc, char** argv) {
     ros::init(argc, argv, "solution");
     ros::NodeHandle nh;
 
-    ros::Rate loop_rate=10;
+    ros::Rate loop_rate = 10;
 
-    while(ros::ok()){
-
-
+    while (ros::ok()) {
         ros::spinOnce();
         loop_rate.sleep();
     }
