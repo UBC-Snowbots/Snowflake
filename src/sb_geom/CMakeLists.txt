@@ -13,8 +13,9 @@ endif()
 
 add_definitions(-std=gnu++14)
 
-# This line is needed to allow CI to build in dlib
-add_definitions(-fPIC)
+# Make code position independent. This is required to let us link against
+# the dlib shared library
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
