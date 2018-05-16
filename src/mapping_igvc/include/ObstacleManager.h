@@ -19,33 +19,6 @@
 // ROS Includes
 #include <nav_msgs/OccupancyGrid.h>
 
-// TODO: Should this class be in it's own file? (probably...)
-//class Cone {
-//public:
-//    /**
-//     * Create a Cone with default x,y position and radius
-//     */
-//    Cone() : Cone(0,0,0) {};
-//
-//    /**
-//     * Create a cone with a given x,y position and radius
-//     * @param x
-//     * @param y
-//     * @param radius
-//     */
-//    Cone(double x, double y, double radius)
-//    : x(x),
-//      y(y),
-//      radius(radius)
-//    {}
-//
-//    double x;
-//    double y;
-//    double radius;
-//
-//};
-
-
 class ObstacleManager {
 public:
 

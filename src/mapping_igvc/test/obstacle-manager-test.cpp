@@ -827,38 +827,6 @@ TEST_F(ObstacleManagerTest, generate_occ_grid_merged_lines){
     checkOccupiedCells(occ_grid, expected_occ_grid);
 }
 
-
-
-// TODO: Delete me, not a real test
-//TEST_F(ObstacleManagerTest, messing_about){
-//    ObstacleManager obstacle_manager(10, 30);
-//
-//    //Spline spline1({{0,1}, {20,1}, {30,1}, {40,1}, {50,1}, {75,1}, {100,1}});
-//    //Spline spline2({{29,20}, {50,20}, {55, 20}});
-//    Spline spline1({{0,0}, {100,0}});
-//    Spline spline2({{30,20}, {70,20}});
-//
-//    // TODO: YOU ARE HERE - seems like checking the distance between two splines is fast,
-//    // TODO: but when we go to actually merge the splines and check point to spline distance, it's slow
-//    //Spline spline1({{0,0}, {10, -10}, {10, 20}, {100,-100}});
-//    //Spline spline2({{0,10}, {10, 20}, {10, 30}, {100,100}});
-//
-//    obstacle_manager.addObstacle(spline1);
-//    obstacle_manager.addObstacle(spline2);
-//
-//    std::vector<sb_geom::Spline> lines = obstacle_manager.getLineObstacles();
-//
-//    for (sb_geom::Spline& spline : lines){
-//        std::cout << "~~~~~~~~~~~~~" << std::endl;
-//        int num_points = 100;
-//        for (int i = 0; i < num_points; i++){
-//            double u = i * 1.0/(double)num_points;
-//            sb_geom::Point2D p = spline(u);
-//            std::cout << u << ", " << p.x() << ", " << p.y() << std::endl;
-//        }
-//    }
-//}
-
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
