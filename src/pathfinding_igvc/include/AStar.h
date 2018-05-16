@@ -1,35 +1,40 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 9th 2018
- * Description: Class that implements A* algorithm to find the shortest path between two points given an occupancy grid
+ * Description: Class that implements A* algorithm to find the shortest path
+ * between two points given an occupancy grid
  */
 
 #ifndef PATHFINDING_IGVC_ASTAR_H
 #define PATHFINDING_IGVC_ASTAR_H
 
-#include <nav_msgs/Path.h>
 #include <nav_msgs/OccupancyGrid.h>
+#include <nav_msgs/Path.h>
 #include <stack>
 
 #define GRID_FREE 0
 #define GRID_OCCUPIED 100
 
 class AStar {
-public:
+  public:
     struct GridPoint {
         int col;
         int row;
-        GridPoint(int c, int r) : col(c), row(r) {};
+        GridPoint(int c, int r) : col(c), row(r){};
     };
 
     /**
-     * Takes an occupancy grid as well as start and goal points, and calculates the shortest path from start to goal.
+     * Takes an occupancy grid as well as start and goal points, and calculates
+     * the shortest path from start to goal.
      * @param occupancy_grid occupancy grid
      * @param start GridPoint containing row and column of the starting cell
      * @param goal GridPoint containing row and column of the goal cell
-     * @return points stacked in order, where the top contains the starting GridPoint and the bottom contains the goal GridPoint
+     * @return points stacked in order, where the top contains the starting
+     * GridPoint and the bottom contains the goal GridPoint
      */
-    std::stack<GridPoint> run(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start, GridPoint goal);
+    std::stack<GridPoint> run(nav_msgs::OccupancyGrid occupancy_grid,
+                              GridPoint start,
+                              GridPoint goal);
 };
 
-#endif //PATHFINDING_IGVC_ASTAR_H
+#endif // PATHFINDING_IGVC_ASTAR_H

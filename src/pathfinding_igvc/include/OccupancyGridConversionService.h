@@ -1,22 +1,23 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 13th 2018
- * Description: A service that calculates the location of a point in map frame in the occupancy grid, and vice versa.
+ * Description: A service that calculates the location of a point in map frame
+ * in the occupancy grid, and vice versa.
  *              This service depends on FrameTransformationService.
  */
 
 #ifndef PATHFINDING_IGVC_OCCUPANCYGRIDCONVERSIONSERVICE_H
 #define PATHFINDING_IGVC_OCCUPANCYGRIDCONVERSIONSERVICE_H
 
-#include <nav_msgs/OccupancyGrid.h>
 #include <AStar.h>
 #include <FrameTransformationService.h>
+#include <nav_msgs/OccupancyGrid.h>
 
 class OccupancyGridConversionService {
     nav_msgs::MapMetaData _grid_info;
     FrameTransformationService _transformation_service;
 
-public:
+  public:
     /**
      * Takes in occupancy grid meta data and creates a service
      * that calculates the location of a point represented in map frame in
@@ -24,7 +25,8 @@ public:
      * @param info map meta data of occupancy grid
      * @return OccupancyGridConversionService
      */
-    static OccupancyGridConversionService buildService(nav_msgs::MapMetaData info);
+    static OccupancyGridConversionService
+    buildService(nav_msgs::MapMetaData info);
 
     /**
      * Takes in a point represented in map frame and returns a struct
@@ -44,4 +46,4 @@ public:
     geometry_msgs::Point convertToMapPoint(AStar::GridPoint point);
 };
 
-#endif //PATHFINDING_IGVC_OCCUPANCYGRIDCONVERSIONSERVICE_H
+#endif // PATHFINDING_IGVC_OCCUPANCYGRIDCONVERSIONSERVICE_H

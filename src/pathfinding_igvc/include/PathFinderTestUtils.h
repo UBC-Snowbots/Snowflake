@@ -12,8 +12,7 @@
 #include <tf/transform_datatypes.h>
 
 class PathFinderTestUtils {
-public:
-
+  public:
     /**
      * Constructs a 2D pose based on x and y position and z-angle
      *
@@ -27,15 +26,16 @@ public:
 
         // set position of the origin
         geometry_msgs::Point position;
-        position.x = x;
-        position.y = y;
-        position.z = 0.0;
+        position.x      = x;
+        position.y      = y;
+        position.z      = 0.0;
         origin.position = position;
 
         // set orientation of the origin
         tf::Quaternion q;
         tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-        rotationMatrix.setEulerYPR(angle, 0.0, 0.0); // only set Z rotation since it's 2D
+        rotationMatrix.setEulerYPR(
+        angle, 0.0, 0.0); // only set Z rotation since it's 2D
         rotationMatrix.getRotation(q);
         tf::quaternionTFToMsg(q, origin.orientation);
 
@@ -43,4 +43,4 @@ public:
     }
 };
 
-#endif //PATHFINDING_IGVC_PATHFINDERTESTUTILS_H
+#endif // PATHFINDING_IGVC_PATHFINDERTESTUTILS_H

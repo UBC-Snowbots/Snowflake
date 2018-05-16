@@ -1,20 +1,20 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 13th 2018
- * Description: A class that contains all generic helper functions for all implementations of path finding
+ * Description: A class that contains all generic helper functions for all
+ * implementations of path finding
  */
 
 #ifndef PATHFINDING_IGVC_PATHFINDERUTILS_H
 #define PATHFINDING_IGVC_PATHFINDERUTILS_H
 
-#include <tf/LinearMath/Transform.h>
-#include <tf/transform_datatypes.h>
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/PoseStamped.h>
-
+#include <tf/LinearMath/Transform.h>
+#include <tf/transform_datatypes.h>
 
 class PathFinderUtils {
-public:
+  public:
     /**
      * Takes a geometry_msgs::Point and converts it to type tf::Vector3
      * @param point point of type geometry_msgs::Point
@@ -38,16 +38,18 @@ public:
     }
 
     /**
-     * Constructs a 2D geometry_msgs::PoseStamped given a 2D point (only care about x and y)
+     * Constructs a 2D geometry_msgs::PoseStamped given a 2D point (only care
+     * about x and y)
      * and z-angle
      * @param point 2D point (only care about x and y)
      * @param angle angle in z-axis
      * @return pose stamped
      */
-    static geometry_msgs::PoseStamped constructPoseStamped(geometry_msgs::Point point, double angle) {
+    static geometry_msgs::PoseStamped
+    constructPoseStamped(geometry_msgs::Point point, double angle) {
         geometry_msgs::Pose pose;
 
-        pose.position = point;
+        pose.position    = point;
         tf::Quaternion q = getQuaternionFromAngle(angle);
         tf::quaternionTFToMsg(q, pose.orientation);
 
@@ -63,7 +65,8 @@ public:
      * @param to the end point (arrow head) of vector
      * @return angle or direction of the vector
      */
-    static double getAngleBetweenPoints(geometry_msgs::Point from, geometry_msgs::Point to) {
+    static double getAngleBetweenPoints(geometry_msgs::Point from,
+                                        geometry_msgs::Point to) {
         tf::Vector3 vec = pointToVector(to) - pointToVector(from);
         return atan2(vec.y(), vec.x());
     }
@@ -76,11 +79,12 @@ public:
     static tf::Quaternion getQuaternionFromAngle(double angle) {
         tf::Quaternion q;
         tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-        rotationMatrix.setEulerYPR(angle, 0.0, 0.0); // only set Z rotation since it's 2D
+        rotationMatrix.setEulerYPR(
+        angle, 0.0, 0.0); // only set Z rotation since it's 2D
         rotationMatrix.getRotation(q);
 
         return q;
     }
 };
 
-#endif //PATHFINDING_IGVC_PATHFINDERUTILS_H
+#endif // PATHFINDING_IGVC_PATHFINDERUTILS_H

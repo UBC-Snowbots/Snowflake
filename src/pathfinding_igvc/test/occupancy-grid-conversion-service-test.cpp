@@ -2,26 +2,28 @@
 // Created by min on 14/05/18.
 //
 
-#include <gtest/gtest.h>
 #include <OccupancyGridConversionService.h>
 #include <PathFinderTestUtils.h>
+#include <gtest/gtest.h>
 
 TEST(OccupancyGridConversionService, TestIndexOfPointInGrid) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin = PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    geometry_msgs::Pose origin =
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
     nav_msgs::MapMetaData map_meta_data;
     map_meta_data.resolution = 2.0;
-    map_meta_data.width = 2;
-    map_meta_data.height = 2;
+    map_meta_data.width      = 2;
+    map_meta_data.height     = 2;
     // add origin to mapMetaData
     map_meta_data.origin = origin;
 
     /* OccupancyGridConversionService */
-    OccupancyGridConversionService service = OccupancyGridConversionService::buildService(map_meta_data);
+    OccupancyGridConversionService service =
+    OccupancyGridConversionService::buildService(map_meta_data);
 
     geometry_msgs::Point point;
     point.x = 6.2;

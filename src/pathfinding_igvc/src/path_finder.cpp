@@ -2,8 +2,8 @@
 // Created by min on 05/05/18.
 //
 
-#include <PathFinder.h>
 #include "ros/ros.h" // TODO: include this is Node class instead
+#include <PathFinder.h>
 
 int main(int argc, char** argv) {
     // Setup your ROS node
