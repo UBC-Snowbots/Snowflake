@@ -8,9 +8,20 @@
 #define PATHFINDING_IGVC_PATHFINDERTESTUTILS_H
 
 #include <geometry_msgs/Pose.h>
+#include <tf/LinearMath/Transform.h>
+#include <tf/transform_datatypes.h>
 
 class PathFinderTestUtils {
 public:
+
+    /**
+     * Constructs a 2D pose based on x and y position and z-angle
+     *
+     * @param x x component of position
+     * @param y y component of position
+     * @param angle angle in z-axis
+     * @return geometry_msgs::Pose containing position and orientation
+     */
     static geometry_msgs::Pose constructPose(double x, double y, double angle) {
         geometry_msgs::Pose origin;
 

@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
     std::string node_name = "a_star";
 
     // Create an instance of your class
-    // TODO: make a node
+    // TODO: Part 3: make a node
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();

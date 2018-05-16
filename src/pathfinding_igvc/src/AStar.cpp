@@ -7,5 +7,6 @@
 #include <AStar.h>
 
 std::stack<AStar::GridPoint> AStar::run(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start, GridPoint goal) {
+    // TODO Part 2
     return std::stack<GridPoint>();
 }
