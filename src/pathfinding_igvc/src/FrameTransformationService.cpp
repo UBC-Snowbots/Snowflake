@@ -1,6 +1,8 @@
-//
-// Created by min on 13/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 13th 2018
+ * Description: Implementation of frame transformation service
+ */
 
 #include <FrameTransformationService.h>
 

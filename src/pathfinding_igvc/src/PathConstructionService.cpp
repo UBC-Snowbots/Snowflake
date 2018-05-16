@@ -1,6 +1,8 @@
-//
-// Created by min on 14/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 14th 2018
+ * Description: Implementation of path construction service
+ */
 
 #include <PathConstructionService.h>
 
