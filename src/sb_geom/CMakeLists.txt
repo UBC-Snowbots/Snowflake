@@ -95,7 +95,8 @@ file(GLOB sb_geom_SRCS
 file(GLOB sb_geom_HEADERS
         "include/sb_geom/*.h"
         )
-add_library(sb_geom
+# NOTE: We have to make this library static so we can link against dlib
+add_library(sb_geom STATIC
         ${sb_geom_SRCS}
         ${sb_geom_HEADERS}
         )
