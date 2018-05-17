@@ -43,39 +43,6 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
 std::stack<AStar::GridPoint> AStar::run(nav_msgs::OccupancyGrid occupancy_grid,
                                         GridPoint start,
                                         GridPoint goal) {
-//    this->_num_cols = occupancy_grid.info.width;
-//    this->_num_rows = occupancy_grid.info.height;
-//    this->_goal = goal;
-//    this->_start = start;
-//    this->_grid = occupancy_grid.data;
-//
-//    this->_cell_details = new Cell*[this->_num_rows];
-//    for (int i = 0; i < this->_num_rows; i++) {
-//        this->_cell_details[i] = new Cell[this->_num_cols];
-//    }
-//
-//    /*
-//     * TODO: edit comment
-//     Create an open list having information as-
-//     <f, <row, col>>
-//     where f = g + h,
-//     and row, col are the row and column index of that cell
-//     Note that 0 <= row <= ROW-1 & 0 <= col <= COL-1
-//     This open list is implenented as a set of pair of pair.*/
-//    this->_open_list = set<GridPointWithScore>();
-//
-//    // Create a closed list and initialise it to false which means
-//    // that no cell has been included yet
-//    // This closed list is implemented as a boolean 2D array
-//    this->_closed_list = new bool*[this->_num_rows];
-//    for (int i = 0; i < this->_num_rows; i++) {
-//        this->_closed_list[i] = new bool[this->_num_cols];
-//    }
-
-
-
-//    return aStarSearch();
-
     return AStar(occupancy_grid, start, goal).aStarSearch();
 }
 
@@ -227,45 +194,17 @@ std::stack<AStar::GridPoint> AStar::tracePath()
     int row = this->_goal.row;
     int col = this->_goal.col;
 
-//    std::vector<geometry_msgs::PoseStamped> poses;
     std::stack<GridPoint> path;
 
     while (!(this->_cell_details[row][col].parent.row == row
              && this->_cell_details[row][col].parent.col == col ))
     {
-//        geometry_msgs::Point position;
-//        position.x = col;
-//        position.y = row;
-//
-//        geometry_msgs::Pose pose;
-//        pose.position = position;
-//
-//        geometry_msgs::PoseStamped pose_stamped;
-//        pose_stamped.pose = pose;
-
-//        poses.push_back(pose_stamped);
         path.push( GridPoint(col, row) );
 
         row = this->_cell_details[row][col].parent.row;
         col = this->_cell_details[row][col].parent.col;
     }
 
-//    geometry_msgs::Point position;
-//    position.x = col;
-//    position.y = row;
-//
-//    geometry_msgs::Pose pose;
-//    pose.position = position;
-//
-//    geometry_msgs::PoseStamped pose_stamped;
-//    pose_stamped.pose = pose;
-//
-//    poses.push_back(pose_stamped);
-//
-//    nav_msgs::Path path;
-//    path.poses = poses;
-//
-//    return path;
     path.push( GridPoint(col, row) );
 
     return path;
