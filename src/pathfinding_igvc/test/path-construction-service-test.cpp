@@ -5,7 +5,7 @@
  */
 
 #include <PathConstructionService.h>
-#include <PathFinderTestUtils.h>
+#include "PathFinderTestUtils.h"
 #include <gtest/gtest.h>
 
 TEST(PathConstructionService, TestConstructPath) {

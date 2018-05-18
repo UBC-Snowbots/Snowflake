@@ -5,7 +5,7 @@
  */
 
 #include <OccupancyGridConversionService.h>
-#include <PathFinderTestUtils.h>
+#include "PathFinderTestUtils.h"
 #include <gtest/gtest.h>
 
 TEST(OccupancyGridConversionService, TestIndexOfPointInGrid) {

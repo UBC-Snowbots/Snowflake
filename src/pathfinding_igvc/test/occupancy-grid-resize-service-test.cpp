@@ -6,7 +6,7 @@
 
 #include <OccupancyGridConversionService.h>
 #include <OccupancyGridResizeService.h>
-#include <PathFinderTestUtils.h>
+#include "PathFinderTestUtils.h"
 #include <gtest/gtest.h>
 
 TEST(OccupancyGridResizeService, TestResizeMapExpandRight) {

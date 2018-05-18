@@ -5,7 +5,7 @@
  */
 
 #include <FrameTransformationService.h>
-#include <PathFinderTestUtils.h>
+#include "PathFinderTestUtils.h"
 #include <PathFinderUtils.h>
 #include <gtest/gtest.h>
 
