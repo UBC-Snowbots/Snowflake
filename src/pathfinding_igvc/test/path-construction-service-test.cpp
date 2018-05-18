@@ -25,7 +25,7 @@ TEST(PathConstructionService, TestConstructPath) {
 
     /* OccupancyGridConversionService */
     OccupancyGridConversionService occupancy_grid_conversion_service =
-    OccupancyGridConversionService::buildService(map_meta_data);
+    OccupancyGridConversionService(map_meta_data);
 
     /* first point in path*/
     AStar::GridPoint point1(-99 - sqrt(3), -99 - 1);

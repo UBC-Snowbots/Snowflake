@@ -37,7 +37,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandRight) {
     point.z = 0.0;
 
     AStar::GridPoint grid_point =
-    OccupancyGridConversionService::buildService(map_meta_data)
+    OccupancyGridConversionService(map_meta_data)
     .convertToGridPoint(point);
 
     EXPECT_NEAR(grid_point.col, 2.0, 0.01);
@@ -92,7 +92,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandLeft) {
     point.z = 0.0;
 
     AStar::GridPoint grid_point =
-    OccupancyGridConversionService::buildService(map_meta_data)
+    OccupancyGridConversionService(map_meta_data)
     .convertToGridPoint(point);
 
     ASSERT_NEAR(grid_point.col, -2.0, 0.01);
@@ -150,7 +150,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandUp) {
     point.z = 0.0;
 
     AStar::GridPoint grid_point =
-    OccupancyGridConversionService::buildService(map_meta_data)
+    OccupancyGridConversionService(map_meta_data)
     .convertToGridPoint(point);
 
     EXPECT_NEAR(grid_point.col, 0.0, 0.01);
@@ -209,7 +209,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandDown) {
     point.z = 0.0;
 
     AStar::GridPoint grid_point =
-    OccupancyGridConversionService::buildService(map_meta_data)
+    OccupancyGridConversionService(map_meta_data)
     .convertToGridPoint(point);
 
     EXPECT_NEAR(grid_point.col, 0.0, 0.01);
@@ -268,7 +268,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandLeftAndDown) {
     point.z = 0.0;
 
     AStar::GridPoint grid_point =
-    OccupancyGridConversionService::buildService(map_meta_data)
+    OccupancyGridConversionService(map_meta_data)
     .convertToGridPoint(point);
 
     EXPECT_NEAR(grid_point.col, -2.0, 0.01);

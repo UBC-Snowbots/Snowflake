@@ -25,7 +25,7 @@ TEST(OccupancyGridConversionService, TestIndexOfPointInGrid) {
 
     /* OccupancyGridConversionService */
     OccupancyGridConversionService service =
-    OccupancyGridConversionService::buildService(map_meta_data);
+    OccupancyGridConversionService(map_meta_data);
 
     geometry_msgs::Point point;
     point.x = 6.2;

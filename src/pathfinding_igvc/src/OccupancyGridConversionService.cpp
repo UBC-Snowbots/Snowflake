@@ -6,10 +6,7 @@
 
 #include <OccupancyGridConversionService.h>
 
-OccupancyGridConversionService
-OccupancyGridConversionService::buildService(nav_msgs::MapMetaData info) {
-    OccupancyGridConversionService service;
-
+OccupancyGridConversionService::OccupancyGridConversionService(nav_msgs::MapMetaData info) {
     // setup transformation matrix from map to grid frame
     // convert geometry_msgs::Point to tf::Vector3
     tf::Vector3 origin_position =
@@ -18,11 +15,9 @@ OccupancyGridConversionService::buildService(nav_msgs::MapMetaData info) {
     tf::Quaternion origin_quaternion;
     tf::quaternionMsgToTF(info.origin.orientation, origin_quaternion);
 
-    service._transformation_service = new FrameTransformationService(
+    this->_transformation_service = new FrameTransformationService(
     origin_quaternion, origin_position);
-    service._grid_info = info;
-
-    return service;
+    this->_grid_info = info;
 }
 
 AStar::GridPoint

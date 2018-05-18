@@ -26,8 +26,7 @@ class OccupancyGridConversionService {
      * @param info map meta data of occupancy grid
      * @return OccupancyGridConversionService
      */
-    static OccupancyGridConversionService
-    buildService(nav_msgs::MapMetaData info);
+    OccupancyGridConversionService(nav_msgs::MapMetaData info);
 
     /**
      * Takes in a point represented in map frame and returns a struct

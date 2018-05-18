@@ -13,7 +13,7 @@
 #include <OccupancyGridConversionService.h>
 
 class PathConstructionService {
-    OccupancyGridConversionService _occupancy_grid_conversion_service;
+    OccupancyGridConversionService *_occupancy_grid_conversion_service;
 
   public:
     /**
