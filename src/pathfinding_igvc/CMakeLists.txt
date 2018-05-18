@@ -83,19 +83,19 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(path-finder-utils-test test/path-finder-utils-test.cpp include/PathFinder.h)
     target_link_libraries(path-finder-utils-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(path-construction-service-test test/path-construction-service-test.cpp
+    catkin_add_gtest(path-construction-service-test test/path-constructor-test.cpp
       src/PathConstructor.cpp include/PathConstructor.h
       src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(path-construction-service-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(frame-transformation-service-test test/frame-transformation-service-test.cpp
+    catkin_add_gtest(frame-transformation-service-test test/frame-transformer-test.cpp
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(frame-transformation-service-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(occupancy-grid-conversion-service-test test/occupancy-grid-conversion-service-test.cpp
+    catkin_add_gtest(occupancy-grid-conversion-service-test test/occupancy-grid-adapter-test.cpp
       src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
