@@ -29,7 +29,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandRight) {
     nav_msgs::OccupancyGrid grid;
     // set map_meta_data
     grid.info = map_meta_data;
-    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
 
     geometry_msgs::Point point;
     point.x = 8.0;
@@ -52,15 +52,15 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandRight) {
     EXPECT_EQ(grid.info.origin.position.x, origin.position.x);
     EXPECT_EQ(grid.info.origin.position.y, origin.position.y);
 
-    std::vector<int8_t> expected_data = {GRID_OCCUPIED,
-                                         GRID_OCCUPIED,
-                                         GRID_FREE,
-                                         GRID_OCCUPIED,
-                                         GRID_OCCUPIED,
-                                         GRID_FREE,
-                                         GRID_OCCUPIED,
-                                         GRID_OCCUPIED,
-                                         GRID_FREE};
+    std::vector<int8_t> expected_data = {AStar::GRID_OCCUPIED,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_FREE,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_FREE,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_FREE};
     EXPECT_EQ(grid.data, expected_data);
 }
 
@@ -84,7 +84,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandLeft) {
     nav_msgs::OccupancyGrid grid;
     // set map_meta_data
     grid.info = map_meta_data;
-    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
 
     geometry_msgs::Point point;
     point.x = 0.0;
@@ -107,18 +107,18 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandLeft) {
     EXPECT_EQ(grid.info.origin.position.x, -1.0);
     EXPECT_EQ(grid.info.origin.position.y, 3.0);
 
-    std::vector<int8_t> expected_data = {GRID_FREE,
-                                         GRID_FREE,
-                                         GRID_OCCUPIED,
-                                         GRID_OCCUPIED,
-                                         GRID_FREE,
-                                         GRID_FREE,
-                                         GRID_OCCUPIED,
-                                         GRID_OCCUPIED,
-                                         GRID_FREE,
-                                         GRID_FREE,
-                                         GRID_OCCUPIED,
-                                         GRID_OCCUPIED};
+    std::vector<int8_t> expected_data = {AStar::GRID_FREE,
+                                         AStar::GRID_FREE,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_FREE,
+                                         AStar::GRID_FREE,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_FREE,
+                                         AStar::GRID_FREE,
+                                         AStar::GRID_OCCUPIED,
+                                         AStar::GRID_OCCUPIED};
     EXPECT_EQ(grid.data, expected_data);
 }
 
@@ -142,7 +142,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandUp) {
     nav_msgs::OccupancyGrid grid;
     // set map_meta_data
     grid.info = map_meta_data;
-    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
 
     geometry_msgs::Point point;
     point.x = 3.0;
@@ -166,16 +166,16 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandUp) {
     EXPECT_EQ(grid.info.origin.position.y, origin.position.y);
 
     std::vector<int8_t> expected_data = {
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_FREE,
-    GRID_FREE,
-    GRID_FREE,
-    GRID_FREE,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_FREE,
+    AStar::GRID_FREE,
+    AStar::GRID_FREE,
+    AStar::GRID_FREE,
     };
 
     EXPECT_EQ(grid.data, expected_data);
@@ -201,7 +201,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandDown) {
     nav_msgs::OccupancyGrid grid;
     // set map_meta_data
     grid.info = map_meta_data;
-    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
 
     geometry_msgs::Point point;
     point.x = 3.0;
@@ -225,16 +225,16 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandDown) {
     EXPECT_EQ(grid.info.origin.position.y, -1.0);
 
     std::vector<int8_t> expected_data = {
-    GRID_FREE,
-    GRID_FREE,
-    GRID_FREE,
-    GRID_FREE,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
-    GRID_OCCUPIED,
+    AStar::GRID_FREE,
+    AStar::GRID_FREE,
+    AStar::GRID_FREE,
+    AStar::GRID_FREE,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED,
     };
 
     EXPECT_EQ(grid.data, expected_data);
@@ -260,7 +260,7 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandLeftAndDown) {
     nav_msgs::OccupancyGrid grid;
     // set map_meta_data
     grid.info = map_meta_data;
-    grid.data = std::vector<int8_t>(6, GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
 
     geometry_msgs::Point point;
     point.x = 0.0;
@@ -284,10 +284,10 @@ TEST(OccupancyGridResizeService, TestResizeMapExpandLeftAndDown) {
     EXPECT_EQ(grid.info.origin.position.y, -1.0);
 
     std::vector<int8_t> expected_data = {
-    GRID_FREE,     GRID_FREE,     GRID_FREE, GRID_FREE,     GRID_FREE,
-    GRID_FREE,     GRID_FREE,     GRID_FREE, GRID_FREE,     GRID_FREE,
-    GRID_OCCUPIED, GRID_OCCUPIED, GRID_FREE, GRID_FREE,     GRID_OCCUPIED,
-    GRID_OCCUPIED, GRID_FREE,     GRID_FREE, GRID_OCCUPIED, GRID_OCCUPIED,
+    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE, AStar::GRID_FREE,     AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE, AStar::GRID_FREE,     AStar::GRID_FREE,
+    AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE,     AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED, AStar::GRID_FREE,     AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
     };
 
     EXPECT_EQ(grid.data, expected_data);
