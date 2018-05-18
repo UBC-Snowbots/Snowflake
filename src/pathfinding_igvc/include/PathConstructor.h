@@ -12,21 +12,21 @@
 #include <AStar.h>
 #include <OccupancyGridConversionService.h>
 
-class PathConstructionService {
+class PathConstructor {
     OccupancyGridConversionService *_occupancy_grid_conversion_service;
 
   public:
     /**
      * Takes in an OccupancyGridConversionService and returns a
-     * PathConstructionService.
+     * PathConstructor.
      * The occupancy grid conversion service is used to convert the cell
      * location of the points to
      * an actual point in the map frame.
      *
      * @param occupancy_grid_conversion_service
-     * @return PathConstructionService
+     * @return PathConstructor
      */
-    PathConstructionService(
+    PathConstructor(
     OccupancyGridConversionService occupancy_grid_conversion_service);
 
     /**

@@ -43,14 +43,14 @@ add_executable(path_finder
   include/FrameTransformationService.h
   include/OccupancyGridConversionService.h
   include/OccupancyGridResizeService.h
-  include/PathConstructionService.h
+  include/PathConstructor.h
   include/PathFinder.h
   include/PathFinderUtils.h
   src/AStar.cpp
   src/FrameTransformationService.cpp
   src/OccupancyGridConversionService.cpp
   src/OccupancyGridResizeService.cpp
-  src/PathConstructionService.cpp
+  src/PathConstructor.cpp
   src/PathFinder.cpp
   src/path_finder.cpp
   )
@@ -84,7 +84,7 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(path-finder-utils-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(path-construction-service-test test/path-construction-service-test.cpp
-      src/PathConstructionService.cpp include/PathConstructionService.h
+      src/PathConstructor.cpp include/PathConstructor.h
       src/OccupancyGridConversionService.cpp include/OccupancyGridConversionService.h
       src/FrameTransformationService.cpp include/FrameTransformationService.h
       )

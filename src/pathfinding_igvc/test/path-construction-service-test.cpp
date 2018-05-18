@@ -4,11 +4,11 @@
  * Description: Unit tests for path construction service
  */
 
-#include <PathConstructionService.h>
+#include <PathConstructor.h>
 #include "PathFinderTestUtils.h"
 #include <gtest/gtest.h>
 
-TEST(PathConstructionService, TestConstructPath) {
+TEST(PathConstructor, TestConstructPath) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
@@ -39,7 +39,7 @@ TEST(PathConstructionService, TestConstructPath) {
     points.push(point2);
 
     nav_msgs::Path path =
-    PathConstructionService(occupancy_grid_conversion_service)
+    PathConstructor(occupancy_grid_conversion_service)
     .constructPath(points);
 
     tf::Quaternion q1;

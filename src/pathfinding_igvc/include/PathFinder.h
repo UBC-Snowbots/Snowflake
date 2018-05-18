@@ -15,7 +15,7 @@
 #include <AStar.h>
 #include <OccupancyGridConversionService.h>
 #include <OccupancyGridResizeService.h>
-#include <PathConstructionService.h>
+#include <PathConstructor.h>
 #include <geometry_msgs/Point.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/Path.h>

@@ -4,16 +4,16 @@
  * Description: Implementation of path construction service
  */
 
-#include <PathConstructionService.h>
+#include <PathConstructor.h>
 
-PathConstructionService::PathConstructionService(
+PathConstructor::PathConstructor(
 OccupancyGridConversionService occupancy_grid_conversion_service) {
     this->_occupancy_grid_conversion_service =
     &occupancy_grid_conversion_service;
 }
 
 nav_msgs::Path
-PathConstructionService::constructPath(std::stack<AStar::GridPoint> points) {
+PathConstructor::constructPath(std::stack<AStar::GridPoint> points) {
     nav_msgs::Path path;
 
     while (!points.empty()) {
