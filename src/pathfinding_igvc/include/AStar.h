@@ -26,6 +26,7 @@ class AStar {
     /**
      * Takes an occupancy grid as well as start and goal points, and calculates
      * the shortest path from start to goal.
+     *
      * @param occupancy_grid occupancy grid
      * @param start GridPoint containing row and column of the starting cell
      * @param goal GridPoint containing row and column of the goal cell

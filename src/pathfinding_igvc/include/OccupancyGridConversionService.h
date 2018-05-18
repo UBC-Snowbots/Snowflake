@@ -22,6 +22,7 @@ class OccupancyGridConversionService {
      * Takes in occupancy grid meta data and creates a service
      * that calculates the location of a point represented in map frame in
      * occupancy grid
+     *
      * @param info map meta data of occupancy grid
      * @return OccupancyGridConversionService
      */
@@ -32,6 +33,7 @@ class OccupancyGridConversionService {
      * Takes in a point represented in map frame and returns a struct
      * that contains the corresponding row and column of the point in the
      * occupancy grid
+     *
      * @param point a point represented in map frame
      * @return AStar::GridPoint containing row and column of the point in grid
      */
@@ -40,6 +42,7 @@ class OccupancyGridConversionService {
     /**
      * Takes in a struct containing the row and column of a point in the
      * occupancy grid and returns its representation in map frame
+     *
      * @param AStar::GridPoint containing row and column of a point in grid
      * @return point represented in map frame
      */

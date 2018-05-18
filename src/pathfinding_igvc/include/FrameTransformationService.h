@@ -21,8 +21,10 @@ class FrameTransformationService {
     /**
      * Returns a FrameTransformationService that transforms points
      * between grid frame and map frame
+     *
      * Takes in the rotation/orientation and position of the grid frame relative
      * map frame
+     *
      * @param rotation rotation/orientation of the grid frame relative expressed
      * map frame
      * @param position position of the grid frame expressed in map frame
@@ -34,6 +36,7 @@ class FrameTransformationService {
     /**
      * Takes a point represented in map frame and returns its position in grid
      * frame
+     *
      * @param point a point represented in map frame
      * @return point represented in grid frame
      */
@@ -42,6 +45,7 @@ class FrameTransformationService {
     /**
      * Takes a point represented in grid frame and returns its position in map
      * frame
+     *
      * @param point a point represented in grid frame
      * @return point represented in map frame
      */

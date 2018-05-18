@@ -28,6 +28,7 @@ class PathFinder {
      * Takes a start and goal points in world frame, and returns the shortest
      * path
      * from start to goal based on information from occupancy grid.
+     *
      * @param start starting point in world frame
      * @param goal goal point in world frame
      * @param grid occupancy grid

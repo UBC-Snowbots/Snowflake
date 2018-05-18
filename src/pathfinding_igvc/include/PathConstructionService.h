@@ -31,6 +31,7 @@ class PathConstructionService {
 
     /**
      * Takes in a stack of GridPoints and returns a path
+     *
      * @param points a stack of GridPoints where the top contains the starting
      * GridPoint and the bottom contains the goal GridPoint
      * @return path

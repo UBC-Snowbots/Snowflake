@@ -17,6 +17,7 @@ class PathFinderUtils {
   public:
     /**
      * Takes a geometry_msgs::Point and converts it to type tf::Vector3
+     *
      * @param point point of type geometry_msgs::Point
      * @return vector of type tf::Vector3
      */
@@ -26,6 +27,7 @@ class PathFinderUtils {
 
     /**
      * Takes a tf::Vector3 and converts it to type geometry_msgs::Point
+     *
      * @param vector3 vector of type tf::Vector3
      * @return point of type geometry_msgs::Point
      */
@@ -41,6 +43,7 @@ class PathFinderUtils {
      * Constructs a 2D geometry_msgs::PoseStamped given a 2D point (only care
      * about x and y)
      * and z-angle
+     *
      * @param point 2D point (only care about x and y)
      * @param angle angle in z-axis
      * @return pose stamped
@@ -61,6 +64,7 @@ class PathFinderUtils {
 
     /**
      * Returns the angle of the vector connecting two 2D points
+     *
      * @param from the origin point of vector
      * @param to the end point (arrow head) of vector
      * @return angle or direction of the vector
@@ -73,6 +77,7 @@ class PathFinderUtils {
 
     /**
      * Returns the quaternion that represents an angle in z-axis
+     * 
      * @param angle angle in z-axis
      * @return quaternion quaternion representation of the angle
      */
