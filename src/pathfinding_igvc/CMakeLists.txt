@@ -41,14 +41,14 @@ add_executable(path_finding
 add_executable(path_finder
   include/AStar.h
   include/FrameTransformer.h
-  include/OccupancyGridConversionService.h
+  include/OccupancyGridAdapter.h
   include/OccupancyGridResizeService.h
   include/PathConstructor.h
   include/PathFinder.h
   include/PathFinderUtils.h
   src/AStar.cpp
   src/FrameTransformer.cpp
-  src/OccupancyGridConversionService.cpp
+  src/OccupancyGridAdapter.cpp
   src/OccupancyGridResizeService.cpp
   src/PathConstructor.cpp
   src/PathFinder.cpp
@@ -85,7 +85,7 @@ if (CATKIN_ENABLE_TESTING)
 
     catkin_add_gtest(path-construction-service-test test/path-construction-service-test.cpp
       src/PathConstructor.cpp include/PathConstructor.h
-      src/OccupancyGridConversionService.cpp include/OccupancyGridConversionService.h
+      src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(path-construction-service-test ${catkin_LIBRARIES})
@@ -96,14 +96,14 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(frame-transformation-service-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(occupancy-grid-conversion-service-test test/occupancy-grid-conversion-service-test.cpp
-      src/OccupancyGridConversionService.cpp include/OccupancyGridConversionService.h
+      src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(occupancy-grid-conversion-service-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(occupancy-grid-resize-service-test test/occupancy-grid-resize-service-test.cpp
       src/OccupancyGridResizeService.cpp include/OccupancyGridResizeService.h
-      src/OccupancyGridConversionService.cpp include/OccupancyGridConversionService.h
+      src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(occupancy-grid-resize-service-test ${catkin_LIBRARIES})

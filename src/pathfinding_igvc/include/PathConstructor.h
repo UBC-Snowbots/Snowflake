@@ -10,14 +10,14 @@
 #define PATHFINDING_IGVC_PATHCONSTRUCTIONSERVICE_H
 
 #include <AStar.h>
-#include <OccupancyGridConversionService.h>
+#include <OccupancyGridAdapter.h>
 
 class PathConstructor {
-    OccupancyGridConversionService *_occupancy_grid_conversion_service;
+    OccupancyGridAdapter *_occupancy_grid_conversion_service;
 
   public:
     /**
-     * Takes in an OccupancyGridConversionService and returns a
+     * Takes in an OccupancyGridAdapter and returns a
      * PathConstructor.
      * The occupancy grid conversion service is used to convert the cell
      * location of the points to
@@ -27,7 +27,7 @@ class PathConstructor {
      * @return PathConstructor
      */
     PathConstructor(
-    OccupancyGridConversionService occupancy_grid_conversion_service);
+    OccupancyGridAdapter occupancy_grid_conversion_service);
 
     /**
      * Takes in a stack of GridPoints and returns a path

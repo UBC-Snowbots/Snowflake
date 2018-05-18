@@ -4,11 +4,11 @@
  * Description: Unit tests for occupancy grid conversion service
  */
 
-#include <OccupancyGridConversionService.h>
+#include <OccupancyGridAdapter.h>
 #include "PathFinderTestUtils.h"
 #include <gtest/gtest.h>
 
-TEST(OccupancyGridConversionService, TestIndexOfPointInGrid) {
+TEST(OccupancyGridAdapter, TestIndexOfPointInGrid) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
@@ -23,9 +23,9 @@ TEST(OccupancyGridConversionService, TestIndexOfPointInGrid) {
     // add origin to mapMetaData
     map_meta_data.origin = origin;
 
-    /* OccupancyGridConversionService */
-    OccupancyGridConversionService service =
-    OccupancyGridConversionService(map_meta_data);
+    /* OccupancyGridAdapter */
+    OccupancyGridAdapter service =
+    OccupancyGridAdapter(map_meta_data);
 
     geometry_msgs::Point point;
     point.x = 6.2;

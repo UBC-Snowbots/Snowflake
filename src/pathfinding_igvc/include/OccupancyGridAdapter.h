@@ -13,7 +13,7 @@
 #include <FrameTransformer.h>
 #include <nav_msgs/OccupancyGrid.h>
 
-class OccupancyGridConversionService {
+class OccupancyGridAdapter {
     nav_msgs::MapMetaData _grid_info;
     FrameTransformer *_transformation_service;
 
@@ -24,9 +24,9 @@ class OccupancyGridConversionService {
      * occupancy grid
      *
      * @param info map meta data of occupancy grid
-     * @return OccupancyGridConversionService
+     * @return OccupancyGridAdapter
      */
-    OccupancyGridConversionService(nav_msgs::MapMetaData info);
+    OccupancyGridAdapter(nav_msgs::MapMetaData info);
 
     /**
      * Takes in a point represented in map frame and returns a struct

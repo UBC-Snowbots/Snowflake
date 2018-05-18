@@ -13,7 +13,7 @@
 #define PATHFINDING_IGVC_PATHFINDER_H
 
 #include <AStar.h>
-#include <OccupancyGridConversionService.h>
+#include <OccupancyGridAdapter.h>
 #include <OccupancyGridResizeService.h>
 #include <PathConstructor.h>
 #include <geometry_msgs/Point.h>

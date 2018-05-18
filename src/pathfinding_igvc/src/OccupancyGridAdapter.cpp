@@ -4,9 +4,9 @@
  * Description: Implementation of occupancy grid conversion service
  */
 
-#include <OccupancyGridConversionService.h>
+#include <OccupancyGridAdapter.h>
 
-OccupancyGridConversionService::OccupancyGridConversionService(nav_msgs::MapMetaData info) {
+OccupancyGridAdapter::OccupancyGridAdapter(nav_msgs::MapMetaData info) {
     // setup transformation matrix from map to grid frame
     // convert geometry_msgs::Point to tf::Vector3
     tf::Vector3 origin_position =
@@ -21,7 +21,7 @@ OccupancyGridConversionService::OccupancyGridConversionService(nav_msgs::MapMeta
 }
 
 AStar::GridPoint
-OccupancyGridConversionService::convertFromMapToGridPoint(geometry_msgs::Point point) {
+OccupancyGridAdapter::convertFromMapToGridPoint(geometry_msgs::Point point) {
     geometry_msgs::Point point_in_grid_frame =
     this->_transformation_service->transformFromMapToGridFrame(point);
 
@@ -36,7 +36,7 @@ OccupancyGridConversionService::convertFromMapToGridPoint(geometry_msgs::Point p
 }
 
 geometry_msgs::Point
-OccupancyGridConversionService::convertFromGridToMapPoint(AStar::GridPoint grid_point) {
+OccupancyGridAdapter::convertFromGridToMapPoint(AStar::GridPoint grid_point) {
     geometry_msgs::Point point;
     point.x = grid_point.col * this->_grid_info.resolution;
     point.y = grid_point.row * this->_grid_info.resolution;

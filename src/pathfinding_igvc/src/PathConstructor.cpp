@@ -7,7 +7,7 @@
 #include <PathConstructor.h>
 
 PathConstructor::PathConstructor(
-OccupancyGridConversionService occupancy_grid_conversion_service) {
+OccupancyGridAdapter occupancy_grid_conversion_service) {
     this->_occupancy_grid_conversion_service =
     &occupancy_grid_conversion_service;
 }

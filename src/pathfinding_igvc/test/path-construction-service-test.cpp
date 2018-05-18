@@ -23,9 +23,9 @@ TEST(PathConstructor, TestConstructPath) {
     // add origin to mapMetaData
     map_meta_data.origin = origin;
 
-    /* OccupancyGridConversionService */
-    OccupancyGridConversionService occupancy_grid_conversion_service =
-    OccupancyGridConversionService(map_meta_data);
+    /* OccupancyGridAdapter */
+    OccupancyGridAdapter occupancy_grid_conversion_service =
+    OccupancyGridAdapter(map_meta_data);
 
     /* first point in path*/
     AStar::GridPoint point1(-99 - sqrt(3), -99 - 1);
