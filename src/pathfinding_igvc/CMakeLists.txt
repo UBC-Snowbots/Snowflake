@@ -40,14 +40,14 @@ add_executable(path_finding
 
 add_executable(path_finder
   include/AStar.h
-  include/FrameTransformationService.h
+  include/FrameTransformer.h
   include/OccupancyGridConversionService.h
   include/OccupancyGridResizeService.h
   include/PathConstructor.h
   include/PathFinder.h
   include/PathFinderUtils.h
   src/AStar.cpp
-  src/FrameTransformationService.cpp
+  src/FrameTransformer.cpp
   src/OccupancyGridConversionService.cpp
   src/OccupancyGridResizeService.cpp
   src/PathConstructor.cpp
@@ -86,25 +86,25 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(path-construction-service-test test/path-construction-service-test.cpp
       src/PathConstructor.cpp include/PathConstructor.h
       src/OccupancyGridConversionService.cpp include/OccupancyGridConversionService.h
-      src/FrameTransformationService.cpp include/FrameTransformationService.h
+      src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(path-construction-service-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(frame-transformation-service-test test/frame-transformation-service-test.cpp
-      src/FrameTransformationService.cpp include/FrameTransformationService.h
+      src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(frame-transformation-service-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(occupancy-grid-conversion-service-test test/occupancy-grid-conversion-service-test.cpp
       src/OccupancyGridConversionService.cpp include/OccupancyGridConversionService.h
-      src/FrameTransformationService.cpp include/FrameTransformationService.h
+      src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(occupancy-grid-conversion-service-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(occupancy-grid-resize-service-test test/occupancy-grid-resize-service-test.cpp
       src/OccupancyGridResizeService.cpp include/OccupancyGridResizeService.h
       src/OccupancyGridConversionService.cpp include/OccupancyGridConversionService.h
-      src/FrameTransformationService.cpp include/FrameTransformationService.h
+      src/FrameTransformer.cpp include/FrameTransformer.h
       )
     target_link_libraries(occupancy-grid-resize-service-test ${catkin_LIBRARIES})
 

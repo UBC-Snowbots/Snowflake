@@ -3,19 +3,19 @@
  * Created On: May 13th 2018
  * Description: A service that calculates the location of a point in map frame
  * in the occupancy grid, and vice versa.
- *              This service depends on FrameTransformationService.
+ *              This service depends on FrameTransformer.
  */
 
 #ifndef PATHFINDING_IGVC_OCCUPANCYGRIDCONVERSIONSERVICE_H
 #define PATHFINDING_IGVC_OCCUPANCYGRIDCONVERSIONSERVICE_H
 
 #include <AStar.h>
-#include <FrameTransformationService.h>
+#include <FrameTransformer.h>
 #include <nav_msgs/OccupancyGrid.h>
 
 class OccupancyGridConversionService {
     nav_msgs::MapMetaData _grid_info;
-    FrameTransformationService *_transformation_service;
+    FrameTransformer *_transformation_service;
 
   public:
     /**

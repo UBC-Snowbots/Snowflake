@@ -13,13 +13,13 @@
 #include <tf/LinearMath/Transform.h>
 #include <tf/transform_datatypes.h>
 
-class FrameTransformationService {
+class FrameTransformer {
     tf::Transform _transformation_to_grid;
     tf::Transform _transformation_to_map;
 
   public:
     /**
-     * Returns a FrameTransformationService that transforms points
+     * Returns a FrameTransformer that transforms points
      * between grid frame and map frame
      *
      * Takes in the rotation/orientation and position of the grid frame relative
@@ -28,9 +28,9 @@ class FrameTransformationService {
      * @param rotation rotation/orientation of the grid frame relative expressed
      * map frame
      * @param position position of the grid frame expressed in map frame
-     * @return FrameTransformationService
+     * @return FrameTransformer
      */
-    FrameTransformationService(tf::Quaternion rotation,
+    FrameTransformer(tf::Quaternion rotation,
                                                    tf::Vector3 position);
 
     /**

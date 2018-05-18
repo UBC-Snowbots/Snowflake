@@ -15,7 +15,7 @@ OccupancyGridConversionService::OccupancyGridConversionService(nav_msgs::MapMeta
     tf::Quaternion origin_quaternion;
     tf::quaternionMsgToTF(info.origin.orientation, origin_quaternion);
 
-    this->_transformation_service = new FrameTransformationService(
+    this->_transformation_service = new FrameTransformer(
     origin_quaternion, origin_position);
     this->_grid_info = info;
 }

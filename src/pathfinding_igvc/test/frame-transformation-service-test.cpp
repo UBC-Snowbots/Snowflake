@@ -4,12 +4,12 @@
  * Description: Unit tests for frame transformation service
  */
 
-#include <FrameTransformationService.h>
+#include <FrameTransformer.h>
 #include "PathFinderTestUtils.h"
 #include <PathFinderUtils.h>
 #include <gtest/gtest.h>
 
-TEST(FrameTransformationService, TestGetAngleBetweenPoints) {
+TEST(FrameTransformer, TestGetAngleBetweenPoints) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
@@ -30,14 +30,14 @@ TEST(FrameTransformationService, TestGetAngleBetweenPoints) {
     point.z = 0.0;
 
     geometry_msgs::Point point_on_grid =
-    FrameTransformationService(rotation, position)
+    FrameTransformer(rotation, position)
     .transformFromMapToGridFrame(point);
 
     EXPECT_FLOAT_EQ(point_on_grid.x, point.x - origin.position.x);
     EXPECT_FLOAT_EQ(point_on_grid.y, point.y - origin.position.y);
 }
 
-TEST(FrameTransformationService, TestChangeOfFrameWith90Rotation) {
+TEST(FrameTransformer, TestChangeOfFrameWith90Rotation) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
@@ -58,14 +58,14 @@ TEST(FrameTransformationService, TestChangeOfFrameWith90Rotation) {
     point.z = 0.0;
 
     geometry_msgs::Point point_on_grid =
-    FrameTransformationService(rotation, position)
+    FrameTransformer(rotation, position)
     .transformFromMapToGridFrame(point);
 
     EXPECT_FLOAT_EQ(point_on_grid.x, 1.0);
     EXPECT_FLOAT_EQ(point_on_grid.y, 3.0);
 }
 
-TEST(FrameTransformationService, TestChangeOfFrameWith30Rotation) {
+TEST(FrameTransformer, TestChangeOfFrameWith30Rotation) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
@@ -86,14 +86,14 @@ TEST(FrameTransformationService, TestChangeOfFrameWith30Rotation) {
     point.z = 0.0;
 
     geometry_msgs::Point point_on_grid =
-    FrameTransformationService(rotation, position)
+    FrameTransformer(rotation, position)
     .transformFromMapToGridFrame(point);
 
     EXPECT_NEAR(point_on_grid.x, 2.0, 0.01);
     EXPECT_NEAR(point_on_grid.y, 0.0, 0.01);
 }
 
-TEST(FrameTransformationService, TestChangeOfFrameWith30RotationToMap) {
+TEST(FrameTransformer, TestChangeOfFrameWith30RotationToMap) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
@@ -113,7 +113,7 @@ TEST(FrameTransformationService, TestChangeOfFrameWith30RotationToMap) {
     point_on_grid.y = 0.0;
 
     geometry_msgs::Point point_on_map =
-    FrameTransformationService(rotation, position)
+    FrameTransformer(rotation, position)
     .transformFromGridToMapFrame(point_on_grid);
 
     EXPECT_NEAR(point_on_map.x, 3.0 + sqrt(3.0), 0.01);
