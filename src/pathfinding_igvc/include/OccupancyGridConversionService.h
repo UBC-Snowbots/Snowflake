@@ -36,7 +36,7 @@ class OccupancyGridConversionService {
      * @param point a point represented in map frame
      * @return AStar::GridPoint containing row and column of the point in grid
      */
-    AStar::GridPoint convertToGridPoint(geometry_msgs::Point point);
+    AStar::GridPoint convertFromMapToGridPoint(geometry_msgs::Point point);
 
     /**
      * Takes in a struct containing the row and column of a point in the
@@ -45,7 +45,7 @@ class OccupancyGridConversionService {
      * @param AStar::GridPoint containing row and column of a point in grid
      * @return point represented in map frame
      */
-    geometry_msgs::Point convertToMapPoint(AStar::GridPoint point);
+    geometry_msgs::Point convertFromGridToMapPoint(AStar::GridPoint point);
 };
 
 #endif // PATHFINDING_IGVC_OCCUPANCYGRIDCONVERSIONSERVICE_H

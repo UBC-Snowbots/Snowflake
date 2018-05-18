@@ -32,7 +32,7 @@ TEST(OccupancyGridConversionService, TestIndexOfPointInGrid) {
     point.y = 3.1;
     point.z = 0.0;
 
-    AStar::GridPoint grid_point = service.convertToGridPoint(point);
+    AStar::GridPoint grid_point = service.convertFromMapToGridPoint(point);
 
     EXPECT_EQ(grid_point.col, 1);
     EXPECT_EQ(grid_point.row, 0);

@@ -18,14 +18,14 @@ PathConstructionService::constructPath(std::stack<AStar::GridPoint> points) {
 
     while (!points.empty()) {
         geometry_msgs::Point current_point =
-        this->_occupancy_grid_conversion_service->convertToMapPoint(
+        this->_occupancy_grid_conversion_service->convertFromGridToMapPoint(
         points.top());
         points.pop();
 
         double angle = 0.0;
         if (!points.empty()) {
             geometry_msgs::Point next_point =
-            this->_occupancy_grid_conversion_service->convertToMapPoint(
+            this->_occupancy_grid_conversion_service->convertFromGridToMapPoint(
             points.top());
             angle =
             PathFinderUtils::getAngleBetweenPoints(current_point, next_point);

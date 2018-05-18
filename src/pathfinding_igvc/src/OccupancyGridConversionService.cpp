@@ -21,7 +21,7 @@ OccupancyGridConversionService::OccupancyGridConversionService(nav_msgs::MapMeta
 }
 
 AStar::GridPoint
-OccupancyGridConversionService::convertToGridPoint(geometry_msgs::Point point) {
+OccupancyGridConversionService::convertFromMapToGridPoint(geometry_msgs::Point point) {
     geometry_msgs::Point point_in_grid_frame =
     this->_transformation_service->transformFromMapToGridFrame(point);
 
@@ -36,7 +36,7 @@ OccupancyGridConversionService::convertToGridPoint(geometry_msgs::Point point) {
 }
 
 geometry_msgs::Point
-OccupancyGridConversionService::convertToMapPoint(AStar::GridPoint grid_point) {
+OccupancyGridConversionService::convertFromGridToMapPoint(AStar::GridPoint grid_point) {
     geometry_msgs::Point point;
     point.x = grid_point.col * this->_grid_info.resolution;
     point.y = grid_point.row * this->_grid_info.resolution;

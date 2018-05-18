@@ -18,9 +18,9 @@ nav_msgs::Path PathFinder::perform(geometry_msgs::Point start,
     OccupancyGridConversionService(grid.info);
 
     AStar::GridPoint start_on_grid =
-    occupancy_grid_conversion_service.convertToGridPoint(start);
+    occupancy_grid_conversion_service.convertFromMapToGridPoint(start);
     AStar::GridPoint goal_on_grid =
-    occupancy_grid_conversion_service.convertToGridPoint(goal);
+    occupancy_grid_conversion_service.convertFromMapToGridPoint(goal);
     OccupancyGridResizeService::resizeOccupancyGridToFitGoal(grid,
                                                              goal_on_grid);
 
