@@ -39,11 +39,21 @@ add_executable(path_finding
         )
 
 add_executable(path_finder
+  include/AStar.h
+  include/FrameTransformationService.h
+  include/OccupancyGridConversionService.h
+  include/OccupancyGridResizeService.h
+  include/PathConstructionService.h
+  include/PathFinder.h
+  include/PathFinderUtils.h
+  src/AStar.cpp
+  src/FrameTransformationService.cpp
+  src/OccupancyGridConversionService.cpp
+  src/OccupancyGridResizeService.cpp
+  src/PathConstructionService.cpp
   src/PathFinder.cpp
   src/path_finder.cpp
-  include/PathFinder.h
-  include/AStar.h src/AStar.cpp include/FrameTransformationService.h src/FrameTransformationService.cpp include/PathFinderUtils.h include/OccupancyGridConversionService.h src/OccupancyGridConversionService.cpp include/PathConstructionService.h src/PathConstructionService.cpp include/OccupancyGridResizeService.h src/OccupancyGridResizeService.cpp)
-
+  )
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(sample_package_node
