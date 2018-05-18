@@ -6,13 +6,10 @@
 
 #include <FrameTransformationService.h>
 
-FrameTransformationService
-FrameTransformationService::buildService(tf::Quaternion rotation,
+FrameTransformationService::FrameTransformationService(tf::Quaternion rotation,
                                          tf::Vector3 position) {
-    FrameTransformationService service;
-    service._transformation_to_map  = tf::Transform(rotation, position);
-    service._transformation_to_grid = service._transformation_to_map.inverse();
-    return service;
+    this->_transformation_to_map = tf::Transform(rotation, position);
+    this->_transformation_to_grid = this->_transformation_to_map.inverse();
 }
 
 geometry_msgs::Point

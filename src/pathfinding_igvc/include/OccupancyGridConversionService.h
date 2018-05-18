@@ -15,7 +15,7 @@
 
 class OccupancyGridConversionService {
     nav_msgs::MapMetaData _grid_info;
-    FrameTransformationService _transformation_service;
+    FrameTransformationService *_transformation_service;
 
   public:
     /**

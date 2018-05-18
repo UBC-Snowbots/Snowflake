@@ -18,7 +18,7 @@ OccupancyGridConversionService::buildService(nav_msgs::MapMetaData info) {
     tf::Quaternion origin_quaternion;
     tf::quaternionMsgToTF(info.origin.orientation, origin_quaternion);
 
-    service._transformation_service = FrameTransformationService::buildService(
+    service._transformation_service = new FrameTransformationService(
     origin_quaternion, origin_position);
     service._grid_info = info;
 
@@ -28,7 +28,7 @@ OccupancyGridConversionService::buildService(nav_msgs::MapMetaData info) {
 AStar::GridPoint
 OccupancyGridConversionService::convertToGridPoint(geometry_msgs::Point point) {
     geometry_msgs::Point point_in_grid_frame =
-    this->_transformation_service.transformToGridFrame(point);
+    this->_transformation_service->transformToGridFrame(point);
 
     // cell (0,0) is in the bottom left of the grid
     int col = point_in_grid_frame.x / this->_grid_info.resolution;
@@ -46,5 +46,5 @@ OccupancyGridConversionService::convertToMapPoint(AStar::GridPoint grid_point) {
     point.x = grid_point.col * this->_grid_info.resolution;
     point.y = grid_point.row * this->_grid_info.resolution;
 
-    return this->_transformation_service.transformToMapFrame(point);
+    return this->_transformation_service->transformToMapFrame(point);
 }

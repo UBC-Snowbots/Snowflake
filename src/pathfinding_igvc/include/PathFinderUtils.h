@@ -77,7 +77,7 @@ class PathFinderUtils {
 
     /**
      * Returns the quaternion that represents an angle in z-axis
-     * 
+     *
      * @param angle angle in z-axis
      * @return quaternion quaternion representation of the angle
      */

@@ -30,7 +30,7 @@ class FrameTransformationService {
      * @param position position of the grid frame expressed in map frame
      * @return FrameTransformationService
      */
-    static FrameTransformationService buildService(tf::Quaternion rotation,
+    FrameTransformationService(tf::Quaternion rotation,
                                                    tf::Vector3 position);
 
     /**
