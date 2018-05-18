@@ -11,7 +11,7 @@
 
 #include <PathFinder.h>
 
-nav_msgs::Path PathFinder::perform(geometry_msgs::Point start,
+nav_msgs::Path PathFinder::calculatePath(geometry_msgs::Point start,
                                    geometry_msgs::Point goal,
                                    nav_msgs::OccupancyGrid grid) {
     OccupancyGridConversionService occupancy_grid_conversion_service =

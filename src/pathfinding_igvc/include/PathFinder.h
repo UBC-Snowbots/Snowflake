@@ -34,7 +34,7 @@ class PathFinder {
      * @param grid occupancy grid
      * @return shortest path from start to goal
      */
-    static nav_msgs::Path perform(geometry_msgs::Point start,
+    static nav_msgs::Path calculatePath(geometry_msgs::Point start,
                                   geometry_msgs::Point goal,
                                   nav_msgs::OccupancyGrid grid);
 };
