@@ -40,7 +40,7 @@ class FrameTransformationService {
      * @param point a point represented in map frame
      * @return point represented in grid frame
      */
-    geometry_msgs::Point transformToGridFrame(geometry_msgs::Point point);
+    geometry_msgs::Point transformFromMapToGridFrame(geometry_msgs::Point point);
 
     /**
      * Takes a point represented in grid frame and returns its position in map
@@ -49,7 +49,7 @@ class FrameTransformationService {
      * @param point a point represented in grid frame
      * @return point represented in map frame
      */
-    geometry_msgs::Point transformToMapFrame(geometry_msgs::Point point);
+    geometry_msgs::Point transformFromGridToMapFrame(geometry_msgs::Point point);
 };
 
 #endif // PATHFINDING_IGVC_FRAMETRANSFORMATIONSERVICE_H

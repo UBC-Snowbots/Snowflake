@@ -23,7 +23,7 @@ OccupancyGridConversionService::OccupancyGridConversionService(nav_msgs::MapMeta
 AStar::GridPoint
 OccupancyGridConversionService::convertToGridPoint(geometry_msgs::Point point) {
     geometry_msgs::Point point_in_grid_frame =
-    this->_transformation_service->transformToGridFrame(point);
+    this->_transformation_service->transformFromMapToGridFrame(point);
 
     // cell (0,0) is in the bottom left of the grid
     int col = point_in_grid_frame.x / this->_grid_info.resolution;
@@ -41,5 +41,5 @@ OccupancyGridConversionService::convertToMapPoint(AStar::GridPoint grid_point) {
     point.x = grid_point.col * this->_grid_info.resolution;
     point.y = grid_point.row * this->_grid_info.resolution;
 
-    return this->_transformation_service->transformToMapFrame(point);
+    return this->_transformation_service->transformFromGridToMapFrame(point);
 }

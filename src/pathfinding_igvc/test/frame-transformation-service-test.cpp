@@ -31,7 +31,7 @@ TEST(FrameTransformationService, TestGetAngleBetweenPoints) {
 
     geometry_msgs::Point point_on_grid =
     FrameTransformationService(rotation, position)
-    .transformToGridFrame(point);
+    .transformFromMapToGridFrame(point);
 
     EXPECT_FLOAT_EQ(point_on_grid.x, point.x - origin.position.x);
     EXPECT_FLOAT_EQ(point_on_grid.y, point.y - origin.position.y);
@@ -59,7 +59,7 @@ TEST(FrameTransformationService, TestChangeOfFrameWith90Rotation) {
 
     geometry_msgs::Point point_on_grid =
     FrameTransformationService(rotation, position)
-    .transformToGridFrame(point);
+    .transformFromMapToGridFrame(point);
 
     EXPECT_FLOAT_EQ(point_on_grid.x, 1.0);
     EXPECT_FLOAT_EQ(point_on_grid.y, 3.0);
@@ -87,7 +87,7 @@ TEST(FrameTransformationService, TestChangeOfFrameWith30Rotation) {
 
     geometry_msgs::Point point_on_grid =
     FrameTransformationService(rotation, position)
-    .transformToGridFrame(point);
+    .transformFromMapToGridFrame(point);
 
     EXPECT_NEAR(point_on_grid.x, 2.0, 0.01);
     EXPECT_NEAR(point_on_grid.y, 0.0, 0.01);
@@ -114,7 +114,7 @@ TEST(FrameTransformationService, TestChangeOfFrameWith30RotationToMap) {
 
     geometry_msgs::Point point_on_map =
     FrameTransformationService(rotation, position)
-    .transformToMapFrame(point_on_grid);
+    .transformFromGridToMapFrame(point_on_grid);
 
     EXPECT_NEAR(point_on_map.x, 3.0 + sqrt(3.0), 0.01);
     EXPECT_NEAR(point_on_map.y, 3.0 + 1.0, 0.01);

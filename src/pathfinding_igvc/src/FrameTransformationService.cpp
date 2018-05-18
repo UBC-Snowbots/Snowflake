@@ -13,14 +13,14 @@ FrameTransformationService::FrameTransformationService(tf::Quaternion rotation,
 }
 
 geometry_msgs::Point
-FrameTransformationService::transformToGridFrame(geometry_msgs::Point point) {
+FrameTransformationService::transformFromMapToGridFrame(geometry_msgs::Point point) {
     tf::Vector3 map_point  = PathFinderUtils::pointToVector(point);
     tf::Vector3 grid_point = this->_transformation_to_grid * map_point;
     return PathFinderUtils::vectorToPoint(grid_point);
 }
 
 geometry_msgs::Point
-FrameTransformationService::transformToMapFrame(geometry_msgs::Point point) {
+FrameTransformationService::transformFromGridToMapFrame(geometry_msgs::Point point) {
     tf::Vector3 grid_point = PathFinderUtils::pointToVector(point);
     tf::Vector3 map_point  = this->_transformation_to_map * grid_point;
     return PathFinderUtils::vectorToPoint(map_point);
