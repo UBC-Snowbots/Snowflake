@@ -6,12 +6,10 @@
 
 #include <PathConstructionService.h>
 
-PathConstructionService PathConstructionService::buildService(
+PathConstructionService::PathConstructionService(
 OccupancyGridConversionService occupancy_grid_conversion_service) {
-    PathConstructionService path_construction_service;
-    path_construction_service._occupancy_grid_conversion_service =
+    this->_occupancy_grid_conversion_service =
     &occupancy_grid_conversion_service;
-    return path_construction_service;
 }
 
 nav_msgs::Path

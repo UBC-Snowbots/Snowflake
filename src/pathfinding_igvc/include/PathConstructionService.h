@@ -26,7 +26,7 @@ class PathConstructionService {
      * @param occupancy_grid_conversion_service
      * @return PathConstructionService
      */
-    static PathConstructionService buildService(
+    PathConstructionService(
     OccupancyGridConversionService occupancy_grid_conversion_service);
 
     /**

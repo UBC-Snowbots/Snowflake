@@ -39,7 +39,7 @@ TEST(PathConstructionService, TestConstructPath) {
     points.push(point2);
 
     nav_msgs::Path path =
-    PathConstructionService::buildService(occupancy_grid_conversion_service)
+    PathConstructionService(occupancy_grid_conversion_service)
     .constructPath(points);
 
     tf::Quaternion q1;
