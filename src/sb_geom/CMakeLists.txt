@@ -12,6 +12,11 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 add_definitions(-std=gnu++14)
+
+# Make code position independent. This is required to let us link against
+# the dlib shared library
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -90,7 +95,8 @@ file(GLOB sb_geom_SRCS
 file(GLOB sb_geom_HEADERS
         "include/sb_geom/*.h"
         )
-add_library(sb_geom
+# NOTE: We have to make this library static so we can link against dlib
+add_library(sb_geom STATIC
         ${sb_geom_SRCS}
         ${sb_geom_HEADERS}
         )

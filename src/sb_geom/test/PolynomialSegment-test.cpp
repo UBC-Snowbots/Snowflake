@@ -4,18 +4,17 @@
  * Description: Tests for the `PolynomialSegment` class
  */
 
-#include <gtest/gtest.h>
 #include "sb_geom/PolynomialSegment.h"
+#include <gtest/gtest.h>
 
 class PolynomialSegmentTest : public testing::Test {
-protected:
+  protected:
     PolynomialSegmentTest(){};
 
-    virtual void SetUp() {
-    }
+    virtual void SetUp() {}
 };
 
-TEST_F(PolynomialSegmentTest, constructor){
+TEST_F(PolynomialSegmentTest, constructor) {
     // y = 3 + x
     sb_geom::PolynomialSegment poly_segment({3, 1}, 2, 10);
 
@@ -23,7 +22,7 @@ TEST_F(PolynomialSegmentTest, constructor){
     EXPECT_EQ(poly_segment.x_max(), 10);
 }
 
-TEST_F(PolynomialSegmentTest, getStartPoint){
+TEST_F(PolynomialSegmentTest, getStartPoint) {
     // y = 3 + x
     sb_geom::PolynomialSegment poly_segment({3, 1}, 2, 10);
 
@@ -31,7 +30,7 @@ TEST_F(PolynomialSegmentTest, getStartPoint){
     EXPECT_EQ(2, poly_segment.getStartPoint().x());
 }
 
-TEST_F(PolynomialSegmentTest, getEndPoint){
+TEST_F(PolynomialSegmentTest, getEndPoint) {
     // y = 3 + x
     sb_geom::PolynomialSegment poly_segment({3, 1}, 2, 10);
 
@@ -39,7 +38,7 @@ TEST_F(PolynomialSegmentTest, getEndPoint){
     EXPECT_EQ(10, poly_segment.getEndPoint().x());
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

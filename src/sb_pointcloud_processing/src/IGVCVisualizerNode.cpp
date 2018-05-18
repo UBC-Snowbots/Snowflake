@@ -39,7 +39,7 @@ IGVCVisualizerNode::IGVCVisualizerNode(int argc,
     retrieveVisualizerParameters(private_nh);
 
     // Setup raw pcl subscriber
-    std::string raw_pcl_topic = "/zed/point_cloud/cloud_registered";
+    std::string raw_pcl_topic = "/input_cloud";
     uint32_t queue_size       = 1;
     raw_pcl_sub               = nh.subscribe<sensor_msgs::PointCloud2>(
     raw_pcl_topic, queue_size, &IGVCVisualizerNode::rawPCLCallBack, this);
