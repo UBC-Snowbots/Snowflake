@@ -37,6 +37,8 @@ class PathFinder {
     static nav_msgs::Path calculatePath(geometry_msgs::Point start,
                                   geometry_msgs::Point goal,
                                   nav_msgs::OccupancyGrid grid);
+
+    static void processGridAndGetStartAndGoalOnGrid(nav_msgs::OccupancyGrid &grid, geometry_msgs::Point start, geometry_msgs::Point goal, AStar::GridPoint &start_on_grid, AStar::GridPoint &goal_on_grid);
 };
 
 #endif // PATHFINDING_IGVC_PATHFINDER_H

@@ -101,6 +101,9 @@ class PathFinderUtils {
     }
 
     static void fitPointInsideGrid(nav_msgs::MapMetaData grid_info, AStar::GridPoint &point) {
+//        int width = grid_info.width;
+//        int height = grid_info.height;
+
         point.col = point.col < 0 ? 0 : point.col;
         point.col = point.col >= grid_info.width ? grid_info.width - 1 : point.col;
 

@@ -20,7 +20,7 @@ class AStar {
     struct GridPoint {
         int col;
         int row;
-        GridPoint(int c, int r) : col(c), row(r){};
+        GridPoint(int c = 0, int r = 0) : col(c), row(r){};
     };
 
     /**
