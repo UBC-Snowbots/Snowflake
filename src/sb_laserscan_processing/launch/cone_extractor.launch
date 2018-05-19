@@ -1,16 +1,16 @@
 <launch>
     <node name="cone_extractor_node" pkg="sb_laserscan_processing" type="cone_extractor_node" output="screen">
         <!-- tolerance for distance between laserscan points belonging to different cones -->
-        <param name="cone_dist_tol" value="0.01" type="double" />
+        <param name="cone_dist_tol" value="0.018" type="double" />
 
         <!-- expected cone radius -->
-        <param name="cone_rad_exp" value="0.1" type="double" />
+        <param name="cone_rad_exp" value="0.06" type="double" />
 
         <!-- tolerance for difference between expected cone radius and calculated cone radius -->
-        <param name="cone_rad_tol" value="0.05" type="double" />
+        <param name="cone_rad_tol" value="0.02" type="double" />
 
         <!-- index difference between points used in edge cluster splitting algorithm -->
-        <param name="min_points_in_cone" value="5" type="int" />
+        <param name="min_points_in_cone" value="3" type="int" />
 
         <!-- max angle needed to split edge clusters -->
         <param name="ang_threshold" value="2.3" type="double" />

@@ -29,7 +29,7 @@ class ConeIdentification {
         static std::vector<mapping_igvc::ConeObstacle> identifyCones(const sensor_msgs::LaserScan &laser_msg, double dist_tol, double radius_exp, double radius_tol, int min_points_in_cone, double ang_threshold);
 
         /**
-         * Identifies valid cones that can be made from points in edge_points and adds it to the identified_cones vector
+         * Identifies valid cones that can be made from points in edge_points and adds it to the identified_cones input vector
          * Note that multiple cones may be added in this function call
          * @param identified_cones cones identified so far
          * @param edge_points edge points (in a cluster) to analyze

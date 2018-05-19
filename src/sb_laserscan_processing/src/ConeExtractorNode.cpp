@@ -21,14 +21,14 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
                 default_cone_dist_tol);
 
     std::string cone_rad_exp_param = "cone_rad_exp";
-    double default_cone_rad_exp = 0.1;
+    double default_cone_rad_exp = 0.3;
     SB_getParam(private_nh,
                 cone_rad_exp_param,
                 cone_rad_exp,
                 default_cone_rad_exp);
 
     std::string cone_rad_tol_param = "cone_rad_tol";
-    double default_cone_rad_tol = 0.15; //Change later
+    double default_cone_rad_tol = 0.1; //Change later
     SB_getParam(private_nh,
                 cone_rad_tol_param,
                 cone_rad_tol,
@@ -95,8 +95,8 @@ void ConeExtractorNode::publishMarkers(std::vector<mapping_igvc::ConeObstacle> c
     marker.type = visualization_msgs::Marker::POINTS;
 
     // POINTS markers use x and y scale for width/height respectively
-    marker.scale.x = 0.03;
-    marker.scale.y = 0.03;
+    marker.scale.x = 0.1;
+    marker.scale.y = 0.1;
 
     // Points are green
     marker.color.g = 1.0f;
