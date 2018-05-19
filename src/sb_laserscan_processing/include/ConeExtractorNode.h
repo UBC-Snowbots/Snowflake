@@ -12,6 +12,8 @@
 #include <sb_utils.h>
 #include <sensor_msgs/LaserScan.h>
 #include <visualization_msgs/Marker.h>
+#include <RvizUtils.h>
+
 
 class ConeExtractorNode {
     public:
@@ -35,7 +37,7 @@ class ConeExtractorNode {
          * @param cone
          * @return a visualization marker
          */
-        visualization_msgs::Marker getMarker(mapping_igvc::ConeObstacle cone);
+        void publishMarkers(std::vector<mapping_igvc::ConeObstacle> cones);
 
         double cone_dist_tol; //Distance tolerance between cones in cluster
         double cone_rad_exp; //Expected cone radius

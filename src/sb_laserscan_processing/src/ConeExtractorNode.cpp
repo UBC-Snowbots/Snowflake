@@ -56,9 +56,9 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
             output_cone_topic, queue_size
     );
 
-    std::string publish_topic = "markers"; //Placeholder
+    std::string marker_topic = "markers"; //Placeholder
     rviz_publisher = private_nh.advertise<visualization_msgs::Marker>(
-            publish_topic, queue_size
+            marker_topic, queue_size
     );
 }
 
@@ -77,9 +77,38 @@ void ConeExtractorNode::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& pt
         std::cout<<std::endl;
     }
     std::cout<<"================="<<std::endl;
+    publishMarkers(cones);
 }
 
 
-visualization_msgs::Marker ConeExtractorNode::getMarker(mapping_igvc::ConeObstacle cone){
+void ConeExtractorNode::publishMarkers(std::vector<mapping_igvc::ConeObstacle> cones){
+    if (cones.empty())
+        return;
+
+    visualization_msgs::Marker marker;
+
+    marker.id = 0;
+    marker.header.frame_id = cones[0].header.frame_id;
+    marker.action = visualization_msgs::Marker::ADD;
+    marker.pose.orientation.w = 1.0;
+
+    marker.type = visualization_msgs::Marker::POINTS;
+
+    // POINTS markers use x and y scale for width/height respectively
+    marker.scale.x = 0.03;
+    marker.scale.y = 0.03;
+
+    // Points are green
+    marker.color.g = 1.0f;
+    marker.color.a = 1.0;
+
+    for (int i=0; i<cones.size(); i++){
+        geometry_msgs::Point coneCenter;
+        coneCenter.x = cones[i].center.x;
+        coneCenter.y = cones[i].center.y;
+        marker.points.push_back(coneCenter);
+    }
+
+    rviz_publisher.publish(marker);
 
 }
