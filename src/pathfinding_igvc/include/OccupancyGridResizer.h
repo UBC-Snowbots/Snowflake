@@ -9,6 +9,7 @@
 #define PATHFINDING_IGVC_OCCUPANCYGRIDRESIZESERVICE_H
 
 #include "AStar.h"
+#include <OccupancyGridAdapter.h>
 
 class OccupancyGridResizer {
   public:
@@ -56,6 +57,8 @@ private:
      * @param grid
      */
     void static addSpaceDown(nav_msgs::OccupancyGrid& grid);
+
+    void static updateInfo(nav_msgs::OccupancyGrid& grid);
 };
 
 #endif // PATHFINDING_IGVC_OCCUPANCYGRIDRESIZESERVICE_H
