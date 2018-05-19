@@ -13,24 +13,48 @@
 class OccupancyGridResizer {
   public:
     /**
-     * Given an occupancy grid and a cell location, resize the grid if the cell
-     * location is not
-     * inside the grid (i.e. row/col is < 0 or >= width/height).
-     * The grid will also move its origin if the cell location is to the left or
-     * below
-     * the initial origin of the grid.
-     * If the cell location is already inside the grid, it doesn't change the
-     * grid
+     * Given an occupancy grid, adds space around the grid, i.e.
+     * an additional row below the grid and above the grid, and
+     * an additional column to the left and right of the grid.
+     *
+     * The grid will also move its origin down by one cell and left by
+     * one cell.
      *
      * @param grid the occupancy grid passed by reference
-     * @param goal the cell location that we want to fit inside the grid
      */
     void static addSpaceAroundGrid(nav_msgs::OccupancyGrid& grid);
 
 private:
+    /**
+     * Given an occupancy grid, adds an additional column to the left
+     * of the grid. The grid's origin is also moved to the left by one cell.
+     *
+     * @param grid
+     */
     void static addSpaceLeft(nav_msgs::OccupancyGrid& grid);
+
+    /**
+     * Given an occupancy grid, adds an additional column to the right
+     * of the grid. The grid's origin is unchanged.
+     *
+     * @param grid
+     */
     void static addSpaceRight(nav_msgs::OccupancyGrid& grid);
+
+    /**
+     * Given an occupancy grid, adds an additional row above
+     * the grid. The grid's origin is unchanged.
+     *
+     * @param grid
+     */
     void static addSpaceUp(nav_msgs::OccupancyGrid& grid);
+
+    /**
+     * Given an occupancy grid, adds an additional row below
+     * the grid. The grid's origin is also moved down by one cell.
+     *
+     * @param grid
+     */
     void static addSpaceDown(nav_msgs::OccupancyGrid& grid);
 };
 
