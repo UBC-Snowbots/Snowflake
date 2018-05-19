@@ -25,8 +25,13 @@ class OccupancyGridResizeService {
      * @param grid the occupancy grid passed by reference
      * @param goal the cell location that we want to fit inside the grid
      */
-    void static resizeOccupancyGridToFitGoal(nav_msgs::OccupancyGrid& grid,
-                                             AStar::GridPoint goal);
+    void static addSpaceAroundGrid(nav_msgs::OccupancyGrid& grid);
+
+private:
+    void static addSpaceLeft(nav_msgs::OccupancyGrid& grid);
+    void static addSpaceRight(nav_msgs::OccupancyGrid& grid);
+    void static addSpaceUp(nav_msgs::OccupancyGrid& grid);
+    void static addSpaceDown(nav_msgs::OccupancyGrid& grid);
 };
 
 #endif // PATHFINDING_IGVC_OCCUPANCYGRIDRESIZESERVICE_H

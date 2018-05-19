@@ -6,47 +6,45 @@
 
 #include <OccupancyGridResizeService.h>
 
-void OccupancyGridResizeService::resizeOccupancyGridToFitGoal(
-nav_msgs::OccupancyGrid& grid, AStar::GridPoint goal) {
-    if (goal.col >= (int) grid.info.width) {
-        unsigned int col_diff = goal.col - grid.info.width + 1;
+void OccupancyGridResizeService::addSpaceAroundGrid(nav_msgs::OccupancyGrid& grid) {
+    addSpaceLeft(grid);
+    addSpaceRight(grid);
+    addSpaceUp(grid);
+    addSpaceDown(grid);
+}
 
-        auto it = grid.data.begin() + grid.info.width;
+void OccupancyGridResizeService::addSpaceLeft(nav_msgs::OccupancyGrid& grid) {
+    auto it = grid.data.begin();
 
-        for (unsigned int row = 0; row < grid.info.height; row++) {
-            it = grid.data.insert(it, col_diff, AStar::GRID_FREE);
-            it += grid.info.width + col_diff;
-        }
-
-        grid.info.width += col_diff;
-    } else if (goal.col < 0) {
-        unsigned int col_diff = abs(goal.col);
-
-        auto it = grid.data.begin();
-
-        for (unsigned int row = 0; row < grid.info.height; row++) {
-            it = grid.data.insert(it, col_diff, AStar::GRID_FREE);
-            it += grid.info.width + col_diff;
-        }
-
-        grid.info.width += col_diff;
-        grid.info.origin.position.x -= col_diff * grid.info.resolution;
+    for (unsigned int row = 0; row < grid.info.height; row++) {
+        it = grid.data.insert(it, 1, AStar::GRID_FREE);
+        it += grid.info.width + 1;
     }
 
-    if (goal.row >= (int) grid.info.height) {
-        unsigned int row_diff             = goal.row - grid.info.height + 1;
-        unsigned int num_additional_cells = row_diff * grid.info.width;
+    grid.info.width++;
+    grid.info.origin.position.x -= grid.info.resolution;
+}
 
-        grid.data.insert(grid.data.end(), num_additional_cells, AStar::GRID_FREE);
+void OccupancyGridResizeService::addSpaceRight(nav_msgs::OccupancyGrid& grid) {
+    auto it = grid.data.begin() + grid.info.width;
 
-        grid.info.height += row_diff;
-    } else if (goal.row < 0) {
-        unsigned int row_diff             = abs(goal.row);
-        unsigned int num_additional_cells = row_diff * grid.info.width;
-
-        grid.data.insert(grid.data.begin(), num_additional_cells, AStar::GRID_FREE);
-
-        grid.info.height += row_diff;
-        grid.info.origin.position.y -= row_diff * grid.info.resolution;
+    for (unsigned int row = 0; row < grid.info.height; row++) {
+        it = grid.data.insert(it, 1, AStar::GRID_FREE);
+        it += grid.info.width + 1;
     }
+
+    grid.info.width++;
+}
+
+void OccupancyGridResizeService::addSpaceUp(nav_msgs::OccupancyGrid& grid) {
+    grid.data.insert(grid.data.end(), grid.info.width, AStar::GRID_FREE);
+
+    grid.info.height++;
+}
+
+void OccupancyGridResizeService::addSpaceDown(nav_msgs::OccupancyGrid& grid) {
+    grid.data.insert(grid.data.begin(), grid.info.width, AStar::GRID_FREE);
+
+    grid.info.height++;
+    grid.info.origin.position.y -= grid.info.resolution;
 }

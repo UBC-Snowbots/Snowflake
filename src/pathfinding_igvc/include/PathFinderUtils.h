@@ -12,6 +12,8 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/LinearMath/Transform.h>
 #include <tf/transform_datatypes.h>
+#include <nav_msgs/OccupancyGrid.h>
+#include "AStar.h"
 
 class PathFinderUtils {
   public:
@@ -89,6 +91,13 @@ class PathFinderUtils {
         rotationMatrix.getRotation(q);
 
         return q;
+    }
+
+    static bool isPointInsideGrid(nav_msgs::MapMetaData grid_info, AStar::GridPoint point) {
+        if (point.col < 0 || point.row < 0) return false;
+        if (point.col >= grid_info.width)   return false;
+        if (point.row >= grid_info.height)  return false;
+        return true;
     }
 };
 

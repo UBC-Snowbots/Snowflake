@@ -14,15 +14,19 @@
 nav_msgs::Path PathFinder::calculatePath(geometry_msgs::Point start,
                                    geometry_msgs::Point goal,
                                    nav_msgs::OccupancyGrid grid) {
+    AStar::GridPoint initial_goal_on_grid = OccupancyGridAdapter(grid.info).convertFromMapToGridPoint(goal);
+    bool needs_resizing = PathFinderUtils::isPointInsideGrid(grid.info, initial_goal_on_grid);
+    if (needs_resizing) {
+        OccupancyGridResizeService::addSpaceAroundGrid(grid);
+    }
+
     OccupancyGridAdapter occupancy_grid_conversion_service =
-    OccupancyGridAdapter(grid.info);
+            OccupancyGridAdapter(grid.info);
 
     AStar::GridPoint start_on_grid =
     occupancy_grid_conversion_service.convertFromMapToGridPoint(start);
     AStar::GridPoint goal_on_grid =
     occupancy_grid_conversion_service.convertFromMapToGridPoint(goal);
-    OccupancyGridResizeService::resizeOccupancyGridToFitGoal(grid,
-                                                             goal_on_grid);
 
     std::stack<AStar::GridPoint> points =
     AStar().run(grid, start_on_grid, goal_on_grid);
