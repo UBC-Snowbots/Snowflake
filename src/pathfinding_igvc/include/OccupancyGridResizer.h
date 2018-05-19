@@ -10,7 +10,7 @@
 
 #include "AStar.h"
 
-class OccupancyGridResizeService {
+class OccupancyGridResizer {
   public:
     /**
      * Given an occupancy grid and a cell location, resize the grid if the cell

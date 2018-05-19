@@ -5,11 +5,11 @@
  */
 
 #include <OccupancyGridAdapter.h>
-#include <OccupancyGridResizeService.h>
+#include <OccupancyGridResizer.h>
 #include "PathFinderTestUtils.h"
 #include <gtest/gtest.h>
 
-TEST(OccupancyGridResizeService, TestAddSpaceAroundGrid) {
+TEST(OccupancyGridResizer, TestAddSpaceAroundGrid) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
@@ -31,7 +31,7 @@ TEST(OccupancyGridResizeService, TestAddSpaceAroundGrid) {
     grid.info = map_meta_data;
     grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
 
-    OccupancyGridResizeService::addSpaceAroundGrid(grid);
+    OccupancyGridResizer::addSpaceAroundGrid(grid);
 
     EXPECT_EQ(map_meta_data.width + 2, grid.info.width);
     EXPECT_EQ(map_meta_data.height + 2, grid.info.height);

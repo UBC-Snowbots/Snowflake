@@ -17,7 +17,7 @@ nav_msgs::Path PathFinder::calculatePath(geometry_msgs::Point start,
     AStar::GridPoint initial_goal_on_grid = OccupancyGridAdapter(grid.info).convertFromMapToGridPoint(goal);
     bool needs_resizing = PathFinderUtils::isPointInsideGrid(grid.info, initial_goal_on_grid);
     if (needs_resizing) {
-        OccupancyGridResizeService::addSpaceAroundGrid(grid);
+        OccupancyGridResizer::addSpaceAroundGrid(grid);
     }
 
     OccupancyGridAdapter occupancy_grid_conversion_service =

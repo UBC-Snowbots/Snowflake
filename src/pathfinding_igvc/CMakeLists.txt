@@ -42,14 +42,14 @@ add_executable(path_finder
   include/AStar.h
   include/FrameTransformer.h
   include/OccupancyGridAdapter.h
-  include/OccupancyGridResizeService.h
+  include/OccupancyGridResizer.h
   include/PathConstructor.h
   include/PathFinder.h
   include/PathFinderUtils.h
   src/AStar.cpp
   src/FrameTransformer.cpp
   src/OccupancyGridAdapter.cpp
-  src/OccupancyGridResizeService.cpp
+  src/OccupancyGridResizer.cpp
   src/PathConstructor.cpp
   src/PathFinder.cpp
   src/path_finder.cpp
@@ -102,7 +102,7 @@ if (CATKIN_ENABLE_TESTING)
     target_link_libraries(occupancy-grid-conversion-service-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(occupancy-grid-resize-service-test test/occupancy-grid-resize-service-test.cpp
-      src/OccupancyGridResizeService.cpp include/OccupancyGridResizeService.h
+      src/OccupancyGridResizer.cpp include/OccupancyGridResizer.h
       src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )

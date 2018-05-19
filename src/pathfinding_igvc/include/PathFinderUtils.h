@@ -99,6 +99,14 @@ class PathFinderUtils {
         if (point.row >= grid_info.height)  return false;
         return true;
     }
+
+    static void fitPointInsideGrid(nav_msgs::MapMetaData grid_info, AStar::GridPoint &point) {
+        point.col = point.col < 0 ? 0 : point.col;
+        point.col = point.col >= grid_info.width ? grid_info.width - 1 : point.col;
+
+        point.row = point.row < 0 ? 0 : point.row;
+        point.row = point.row >= grid_info.height ? grid_info.height - 1 : point.row;
+    }
 };
 
 #endif // PATHFINDING_IGVC_PATHFINDERUTILS_H

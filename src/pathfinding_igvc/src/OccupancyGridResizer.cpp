@@ -4,16 +4,16 @@
  * Description: Implementation of occupancy grid resize service
  */
 
-#include <OccupancyGridResizeService.h>
+#include <OccupancyGridResizer.h>
 
-void OccupancyGridResizeService::addSpaceAroundGrid(nav_msgs::OccupancyGrid& grid) {
+void OccupancyGridResizer::addSpaceAroundGrid(nav_msgs::OccupancyGrid& grid) {
     addSpaceLeft(grid);
     addSpaceRight(grid);
     addSpaceUp(grid);
     addSpaceDown(grid);
 }
 
-void OccupancyGridResizeService::addSpaceLeft(nav_msgs::OccupancyGrid& grid) {
+void OccupancyGridResizer::addSpaceLeft(nav_msgs::OccupancyGrid& grid) {
     auto it = grid.data.begin();
 
     for (unsigned int row = 0; row < grid.info.height; row++) {
@@ -25,7 +25,7 @@ void OccupancyGridResizeService::addSpaceLeft(nav_msgs::OccupancyGrid& grid) {
     grid.info.origin.position.x -= grid.info.resolution;
 }
 
-void OccupancyGridResizeService::addSpaceRight(nav_msgs::OccupancyGrid& grid) {
+void OccupancyGridResizer::addSpaceRight(nav_msgs::OccupancyGrid& grid) {
     auto it = grid.data.begin() + grid.info.width;
 
     for (unsigned int row = 0; row < grid.info.height; row++) {
@@ -36,13 +36,13 @@ void OccupancyGridResizeService::addSpaceRight(nav_msgs::OccupancyGrid& grid) {
     grid.info.width++;
 }
 
-void OccupancyGridResizeService::addSpaceUp(nav_msgs::OccupancyGrid& grid) {
+void OccupancyGridResizer::addSpaceUp(nav_msgs::OccupancyGrid& grid) {
     grid.data.insert(grid.data.end(), grid.info.width, AStar::GRID_FREE);
 
     grid.info.height++;
 }
 
-void OccupancyGridResizeService::addSpaceDown(nav_msgs::OccupancyGrid& grid) {
+void OccupancyGridResizer::addSpaceDown(nav_msgs::OccupancyGrid& grid) {
     grid.data.insert(grid.data.begin(), grid.info.width, AStar::GRID_FREE);
 
     grid.info.height++;

@@ -31,7 +31,7 @@ class OccupancyGridAdapter {
     /**
      * Takes in a point represented in map frame and returns a struct
      * that contains the corresponding row and column of the point in the
-     * occupancy grid
+     * occupancy grid.
      *
      * @param point a point represented in map frame
      * @return AStar::GridPoint containing row and column of the point in grid
