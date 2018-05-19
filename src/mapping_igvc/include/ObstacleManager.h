@@ -1,7 +1,10 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 9, 2018
- * Description: TODO
+ * Description: The Obstacle Manager takes in discrete obstacles and saves them,
+ *              comparing them to newly received obstacles and checking if
+ *              they're similar. If they are, it will merge/move known obstacles
+ *              using the new obstacles as updated information
  */
 
 #ifndef MAPPING_IGVC_OBSTACLEMANAGER_H
@@ -41,7 +44,6 @@ public:
     explicit ObstacleManager(double cone_merging_tolerance, double line_merging_tolerance):
         ObstacleManager(cone_merging_tolerance, line_merging_tolerance, 0, 0.1) {};
 
-    // TODO: We may not need `obstacle_inflation_buffer` if it's handled by pathfinding
     /**
      * Creates a ObstacleManager
      *

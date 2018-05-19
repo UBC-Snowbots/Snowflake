@@ -1,7 +1,10 @@
 /*
  * Created By: Gareth Ellis
  * Created On: January 9, 2018
- * Description: TODO
+ * Description: The Obstacle Manager takes in discrete obstacles and saves them,
+ *              comparing them to newly received obstacles and checking if
+ *              they're similar. If they are, it will merge/move known obstacles
+ *              using the new obstacles as updated information
  */
 
 // Snowbots Includes
