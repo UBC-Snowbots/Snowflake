@@ -1,36 +1,36 @@
-#include <PathToTwist.h>
+#include <PathFinding.h>
 #include <gtest/gtest.h>
 
-TEST(PathToTwist, testWeightedSum1) {
+TEST(PathFinding, testWeightedSum1) {
     std::vector<float> testVec;
     testVec.push_back(3);
     testVec.push_back(3);
     testVec.push_back(3);
 
-    EXPECT_EQ(5.5, PathToTwist::weightedSum(testVec, 3));
+    EXPECT_EQ(5.5, PathFinding::weightedSum(testVec, 3));
 }
 
-TEST(PathToTwist, testWeightedSum2) {
+TEST(PathFinding, testWeightedSum2) {
     std::vector<float> testVec;
     testVec.push_back(1);
     testVec.push_back(2);
     testVec.push_back(3);
 
-    EXPECT_EQ(1.0, PathToTwist::weightedSum(testVec, 1));
+    EXPECT_EQ(1.0, PathFinding::weightedSum(testVec, 1));
 }
 
-TEST(PathToTwist, testWeightedSumNegative) {
+TEST(PathFinding, testWeightedSumNegative) {
     std::vector<float> testVec;
     testVec.push_back(1);
     testVec.push_back(-2);
     testVec.push_back(-3);
 
-    EXPECT_EQ(-1.0, PathToTwist::weightedSum(testVec, 3));
+    EXPECT_EQ(-1.0, PathFinding::weightedSum(testVec, 3));
 }
 
 // Case where robot starting orientation is forward and must travel a straight
 // path diagonal (along y=x line)
-TEST(PathToTwist, testStraightPathToTwist) {
+TEST(PathFinding, testStraightPathToTwist) {
     double xPos        = 0;
     double yPos        = 0;
     double orientation = 0;
@@ -46,13 +46,13 @@ TEST(PathToTwist, testStraightPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathToTwist::getTwist(path_msg, xPos, yPos, orientation, 10, true);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.875, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0.785, twist_msg.angular.z, 0.01);
 }
 
 // Case where robot starting orientation is perpendicular to a straight path
-TEST(PathToTwist, testPerpenPathToTwist) {
+TEST(PathFinding, testPerpenPathToTwist) {
     double xPos        = 0;
     double yPos        = 0;
     double orientation = M_PI / 2.0;
@@ -68,13 +68,13 @@ TEST(PathToTwist, testPerpenPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathToTwist::getTwist(path_msg, xPos, yPos, orientation, 10, true);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.750, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(-1.57, twist_msg.angular.z, 0.01);
 }
 
 // Case where robot starting orientation is opposite to a straight path
-TEST(PathToTwist, testOppPathToTwist) {
+TEST(PathFinding, testOppPathToTwist) {
     double xPos        = 0;
     double yPos        = 0;
     double orientation = M_PI;
@@ -90,13 +90,13 @@ TEST(PathToTwist, testOppPathToTwist) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathToTwist::getTwist(path_msg, xPos, yPos, orientation, 10, true);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.5, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(M_PI, twist_msg.angular.z, 0.01);
 }
 
 // Case where robot is far from beginning of path and facing wrong direction
-TEST(PathToTwist, testFarStartPos) {
+TEST(PathFinding, testFarStartPos) {
     double xPos        = -100;
     double yPos        = -100;
     double orientation = -M_PI / 2;
@@ -112,14 +112,14 @@ TEST(PathToTwist, testFarStartPos) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathToTwist::getTwist(path_msg, xPos, yPos, orientation, 10, true);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.63, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(2.36, twist_msg.angular.z, 0.01);
 }
 
 // Case where path consists of 2 sharp turns, one 90 deg left and one 90 deg
 // right later
-TEST(PathToTwist, testSharpTurns) {
+TEST(PathFinding, testSharpTurns) {
     double xPos        = 0;
     double yPos        = 0;
     double orientation = 0;
@@ -140,13 +140,13 @@ TEST(PathToTwist, testSharpTurns) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathToTwist::getTwist(path_msg, xPos, yPos, orientation, 10, true);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.787, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(1.336, twist_msg.angular.z, 0.01);
 }
 
 // Case where path consists of erratic direction and magnitude changes
-TEST(PathToTwist, testErraticPath) {
+TEST(PathFinding, testErraticPath) {
     double xPos        = 0;
     double yPos        = 0;
     double orientation = 0;
@@ -167,13 +167,13 @@ TEST(PathToTwist, testErraticPath) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathToTwist::getTwist(path_msg, xPos, yPos, orientation, 10, true);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(0.903, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0.606, twist_msg.angular.z, 0.01);
 }
 
 // Case where position/orientation of robot is ahead of the path
-TEST(PathToTwist, testPathLag) {
+TEST(PathFinding, testPathLag) {
     double xPos        = 2.5;
     double yPos        = 0;
     double orientation = 0;
@@ -189,7 +189,7 @@ TEST(PathToTwist, testPathLag) {
     path_msg.poses = poses;
 
     geometry_msgs::Twist twist_msg =
-    PathToTwist::getTwist(path_msg, xPos, yPos, orientation, 10, true);
+    PathFinding::pathToTwist(path_msg, xPos, yPos, orientation, 10, true);
     EXPECT_NEAR(1.0, twist_msg.linear.x, 0.01);
     EXPECT_NEAR(0, twist_msg.angular.z, 0.01);
 }

@@ -1,4 +1,4 @@
-#include <PathToTwist.h>
+#include <PathFinding.h>
 #include <gtest/gtest.h>
 
 class PathFindingTest : public testing::Test {

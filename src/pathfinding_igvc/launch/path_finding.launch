@@ -1,7 +1,7 @@
 <launch>
 
     <!-- Setup pathfinding params -->
-    <node name="path_to_twist" pkg="path_to_twist_igvc" type="path_to_twist" output="screen">
+    <node name="path_finding" pkg="pathfinding_igvc" type="path_finding" output="screen">
         <rosparam param="num_poses"> 10 </rosparam>
         <rosparam param="base_frame"> "BASE_FRAME" </rosparam>
         <rosparam param="global_frame"> "GLOBAL_FRAME" </rosparam>

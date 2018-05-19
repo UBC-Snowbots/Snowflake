@@ -5,8 +5,8 @@
  * message to send to the robot
  */
 
-#ifndef PathToTwist_IGVC_PathToTwist_H
-#define PathToTwist_IGVC_PathToTwist_H
+#ifndef PATHFINDING_IGVC_PATHFINDING_H
+#define PATHFINDING_IGVC_PATHFINDING_H
 
 #include "geometry_msgs/Point.h"
 #include "geometry_msgs/Pose.h"
@@ -19,10 +19,10 @@
 #include <tf/transform_datatypes.h>
 #include <tf2_msgs/TFMessage.h>
 
-class PathToTwist {
+class PathFinding {
   public:
     // The constructor
-    PathToTwist(int argc, char** argv, std::string node_name);
+    PathFinding(int argc, char** argv, std::string node_name);
 
     /**
      * Produces a twist message for the robot from the path message and
@@ -34,7 +34,7 @@ class PathToTwist {
      * @param num_poses number of poses to process including initial robot pos
      * @return calculated path message
      */
-    static geometry_msgs::Twist getTwist(nav_msgs::Path path_msg,
+    static geometry_msgs::Twist pathToTwist(nav_msgs::Path path_msg,
                                             double x_pos,
                                             double y_pos,
                                             double orientation,
@@ -108,4 +108,4 @@ class PathToTwist {
     bool valid_cood; // Flag is set to true when we receive our first tf message
 };
 
-#endif // PathToTwist_IGVC_PathToTwist_H
+#endif // PATHFINDING_IGVC_PATHFINDING_H
