@@ -58,6 +58,12 @@ private:
      */
     void static addSpaceDown(nav_msgs::OccupancyGrid& grid);
 
+    /**
+     * Given an occupancy grid, updates origin by moving the origin
+     * one cell down and one cell left.
+     *
+     * @param grid
+     */
     void static updateOrigin(nav_msgs::OccupancyGrid& grid);
 };
 
