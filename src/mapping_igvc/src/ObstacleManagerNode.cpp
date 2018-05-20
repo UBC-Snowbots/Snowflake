@@ -27,7 +27,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "occ_grid_cell_size", occ_grid_cell_size, 1.0);
     SB_getParam(private_nh, "line_merging_max_iters", line_merging_max_iters, 10);
     SB_getParam(private_nh, "closest_line_max_iters", closest_line_max_iters, 15);
-
+    SB_getParam(private_nh, "occ_grid_frame", occ_grid_frame, std::string("map"));
 
     // Setup the Obstacle Manager
     obstacle_manager = ObstacleManager(
@@ -36,7 +36,8 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
             obstacle_inflation_buffer,
             occ_grid_cell_size,
             (unsigned int)line_merging_max_iters,
-            (unsigned int)closest_line_max_iters
+            (unsigned int)closest_line_max_iters,
+            occ_grid_frame
     );
 
     // Setup Subscriber(s)
@@ -49,10 +50,12 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
 }
 
 void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle::ConstPtr &cone_msg) {
+    // TODO (Part 4): Translate to `occ_grid_frame` before adding to obstacle manager
     obstacle_manager.addObstacle(*cone_msg);
 }
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
+    // TODO (Part 4): Translate to `occ_grid_frame` before adding to obstacle manager
     obstacle_manager.addObstacle(*line_msg);
 }
 

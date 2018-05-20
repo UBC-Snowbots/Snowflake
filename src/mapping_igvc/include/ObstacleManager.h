@@ -74,7 +74,8 @@ public:
             obstacle_inflation_buffer,
             occ_grid_cell_size,
             10,
-            15
+            15,
+            ""
     ) {};
 
     /**
@@ -97,23 +98,30 @@ public:
      * when comparing a new line to known lines. Larger values will make
      * this more accurate (ie. we are more likely to find the truly closest
      * known line), but slower
+     * @param occ_grid_frame the frame to set on the generated occ grid
      */
     explicit ObstacleManager(double cone_merging_tolerance,
                              double line_merging_tolerance,
                              double obstacle_inflation_buffer,
                              double occ_grid_cell_size,
                              unsigned int line_merging_max_iters,
-                             unsigned int closest_line_max_iters
+                             unsigned int closest_line_max_iters,
+                             std::string occ_grid_frame
     );
 
     /**
      * Add a given cone to our map of the world
+     *
+     * Assumes that given obstacle is already in frame of generated occ grid
+     *
      * @param cone the cone to add
      */
     void addObstacle(mapping_igvc::ConeObstacle cone);
 
     /**
      * Add a given line to our map of the world
+     *
+     * Assumes that given obstacle is already in frame of generated occ grid
      *
      * @param line_obstacle the line to add
      */
@@ -128,6 +136,8 @@ public:
 
     /**
      * Get all the cones in our world
+     *
+     * Assumes that given obstacle is already in frame of generated occ grid
      *
      * @return a list of all known cones in our world
      */
@@ -199,6 +209,13 @@ private:
     // to known splines. Larger values will make this more accurate (ie. we are
     // more likely to find the truly closest known spline), but slower
     unsigned int closest_spline_max_iters;
+
+    // the frame to set on the generated occ grid
+    std::string occ_grid_frame;
+
+    // the current occ grid seq. number
+    // we increment this every time we publish a new occ grid
+    unsigned int occ_grid_seq;
 
     // all known cones in our world
     std::vector<mapping_igvc::ConeObstacle> cones;

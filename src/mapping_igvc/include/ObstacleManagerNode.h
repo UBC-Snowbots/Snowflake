@@ -48,5 +48,8 @@ private:
     // Publisher for the generated occupancy grid
     ros::Publisher occ_grid_publisher;
 
+    // The frame the generated occupancy grid will be in
+    std::string occ_grid_frame;
+
 };
 #endif //MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H
