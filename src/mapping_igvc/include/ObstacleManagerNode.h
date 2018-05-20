@@ -37,7 +37,8 @@ private:
      */
     void lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr& line_msg);
 
-    // TODO: Comment here
+    // The principle class this node wraps, manages all obstacles and lets
+    // us generate a map containing all known obstacles
     ObstacleManager obstacle_manager;
 
     // Subscribers for obstacles

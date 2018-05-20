@@ -1,0 +1,45 @@
+<launch>
+
+    <node name="ObstacleManager" pkg="mapping_igvc" type="ObstacleManager" output="screen">
+
+        <!--
+            The minimum distance between the center of two cones for them to be
+            considered different from each other (and so not merged)
+        -->
+        <rosparam param="cone_merging_tolerance"> 0.3 </rosparam>
+
+        <!--
+            The minimum distance between two lines for them to be
+            considered different from each other (and so not merged)
+        -->
+        <rosparam param="line_merging_tolerance"> 0.3 </rosparam>
+
+        <!--
+            The buffer to add around each obstacle when generating the occupancy
+            grid for our currently known world
+        -->
+        <rosparam param="obstacle_inflation_buffer"> 1.0 </rosparam>
+
+        <!--
+            The size (length/width) of the cells in occupancy grids this class
+            generates. Raising this number will result in a higher resolution
+            generated occupancy grid, but will make things slower
+        -->
+        <rosparam param="occ_grid_cell_size"> 1.0 </rosparam>
+
+        <!--
+            The maximum number of iterations to use when merging splines
+            larger values will make line merging slower, but more accurate
+        -->
+        <rosparam param="line_merging_max_iters"> 10 </rosparam>
+
+        <!--
+            The maximum number of iterations to use when comparing a new spline
+            to known splines. Larger values will make this more accurate (ie. we are
+            more likely to find the truly closest known spline), but slower
+        -->
+        <rosparam param="closest_line_max_iters"> 15 </rosparam>
+
+    </node>
+
+</launch>

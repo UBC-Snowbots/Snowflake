@@ -20,13 +20,24 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
 
     // Get Params
     double cone_merging_tolerance, line_merging_tolerance, obstacle_inflation_buffer, occ_grid_cell_size;
+    int line_merging_max_iters, closest_line_max_iters;
     SB_getParam(private_nh, "cone_merging_tolerance", cone_merging_tolerance, 0.3);
     SB_getParam(private_nh, "line_merging_tolerance", line_merging_tolerance, 0.3);
     SB_getParam(private_nh, "obstacle_inflation_buffer", obstacle_inflation_buffer, 1.0);
     SB_getParam(private_nh, "occ_grid_cell_size", occ_grid_cell_size, 1.0);
+    SB_getParam(private_nh, "line_merging_max_iters", line_merging_max_iters, 10);
+    SB_getParam(private_nh, "closest_line_max_iters", closest_line_max_iters, 15);
+
 
     // Setup the Obstacle Manager
-    obstacle_manager = ObstacleManager(cone_merging_tolerance, line_merging_tolerance, obstacle_inflation_buffer, occ_grid_cell_size);
+    obstacle_manager = ObstacleManager(
+            cone_merging_tolerance,
+            line_merging_tolerance,
+            obstacle_inflation_buffer,
+            occ_grid_cell_size,
+            (unsigned int)line_merging_max_iters,
+            (unsigned int)closest_line_max_iters
+    );
 
     // Setup Subscriber(s)
     cone_obstacle_subscriber = nh.subscribe<mapping_igvc::ConeObstacle>("cone_obstacles", 10, &ObstacleManagerNode::coneObstacleCallback, this);
@@ -42,10 +53,6 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
 }
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
-    // Convert the polynomial to a spline
-    sb_geom::PolynomialSegment poly_segment(line_msg->coefficients, line_msg->x_min, line_msg->x_max);
-    sb_geom::Spline spline(poly_segment);
-
-    obstacle_manager.addObstacle(spline);
+    obstacle_manager.addObstacle(*line_msg);
 }
 

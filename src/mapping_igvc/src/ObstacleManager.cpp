@@ -25,11 +25,16 @@ using namespace sb_geom;
 ObstacleManager::ObstacleManager(double cone_merging_tolerance,
                                  double line_merging_tolerance,
                                  double obstacle_inflation_buffer,
-                                 double occ_grid_cell_size) :
+                                 double occ_grid_cell_size,
+                                 unsigned int line_merging_max_iters,
+                                 unsigned int closest_line_max_iters
+) :
 cone_merging_tolerance(cone_merging_tolerance),
 line_merging_tolerance(line_merging_tolerance),
 obstacle_inflation_buffer(obstacle_inflation_buffer),
-occ_grid_cell_size(occ_grid_cell_size)
+occ_grid_cell_size(occ_grid_cell_size),
+spline_merging_max_iters(line_merging_max_iters),
+closest_spline_max_iters(closest_line_max_iters)
 {}
 
 std::vector<mapping_igvc::ConeObstacle> ObstacleManager::getConeObstacles() {
@@ -42,6 +47,8 @@ std::vector<sb_geom::Spline> ObstacleManager::getLineObstacles() {
 
 void ObstacleManager::addObstacle(mapping_igvc::ConeObstacle cone) {
 
+    // NOTE: This is likely where obstacle pruning (of obstacles a given
+    // distance away from us) would occur
 
     // Find the distance to every known cone from this one
     std::vector<std::pair<double,int>> distances;
@@ -53,7 +60,8 @@ void ObstacleManager::addObstacle(mapping_igvc::ConeObstacle cone) {
         distances.emplace_back(std::make_pair(distance, known_cone_index));
     }
 
-    // TODO: Consider using the radius as further criteria for merging
+    // NOTE: In the future we could use the cone radius as
+    // further criteria for merging
 
     // Find the closest known cone (min element by distance)
     auto min_element = std::min_element(distances.begin(), distances.end(),
@@ -80,18 +88,25 @@ void ObstacleManager::addObstacle(mapping_igvc::ConeObstacle cone) {
     }
 }
 
-// TODO: The `addObstacle` functions seem pretty similar.... maybe we could apply DRY here?
-void ObstacleManager::addObstacle(Spline line_obstacle) {
+void ObstacleManager::addObstacle(mapping_igvc::LineObstacle line_obstacle) {
+    // Convert the polynomial to a spline
+    sb_geom::PolynomialSegment poly_segment(line_obstacle.coefficients, line_obstacle.x_min, line_obstacle.x_max);
+    sb_geom::Spline spline(poly_segment);
 
-    // TODO: maybe prune obstacles outside a given distance from us? (would likely improve performance of this function)
+    addObstacle(spline);
+}
+
+void ObstacleManager::addObstacle(Spline spline) {
+
+    // NOTE: This is likely where obstacle pruning (of obstacles a given
+    // distance away from us) would occur
 
     // Find the distance from this line_obstacle to every other known line_obstacle
     // (in parallel)
     std::vector<std::pair<double, int>> distances(lines.size());
     #pragma omp parallel for
     for (int line_index = 0; line_index < lines.size(); line_index++) {
-        // TODO: `max_iters` should be a class member we can change (of `ObstacleManager`)
-        double distance = minDistanceBetweenSplines(lines[line_index], line_obstacle, 15);
+        double distance = minDistanceBetweenSplines(lines[line_index], spline, closest_spline_max_iters);
         distances[line_index] = std::make_pair(distance, line_index);
     }
 
@@ -109,17 +124,17 @@ void ObstacleManager::addObstacle(Spline line_obstacle) {
 
         if (distance_to_closest_known_line < line_merging_tolerance){
             // Update our current knowledge of the line_obstacle based on the new line_obstacle
-            Spline merged_line = updateLineWithNewLine(lines[closest_known_line_index], line_obstacle);
+            Spline merged_line = updateLineWithNewLine(lines[closest_known_line_index], spline);
             // Overwrite the old line_obstacle with our new merged line_obstacle
             lines[closest_known_line_index] = merged_line;
         } else {
             // The closest line_obstacle to this one isn't close enough to merge into,
             // so just add this line_obstacle as a new line_obstacle
-            lines.emplace_back(Spline(line_obstacle));
+            lines.emplace_back(Spline(spline));
         }
     } else {
         // We don't know about any lines yet, so just add this one as it's own line_obstacle
-        lines.emplace_back(Spline(line_obstacle));
+        lines.emplace_back(Spline(spline));
     }
 }
 
@@ -127,11 +142,10 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
                                               Spline new_line) {
 
     // Find the closest points on the known line to the start and end of the new line
-    // TODO: `max_iters` should be a class member we can change (of `ObstacleManager`)
     double closest_point_to_start =
-            findClosestPointOnSplineToPoint(current_line, new_line(0), 10);
+            findClosestPointOnSplineToPoint(current_line, new_line(0), spline_merging_max_iters);
     double closest_point_to_end =
-            findClosestPointOnSplineToPoint(current_line, new_line(1), 10);
+            findClosestPointOnSplineToPoint(current_line, new_line(1), spline_merging_max_iters);
     double min_u = std::min(closest_point_to_start, closest_point_to_end);
     double max_u = std::max(closest_point_to_start, closest_point_to_end);
 
@@ -269,8 +283,10 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
         occ_grid.data = std::vector<int8_t>(occ_grid.info.width * occ_grid.info.height);
         std::fill(occ_grid.data.begin(), occ_grid.data.end(), 0);
 
+        // NOTE: If there are performance issues, more intelligently inflating
+        // obstacles here would be a good place to start
+
         // Inflate the obstacles (and thus mark sections of the grid as occupied)
-        // TODO: If this is slow, we may want to more intelligently inflate lines and cones
         for (auto& point: occupied_points){
             inflatePoint(occ_grid, point, obstacle_inflation_buffer);
         }
