@@ -30,10 +30,7 @@ OccupancyGridAdapter::convertFromMapToGridPoint(geometry_msgs::Point point) {
     int row = point_in_grid_frame.y / this->_grid_info.resolution;
 
     col = col < 0 ? col -1 : col;
-//    col = col >= this->_grid_info.width ? this->_grid_info.width - 1 : col;
-
     row = row < 0 ? row - 1 : row;
-//    row = row >= this->_grid_info.height ? this->_grid_info.height - 1 : row;
 
     return AStar::GridPoint(col, row);
 }
