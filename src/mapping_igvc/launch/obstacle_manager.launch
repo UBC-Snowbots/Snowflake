@@ -40,6 +40,14 @@
         -->
         <rosparam param="closest_line_max_iters"> 15 </rosparam>
 
+        <!--
+            The frame of the generated occupancy grid. Obstacles will be 
+            translated into this frame before being added to the occupancy grid
+        -->
+        <rosparam param="occ_grid_frame"> "odom_combined" </rosparam>
+
+
+
     </node>
 
 </launch>
