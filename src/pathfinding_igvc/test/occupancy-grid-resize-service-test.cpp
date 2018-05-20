@@ -75,8 +75,8 @@ TEST(OccupancyGridResizer, TestAddSpaceAroundGridWithAngle) {
 
     EXPECT_EQ(map_meta_data.width + 2, grid.info.width);
     EXPECT_EQ(map_meta_data.height + 2, grid.info.height);
-    EXPECT_FLOAT_EQ(3.0 - 2 * cos(M_PI/4), grid.info.origin.position.x);
-    EXPECT_FLOAT_EQ(3.0 - 2 * sin(M_PI/4), grid.info.origin.position.y);
+    EXPECT_FLOAT_EQ(3.0 - 2 * cos(M_PI/4) + 2 * sin(M_PI/4), grid.info.origin.position.x);
+    EXPECT_FLOAT_EQ(3.0 - 2 * sin(M_PI/4) - 2 * cos(M_PI/4), grid.info.origin.position.y);
 
     std::vector<int8_t> expected_data = {
             AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,

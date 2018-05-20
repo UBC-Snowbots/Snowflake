@@ -72,6 +72,65 @@ TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGrid) {
     EXPECT_EQ(2, goal_on_grid.row);
 }
 
+TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGridWithAngle) {
+    /* origin of OccupancyGrid */
+    // initialize origin of occupancy grid
+    geometry_msgs::Pose origin =
+            PathFinderTestUtils::constructPose(3.0, 3.0, M_PI/6);
+
+    /* map_meta_data of OccupancyGrid */
+    // initialize map_meta_data
+    nav_msgs::MapMetaData map_meta_data;
+    map_meta_data.resolution = 2.0;
+    map_meta_data.width      = 2;
+    map_meta_data.height     = 3;
+    // add origin to map_meta_data
+    map_meta_data.origin = origin;
+
+    /* OccupancyGrid */
+    // initialize occupancy grid
+    nav_msgs::OccupancyGrid grid;
+    // set map_meta_data
+    grid.info = map_meta_data;
+    grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
+
+    /* Starting point in map frame */
+    geometry_msgs::Point start;
+    start.x = 4.8;
+    start.y = 7.9;
+
+    /* Goal point in map frame */
+    geometry_msgs::Point goal;
+    goal.x = 9999;
+    goal.y = 6.3;
+
+    /* Declaration of starting and goal point in grid frame */
+    AStar::GridPoint start_on_grid;
+    AStar::GridPoint goal_on_grid;
+
+    /* Function being tested */
+    PathFinder::processGridAndGetStartAndGoalOnGrid(grid, start, goal, start_on_grid, goal_on_grid);
+
+    /* Verify that grid has been resized */
+    EXPECT_EQ(map_meta_data.width + 2, grid.info.width);
+    EXPECT_EQ(map_meta_data.height + 2, grid.info.height);
+
+    float expected_origin_x = map_meta_data.origin.position.x - map_meta_data.resolution * cos(M_PI/6) + map_meta_data.resolution * sin(M_PI/6);
+    float expected_origin_y = map_meta_data.origin.position.y - map_meta_data.resolution * sin(M_PI/6) - map_meta_data.resolution * cos(M_PI/6);
+    EXPECT_FLOAT_EQ(expected_origin_x, grid.info.origin.position.x);
+    EXPECT_FLOAT_EQ(expected_origin_y, grid.info.origin.position.y);
+
+    std::vector<int8_t> expected_data = {
+            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,
+            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
+            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
+            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
+            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,
+    };
+
+    EXPECT_EQ(expected_data, grid.data);
+}
+
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

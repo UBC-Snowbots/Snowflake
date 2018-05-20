@@ -58,7 +58,7 @@ private:
      */
     void static addSpaceDown(nav_msgs::OccupancyGrid& grid);
 
-    void static updateInfo(nav_msgs::OccupancyGrid& grid);
+    void static updateOrigin(nav_msgs::OccupancyGrid& grid);
 };
 
 #endif // PATHFINDING_IGVC_OCCUPANCYGRIDRESIZESERVICE_H

@@ -12,7 +12,7 @@ void OccupancyGridResizer::addSpaceAroundGrid(nav_msgs::OccupancyGrid& grid) {
     addSpaceUp(grid);
     addSpaceDown(grid);
 
-    updateInfo(grid);
+    updateOrigin(grid);
 }
 
 void OccupancyGridResizer::addSpaceLeft(nav_msgs::OccupancyGrid& grid) {
@@ -24,9 +24,6 @@ void OccupancyGridResizer::addSpaceLeft(nav_msgs::OccupancyGrid& grid) {
     }
 
     grid.info.width++;
-////    grid.info.origin.position.x -= grid.info.resolution;
-//    AStar::GridPoint new_origin(-1, 0);
-//    grid.info.origin.position = OccupancyGridAdapter(grid.info).convertFromGridToMapPoint(new_origin);
 }
 
 void OccupancyGridResizer::addSpaceRight(nav_msgs::OccupancyGrid& grid) {
@@ -50,17 +47,9 @@ void OccupancyGridResizer::addSpaceDown(nav_msgs::OccupancyGrid& grid) {
     grid.data.insert(grid.data.begin(), grid.info.width, AStar::GRID_FREE);
 
     grid.info.height++;
-////    grid.info.origin.position.y -= grid.info.resolution;
-//    AStar::GridPoint new_origin(0, -1);
-//    grid.info.origin.position = OccupancyGridAdapter(grid.info).convertFromGridToMapPoint(new_origin);
 }
 
-void OccupancyGridResizer::updateInfo(nav_msgs::OccupancyGrid& grid) {
-//    grid.info.width += 2;
-//    grid.info.height += 2;
-
-    AStar::GridPoint new_origin(-1, 0);
-    grid.info.origin.position.x = OccupancyGridAdapter(grid.info).convertFromGridToMapPoint(new_origin).x;
-    new_origin = AStar::GridPoint(0, -1);
-    grid.info.origin.position.y = OccupancyGridAdapter(grid.info).convertFromGridToMapPoint(new_origin).y;
+void OccupancyGridResizer::updateOrigin(nav_msgs::OccupancyGrid& grid) {
+    AStar::GridPoint new_origin(-1, -1);
+    grid.info.origin.position = OccupancyGridAdapter(grid.info).convertFromGridToMapPoint(new_origin);
 }
