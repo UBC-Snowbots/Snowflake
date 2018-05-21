@@ -46,6 +46,10 @@
         -->
         <rosparam param="occ_grid_frame"> "odom_combined" </rosparam>
 
+        <!--
+            The rate (in hz) to publish the generated occupancy grid at
+        -->
+        <rosparam param="occ_grid_generation_rate"> 1.0 </rosparam>
 
 
     </node>
