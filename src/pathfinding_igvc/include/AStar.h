@@ -20,7 +20,7 @@ class AStar {
     struct GridPoint {
         int col;
         int row;
-        GridPoint(int c = 0, int r = 0) : col(c), row(r) {};
+        GridPoint(int r = 0, int c = 0) : col(c), row(r) {};
     };
 
     typedef std::pair<double, std::pair<int, int>> GridPointWithScore;
@@ -28,7 +28,7 @@ class AStar {
     struct Cell
     {
         // parent of cell
-        GridPoint parent = GridPoint(-1,-1);
+        GridPoint parent;
         // f = g + h
         double f = FLT_MAX, g = FLT_MAX, h = FLT_MAX;
     };

@@ -138,7 +138,6 @@ std::stack<AStar::GridPoint> AStar::aStarSearch() {
         }
     }
 
-//    return nav_msgs::Path();
     return std::stack<GridPoint>();
 }
 
@@ -149,8 +148,7 @@ bool AStar::processSuccessor(GridPoint successor, GridPoint parent) {
     // current successor
     if (isDestination(successor.row, successor.col)) {
         // Set the Parent of the destination cell
-        this->_cell_details[successor.row][successor.col].parent.row = parent.row;
-        this->_cell_details[successor.row][successor.col].parent.col = parent.col;
+        this->_cell_details[successor.row][successor.col].parent = parent;
         return true;
     }
         // If the successor is already on the closed
@@ -179,8 +177,7 @@ bool AStar::processSuccessor(GridPoint successor, GridPoint parent) {
             this->_cell_details[successor.row][successor.col].f = f_new;
             this->_cell_details[successor.row][successor.col].g = g_new;
             this->_cell_details[successor.row][successor.col].h = h_new;
-            this->_cell_details[successor.row][successor.col].parent.row = parent.row;
-            this->_cell_details[successor.row][successor.col].parent.col = parent.col;
+            this->_cell_details[successor.row][successor.col].parent = parent;
         }
     }
 
@@ -199,13 +196,16 @@ std::stack<AStar::GridPoint> AStar::tracePath()
     while (!(this->_cell_details[row][col].parent.row == row
              && this->_cell_details[row][col].parent.col == col ))
     {
-        path.push( GridPoint(col, row) );
+        path.push(GridPoint(row,col));
 
-        row = this->_cell_details[row][col].parent.row;
-        col = this->_cell_details[row][col].parent.col;
+        int temp_row = this->_cell_details[row][col].parent.row;
+        int temp_col = this->_cell_details[row][col].parent.col;
+
+        row = temp_row;
+        col = temp_col;
     }
 
-    path.push( GridPoint(col, row) );
+    path.push(GridPoint(row,col));
 
     return path;
 }
@@ -221,9 +221,9 @@ bool AStar::isDestination(int row, int col) {
 // A Utility Function to calculate the 'h' heuristics.
 double AStar::calculateHValue(int row, int col) {
     // Return using the diagonal distance formula
-    return std::max(
-            abs(row - this->_goal.row),
-            abs(col - this->_goal.col)
+    return sqrt(
+            pow(row - this->_goal.row, 2) +
+            pow(col - this->_goal.col, 2)
     );
 }
 

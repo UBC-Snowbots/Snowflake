@@ -93,6 +93,9 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(path-finder-utils-test test/path-finder-utils-test.cpp include/PathFinder.h)
     target_link_libraries(path-finder-utils-test ${catkin_LIBRARIES})
 
+    catkin_add_gtest(astar-test test/astar-test.cpp src/AStar.cpp include/AStar.h)
+    target_link_libraries(astar-test ${catkin_LIBRARIES})
+
     catkin_add_gtest(path-constructor-test test/path-constructor-test.cpp
       src/PathConstructor.cpp include/PathConstructor.h
       src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
