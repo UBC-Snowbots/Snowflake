@@ -30,8 +30,7 @@ class FrameTransformer {
      * @param position position of the grid frame expressed in map frame
      * @return FrameTransformer
      */
-    FrameTransformer(tf::Quaternion rotation,
-                                                   tf::Vector3 position);
+    FrameTransformer(tf::Quaternion rotation, tf::Vector3 position);
 
     /**
      * Takes a point represented in map frame and returns its position in grid
@@ -40,7 +39,8 @@ class FrameTransformer {
      * @param point a point represented in map frame
      * @return point represented in grid frame
      */
-    geometry_msgs::Point transformFromMapToGridFrame(geometry_msgs::Point point);
+    geometry_msgs::Point
+    transformFromMapToGridFrame(geometry_msgs::Point point);
 
     /**
      * Takes a point represented in grid frame and returns its position in map
@@ -49,7 +49,8 @@ class FrameTransformer {
      * @param point a point represented in grid frame
      * @return point represented in map frame
      */
-    geometry_msgs::Point transformFromGridToMapFrame(geometry_msgs::Point point);
+    geometry_msgs::Point
+    transformFromGridToMapFrame(geometry_msgs::Point point);
 };
 
 #endif // PATHFINDING_IGVC_FRAMETRANSFORMER_H

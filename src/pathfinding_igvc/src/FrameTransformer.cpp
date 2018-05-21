@@ -7,8 +7,8 @@
 #include <FrameTransformer.h>
 
 FrameTransformer::FrameTransformer(tf::Quaternion rotation,
-                                         tf::Vector3 position) {
-    this->_transformation_to_map = tf::Transform(rotation, position);
+                                   tf::Vector3 position) {
+    this->_transformation_to_map  = tf::Transform(rotation, position);
     this->_transformation_to_grid = this->_transformation_to_map.inverse();
 }
 

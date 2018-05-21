@@ -4,8 +4,8 @@
  * Description: Unit tests for frame transformer
  */
 
-#include <FrameTransformer.h>
 #include "PathFinderTestUtils.h"
+#include <FrameTransformer.h>
 #include <PathFinderUtils.h>
 #include <gtest/gtest.h>
 
@@ -30,8 +30,7 @@ TEST(FrameTransformer, TestGetAngleBetweenPoints) {
     point.z = 0.0;
 
     geometry_msgs::Point point_on_grid =
-    FrameTransformer(rotation, position)
-    .transformFromMapToGridFrame(point);
+    FrameTransformer(rotation, position).transformFromMapToGridFrame(point);
 
     EXPECT_FLOAT_EQ(point_on_grid.x, point.x - origin.position.x);
     EXPECT_FLOAT_EQ(point_on_grid.y, point.y - origin.position.y);
@@ -58,8 +57,7 @@ TEST(FrameTransformer, TestChangeOfFrameWith90Rotation) {
     point.z = 0.0;
 
     geometry_msgs::Point point_on_grid =
-    FrameTransformer(rotation, position)
-    .transformFromMapToGridFrame(point);
+    FrameTransformer(rotation, position).transformFromMapToGridFrame(point);
 
     EXPECT_FLOAT_EQ(point_on_grid.x, 1.0);
     EXPECT_FLOAT_EQ(point_on_grid.y, 3.0);
@@ -86,8 +84,7 @@ TEST(FrameTransformer, TestChangeOfFrameWith30Rotation) {
     point.z = 0.0;
 
     geometry_msgs::Point point_on_grid =
-    FrameTransformer(rotation, position)
-    .transformFromMapToGridFrame(point);
+    FrameTransformer(rotation, position).transformFromMapToGridFrame(point);
 
     EXPECT_NEAR(point_on_grid.x, 2.0, 0.01);
     EXPECT_NEAR(point_on_grid.y, 0.0, 0.01);
@@ -124,7 +121,7 @@ TEST(FrameTransformer, TestChangeOfFrameWith45RotationToMap) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, M_PI / 4);
+    PathFinderTestUtils::constructPose(3.0, 3.0, M_PI / 4);
 
     tf::Quaternion rotation;
     tf::Vector3 position;
@@ -140,18 +137,20 @@ TEST(FrameTransformer, TestChangeOfFrameWith45RotationToMap) {
     point_on_grid.y = -2.0;
 
     geometry_msgs::Point point_on_map =
-            FrameTransformer(rotation, position)
-                    .transformFromGridToMapFrame(point_on_grid);
+    FrameTransformer(rotation, position)
+    .transformFromGridToMapFrame(point_on_grid);
 
-    EXPECT_FLOAT_EQ(3.0 - 2 * cos(M_PI/4) + 2 * sin(M_PI/4), point_on_map.x);
-    EXPECT_FLOAT_EQ(3.0 - 2 * sin(M_PI/4) - 2 * cos(M_PI/4), point_on_map.y);
+    EXPECT_FLOAT_EQ(3.0 - 2 * cos(M_PI / 4) + 2 * sin(M_PI / 4),
+                    point_on_map.x);
+    EXPECT_FLOAT_EQ(3.0 - 2 * sin(M_PI / 4) - 2 * cos(M_PI / 4),
+                    point_on_map.y);
 }
 
 TEST(FrameTransformer, TestChangeOfFrameWith45RotationToMapWithBothXAndY) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, M_PI / 6);
+    PathFinderTestUtils::constructPose(3.0, 3.0, M_PI / 6);
 
     tf::Quaternion rotation;
     tf::Vector3 position;
@@ -167,11 +166,13 @@ TEST(FrameTransformer, TestChangeOfFrameWith45RotationToMapWithBothXAndY) {
     point_on_grid.y = -2.0;
 
     geometry_msgs::Point point_on_map =
-            FrameTransformer(rotation, position)
-                    .transformFromGridToMapFrame(point_on_grid);
+    FrameTransformer(rotation, position)
+    .transformFromGridToMapFrame(point_on_grid);
 
-    EXPECT_FLOAT_EQ(3.0 - 2 * cos(M_PI/6) + 2 * sin(M_PI/6), point_on_map.x);
-    EXPECT_FLOAT_EQ(3.0 - 2 * sin(M_PI/6) - 2 * cos(M_PI/6), point_on_map.y);
+    EXPECT_FLOAT_EQ(3.0 - 2 * cos(M_PI / 6) + 2 * sin(M_PI / 6),
+                    point_on_map.x);
+    EXPECT_FLOAT_EQ(3.0 - 2 * sin(M_PI / 6) - 2 * cos(M_PI / 6),
+                    point_on_map.y);
 }
 
 int main(int argc, char** argv) {

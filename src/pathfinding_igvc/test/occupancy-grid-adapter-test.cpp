@@ -4,8 +4,8 @@
  * Description: Unit tests for occupancy grid adapter
  */
 
-#include <OccupancyGridAdapter.h>
 #include "PathFinderTestUtils.h"
+#include <OccupancyGridAdapter.h>
 #include <gtest/gtest.h>
 
 TEST(OccupancyGridAdapter, TestIndexOfPointInGrid) {
@@ -24,8 +24,7 @@ TEST(OccupancyGridAdapter, TestIndexOfPointInGrid) {
     map_meta_data.origin = origin;
 
     /* OccupancyGridAdapter */
-    OccupancyGridAdapter adapter =
-    OccupancyGridAdapter(map_meta_data);
+    OccupancyGridAdapter adapter = OccupancyGridAdapter(map_meta_data);
 
     geometry_msgs::Point point;
     point.x = 6.2;

@@ -26,7 +26,7 @@ class OccupancyGridResizer {
      */
     void static addSpaceAroundGrid(nav_msgs::OccupancyGrid& grid);
 
-private:
+  private:
     /**
      * Given an occupancy grid, adds an additional column to the left
      * of the grid. The grid's origin is also moved to the left by one cell.

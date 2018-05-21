@@ -14,7 +14,7 @@
 
 class AStar {
   public:
-    static const int GRID_FREE = 0;
+    static const int GRID_FREE     = 0;
     static const int GRID_OCCUPIED = 100;
 
     struct GridPoint {

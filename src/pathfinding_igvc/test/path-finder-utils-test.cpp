@@ -4,9 +4,9 @@
  * Description: Unit tests for path finder utils class
  */
 
+#include "PathFinderTestUtils.h"
 #include <PathFinderUtils.h>
 #include <gtest/gtest.h>
-#include "PathFinderTestUtils.h"
 
 TEST(PathFinderUtils, TestGetAngleBetweenPoints) {
     geometry_msgs::Point from;
@@ -24,12 +24,11 @@ TEST(PathFinderUtils, TestGetAngleBetweenPoints) {
     EXPECT_FLOAT_EQ(M_PI + M_PI / 6, q.getAngle());
 }
 
-
 TEST(PathFinderUtils, TestFitPointInsideGridInNegativeRow) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -52,7 +51,7 @@ TEST(PathFinderUtils, TestFitPointInsideGridInPositiveRow) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -68,14 +67,14 @@ TEST(PathFinderUtils, TestFitPointInsideGridInPositiveRow) {
     PathFinderUtils::fitPointInsideGrid(map_meta_data, grid_point);
 
     EXPECT_EQ(grid_point.col, 3);
-    EXPECT_EQ(grid_point.row, map_meta_data.height-1);
+    EXPECT_EQ(grid_point.row, map_meta_data.height - 1);
 }
 
 TEST(PathFinderUtils, TestFitPointInsideGridInNegativeCol) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -98,7 +97,7 @@ TEST(PathFinderUtils, TestFitPointInsideGridInPositiveCol) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -121,7 +120,7 @@ TEST(PathFinderUtils, TestFitPointInsideGridInNegativeColNegativeRow) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -144,7 +143,7 @@ TEST(PathFinderUtils, TestFitPointInsideGridInPositiveXPositiveY) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData

@@ -35,8 +35,8 @@ class PathFinder {
      * @return shortest path from start to goal
      */
     static nav_msgs::Path calculatePath(geometry_msgs::Point start,
-                                  geometry_msgs::Point goal,
-                                  nav_msgs::OccupancyGrid grid);
+                                        geometry_msgs::Point goal,
+                                        nav_msgs::OccupancyGrid grid);
 
     /**
      * Takes in a grid and adds space around the grid if the goal is not
@@ -52,7 +52,12 @@ class PathFinder {
      * @param start_on_grid transformation of start point into occupancy grid
      * @param goal_on_grid transformation of goal point into occupancy grid
      */
-    static void processGridAndGetStartAndGoalOnGrid(nav_msgs::OccupancyGrid &grid, geometry_msgs::Point start, geometry_msgs::Point goal, AStar::GridPoint &start_on_grid, AStar::GridPoint &goal_on_grid);
+    static void
+    processGridAndGetStartAndGoalOnGrid(nav_msgs::OccupancyGrid& grid,
+                                        geometry_msgs::Point start,
+                                        geometry_msgs::Point goal,
+                                        AStar::GridPoint& start_on_grid,
+                                        AStar::GridPoint& goal_on_grid);
 };
 
 #endif // PATHFINDING_IGVC_PATHFINDER_H

@@ -51,5 +51,6 @@ void OccupancyGridResizer::addSpaceDown(nav_msgs::OccupancyGrid& grid) {
 
 void OccupancyGridResizer::updateOrigin(nav_msgs::OccupancyGrid& grid) {
     AStar::GridPoint new_origin(-1, -1);
-    grid.info.origin.position = OccupancyGridAdapter(grid.info).convertFromGridToMapPoint(new_origin);
+    grid.info.origin.position =
+    OccupancyGridAdapter(grid.info).convertFromGridToMapPoint(new_origin);
 }

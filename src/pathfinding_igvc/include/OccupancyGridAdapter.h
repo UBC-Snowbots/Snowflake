@@ -15,7 +15,7 @@
 
 class OccupancyGridAdapter {
     nav_msgs::MapMetaData _grid_info;
-    FrameTransformer *_frame_transformer;
+    FrameTransformer* _frame_transformer;
 
   public:
     /**

@@ -4,9 +4,9 @@
  * Description: Unit tests for occupancy grid resizer
  */
 
+#include "PathFinderTestUtils.h"
 #include <OccupancyGridAdapter.h>
 #include <OccupancyGridResizer.h>
-#include "PathFinderTestUtils.h"
 #include <gtest/gtest.h>
 
 TEST(OccupancyGridResizer, TestAddSpaceAroundGrid) {
@@ -35,15 +35,19 @@ TEST(OccupancyGridResizer, TestAddSpaceAroundGrid) {
 
     EXPECT_EQ(map_meta_data.width + 2, grid.info.width);
     EXPECT_EQ(map_meta_data.height + 2, grid.info.height);
-    EXPECT_FLOAT_EQ(map_meta_data.origin.position.x - map_meta_data.resolution, grid.info.origin.position.x);
-    EXPECT_FLOAT_EQ(map_meta_data.origin.position.y - map_meta_data.resolution, grid.info.origin.position.y);
+    EXPECT_FLOAT_EQ(map_meta_data.origin.position.x - map_meta_data.resolution,
+                    grid.info.origin.position.x);
+    EXPECT_FLOAT_EQ(map_meta_data.origin.position.y - map_meta_data.resolution,
+                    grid.info.origin.position.y);
 
     std::vector<int8_t> expected_data = {
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED, AStar::GRID_FREE,     AStar::GRID_FREE,
+    AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
+    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_FREE,
     };
 
     EXPECT_EQ(expected_data, grid.data);
@@ -53,7 +57,7 @@ TEST(OccupancyGridResizer, TestAddSpaceAroundGridWithAngle) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, M_PI / 4);
+    PathFinderTestUtils::constructPose(3.0, 3.0, M_PI / 4);
 
     /* map_meta_data of OccupancyGrid */
     // initialize map_meta_data
@@ -75,15 +79,19 @@ TEST(OccupancyGridResizer, TestAddSpaceAroundGridWithAngle) {
 
     EXPECT_EQ(map_meta_data.width + 2, grid.info.width);
     EXPECT_EQ(map_meta_data.height + 2, grid.info.height);
-    EXPECT_FLOAT_EQ(3.0 - 2 * cos(M_PI/4) + 2 * sin(M_PI/4), grid.info.origin.position.x);
-    EXPECT_FLOAT_EQ(3.0 - 2 * sin(M_PI/4) - 2 * cos(M_PI/4), grid.info.origin.position.y);
+    EXPECT_FLOAT_EQ(3.0 - 2 * cos(M_PI / 4) + 2 * sin(M_PI / 4),
+                    grid.info.origin.position.x);
+    EXPECT_FLOAT_EQ(3.0 - 2 * sin(M_PI / 4) - 2 * cos(M_PI / 4),
+                    grid.info.origin.position.y);
 
     std::vector<int8_t> expected_data = {
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_OCCUPIED,
+    AStar::GRID_OCCUPIED, AStar::GRID_FREE,     AStar::GRID_FREE,
+    AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
+    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE,
+    AStar::GRID_FREE,     AStar::GRID_FREE,
     };
 
     EXPECT_EQ(expected_data, grid.data);

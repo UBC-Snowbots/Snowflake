@@ -12,32 +12,38 @@
 #include <PathFinder.h>
 
 nav_msgs::Path PathFinder::calculatePath(geometry_msgs::Point start,
-                                   geometry_msgs::Point goal,
-                                   nav_msgs::OccupancyGrid grid) {
+                                         geometry_msgs::Point goal,
+                                         nav_msgs::OccupancyGrid grid) {
     AStar::GridPoint goal_on_grid;
     AStar::GridPoint start_on_grid;
-    processGridAndGetStartAndGoalOnGrid(grid, start, goal, start_on_grid, goal_on_grid);
+    processGridAndGetStartAndGoalOnGrid(
+    grid, start, goal, start_on_grid, goal_on_grid);
 
     std::stack<AStar::GridPoint> points =
     AStar().run(grid, start_on_grid, goal_on_grid);
-    return PathConstructor(
-           OccupancyGridAdapter(grid.info))
+    return PathConstructor(OccupancyGridAdapter(grid.info))
     .constructPath(points);
 }
 
-void PathFinder::processGridAndGetStartAndGoalOnGrid(nav_msgs::OccupancyGrid &grid, geometry_msgs::Point start, geometry_msgs::Point goal, AStar::GridPoint &start_on_grid, AStar::GridPoint &goal_on_grid) {
-    AStar::GridPoint initial_goal_on_grid = OccupancyGridAdapter(grid.info).convertFromMapToGridPoint(goal);
-    bool grid_needs_resizing = !PathFinderUtils::isPointInsideGrid(grid.info, initial_goal_on_grid);
-    if (grid_needs_resizing) {
-        OccupancyGridResizer::addSpaceAroundGrid(grid);
-    }
+void PathFinder::processGridAndGetStartAndGoalOnGrid(
+nav_msgs::OccupancyGrid& grid,
+geometry_msgs::Point start,
+geometry_msgs::Point goal,
+AStar::GridPoint& start_on_grid,
+AStar::GridPoint& goal_on_grid) {
+    AStar::GridPoint initial_goal_on_grid =
+    OccupancyGridAdapter(grid.info).convertFromMapToGridPoint(goal);
+    bool grid_needs_resizing =
+    !PathFinderUtils::isPointInsideGrid(grid.info, initial_goal_on_grid);
+    if (grid_needs_resizing) { OccupancyGridResizer::addSpaceAroundGrid(grid); }
 
-    OccupancyGridAdapter occupancy_grid_adapter = OccupancyGridAdapter(grid.info);
+    OccupancyGridAdapter occupancy_grid_adapter =
+    OccupancyGridAdapter(grid.info);
     start_on_grid = occupancy_grid_adapter.convertFromMapToGridPoint(start);
-    goal_on_grid =
-            occupancy_grid_adapter.convertFromMapToGridPoint(goal);
+    goal_on_grid  = occupancy_grid_adapter.convertFromMapToGridPoint(goal);
 
-    bool point_needs_fitting = !PathFinderUtils::isPointInsideGrid(grid.info, goal_on_grid);
+    bool point_needs_fitting =
+    !PathFinderUtils::isPointInsideGrid(grid.info, goal_on_grid);
     if (point_needs_fitting) {
         PathFinderUtils::fitPointInsideGrid(grid.info, goal_on_grid);
     }

@@ -15,8 +15,8 @@ OccupancyGridAdapter::OccupancyGridAdapter(nav_msgs::MapMetaData info) {
     tf::Quaternion origin_quaternion;
     tf::quaternionMsgToTF(info.origin.orientation, origin_quaternion);
 
-    this->_frame_transformer = new FrameTransformer(
-    origin_quaternion, origin_position);
+    this->_frame_transformer =
+    new FrameTransformer(origin_quaternion, origin_position);
     this->_grid_info = info;
 }
 
@@ -29,7 +29,7 @@ OccupancyGridAdapter::convertFromMapToGridPoint(geometry_msgs::Point point) {
     int col = point_in_grid_frame.x / this->_grid_info.resolution;
     int row = point_in_grid_frame.y / this->_grid_info.resolution;
 
-    col = col < 0 ? col -1 : col;
+    col = col < 0 ? col - 1 : col;
     row = row < 0 ? row - 1 : row;
 
     return AStar::GridPoint(col, row);

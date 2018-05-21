@@ -4,8 +4,8 @@
  * Description: Unit tests for path constructor
  */
 
-#include <PathConstructor.h>
 #include "PathFinderTestUtils.h"
+#include <PathConstructor.h>
 #include <gtest/gtest.h>
 
 TEST(PathConstructor, TestConstructPath) {
@@ -39,8 +39,7 @@ TEST(PathConstructor, TestConstructPath) {
     points.push(point2);
 
     nav_msgs::Path path =
-    PathConstructor(occupancy_grid_adapter)
-    .constructPath(points);
+    PathConstructor(occupancy_grid_adapter).constructPath(points);
 
     tf::Quaternion q1;
     tf::quaternionMsgToTF(path.poses[0].pose.orientation, q1);
