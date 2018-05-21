@@ -1,7 +1,7 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 14th 2018
- * Description: Implementation of occupancy grid resize service
+ * Description: Implementation of occupancy grid resizer
  */
 
 #include <OccupancyGridResizer.h>

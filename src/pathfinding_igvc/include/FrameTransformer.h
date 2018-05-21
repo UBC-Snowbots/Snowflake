@@ -1,12 +1,12 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 13th 2018
- * Description: A service that transforms points between two frames,
+ * Description: A class that transforms points between two frames,
  * specifically map and grid frame.
  */
 
-#ifndef PATHFINDING_IGVC_FRAMETRANSFORMATIONSERVICE_H
-#define PATHFINDING_IGVC_FRAMETRANSFORMATIONSERVICE_H
+#ifndef PATHFINDING_IGVC_FRAMETRANSFORMER_H
+#define PATHFINDING_IGVC_FRAMETRANSFORMER_H
 
 #include <PathFinderUtils.h>
 #include <geometry_msgs/Point.h>
@@ -52,4 +52,4 @@ class FrameTransformer {
     geometry_msgs::Point transformFromGridToMapFrame(geometry_msgs::Point point);
 };
 
-#endif // PATHFINDING_IGVC_FRAMETRANSFORMATIONSERVICE_H
+#endif // PATHFINDING_IGVC_FRAMETRANSFORMER_H

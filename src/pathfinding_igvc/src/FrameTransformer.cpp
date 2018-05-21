@@ -1,7 +1,7 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 13th 2018
- * Description: Implementation of frame transformation service
+ * Description: Implementation of frame transformer
  */
 
 #include <FrameTransformer.h>

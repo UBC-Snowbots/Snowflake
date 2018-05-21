@@ -1,7 +1,7 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 13th 2018
- * Description: Implementation of occupancy grid conversion service
+ * Description: Implementation of occupancy grid adapter
  */
 
 #include <OccupancyGridAdapter.h>
@@ -15,7 +15,7 @@ OccupancyGridAdapter::OccupancyGridAdapter(nav_msgs::MapMetaData info) {
     tf::Quaternion origin_quaternion;
     tf::quaternionMsgToTF(info.origin.orientation, origin_quaternion);
 
-    this->_transformation_service = new FrameTransformer(
+    this->_frame_transformer = new FrameTransformer(
     origin_quaternion, origin_position);
     this->_grid_info = info;
 }
@@ -23,7 +23,7 @@ OccupancyGridAdapter::OccupancyGridAdapter(nav_msgs::MapMetaData info) {
 AStar::GridPoint
 OccupancyGridAdapter::convertFromMapToGridPoint(geometry_msgs::Point point) {
     geometry_msgs::Point point_in_grid_frame =
-    this->_transformation_service->transformFromMapToGridFrame(point);
+    this->_frame_transformer->transformFromMapToGridFrame(point);
 
     // cell (0,0) is in the bottom left of the grid
     int col = point_in_grid_frame.x / this->_grid_info.resolution;
@@ -41,5 +41,5 @@ OccupancyGridAdapter::convertFromGridToMapPoint(AStar::GridPoint grid_point) {
     point.x = grid_point.col * this->_grid_info.resolution;
     point.y = grid_point.row * this->_grid_info.resolution;
 
-    return this->_transformation_service->transformFromGridToMapFrame(point);
+    return this->_frame_transformer->transformFromGridToMapFrame(point);
 }

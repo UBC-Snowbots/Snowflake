@@ -93,30 +93,30 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(path-finder-utils-test test/path-finder-utils-test.cpp include/PathFinder.h)
     target_link_libraries(path-finder-utils-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(path-construction-service-test test/path-constructor-test.cpp
+    catkin_add_gtest(path-constructor-test test/path-constructor-test.cpp
       src/PathConstructor.cpp include/PathConstructor.h
       src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
-    target_link_libraries(path-construction-service-test ${catkin_LIBRARIES})
+    target_link_libraries(path-constructor-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(frame-transformation-service-test test/frame-transformer-test.cpp
+    catkin_add_gtest(frame-transformer-test test/frame-transformer-test.cpp
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
-    target_link_libraries(frame-transformation-service-test ${catkin_LIBRARIES})
+    target_link_libraries(frame-transformer-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(occupancy-grid-conversion-service-test test/occupancy-grid-adapter-test.cpp
+    catkin_add_gtest(occupancy-grid-adapter-test test/occupancy-grid-adapter-test.cpp
       src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
-    target_link_libraries(occupancy-grid-conversion-service-test ${catkin_LIBRARIES})
+    target_link_libraries(occupancy-grid-adapter-test ${catkin_LIBRARIES})
 
-    catkin_add_gtest(occupancy-grid-resize-service-test test/occupancy-grid-resize-service-test.cpp
+    catkin_add_gtest(occupancy-grid-resizer-test test/occupancy-grid-resizer-test.cpp
       src/OccupancyGridResizer.cpp include/OccupancyGridResizer.h
       src/OccupancyGridAdapter.cpp include/OccupancyGridAdapter.h
       src/FrameTransformer.cpp include/FrameTransformer.h
       )
-    target_link_libraries(occupancy-grid-resize-service-test ${catkin_LIBRARIES})
+    target_link_libraries(occupancy-grid-resizer-test ${catkin_LIBRARIES})
 
 
     # Adding rostest to the package

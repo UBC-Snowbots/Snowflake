@@ -1,12 +1,13 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 14th 2018
- * Description: A service that enlarges the occupancy grid to fit the goal point
- * if it's outside of the grid
+ * Description: A class that adds space around the grid, i.e.
+ * an additional row below the grid and above the grid, and
+ * an additional column to the left and right of the grid.
  */
 
-#ifndef PATHFINDING_IGVC_OCCUPANCYGRIDRESIZESERVICE_H
-#define PATHFINDING_IGVC_OCCUPANCYGRIDRESIZESERVICE_H
+#ifndef PATHFINDING_IGVC_OCCUPANCYGRIDRESIZER_H
+#define PATHFINDING_IGVC_OCCUPANCYGRIDRESIZER_H
 
 #include "AStar.h"
 #include <OccupancyGridAdapter.h>
@@ -67,4 +68,4 @@ private:
     void static updateOrigin(nav_msgs::OccupancyGrid& grid);
 };
 
-#endif // PATHFINDING_IGVC_OCCUPANCYGRIDRESIZESERVICE_H
+#endif // PATHFINDING_IGVC_OCCUPANCYGRIDRESIZER_H

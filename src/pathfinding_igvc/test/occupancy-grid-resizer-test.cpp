@@ -1,7 +1,7 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: May 14th 2018
- * Description: Unit tests for occupancy grid resize service
+ * Description: Unit tests for occupancy grid resizer
  */
 
 #include <OccupancyGridAdapter.h>
