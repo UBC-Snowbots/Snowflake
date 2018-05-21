@@ -11,21 +11,8 @@
 TEST(PathFinder, TestPathWithNoObstacle) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
-    geometry_msgs::Pose origin;
-
-    // set position of the origin
-    geometry_msgs::Point position;
-    position.x = 3.0;
-    position.y = 3.0;
-    position.z = 0.0;
-    origin.position = position;
-
-    // set orientation of the origin
-    tf::Quaternion q;
-    tf::Matrix3x3 rotationMatrix = tf::Matrix3x3();
-    rotationMatrix.setEulerYPR(0.0, 0.0, 0.0); // only set Z rotation since it's 2D
-    rotationMatrix.getRotation(q);
-    tf::quaternionTFToMsg(q, origin.orientation);
+    geometry_msgs::Pose origin =
+            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -53,11 +40,13 @@ TEST(PathFinder, TestPathWithNoObstacle) {
 
     nav_msgs::Path path = PathFinder::calculatePath(start, goal, grid);
 
-    for (int i = 0; i < path.poses.size(); i++) {
-        std::cout << i << ": (" << path.poses[i].pose.position.x << "," << path.poses[i].pose.position.y << ")"
-                  << std::endl;
-    }
-    EXPECT_EQ(path.poses.size(), 2);
+    ASSERT_EQ(path.poses.size(), 2);
+
+    EXPECT_FLOAT_EQ(path.poses[0].pose.position.x, 3.0);
+    EXPECT_FLOAT_EQ(path.poses[0].pose.position.y, 3.0);
+
+    EXPECT_FLOAT_EQ(path.poses[1].pose.position.x, 5.0);
+    EXPECT_FLOAT_EQ(path.poses[1].pose.position.y, 5.0);
 }
 
 TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGrid) {
