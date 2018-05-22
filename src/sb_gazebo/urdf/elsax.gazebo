@@ -145,7 +145,7 @@
       <alwaysOn>1</alwaysOn>
       <updateRate>10</updateRate>
       <bodyName>chassis</bodyName>
-      <topicName>/gps_driver/navsatfix</topicName>
+      <topicName>/gps/navsatfix</topicName>
       <velocityTopicName>/robot/gps_vel</velocityTopicName>
       <drift>5.0 5.0 5.0</drift>
       <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
