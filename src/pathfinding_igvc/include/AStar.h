@@ -152,9 +152,38 @@ private:
      * @return true if point == this->_goal, false otherwise
      */
     bool isDestination(AStar::GridPoint point);
-    
+
+    /**
+     * Calculates h value of a point in the grid using euclidean distance.
+     * h is "the estimated movement cost to move from this point to
+     * the final destination".
+     *
+     * @param point
+     * @return h value
+     */
     double calculateHValue(AStar::GridPoint point);
+
+    /**
+     * Function that returns the path once the destination is found.
+     * Returns a stack of grid points where the top is the starting
+     * point and the bottom is the goal.
+     *
+     * @return path
+     */
     std::stack<GridPoint> tracePath();
+
+    /**
+     * Function that takes in a potential successor of a point (parent).
+     * A point becomes a successor of the parent point if it is the goal,
+     * or the point has never been visited before, or the point has a higher
+     * score (f = g + h) than it was previously visited.
+     *
+     * Returns true if successor is the goal, otherwise false.
+     *
+     * @param successor potential successor of parent
+     * @param parent
+     * @return
+     */
     bool processSuccessor(GridPoint successor, GridPoint parent);
 };
 
