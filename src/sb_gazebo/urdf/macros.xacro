@@ -53,7 +53,7 @@
 </link>
 
 <gazebo reference="${lr}_${fb}_wheel">
-  <mu1 value="1.0"/>
+  <mu1 value="10.0"/>
   <mu2 value="1.0"/>
   <kp  value="10000000.0" />
   <kd  value="1.0" />
@@ -86,13 +86,13 @@
 </xacro:macro>
 
 <!-- Macro to generate caster wheels -->
-<xacro:macro name="caster_wheel" params="lr tY wheel_displacement fb">
+<xacro:macro name="caster_wheel" params="lr tY wheel_displacement fb caster_radius:=${wheel_radius}">
     
 <link name="${lr}_${fb}_caster_wheel">
   <collision>
     <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
     <geometry>
-      <sphere radius="${wheel_radius}"/>
+      <sphere radius="${caster_radius}"/>
     </geometry>
     <surface>
       <friction>
@@ -109,7 +109,7 @@
   <visual>
     <origin xyz="0 0 0" rpy="0 ${pi/2} ${pi/2}" />
     <geometry>
-      <sphere radius="${wheel_radius}"/>
+      <sphere radius="${caster_radius}"/>
     </geometry>
     <material name="black"/>
   </visual>
@@ -131,7 +131,7 @@
 <joint name="${lr}_${fb}_wheel_hinge" type="continuous">
   <parent link="chassis"/>
   <child link="${lr}_${fb}_wheel"/>
-  <origin xyz="${wheel_displacement} ${-tY*wheel_width+tY*chassis_width/2} ${wheel_radius}" rpy="0 0 0" />
+  <origin xyz="${wheel_displacement} ${-tY*wheel_width+tY*chassis_width/2} ${caster_radius}" rpy="0 0 0" />
   <axis xyz="0 1 0" rpy="0 0 0" />
   <limit effort="100" velocity="100"/>
   <joint_properties damping="0.0" friction="0.0"/>
@@ -142,18 +142,18 @@
 <joint name="${lr}_${fb}_wheel_hinge" type="fixed">
   <parent link="chassis"/>
   <child link="${lr}_${fb}_caster_wheel"/>
-  <origin xyz="${wheel_displacement} ${-tY*wheel_width+tY*chassis_width/2} ${wheel_radius}" rpy="0 0 0" />
+  <origin xyz="${wheel_displacement} ${-tY*caster_radius+tY*chassis_width/2} ${caster_radius}" rpy="0 0 0" />
 </joint>
 
 </xacro:macro>
 
 <!-- Macro to generate vertical tower uprights -->
-<xacro:macro name="tower_vert" params="lr tY">
+<xacro:macro name="tower_vert" params="lr tX:=-1 tY">
 
 <joint name="${lr}_tower_joint" type="fixed">
   <parent link="chassis"/>
   <child link="tower_${lr}"/>
-  <origin xyz="${-(chassis_length/2) + (tower_thickness/2)} ${tY * ((chassis_width/2) - (tower_thickness/2))} ${chassis_height + chassis_elevation + (tower_height/2)}" rpy="0 0 0"/> 
+  <origin xyz="${tX * ((chassis_length/2) - (tower_thickness/2))} ${tY * ((chassis_width/2) - (tower_thickness/2))} ${chassis_height + chassis_elevation + (tower_height/2)}" rpy="0 0 0"/> 
 </joint>
 
 <link name='tower_${lr}'>
