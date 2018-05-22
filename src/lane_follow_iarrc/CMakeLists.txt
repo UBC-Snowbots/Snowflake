@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(lane_follow)
+project(lane_follow_iarrc)
+
+# Build in "Release" (with lots of compiler optimizations) by default
+# (If built in "Debug", some functions can take orders of magnitude longer)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+endif()
+
+add_definitions(-std=c++14)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
@@ -14,8 +22,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
-
-add_definitions(-std=c++14)
 
 catkin_package(
     INCLUDE_DIRS include
@@ -67,19 +73,28 @@ target_link_libraries(lane_follow
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 if (CATKIN_ENABLE_TESTING)
-    # Adding gtests
+
+    # Adding gtests to lane_follow_iarrc
     catkin_add_gtest(line-detect-test
         test/line-detect-test.cpp
         src/LineDetect.cpp
         src/LaneFollow.cpp)
     target_link_libraries(line-detect-test
             ${catkin_LIBRARIES})
+
     catkin_add_gtest(lane-follow-test
         test/lane-follow-test.cpp
         src/LaneFollow.cpp
         src/LineDetect.cpp)
     target_link_libraries(lane-follow-test
         ${catkin_LIBRARIES})
+
+    # Adding rostest to the package
+    find_package(rostest REQUIRED)
+    # name the test and link it to the .test file and the .cpp file itself, this will allow
+    # "catkin_make run_tests" to be able to find and run this rostest
+    # add_rostest_gtest(my_node_rostest test/sample_package_test.test test/my_node_rostest.cpp)
+    # target_link_libraries(my_node_rostest ${catkin_LIBRARIES})
 
     # Checking launch files for common errors
     find_package(roslaunch REQUIRED)

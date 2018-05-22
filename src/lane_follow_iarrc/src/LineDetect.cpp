@@ -33,16 +33,16 @@ cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
            IntersectPolynomial.coefficients.size() * sizeof(double));
 
     // initialize the intersect polynomial roots matrix
-    // a nice solution will contain 3 roots each with an x channel and a y
-    // channel
+    // a nice solution will contain 3 roots each with an x channel and
+    // a y channel
     // i.e: intersect_roots =
     //      [x1, y1;
     //       x2, y2;
     //       x3, y3]
-    // one of these roots will be the intersect root
+    // where one of these roots will be the intersect root
     cv::Mat intersect_roots(3, 1, CV_64F, Scalar::all(0));
 
-    // solve for the intersect polynomial
+    // solve for the intersect polynomial roots
     cv::solvePoly(intersect_coefficients, intersect_roots);
 
     int max_row = intersect_roots.rows - 1; // we expect there to be 3 rows
@@ -54,7 +54,7 @@ cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
         // find the real roots knowing its y components are very close to 0
         if ((intersect_roots.at<cv::Vec2d>(i, max_col)[1] >= -1e-10) &&
             (intersect_roots.at<cv::Vec2d>(i, max_col)[1] <= +1e-10)) {
-            // store the x components of the possible intersect roots
+            // store x components of the possible intersect roots
             possible_x_intersects.emplace_back(
             intersect_roots.at<double>(i, max_col));
         }
@@ -73,13 +73,13 @@ cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
 
     // there exists one unique intersect root
     else if (possible_x_intersects.size() == 1) {
-        // set the x component of the intersect root
+        // set x component of the intersect root
         x_intersect = possible_x_intersects[0];
 
         y_intersect = 0;
 
-        // solve the right/left lane polynomial given the x intersect and sum up
-        // powered terms
+        // solve the right/left lane polynomial given the x intersect and
+        // sum up powered terms
         for (int i = order; i > 0; i--) {
             y_intersect +=
             (RightLanePolynomial.coefficients[i] * pow(x_intersect, i));
@@ -95,11 +95,9 @@ cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
         // attempt to find the correct intersect root
         for (double possible_x_intersect : possible_x_intersects) {
             x_intersect = possible_x_intersect;
-
             y_intersect = 0;
 
-            // set the x value of the right/left lane polynomial to the x
-            // intersect
+            // set x value of the right/left lane polynomial to the x intersect
             // and sum up powered terms
             for (int j = order; j > 0; j--) {
                 y_intersect +=
@@ -120,8 +118,8 @@ cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
         throw LineDetect::NoLaneIntersectException();
     }
 
-create_point:
-    // create a Point2d storing the intersect data
+    create_point:
+    // create a Point2d storing the intersect
     cv::Point2d intersect_point = {x_intersect, y_intersect};
 
     return intersect_point;
@@ -168,12 +166,12 @@ Polynomial LineDetect::fitPolyToLine(std::vector<cv::Point2d> points,
         for (size_t j = 0; j < order_plus_one; j++)
             A(i, j) = pow((xv.at(i)), j);
 
-    // solve for linear least squares fit
+    // solve for linear least squares fit to get the coefficients
     result = A.householderQr().solve(yvMapped);
 
     for (size_t i = 0; i < result.size(); i++) {
-        // append coefficients to end of coefficients vector from greatest to
-        // least order term
+        // and emplace them back to the coefficients array from the lowest
+        // to highest order term
         PolyLine.coefficients.emplace_back(result[i]);
     }
 
@@ -208,10 +206,10 @@ LineDetect::getLanePoints(cv::Mat& filtered_image) {
             // obtain the window histogram's peak
             int peak = this->getWindowHistogramPeakPosition(window_histogram);
 
-            // set the x value of a lane point
+            // set x value of a lane point
             BaseWindow.center += peak - window_slice.cols / 2;
 
-            // set the y value of a lane point
+            // set y value of a lane point
             int y =
             (window_slice_index * filtered_image.rows / num_vertical_slices) +
             window_slice.rows / 2;
@@ -219,7 +217,7 @@ LineDetect::getLanePoints(cv::Mat& filtered_image) {
             // create the lane point
             cv::Point2d point{(double) BaseWindow.center, (double) y};
 
-            // and push it back
+            // and push it back to the lane points vector
             lane_points[window_index].push_back(point);
         }
     }

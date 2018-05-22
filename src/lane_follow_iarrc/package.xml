@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package>
-  <name>lane_follow</name>
+  <name>lane_follow_iarrc</name>
   <version>0.0.0</version>
   <description>
-      Package for lane detection and lane following
+      Package for lane detection and following for olaf
   </description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
