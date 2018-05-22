@@ -105,14 +105,33 @@ class AStar {
                               GridPoint goal);
 
 private:
+    /**
+     * Initializes the class with the given occupancy_grid and start and
+     * goal grid points
+     *
+     * The constructor is private because a path would only be found once
+     * for a given occupancy grid and start and goal points.
+     *
+     * @param occupancy_grid occupancy grid
+     * @param start
+     * @param goal
+     */
     AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
           GridPoint goal);
 
+    /**
+     * Performs A* search and returns the path in a stack.
+     * The occupancy grid as well as start and goal points are accessed
+     * through the class' instance variables.
+     *
+     * @return
+     */
     std::stack<GridPoint> aStarSearch();
-    bool isValid(int row, int col);
-    bool isUnBlocked(int row, int col);
-    bool isDestination(int row, int col);
-    double calculateHValue(int row, int col);
+
+    bool isValid(AStar::GridPoint point);
+    bool isUnBlocked(AStar::GridPoint point);
+    bool isDestination(AStar::GridPoint point);
+    double calculateHValue(AStar::GridPoint point);
     std::stack<GridPoint> tracePath();
     bool processSuccessor(GridPoint successor, GridPoint parent);
 };

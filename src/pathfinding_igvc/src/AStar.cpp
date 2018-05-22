@@ -142,11 +142,11 @@ std::stack<AStar::GridPoint> AStar::aStarSearch() {
 }
 
 bool AStar::processSuccessor(GridPoint successor, GridPoint parent) {
-    if (!isValid(successor.row, successor.col)) return false;
+    if (!isValid(successor)) return false;
 
     // If the destination cell is the same as the
     // current successor
-    if (isDestination(successor.row, successor.col)) {
+    if (isDestination(successor)) {
         // Set the Parent of the destination cell
         this->_cell_details[successor.row][successor.col].parent = parent;
         return true;
@@ -155,10 +155,10 @@ bool AStar::processSuccessor(GridPoint successor, GridPoint parent) {
         // list or if it is blocked, then ignore it.
         // Else do the following
     if (!this->_closed_list[successor.row][successor.col] &&
-             isUnBlocked(successor.row, successor.col)) {
+             isUnBlocked(successor)) {
         double g_new, h_new, f_new;
         g_new = this->_cell_details[parent.row][parent.col].g + 1.0;
-        h_new = calculateHValue(successor.row, successor.col);
+        h_new = calculateHValue(successor);
         f_new = g_new + h_new;
 
         // If it isn’t on the open list, add it to
@@ -210,26 +210,26 @@ std::stack<AStar::GridPoint> AStar::tracePath()
     return path;
 }
 
-bool AStar::isUnBlocked(int row, int col) {
-    return this->_grid[row*this->_num_cols + col] == GRID_FREE;
+bool AStar::isUnBlocked(AStar::GridPoint point) {
+    return this->_grid[point.row*this->_num_cols + point.col] == GRID_FREE;
 }
 
-bool AStar::isDestination(int row, int col) {
-    return this->_goal.row == row && this->_goal.col == col;
+bool AStar::isDestination(AStar::GridPoint point) {
+    return this->_goal.row == point.row && this->_goal.col == point.col;
 }
 
 // A Utility Function to calculate the 'h' heuristics.
-double AStar::calculateHValue(int row, int col) {
-    // Return using the diagonal distance formula
+double AStar::calculateHValue(AStar::GridPoint point) {
+    // Return using the euclidean distance formula
     return sqrt(
-            pow(row - this->_goal.row, 2) +
-            pow(col - this->_goal.col, 2)
+            pow(point.row - this->_goal.row, 2) +
+            pow(point.col - this->_goal.col, 2)
     );
 }
 
-bool AStar::isValid(int row, int col) {
+bool AStar::isValid(AStar::GridPoint point) {
     // Returns true if row number and column number
     // is in range
-    return (row >= 0) && (row < this->_num_rows) &&
-           (col >= 0) && (col < this->_num_cols);
+    return (point.row >= 0) && (point.row < this->_num_rows) &&
+           (point.col >= 0) && (point.col < this->_num_cols);
 }
