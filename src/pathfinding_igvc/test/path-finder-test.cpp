@@ -91,11 +91,14 @@ TEST(PathFinder, TestFullPath) {
 
     nav_msgs::Path path = PathFinder::calculatePath(start, goal, grid);
 
-    EXPECT_EQ(path.poses.size(), 9);
+    ASSERT_EQ(path.poses.size(), 9);
+
+    std::vector<float> expected_x = { 0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 1.0, 0.0, 0.0 };
+    std::vector<float> expected_y = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0 };
 
     for (int i = 0; i < path.poses.size(); i++) {
-        std::cout << i << ": (" << path.poses[i].pose.position.y << "," << path.poses[i].pose.position.x << ")"
-                  << std::endl;
+        EXPECT_FLOAT_EQ(expected_x[i], path.poses[i].pose.position.x);
+        EXPECT_FLOAT_EQ(expected_y[i], path.poses[i].pose.position.y);
     }
 }
 
@@ -139,9 +142,11 @@ TEST(PathFinder, PathFindingWhenGoalNotInGrid) {
 
     EXPECT_EQ(path.poses.size(), 4);
 
+    std::vector<float> expected_x = { 3.0, 1.0, 1.0, 3.0 };
+    std::vector<float> expected_y = { 7.0, 5.0, 3.0, 1.0 };
     for (int i = 0; i < path.poses.size(); i++) {
-        std::cout << i << ": (" << path.poses[i].pose.position.y << "," << path.poses[i].pose.position.x << ")"
-                  << std::endl;
+        EXPECT_FLOAT_EQ(expected_x[i], path.poses[i].pose.position.x);
+        EXPECT_FLOAT_EQ(expected_y[i], path.poses[i].pose.position.y);
     }
 }
 

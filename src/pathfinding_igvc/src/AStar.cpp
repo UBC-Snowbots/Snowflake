@@ -16,9 +16,9 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
     this->_start = start;
     this->_grid = occupancy_grid.data;
 
-    this->_cell_details = new Cell*[this->_num_rows];
+    this->_cell_details = new CellDetail*[this->_num_rows];
     for (int i = 0; i < this->_num_rows; i++) {
-        this->_cell_details[i] = new Cell[this->_num_cols];
+        this->_cell_details[i] = new CellDetail[this->_num_cols];
     }
 
     /*
@@ -76,12 +76,12 @@ std::stack<AStar::GridPoint> AStar::aStarSearch() {
             N.W   N   N.E
               \   |   /
                \  |  /
-            W----Cell----E
+            W----CellDetail----E
                  / | \
                /   |  \
             S.W    S   S.E
 
-        Cell-->Popped Cell (row, col)
+        CellDetail-->Popped CellDetail (row, col)
         N -->  North       (row-1, col)
         S -->  South       (row+1, col)
         E -->  East        (row, col+1)
