@@ -13,12 +13,12 @@
         This node translates GPS waypoints from lat/lon into x,y
         coordinates in the robots frame of reference
     -->
-    <include file="$(find decision)/launch/gps_manager.launch"/>
+    <include file="$(find decision_igvc)/launch/gps_manager.launch"/>
 
     <!--
         Start node to generate the twist message required to move
         to the desired waypoint
     -->
-    <include file="$(find decision)/launch/gps_decision.launch"/>
+    <include file="$(find decision_igvc)/launch/gps_decision.launch"/>
 
 </launch>
