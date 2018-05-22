@@ -1,17 +1,19 @@
 <launch>
 
-    <!-- Start waypoint navigation -->
-    <include file="$(find decision_igvc)/launch/waypoint_navigation.launch"/>
+    <!-- Start the GPS stack -->
+        <include file="$(find decision_igvc)/launch/waypoint_navigation.launch"/>
+        <include file="$(find localisation_igvc)/launch/ekf.launch"/>
 
-    <!-- Start the ekf -->
-    <include file="$(find localisation_igvc)/launch/ekf.launch"/>
+    <!-- Start the vision stack -->
+        <include file="$(find decision_igvc)/launch/vision_decision.launch"/>
+        <include file="$(find sb_vision)/launch/hsv_filter.launch"/>
+        <include file="$(find sb_vision)/launch/ipm_filter.launch"/>
 
-    <!-- Start vision decision -->
-    <include file="$(find decision_igvc)/launch/vision_decision.launch"/>
 
     <!-- Start lidar decision -->
-    <include file="$(find decision_igvc)/launch/lidar_decision.launch"/>
+        <include file="$(find decision_igvc)/launch/lidar_decision.launch"/>
 
-
+    <!-- Start final decision -->
+        <include file="$(find decision_igvc)/launch/final_decision.launch"/>
 
 </launch>

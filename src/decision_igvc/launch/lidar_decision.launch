@@ -2,7 +2,7 @@
 
     <node name="lidar_decision" pkg="decision_igvc" type="lidar_decision" output="screen">
         <!-- TODO: These should be the default values -->
-        <remap from="/robot/laser/scan" to="/scan"/>
+        <remap from="/robot/laser/scan" to="/robot/laser/scan"/>
 
         <!-- max_obstacle_angle_diff = M_PI/36 -->
         <rosparam param="max_obstacle_angle_diff">0.08727</rosparam>
