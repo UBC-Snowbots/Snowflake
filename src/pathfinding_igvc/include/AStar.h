@@ -104,6 +104,9 @@ class AStar {
                               GridPoint start,
                               GridPoint goal);
 
+private:
+    AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
+          GridPoint goal);
 
     std::stack<GridPoint> aStarSearch();
     bool isValid(int row, int col);
@@ -112,10 +115,6 @@ class AStar {
     double calculateHValue(int row, int col);
     std::stack<GridPoint> tracePath();
     bool processSuccessor(GridPoint successor, GridPoint parent);
-
-private:
-    AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
-          GridPoint goal);
 };
 
 #endif // PATHFINDING_IGVC_ASTAR_H
