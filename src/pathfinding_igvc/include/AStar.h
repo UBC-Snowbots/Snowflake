@@ -128,9 +128,31 @@ private:
      */
     std::stack<GridPoint> aStarSearch();
 
+    /**
+     * Returns whether or not a point is inside the occupancy grid
+     *
+     * @param point
+     * @return true if point is inside the grid, false otherwise
+     */
     bool isValid(AStar::GridPoint point);
+
+    /**
+     * Returns whether or not a point on grid is blocked
+     *
+     * @param point
+     * @return true if point on grid is GRID_FREE, false if GRID_OCCUPIED
+     */
     bool isUnBlocked(AStar::GridPoint point);
+
+    /**
+     * Returns whether or not a point on grid is the destination
+     * (i.e. this->_goal)
+     *
+     * @param point
+     * @return true if point == this->_goal, false otherwise
+     */
     bool isDestination(AStar::GridPoint point);
+    
     double calculateHValue(AStar::GridPoint point);
     std::stack<GridPoint> tracePath();
     bool processSuccessor(GridPoint successor, GridPoint parent);
