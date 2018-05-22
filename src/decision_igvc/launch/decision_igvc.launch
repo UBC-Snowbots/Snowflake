@@ -1,0 +1,17 @@
+<launch>
+
+    <!-- Start waypoint navigation -->
+    <include file="$(find decision_igvc)/launch/waypoint_navigation.launch"/>
+
+    <!-- Start the ekf -->
+    <include file="$(find localisation_igvc)/launch/ekf.launch"/>
+
+    <!-- Start vision decision -->
+    <include file="$(find decision_igvc)/launch/vision_decision.launch"/>
+
+    <!-- Start lidar decision -->
+    <include file="$(find decision_igvc)/launch/lidar_decision.launch"/>
+
+
+
+</launch>
