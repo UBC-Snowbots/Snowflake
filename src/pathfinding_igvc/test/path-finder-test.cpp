@@ -91,7 +91,53 @@ TEST(PathFinder, TestFullPath) {
 
     nav_msgs::Path path = PathFinder::calculatePath(start, goal, grid);
 
-    ASSERT_EQ(path.poses.size(), 9);
+    EXPECT_EQ(path.poses.size(), 9);
+
+    for (int i = 0; i < path.poses.size(); i++) {
+        std::cout << i << ": (" << path.poses[i].pose.position.y << "," << path.poses[i].pose.position.x << ")"
+                  << std::endl;
+    }
+}
+
+TEST(PathFinder, PathFindingWhenGoalNotInGrid) {
+    /* origin of OccupancyGrid */
+    // initialize origin of occupancy grid
+    geometry_msgs::Pose origin =
+            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+
+    /* map_meta_data of OccupancyGrid */
+    // initialize map_meta_data
+    nav_msgs::MapMetaData map_meta_data;
+    map_meta_data.resolution = 2.0;
+    map_meta_data.width      = 2;
+    map_meta_data.height     = 3;
+    // add origin to map_meta_data
+    map_meta_data.origin = origin;
+
+    /* OccupancyGrid */
+    // initialize occupancy grid
+    nav_msgs::OccupancyGrid grid;
+    // set map_meta_data
+    grid.info = map_meta_data;
+    grid.data = {
+            AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
+            AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
+            AStar::GRID_FREE, AStar::GRID_FREE,
+    };
+
+    /* Starting point in map frame */
+    geometry_msgs::Point start;
+    start.x = 3.0;
+    start.y = 7.0;
+
+    /* Goal point in map frame */
+    geometry_msgs::Point goal;
+    goal.x = 3.0;
+    goal.y = -9999;
+
+    nav_msgs::Path path = PathFinder::calculatePath(start, goal, grid);
+
+    EXPECT_EQ(path.poses.size(), 4);
 
     for (int i = 0; i < path.poses.size(); i++) {
         std::cout << i << ": (" << path.poses[i].pose.position.y << "," << path.poses[i].pose.position.x << ")"
