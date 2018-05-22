@@ -22,13 +22,8 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
     }
 
     /*
-     * TODO: edit comment
-     Create an open list having information as-
-     <f, <row, col>>
-     where f = g + h,
-     and row, col are the row and column index of that cell
-     Note that 0 <= row <= ROW-1 & 0 <= col <= COL-1
-     This open list is implenented as a set of pair of pair.*/
+     Create an open list
+     */
     this->_open_list = set<GridPointWithScore>();
 
     // Create a closed list and initialise it to false which means
@@ -53,8 +48,7 @@ std::stack<AStar::GridPoint> AStar::aStarSearch() {
     this->_cell_details[start.row][start.col].f = 0.0;
     this->_cell_details[start.row][start.col].g = 0.0;
     this->_cell_details[start.row][start.col].h = 0.0;
-    this->_cell_details[start.row][start.col].parent.row = start.row;
-    this->_cell_details[start.row][start.col].parent.col = start.col;
+    this->_cell_details[start.row][start.col].parent = start;
 
     this->_open_list.insert(std::make_pair(0.0, std::make_pair(start.row, start.col)));
 
