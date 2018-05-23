@@ -2,9 +2,18 @@
     
     <node name="vision_decision" pkg="decision_igvc" type="vision_decision" output="screen">
         <!-- TODO: These should be the default values -->
-        <remap from="/vision_processing/filtered_image" to="/vision/filtered_image"/>
+        <remap from="/vision/filtered_image" to="/vision/ipm_filtered_image"/>
 
         <!-- The value to scale the angular velocity on outputted twist messages by -->
-        <rosparam param="angular_vel_multiplier">1.5</rosparam>
+        <rosparam param="angular_vel_multiplier">1.0</rosparam>
+        <rosparam param="angular_vel_cap">1.0</rosparam>
+        <rosparam param="rolling_average_constant">0.25</rosparam>
+        <rosparam param="percent_of_samples_needed">0.125</rosparam>
+        <rosparam param="percent_of_image_sampled">0.25</rosparam>
+        <rosparam param="move_away_threshold">25.0</rosparam>
+        <rosparam param="confidence_threshold">60.0</rosparam>
+        <rosparam param="percent_of_white_needed">0.05</rosparam>
+
+
     </node>
 </launch>
