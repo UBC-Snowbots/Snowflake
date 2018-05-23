@@ -14,7 +14,7 @@ class LidarDecisionTest : public testing::Test {
         laser_scan_publisher =
         nh_.advertise<sensor_msgs::LaserScan>("/robot/laser/scan", 1);
         twist_subscriber = nh_.subscribe(
-        "/lidar_decision/command", 1, &LidarDecisionTest::callback, this);
+        "/lidar_decision/twist", 1, &LidarDecisionTest::callback, this);
 
         // Create a fake laserscan
         ulong num_rays      = 360;
