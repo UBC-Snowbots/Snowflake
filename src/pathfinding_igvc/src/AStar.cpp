@@ -36,10 +36,10 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
 std::stack<AStar::GridPoint> AStar::run(nav_msgs::OccupancyGrid occupancy_grid,
                                         GridPoint start,
                                         GridPoint goal) {
-    return AStar(occupancy_grid, start, goal).aStarSearch();
+    return AStar(occupancy_grid, start, goal).search();
 }
 
-std::stack<AStar::GridPoint> AStar::aStarSearch() {
+std::stack<AStar::GridPoint> AStar::search() {
     GridPoint start = this->_start;
 
     // Initialising the parameters of the starting node

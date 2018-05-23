@@ -127,7 +127,7 @@ private:
      *
      * @return
      */
-    std::stack<GridPoint> aStarSearch();
+    std::stack<GridPoint> search();
 
     /**
      * Returns whether or not a point is inside the occupancy grid
