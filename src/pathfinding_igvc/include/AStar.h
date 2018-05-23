@@ -93,13 +93,13 @@ private:
      * _cell_details stores the CellDetail for every
      * cell in the grid
      */
-    CellDetail **_cell_details;
+    std::vector<std::vector<CellDetail>> _cell_details;
 
     /*
      * _closed_list stores whether or not a cell has
      * already been visited for every cell in the grid
      */
-    bool **_closed_list;
+    std::vector<std::vector<bool>> _closed_list;
 
     /*
      * _open_list stores which cells to visit

@@ -16,10 +16,8 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
     this->_start = start;
     this->_grid = occupancy_grid.data;
 
-    this->_cell_details = new CellDetail*[this->_num_rows];
-    for (int i = 0; i < this->_num_rows; i++) {
-        this->_cell_details[i] = new CellDetail[this->_num_cols];
-    }
+    this->_cell_details = std::vector<std::vector<CellDetail>>
+            (this->_num_rows, std::vector<CellDetail>(this->_num_cols));
 
     // Create an open list
     this->_open_list = set<GridPointWithScore>();
@@ -27,10 +25,8 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
     // Create a closed list and initialise it to false which means
     // that no cell has been included yet
     // This closed list is implemented as a boolean 2D array
-    this->_closed_list = new bool*[this->_num_rows];
-    for (int i = 0; i < this->_num_rows; i++) {
-        this->_closed_list[i] = new bool[this->_num_cols];
-    }
+    this->_closed_list = std::vector<std::vector<bool>>
+            (this->_num_rows, std::vector<bool>(this->_num_cols, false));
 }
 
 std::stack<AStar::GridPoint> AStar::run(nav_msgs::OccupancyGrid occupancy_grid,
