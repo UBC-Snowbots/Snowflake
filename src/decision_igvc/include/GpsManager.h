@@ -19,6 +19,7 @@
 #include <stack>
 #include <std_msgs/Float32.h>
 #include <tf/transform_datatypes.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <vector>
 
 // A struct to hold lat/lon coordinates (a waypoint)
@@ -60,8 +61,18 @@ class GpsManager {
      */
     void populateWaypointStack(std::vector<Waypoint> waypoint_list);
 
+    /**
+     * Publishes a marker to the next waypoint in Rviz
+     * @param p the next waypoint
+     * @param global_to_local_transform the transform from global to local frame
+     * NOTE: Have to modify the transform so that the Z point is zeroed out
+     * due to the original transform also translating in the Z direction.
+     */
+    void publishRvizWaypointMarker(geometry_msgs::PointStamped p, geometry_msgs::TransformStamped global_to_local_transform);
+
     ros::Subscriber tf_subscriber;
     ros::Publisher current_waypoint_publisher;
+    ros::Publisher rviz_marker_publisher;
 
     std::string base_frame;   // The base frame of the robot ("base_link",
                               // "base_footprint", etc.)

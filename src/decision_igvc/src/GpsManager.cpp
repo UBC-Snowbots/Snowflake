@@ -7,6 +7,8 @@
  */
 
 #include <GpsManager.h>
+#include <RvizUtils.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 GpsManager::GpsManager(int argc, char** argv, std::string node_name) {
     // Setup NodeHandles
@@ -25,6 +27,9 @@ GpsManager::GpsManager(int argc, char** argv, std::string node_name) {
     private_nh.resolveName("current_waypoint");
     current_waypoint_publisher = nh.advertise<geometry_msgs::PointStamped>(
     current_waypoint_topic, queue_size);
+    std::string marker_topic = private_nh.resolveName("current_waypoint_marker");
+    rviz_marker_publisher = nh.advertise<visualization_msgs::Marker>(
+            marker_topic, queue_size);
 
     // Get Params
     SB_getParam(
@@ -49,7 +54,7 @@ void GpsManager::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
     // If we've visited all the waypoints, no need to do anything here,
     // In fact, we can celebrate and shutdown
     if (waypoint_stack.size() <= 0) {
-        ROS_INFO_STREAM("Reached all wapoints! *cue digital clapping*");
+        ROS_INFO_STREAM("Reached all waypoints! *cue digital clapping*");
         ros::shutdown();
         return;
     }
@@ -58,23 +63,54 @@ void GpsManager::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
     waypoint_stack.top().header.stamp = ros::Time::now();
     current_waypoint_publisher.publish(waypoint_stack.top());
 
+
     // Check if the tf_message contains the transform we're looking for
     for (geometry_msgs::TransformStamped tf_stamped : tf_message->transforms) {
         if (tf_stamped.header.frame_id == global_frame &&
             tf_stamped.child_frame_id == base_frame) {
             // We've found the transform we're looking for, so see how close we
             // are to the waypoint
+            geometry_msgs::PointStamped curr_waypoint = waypoint_stack.top();
             double dx =
-            tf_stamped.transform.translation.x - waypoint_stack.top().point.x;
+            tf_stamped.transform.translation.x - curr_waypoint.point.x;
             double dy =
-            tf_stamped.transform.translation.y - waypoint_stack.top().point.y;
+            tf_stamped.transform.translation.y - curr_waypoint.point.y;
             double distance = sqrt(pow(dx, 2) + pow(dy, 2));
             if (distance < at_goal_tolerance) {
                 waypoint_stack.pop();
                 ROS_INFO_STREAM("Hit waypoint " << waypoint_stack.size());
             }
+            publishRvizWaypointMarker(curr_waypoint, tf_stamped);
         }
     }
+}
+
+void GpsManager::publishRvizWaypointMarker(geometry_msgs::PointStamped p,
+                                           geometry_msgs::TransformStamped global_to_local_transform) {
+
+    // Inverse the transform
+    tf2::Transform t;
+    tf2::fromMsg(global_to_local_transform.transform, t);
+    t = t.inverse();
+
+    // Create a new geometry_msgs::Transform
+    geometry_msgs::TransformStamped t_stamped;
+    t_stamped.transform = tf2::toMsg(t);
+    t_stamped.header = global_to_local_transform.header;
+    t_stamped.header.frame_id = base_frame;
+
+    // Define a new point relative to base frame
+    geometry_msgs::PointStamped output;
+    tf2::doTransform(p, output, t_stamped);
+    output.point.z = 0; // Necessary to remove vertical transform of waypoint
+
+    // Create marker
+    std::vector<std_msgs::ColorRGBA> colors;
+    std_msgs::ColorRGBA color;
+    color.a = 1.0f;
+    color.r = 1.0f;
+    colors.push_back(color);
+    rviz_marker_publisher.publish(snowbots::RvizUtils::createMarker(output.point, colors, snowbots::RvizUtils::createrMarkerScale(0.5, 0.5, 0.5), base_frame, "debug", visualization_msgs::Marker::POINTS));
 }
 
 std::vector<Waypoint>
@@ -114,7 +150,7 @@ void GpsManager::populateWaypointStack(std::vector<Waypoint> waypoint_list) {
 
         // Build a point with our UTM coordinates
         geometry_msgs::PointStamped point_stamped;
-        point_stamped.header.frame_id = base_frame;
+        point_stamped.header.frame_id = global_frame;
         point_stamped.header.stamp    = ros::Time();
         point_stamped.point.x         = easting;
         point_stamped.point.y         = northing;

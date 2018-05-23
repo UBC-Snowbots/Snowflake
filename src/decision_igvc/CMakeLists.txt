@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
         cv_bridge
         tf2_ros
         gps_common
+        tf2_geometry_msgs
         )
 find_package(OpenCV REQUIRED)
 find_package(sb_utils REQUIRED)
