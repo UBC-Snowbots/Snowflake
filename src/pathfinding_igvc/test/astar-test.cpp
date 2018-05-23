@@ -44,11 +44,18 @@ TEST(AStar, FullPathTest) {
 
     std::stack<AStar::GridPoint> path = AStar::run(grid, start, goal);
 
+    std::vector<int> expected_x = { 0, 0, 0, 0, 1, 2, 1, 0, 0 };
+    std::vector<int> expected_y = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+
     int i = 0;
     while (!path.empty()) {
         AStar::GridPoint point = path.top();
         path.pop();
-        std::cout << i++ << ": (" << point.row << "," << point.col << ")" << std::endl;
+
+        EXPECT_EQ(expected_x[i], point.col);
+        EXPECT_EQ(expected_y[i], point.row);
+
+        i++;
     }
 }
 
