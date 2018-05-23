@@ -8,6 +8,9 @@
 #include <PathFinder.h>
 #include <gtest/gtest.h>
 
+signed char _ = AStar::GRID_FREE;
+signed char X = AStar::GRID_OCCUPIED;
+
 TEST(PathFinder, TestPathWithNoObstacle) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -29,7 +32,7 @@ TEST(PathFinder, TestPathWithNoObstacle) {
 
     // set mapMetaData
     grid.info = mapMetaData;
-    grid.data = std::vector<int8_t>(4, AStar::GRID_FREE);
+    grid.data = std::vector<int8_t>(4, _);
 
     geometry_msgs::Point start;
     start.x = 3.0;
@@ -71,15 +74,15 @@ TEST(PathFinder, TestFullPath) {
     // set mapMetaData
     grid.info = mapMetaData;
     grid.data = {
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED,
-            AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE
+            _, _, _, X, X, X, _, X, X, _,
+            _, X, _, _, _, _, X, _, _, _,
+            _, X, X, X, X, _, X, X, X, _,
+            _, X, _, _, _, _, X, _, X, X,
+            _, _, _, X, _, _, _, X, _, X,
+            X, X, _, X, _, X, X, X, X, _,
+            _, _, _, X, _, _, X, _, X, _,
+            _, _, _, X, _, _, _, X, _, _,
+            _, X, _, _, _, _, X, _, _, _
     };
 
     geometry_msgs::Point start;
@@ -123,9 +126,9 @@ TEST(PathFinder, PathFindingWhenGoalNotInGrid) {
     // set map_meta_data
     grid.info = map_meta_data;
     grid.data = {
-            AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
-            AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
-            AStar::GRID_FREE, AStar::GRID_FREE,
+            X, X,
+            X, X,
+            _, _,
     };
 
     /* Starting point in map frame */
@@ -170,7 +173,7 @@ TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGrid) {
     nav_msgs::OccupancyGrid grid;
     // set map_meta_data
     grid.info = map_meta_data;
-    grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, X);
 
     /* Starting point in map frame */
     geometry_msgs::Point start;
@@ -199,13 +202,13 @@ TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGrid) {
                     grid.info.origin.position.y);
 
     std::vector<int8_t> expected_data = {
-    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE,
-    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_OCCUPIED,
-    AStar::GRID_OCCUPIED, AStar::GRID_FREE,     AStar::GRID_FREE,
-    AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-    AStar::GRID_FREE,     AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
-    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE,
-    AStar::GRID_FREE,     AStar::GRID_FREE,
+    _,     _,     _,
+    _,     _,     X,
+    X, _,     _,
+    X, X, _,
+    _,     X, X,
+    _,     _,     _,
+    _,     _,
     };
 
     EXPECT_EQ(expected_data, grid.data);
@@ -241,7 +244,7 @@ TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGridWithAngle) {
     nav_msgs::OccupancyGrid grid;
     // set map_meta_data
     grid.info = map_meta_data;
-    grid.data = std::vector<int8_t>(6, AStar::GRID_OCCUPIED);
+    grid.data = std::vector<int8_t>(6, X);
 
     /* Starting point in map frame */
     geometry_msgs::Point start;
@@ -275,13 +278,13 @@ TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGridWithAngle) {
     EXPECT_FLOAT_EQ(expected_origin_y, grid.info.origin.position.y);
 
     std::vector<int8_t> expected_data = {
-    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE,
-    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_OCCUPIED,
-    AStar::GRID_OCCUPIED, AStar::GRID_FREE,     AStar::GRID_FREE,
-    AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-    AStar::GRID_FREE,     AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
-    AStar::GRID_FREE,     AStar::GRID_FREE,     AStar::GRID_FREE,
-    AStar::GRID_FREE,     AStar::GRID_FREE,
+    _,     _,     _,
+    _,     _,     X,
+    X, _,     _,
+    X, X, _,
+    _,     X, X,
+    _,     _,     _,
+    _,     _,
     };
 
     EXPECT_EQ(expected_data, grid.data);

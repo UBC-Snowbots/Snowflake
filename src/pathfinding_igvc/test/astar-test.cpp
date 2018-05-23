@@ -8,6 +8,9 @@
 #include "PathFinderTestUtils.h"
 #include <gtest/gtest.h>
 
+signed char _ = AStar::GRID_FREE;
+signed char X = AStar::GRID_OCCUPIED;
+
 TEST(AStar, FullPathTest) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
@@ -30,15 +33,15 @@ TEST(AStar, FullPathTest) {
     // set mapMetaData
     grid.info = mapMetaData;
     grid.data = {
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED,
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED,
-            AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE,
-            AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_OCCUPIED, AStar::GRID_FREE, AStar::GRID_FREE, AStar::GRID_FREE
+            _, _, _, X, X, X, _, X, X, _,
+            _, X, _, _, _, _, X, _, _, _,
+            _, X, X, X, X, _, X, X, X, _,
+            _, X, _, _, _, _, X, _, X, X,
+            _, _, _, X, _, _, _, X, _, X,
+            X, X, _, X, _, X, X, X, X, _,
+            _, _, _, X, _, _, X, _, X, _,
+            _, _, _, X, _, _, _, X, _, _,
+            _, X, _, _, _, _, X, _, _, _
     };
 
     AStar::GridPoint start(0.0, 0.0);
