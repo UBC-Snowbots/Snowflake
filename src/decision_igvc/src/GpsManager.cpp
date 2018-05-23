@@ -27,9 +27,10 @@ GpsManager::GpsManager(int argc, char** argv, std::string node_name) {
     private_nh.resolveName("current_waypoint");
     current_waypoint_publisher = nh.advertise<geometry_msgs::PointStamped>(
     current_waypoint_topic, queue_size);
-    std::string marker_topic = private_nh.resolveName("current_waypoint_marker");
-    rviz_marker_publisher = nh.advertise<visualization_msgs::Marker>(
-            marker_topic, queue_size);
+    std::string marker_topic =
+    private_nh.resolveName("current_waypoint_marker");
+    rviz_marker_publisher =
+    nh.advertise<visualization_msgs::Marker>(marker_topic, queue_size);
 
     // Get Params
     SB_getParam(
@@ -63,7 +64,6 @@ void GpsManager::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
     waypoint_stack.top().header.stamp = ros::Time::now();
     current_waypoint_publisher.publish(waypoint_stack.top());
 
-
     // Check if the tf_message contains the transform we're looking for
     for (geometry_msgs::TransformStamped tf_stamped : tf_message->transforms) {
         if (tf_stamped.header.frame_id == global_frame &&
@@ -85,9 +85,9 @@ void GpsManager::tfCallBack(const tf2_msgs::TFMessageConstPtr tf_message) {
     }
 }
 
-void GpsManager::publishRvizWaypointMarker(geometry_msgs::PointStamped p,
-                                           geometry_msgs::TransformStamped global_to_local_transform) {
-
+void GpsManager::publishRvizWaypointMarker(
+geometry_msgs::PointStamped p,
+geometry_msgs::TransformStamped global_to_local_transform) {
     // Inverse the transform
     tf2::Transform t;
     tf2::fromMsg(global_to_local_transform.transform, t);
@@ -95,8 +95,8 @@ void GpsManager::publishRvizWaypointMarker(geometry_msgs::PointStamped p,
 
     // Create a new geometry_msgs::Transform
     geometry_msgs::TransformStamped t_stamped;
-    t_stamped.transform = tf2::toMsg(t);
-    t_stamped.header = global_to_local_transform.header;
+    t_stamped.transform       = tf2::toMsg(t);
+    t_stamped.header          = global_to_local_transform.header;
     t_stamped.header.frame_id = base_frame;
 
     // Define a new point relative to base frame
@@ -110,7 +110,13 @@ void GpsManager::publishRvizWaypointMarker(geometry_msgs::PointStamped p,
     color.a = 1.0f;
     color.r = 1.0f;
     colors.push_back(color);
-    rviz_marker_publisher.publish(snowbots::RvizUtils::createMarker(output.point, colors, snowbots::RvizUtils::createrMarkerScale(0.5, 0.5, 0.5), base_frame, "debug", visualization_msgs::Marker::POINTS));
+    rviz_marker_publisher.publish(snowbots::RvizUtils::createMarker(
+    output.point,
+    colors,
+    snowbots::RvizUtils::createrMarkerScale(0.5, 0.5, 0.5),
+    base_frame,
+    "debug",
+    visualization_msgs::Marker::POINTS));
 }
 
 std::vector<Waypoint>

@@ -68,7 +68,9 @@ class GpsManager {
      * NOTE: Have to modify the transform so that the Z point is zeroed out
      * due to the original transform also translating in the Z direction.
      */
-    void publishRvizWaypointMarker(geometry_msgs::PointStamped p, geometry_msgs::TransformStamped global_to_local_transform);
+    void publishRvizWaypointMarker(
+    geometry_msgs::PointStamped p,
+    geometry_msgs::TransformStamped global_to_local_transform);
 
     ros::Subscriber tf_subscriber;
     ros::Publisher current_waypoint_publisher;
