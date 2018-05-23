@@ -31,6 +31,22 @@ class AStar {
         GridPoint(int r = 0, int c = 0) : col(c), row(r) {};
     };
 
+    /**
+     * Takes an occupancy grid as well as start and goal points, and calculates
+     * the shortest path from start to goal.
+     *
+     * @param occupancy_grid occupancy grid
+     * @param start GridPoint containing row and column of the starting cell
+     * @param goal GridPoint containing row and column of the goal cell
+     * @return points stacked in order, where the top contains the starting
+     * GridPoint and the bottom contains the goal GridPoint
+     */
+    static std::stack<GridPoint> run(nav_msgs::OccupancyGrid occupancy_grid,
+                              GridPoint start,
+                              GridPoint goal);
+
+private:
+
     /*
      * A representation of a point in grid along with its score.
      * Its score, f, is equal to g+h, where:
@@ -90,21 +106,6 @@ class AStar {
      */
     std::set<GridPointWithScore> _open_list;
 
-    /**
-     * Takes an occupancy grid as well as start and goal points, and calculates
-     * the shortest path from start to goal.
-     *
-     * @param occupancy_grid occupancy grid
-     * @param start GridPoint containing row and column of the starting cell
-     * @param goal GridPoint containing row and column of the goal cell
-     * @return points stacked in order, where the top contains the starting
-     * GridPoint and the bottom contains the goal GridPoint
-     */
-    static std::stack<GridPoint> run(nav_msgs::OccupancyGrid occupancy_grid,
-                              GridPoint start,
-                              GridPoint goal);
-
-private:
     /**
      * Initializes the class with the given occupancy_grid and start and
      * goal grid points
