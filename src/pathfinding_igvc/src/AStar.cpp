@@ -21,9 +21,7 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
         this->_cell_details[i] = new CellDetail[this->_num_cols];
     }
 
-    /*
-     Create an open list
-     */
+    // Create an open list
     this->_open_list = set<GridPointWithScore>();
 
     // Create a closed list and initialise it to false which means
@@ -70,10 +68,10 @@ std::stack<AStar::GridPoint> AStar::aStarSearch() {
             N.W   N   N.E
               \   |   /
                \  |  /
-            W----CellDetail----E
-                 / | \
-               /   |  \
-            S.W    S   S.E
+          W----CellDetail----E
+                / | \
+              /   |  \
+           S.W    S   S.E
 
         CellDetail-->Popped CellDetail (row, col)
         N -->  North       (row-1, col)

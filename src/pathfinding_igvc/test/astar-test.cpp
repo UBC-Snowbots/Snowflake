@@ -1,6 +1,8 @@
-//
-// Created by min on 20/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 20th 2018
+ * Description: Tests for AStar class
+ */
 
 #include <AStar.h>
 #include "PathFinderTestUtils.h"
