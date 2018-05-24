@@ -111,7 +111,9 @@ private:
      * goal grid points
      *
      * The constructor is private because a path would only be found once
-     * for a given occupancy grid and start and goal points.
+     * for a given occupancy grid and start and goal points. It's also a
+     * way to force initialization of the class variables every time we
+     * run the algorithm.
      *
      * @param occupancy_grid occupancy grid
      * @param start

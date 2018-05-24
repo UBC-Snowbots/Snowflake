@@ -32,6 +32,10 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
 std::stack<AStar::GridPoint> AStar::run(nav_msgs::OccupancyGrid occupancy_grid,
                                         GridPoint start,
                                         GridPoint goal) {
+    // The constructor is private because a path would only be found once
+    // for a given occupancy grid and start and goal points. It's also a
+    // way to force initialization of the class variables every time we
+    // run the algorithm.
     return AStar(occupancy_grid, start, goal).search();
 }
 
