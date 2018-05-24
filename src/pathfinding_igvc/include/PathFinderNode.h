@@ -24,8 +24,8 @@ class PathFinderNode {
 
     tf::TransformListener _listener;
 
-    std::string _map_frame_name;
-    std::string _robot_frame_name;
+    std::string _global_frame_name;
+    std::string _base_frame_name;
 
     geometry_msgs::Point _goal;
     nav_msgs::OccupancyGrid _grid;
