@@ -40,7 +40,6 @@ private:
     void occupancyGridCallback(const nav_msgs::OccupancyGrid grid);
     void goalCallback(const geometry_msgs::Point goal);
 
-    geometry_msgs::Point getStartPoint();
     void publishPath();
 };
 
