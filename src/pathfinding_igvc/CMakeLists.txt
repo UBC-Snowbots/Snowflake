@@ -9,7 +9,7 @@ endif()
 
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS roscpp)
+find_package(catkin REQUIRED COMPONENTS roscpp tf)
 find_package(sb_utils REQUIRED)
 
 add_definitions(-std=c++14)
@@ -54,7 +54,7 @@ add_executable(path_finder
   src/PathConstructor.cpp
   src/PathFinder.cpp
   src/path_finder.cpp
-  )
+  src/PathFinderNode.cpp include/PathFinderNode.h)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(sample_package_node
