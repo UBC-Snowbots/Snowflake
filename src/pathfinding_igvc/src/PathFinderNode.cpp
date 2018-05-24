@@ -51,11 +51,11 @@ void PathFinderNode::goalCallback(const geometry_msgs::Point goal) {
 void PathFinderNode::publishPath() {
     tf::StampedTransform transform;
 
-    try{
+    try {
         this->_listener.lookupTransform(this->_global_frame_name, this->_base_frame_name,
                                         ros::Time(0), transform);
     } catch (tf::TransformException ex){
-        // If we can't lookup the tf, then warn the user and tell robot to stop
+        // If we can't lookup the tf, then don't publish path
         ROS_WARN_STREAM("Could not lookup tf between " << this->_global_frame_name
                                                        << " and "
                                                        << this->_base_frame_name);
@@ -65,6 +65,7 @@ void PathFinderNode::publishPath() {
     geometry_msgs::Point start;
     start.x = transform.getOrigin().x();
     start.y = transform.getOrigin().y();
+
     nav_msgs::Path path = PathFinder::calculatePath(start, this->_goal, this->_grid);
     this->publisher.publish(path);
 }
