@@ -1,6 +1,10 @@
-//
-// Created by min on 23/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 23rd 2018
+ * Description: Path Finder Node - subscribes to occupancy grid (nav_msgs/OccupancyGrid)
+ * and goal point (geometry_msgs/Point), obtains starting point from tf tree,
+ * and publishes the shortest path (nav_msgs/Path) from starting point to goal point.
+ */
 
 #ifndef PROJECT_PATHFINDERNODE_H
 #define PROJECT_PATHFINDERNODE_H

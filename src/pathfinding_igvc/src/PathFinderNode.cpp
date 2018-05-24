@@ -1,6 +1,8 @@
-//
-// Created by min on 23/05/18.
-//
+/*
+ * Created By: Min Gyo Kim
+ * Created On: May 23rd 2018
+ * Description: Implementation of Path Finder Node
+ */
 
 #include <PathFinderNode.h>
 
