@@ -13,8 +13,8 @@ PathFinderNode::PathFinderNode(int argc,
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
-    SB_getParam(private_nh, std::string("map_frame_name"), this->_global_frame_name, std::string("/map"));
-    SB_getParam(private_nh, std::string("robot_frame_name"), this->_base_frame_name, std::string("/base_link"));
+    SB_getParam(private_nh, std::string("global_frame_name"), this->_global_frame_name, std::string("/map"));
+    SB_getParam(private_nh, std::string("base_frame_name"), this->_base_frame_name, std::string("/base_link"));
 
     std::string grid_subscriber_topic = "occupancy_grid"; // dummy topic name
     int refresh_rate                  = 10;
