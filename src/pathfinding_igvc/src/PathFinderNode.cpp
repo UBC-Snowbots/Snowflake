@@ -16,10 +16,14 @@ PathFinderNode::PathFinderNode(int argc,
     SB_getParam(private_nh, std::string("map_frame_name"), this->_map_frame_name, std::string("/map"));
     SB_getParam(private_nh, std::string("robot_frame_name"), this->_robot_frame_name, std::string("/base_link"));
 
-    std::string topic_to_subscribe_to = "occupancy_grid"; // dummy topic name
+    std::string grid_subscriber_topic = "occupancy_grid"; // dummy topic name
     int refresh_rate                  = 10;
-    this->subscriber                        = nh.subscribe(
-    topic_to_subscribe_to, refresh_rate, &PathFinderNode::OccupancyGridCallback, this);
+    this->grid_subscriber                        = nh.subscribe(
+            grid_subscriber_topic, refresh_rate, &PathFinderNode::occupancyGridCallback, this);
+
+    std::string goal_subscriber_topic = "goal"; // dummy topic name
+    this->goal_subscriber             = nh.subscribe(
+            goal_subscriber_topic, refresh_rate, &PathFinderNode::goalCallback, this);
 
     std::string topic_to_publish_to =
     "path"; // dummy topic name
@@ -28,9 +32,25 @@ PathFinderNode::PathFinderNode(int argc,
     topic_to_publish_to, queue_size);
 }
 
-void PathFinderNode::OccupancyGridCallback(const nav_msgs::OccupancyGrid grid) {
+void PathFinderNode::occupancyGridCallback(const nav_msgs::OccupancyGrid grid) {
+    this->_grid = grid;
+    this->_receivied_grid = true;
+    if (this->_received_goal) {
+        publishPath();
+    }
+}
+
+void PathFinderNode::goalCallback(const geometry_msgs::Point goal) {
+    this->_goal = goal;
+    this->_received_goal = true;
+    if (this->_receivied_grid) {
+        publishPath();
+    }
+}
+
+void PathFinderNode::publishPath() {
     geometry_msgs::Point start = getStartPoint();
-    nav_msgs::Path path = PathFinder::calculatePath(start, this->_goal, grid);
+    nav_msgs::Path path = PathFinder::calculatePath(start, this->_goal, this->_grid);
     this->publisher.publish(path);
 }
 

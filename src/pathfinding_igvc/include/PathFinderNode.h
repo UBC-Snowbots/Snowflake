@@ -18,21 +18,30 @@
 #include <tf/transform_listener.h>
 
 class PathFinderNode {
-    ros::Subscriber subscriber;
+    ros::Subscriber grid_subscriber;
+    ros::Subscriber goal_subscriber;
     ros::Publisher publisher;
 
-    geometry_msgs::Point _goal;
     tf::TransformListener _listener;
 
     std::string _map_frame_name;
     std::string _robot_frame_name;
 
+    geometry_msgs::Point _goal;
+    nav_msgs::OccupancyGrid _grid;
+
+    bool _received_goal = false;
+    bool _receivied_grid = false;
+
 public:
     PathFinderNode(int argc, char** argv, std::string node_name);
 
 private:
-    void OccupancyGridCallback(const nav_msgs::OccupancyGrid grid);
+    void occupancyGridCallback(const nav_msgs::OccupancyGrid grid);
+    void goalCallback(const geometry_msgs::Point goal);
+
     geometry_msgs::Point getStartPoint();
+    void publishPath();
 };
 
 #endif //PROJECT_PATHFINDERNODE_H
