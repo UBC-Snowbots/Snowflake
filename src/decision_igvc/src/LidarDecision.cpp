@@ -21,7 +21,7 @@ LidarDecision::LidarDecision(int argc, char** argv, std::string node_name) {
     laserscan_topic_name, refresh_rate, &LidarDecision::scanCallBack, this);
 
     // Setup Publisher(s)
-    std::string twist_topic = public_nh.resolveName("command");
+    std::string twist_topic = public_nh.resolveName("twist");
     uint32_t queue_size     = 10;
     twist_publisher =
     nh.advertise<geometry_msgs::Twist>(twist_topic, queue_size);
