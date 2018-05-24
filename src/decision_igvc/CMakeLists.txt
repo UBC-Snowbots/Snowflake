@@ -16,9 +16,10 @@ find_package(catkin REQUIRED COMPONENTS
         cv_bridge
         tf2_ros
         gps_common
+        tf2_geometry_msgs
+        sb_utils
         )
 find_package(OpenCV REQUIRED)
-find_package(sb_utils REQUIRED)
 
 add_definitions(-std=c++14)
 
@@ -36,7 +37,6 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
-  ${sb_utils_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ./include
 )
@@ -77,11 +77,11 @@ add_executable(gps_manager
 # target_link_libraries(sample_package_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(lidar_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
-target_link_libraries(vision_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
-target_link_libraries(gps_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
-target_link_libraries(final_decision ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
-target_link_libraries(gps_manager ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(lidar_decision ${catkin_LIBRARIES})
+target_link_libraries(vision_decision ${catkin_LIBRARIES})
+target_link_libraries(gps_decision ${catkin_LIBRARIES})
+target_link_libraries(final_decision ${catkin_LIBRARIES})
+target_link_libraries(gps_manager ${catkin_LIBRARIES})
 
 
 #############
