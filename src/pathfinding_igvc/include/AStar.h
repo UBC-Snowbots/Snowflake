@@ -2,7 +2,8 @@
  * Created By: Min Gyo Kim
  * Created On: May 9th 2018
  * Description: Class that implements A* algorithm to find the shortest path
- * between two points given an occupancy grid. Basically copies the algorithm from
+ * between two points given an occupancy grid. Basically copies the algorithm
+ * from
  * https://www.geeksforgeeks.org/a-search-algorithm/
  */
 
@@ -28,7 +29,7 @@ class AStar {
     struct GridPoint {
         int col;
         int row;
-        GridPoint(int r = 0, int c = 0) : col(c), row(r) {};
+        GridPoint(int r = 0, int c = 0) : col(c), row(r){};
     };
 
     /**
@@ -42,11 +43,10 @@ class AStar {
      * GridPoint and the bottom contains the goal GridPoint
      */
     static std::stack<GridPoint> run(nav_msgs::OccupancyGrid occupancy_grid,
-                              GridPoint start,
-                              GridPoint goal);
+                                     GridPoint start,
+                                     GridPoint goal);
 
-private:
-
+  private:
     /*
      * A representation of a point in grid along with its score.
      * Its score, f, is equal to g+h, where:
@@ -61,8 +61,7 @@ private:
      * It stores its parent as well as its score parameters,
      * f, g, and h.
      */
-    struct CellDetail
-    {
+    struct CellDetail {
         // parent of cell
         GridPoint parent;
         // f = g + h
@@ -119,7 +118,8 @@ private:
      * @param start
      * @param goal
      */
-    AStar(nav_msgs::OccupancyGrid occupancy_grid, GridPoint start,
+    AStar(nav_msgs::OccupancyGrid occupancy_grid,
+          GridPoint start,
           GridPoint goal);
 
     /**

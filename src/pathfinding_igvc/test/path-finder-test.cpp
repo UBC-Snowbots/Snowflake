@@ -15,14 +15,14 @@ TEST(PathFinder, TestPathWithNoObstacle) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
     nav_msgs::MapMetaData mapMetaData;
     mapMetaData.resolution = 2.0;
-    mapMetaData.width = 2;
-    mapMetaData.height = 2;
+    mapMetaData.width      = 2;
+    mapMetaData.height     = 2;
     // add origin to mapMetaData
     mapMetaData.origin = origin;
 
@@ -56,14 +56,14 @@ TEST(PathFinder, TestFullPath) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(0.0, 0.0, 0.0);
+    PathFinderTestUtils::constructPose(0.0, 0.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
     nav_msgs::MapMetaData mapMetaData;
     mapMetaData.resolution = 1.0;
-    mapMetaData.width = 10;
-    mapMetaData.height = 9;
+    mapMetaData.width      = 10;
+    mapMetaData.height     = 9;
     // add origin to mapMetaData
     mapMetaData.origin = origin;
 
@@ -73,17 +73,11 @@ TEST(PathFinder, TestFullPath) {
 
     // set mapMetaData
     grid.info = mapMetaData;
-    grid.data = {
-            _, _, _, X, X, X, _, X, X, _,
-            _, X, _, _, _, _, X, _, _, _,
-            _, X, X, X, X, _, X, X, X, _,
-            _, X, _, _, _, _, X, _, X, X,
-            _, _, _, X, _, _, _, X, _, X,
-            X, X, _, X, _, X, X, X, X, _,
-            _, _, _, X, _, _, X, _, X, _,
-            _, _, _, X, _, _, _, X, _, _,
-            _, X, _, _, _, _, X, _, _, _
-    };
+    grid.data = {_, _, _, X, X, X, _, X, X, _, _, X, _, _, _, _, X, _,
+                 _, _, _, X, X, X, X, _, X, X, X, _, _, X, _, _, _, _,
+                 X, _, X, X, _, _, _, X, _, _, _, X, _, X, X, X, _, X,
+                 _, X, X, X, X, _, _, _, _, X, _, _, X, _, X, _, _, _,
+                 _, X, _, _, _, X, _, _, _, X, _, _, _, _, X, _, _, _};
 
     geometry_msgs::Point start;
     start.x = 0.0;
@@ -96,8 +90,10 @@ TEST(PathFinder, TestFullPath) {
 
     ASSERT_EQ(path.poses.size(), 9);
 
-    std::vector<float> expected_x = { 0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 1.0, 0.0, 0.0 };
-    std::vector<float> expected_y = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0 };
+    std::vector<float> expected_x = {
+    0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 1.0, 0.0, 0.0};
+    std::vector<float> expected_y = {
+    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
 
     for (int i = 0; i < path.poses.size(); i++) {
         EXPECT_FLOAT_EQ(expected_x[i], path.poses[i].pose.position.x);
@@ -109,7 +105,7 @@ TEST(PathFinder, PathFindingWhenGoalNotInGrid) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* map_meta_data of OccupancyGrid */
     // initialize map_meta_data
@@ -126,9 +122,7 @@ TEST(PathFinder, PathFindingWhenGoalNotInGrid) {
     // set map_meta_data
     grid.info = map_meta_data;
     grid.data = {
-            X, X,
-            X, X,
-            _, _,
+    X, X, X, X, _, _,
     };
 
     /* Starting point in map frame */
@@ -145,8 +139,8 @@ TEST(PathFinder, PathFindingWhenGoalNotInGrid) {
 
     EXPECT_EQ(path.poses.size(), 4);
 
-    std::vector<float> expected_x = { 3.0, 1.0, 1.0, 3.0 };
-    std::vector<float> expected_y = { 7.0, 5.0, 3.0, 1.0 };
+    std::vector<float> expected_x = {3.0, 1.0, 1.0, 3.0};
+    std::vector<float> expected_y = {7.0, 5.0, 3.0, 1.0};
     for (int i = 0; i < path.poses.size(); i++) {
         EXPECT_FLOAT_EQ(expected_x[i], path.poses[i].pose.position.x);
         EXPECT_FLOAT_EQ(expected_y[i], path.poses[i].pose.position.y);
@@ -202,13 +196,7 @@ TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGrid) {
                     grid.info.origin.position.y);
 
     std::vector<int8_t> expected_data = {
-    _,     _,     _,
-    _,     _,     X,
-    X, _,     _,
-    X, X, _,
-    _,     X, X,
-    _,     _,     _,
-    _,     _,
+    _, _, _, _, _, X, X, _, _, X, X, _, _, X, X, _, _, _, _, _,
     };
 
     EXPECT_EQ(expected_data, grid.data);
@@ -278,13 +266,7 @@ TEST(PathFinder, ProcessGridAndGetStartAndGoalOnGridWithAngle) {
     EXPECT_FLOAT_EQ(expected_origin_y, grid.info.origin.position.y);
 
     std::vector<int8_t> expected_data = {
-    _,     _,     _,
-    _,     _,     X,
-    X, _,     _,
-    X, X, _,
-    _,     X, X,
-    _,     _,     _,
-    _,     _,
+    _, _, _, _, _, X, X, _, _, X, X, _, _, X, X, _, _, _, _, _,
     };
 
     EXPECT_EQ(expected_data, grid.data);
