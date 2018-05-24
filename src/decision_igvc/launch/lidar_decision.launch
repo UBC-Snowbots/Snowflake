@@ -1,0 +1,17 @@
+<launch>
+
+    <node name="lidar_decision" pkg="decision_igvc" type="lidar_decision" output="screen">
+        <!-- TODO: These should be the default values -->
+        <remap from="/robot/laser/scan" to="/robot/laser/scan"/>
+
+        <!-- max_obstacle_angle_diff = M_PI/36 -->
+        <rosparam param="max_obstacle_angle_diff">0.08727</rosparam>
+        <rosparam param="max_obstacle_danger_distance">10</rosparam>
+
+        <!-- obstacle_danger_angle = M_PI/4 -->
+        <rosparam param="obstacle_danger_angle">0.7854</rosparam>
+
+        <rosparam param="twist_turn_rate">10</rosparam>
+        <rosparam param="twist_velocity">10</rosparam>
+    </node>
+</launch>
