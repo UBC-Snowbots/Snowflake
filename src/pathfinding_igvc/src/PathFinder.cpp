@@ -20,7 +20,7 @@ nav_msgs::Path PathFinder::calculatePath(geometry_msgs::Point start,
     grid, start, goal, start_on_grid, goal_on_grid);
 
     std::stack<AStar::GridPoint> points =
-    AStar().run(grid, start_on_grid, goal_on_grid);
+    AStar::run(grid, start_on_grid, goal_on_grid);
     return PathConstructor(OccupancyGridAdapter(grid.info))
     .constructPath(points);
 }

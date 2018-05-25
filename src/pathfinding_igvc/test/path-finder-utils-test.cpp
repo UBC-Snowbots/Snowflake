@@ -39,7 +39,7 @@ TEST(PathFinderUtils, TestFitPointInsideGridInNegativeRow) {
     // add origin to mapMetaData
     map_meta_data.origin = origin;
 
-    AStar::GridPoint grid_point = AStar::GridPoint(1, -100);
+    AStar::GridPoint grid_point = AStar::GridPoint(-100, 1);
 
     PathFinderUtils::fitPointInsideGrid(map_meta_data, grid_point);
 
@@ -62,7 +62,7 @@ TEST(PathFinderUtils, TestFitPointInsideGridInPositiveRow) {
     // add origin to mapMetaData
     map_meta_data.origin = origin;
 
-    AStar::GridPoint grid_point = AStar::GridPoint(3, 99999);
+    AStar::GridPoint grid_point = AStar::GridPoint(99999, 3);
 
     PathFinderUtils::fitPointInsideGrid(map_meta_data, grid_point);
 
@@ -85,7 +85,7 @@ TEST(PathFinderUtils, TestFitPointInsideGridInNegativeCol) {
     // add origin to mapMetaData
     map_meta_data.origin = origin;
 
-    AStar::GridPoint grid_point = AStar::GridPoint(-99999, 2);
+    AStar::GridPoint grid_point = AStar::GridPoint(2, -99999);
 
     PathFinderUtils::fitPointInsideGrid(map_meta_data, grid_point);
 
@@ -108,7 +108,7 @@ TEST(PathFinderUtils, TestFitPointInsideGridInPositiveCol) {
     // add origin to mapMetaData
     map_meta_data.origin = origin;
 
-    AStar::GridPoint grid_point = AStar::GridPoint(8888, 4);
+    AStar::GridPoint grid_point = AStar::GridPoint(4, 8888);
 
     PathFinderUtils::fitPointInsideGrid(map_meta_data, grid_point);
 
