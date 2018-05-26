@@ -53,8 +53,10 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     // NOTE: This acts similairly to a callback, expect that instead of being
     // triggered when we receive a message, it is triggered after a set period
     // of time
-    ros::Duration occ_grid_generation_persion(1 / occ_grid_generation_rate);
-
+    ros::Duration occ_grid_generation_period(1 / occ_grid_generation_rate);
+    
+    occ_grid_generation_timer = private_nh.createTimer(
+            occ_grid_generation_period, &ObstacleManagerNode::publishGeneratedOccupancyGrid, this);
 }
 
 void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle::ConstPtr &cone_msg) {

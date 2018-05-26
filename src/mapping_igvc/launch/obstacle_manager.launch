@@ -1,6 +1,6 @@
 <launch>
 
-    <node name="ObstacleManager" pkg="mapping_igvc" type="ObstacleManager" output="screen">
+    <node name="ObstacleManager" pkg="mapping_igvc" type="obstacle_manager_node" output="screen">
 
         <!--
             The minimum distance between the center of two cones for them to be
@@ -25,7 +25,7 @@
             generates. Raising this number will result in a higher resolution
             generated occupancy grid, but will make things slower
         -->
-        <rosparam param="occ_grid_cell_size"> 1.0 </rosparam>
+        <rosparam param="occ_grid_cell_size"> 0.1 </rosparam>
 
         <!--
             The maximum number of iterations to use when merging splines
@@ -44,13 +44,14 @@
             The frame of the generated occupancy grid. Obstacles will be 
             translated into this frame before being added to the occupancy grid
         -->
-        <rosparam param="occ_grid_frame"> "odom_combined" </rosparam>
+        <rosparam param="occ_grid_frame"> "base_link" </rosparam>
 
         <!--
             The rate (in hz) to publish the generated occupancy grid at
         -->
         <rosparam param="occ_grid_generation_rate"> 1.0 </rosparam>
 
+        <remap from="line_obstacles" to="/line_extractor_node/output_line_obstacle" />
 
     </node>
 
