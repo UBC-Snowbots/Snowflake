@@ -40,13 +40,13 @@ class ConeExtractorNode {
      */
     void publishMarkers(std::vector<mapping_igvc::ConeObstacle> cones);
 
-    double cone_dist_tol; // Distance tolerance between cones in cluster
-    double cone_rad_exp;  // Expected cone radius
-    double cone_rad_tol;  // Tolerance for cone radius (max diff between
-                         // calculated and expected values)
+    double cone_dist_tol;   // Distance tolerance between cones in cluster
+    double cone_rad_exp;    // Expected cone radius
+    double cone_rad_tol;    // Tolerance for cone radius (max diff between
+                            // calculated and expected values)
     int min_points_in_cone; // Index difference between points used in edge
                             // cluster splitting algorithm
-    double ang_threshold; // Max angle needed to split edge clusters
+    double ang_threshold;   // Max angle needed to split edge clusters
 };
 
 #endif // LASERSCAN_CONE_MANAGER_H
