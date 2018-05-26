@@ -11,6 +11,7 @@
 
 // ROS Includes
 #include <ros/ros.h>
+#include <tf/transform_listener.h>
 
 // Snowbots Includes
 #include <sb_utils.h>
@@ -44,6 +45,18 @@ private:
      */
     void publishGeneratedOccupancyGrid(const ros::TimerEvent& timer_event);
 
+    // TODO: Should this function be in the `sb_geom` package?
+    // TODO: Test me
+    /**
+     * Transforms a given Spline from a one given frame to another given frame
+     *
+     * @param from_frame the frame the Spline is to be transformed FROM
+     * @param to_frame  the frame the Spline is to be transformed TO
+     * @param transform_time the time at which to lookup the transform
+     * @return `spline` transformed from `from_frame` to `to_frame` at time `transform_time`
+     */
+    sb_geom::Spline transformSpline(sb_geom::Spline spline, std::string from_frame, std::string to_frame, ros::Time transform_time);
+
     // The principle class this node wraps, manages all obstacles and lets
     // us generate a map containing all known obstacles
     ObstacleManager obstacle_manager;
@@ -55,6 +68,9 @@ private:
     // Publisher for the generated occupancy grid
     ros::Publisher occ_grid_publisher;
 
+    // The listener that gets our transforms
+    tf::TransformListener* tf_listener;
+
     // Timer for publishing the generated occupancy grid
     ros::Timer occ_grid_generation_timer;
 
@@ -63,7 +79,7 @@ private:
 
     // The current sequence id for the published Occupancy Grid
     // (we increment this each time we publish a new grid)
-    int occ_grid_seq;
+    unsigned int occ_grid_seq;
 
 };
 #endif //MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H

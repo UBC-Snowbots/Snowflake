@@ -90,6 +90,14 @@ class Spline {
     std::vector<Point2D> getInterpolationPointsInRange(double start_u,
                                                        double end_u);
 
+    // TODO: Test me
+    /**
+     * Gets all the interpolation points that make up the spline
+     *
+     * @return all interpolation points that make up the spline
+     */
+    std::vector<Point2D> getInterpolationPoints();
+
     /**
      * Returns a point at some length in [0,1] along the spline
      *
@@ -198,6 +206,7 @@ class Spline {
 inline bool operator==(Spline s1, Spline s2) {
     return s1.interpolation_points == s2.interpolation_points;
 }
+
 }
 
 #endif // SB_GEOM_SPLINELINE_H

@@ -80,6 +80,10 @@ std::vector<Point2D> Spline::getInterpolationPointsInRange(double start_u,
                                 interpolation_points.begin() + end_index);
 }
 
+std::vector<Point2D> Spline::getInterpolationPoints() {
+    return interpolation_points;
+}
+
 Point2D Spline::getPointAtZeroToOneIndex(double u) {
     if (u < 0 || u > 1) {
         // Throw an exception if u is outside of [0,1]
