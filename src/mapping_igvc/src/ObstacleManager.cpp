@@ -199,6 +199,9 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
     // TODO (Part 4): prune obstacles outside a given distance from us (might want a seperate function for this)
 
+    // TODO: Is this the right place to do this? (keep in mind how expensive it is)
+    mergeCloseLines();
+
     // Find what cells are directly occupied (ie. overlapping) with
     // known obstacles
     std::vector<Point2D> occupied_points;
@@ -338,6 +341,25 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
             if (y >= 0 && y < occ_grid.info.height &&
                     x >= 0 && x < occ_grid.info.width){
                 occ_grid.data[y * occ_grid.info.width + x] = 100;
+            }
+        }
+    }
+}
+
+void ObstacleManager::mergeCloseLines() {
+    for (int i = 0; i < lines.size(); i++){
+        for (int j = i; j < lines.size(); j++){
+            // Check if any line is to close to any other line
+            if (minDistanceBetweenSplines(lines[i], lines[j], closest_spline_max_iters) < line_merging_tolerance){
+                // Remove the second of the two lines
+                Spline line = lines[j];
+                lines.erase(lines.begin()+j);
+                // Merge it back into the first
+                lines[i] = updateLineWithNewLine(lines[i], line);
+                // Reset counters
+                i = 0;
+                j = 0;
+                break;
             }
         }
     }

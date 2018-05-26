@@ -180,6 +180,12 @@ private:
     sb_geom::Spline updateLineWithNewLine(sb_geom::Spline current_line,
                                           sb_geom::Spline new_line);
 
+    // TODO: Test me
+    /**
+     * Merges any lines together that are within `line_merging_tolerance`
+     */
+    void mergeCloseLines();
+
     // the minimum distance between the center of two cones for them to be
     // considered different from each other (and so not merged)
     double cone_merging_tolerance;
