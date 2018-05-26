@@ -12,9 +12,11 @@
 // ROS Includes
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
+#include <visualization_msgs/Marker.h>
 
 // Snowbots Includes
 #include <sb_utils.h>
+#include <RvizUtils.h>
 #include "ObstacleManager.h"
 #include "mapping_igvc/ConeObstacle.h"
 #include "mapping_igvc/LineObstacle.h"
@@ -37,6 +39,13 @@ private:
      * @param line_msg the line obstacle
      */
     void lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr& line_msg);
+
+    /**
+     * Publishes all obstacles as markers that can be visualised in RViz
+     *
+     * @param timer_event this param is required to let us call this function on a timer, but we ignore it
+     */
+    void publishObstacleMarkers(const ros::TimerEvent& timer_event);
 
     /**
      * Publishes the generated occupancy grid
@@ -67,6 +76,9 @@ private:
 
     // Publisher for the generated occupancy grid
     ros::Publisher occ_grid_publisher;
+
+    // Publisher for Line Obstacles
+    ros::Publisher rviz_line_publisher;
 
     // The listener that gets our transforms
     tf::TransformListener* tf_listener;
