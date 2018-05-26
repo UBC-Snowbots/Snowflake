@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
     std_msgs
     sb_utils
     sb_geom
+    tf
 )
 find_package(OpenMP REQUIRED)
 if(OPENMP_FOUND)

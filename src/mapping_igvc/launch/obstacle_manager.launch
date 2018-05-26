@@ -18,7 +18,7 @@
             The buffer to add around each obstacle when generating the occupancy
             grid for our currently known world
         -->
-        <rosparam param="obstacle_inflation_buffer"> 1.0 </rosparam>
+        <rosparam param="obstacle_inflation_buffer"> 0.5 </rosparam>
 
         <!--
             The size (length/width) of the cells in occupancy grids this class
@@ -44,7 +44,7 @@
             The frame of the generated occupancy grid. Obstacles will be 
             translated into this frame before being added to the occupancy grid
         -->
-        <rosparam param="occ_grid_frame"> "base_link" </rosparam>
+        <rosparam param="occ_grid_frame"> "map" </rosparam>
 
         <!--
             The rate (in hz) to publish the generated occupancy grid at

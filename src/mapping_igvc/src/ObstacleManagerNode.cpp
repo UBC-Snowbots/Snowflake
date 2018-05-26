@@ -68,24 +68,25 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
 }
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
-    // TODO (Part 4): Translate to `occ_grid_frame` before adding to obstacle manager
-    // To Transform:
-    // - convert to spline (which will select some interpolation points)
-    // - translate the interpolation points
-    // - generate a new spline with these interpolation points
-    // - add this new spline to the Manager
-
     // Create a spline from the given polynomial line
     sb_geom::PolynomialSegment poly_segment(line_msg->coefficients, line_msg->x_min, line_msg->x_max);
     sb_geom::Spline spline(poly_segment);
 
+    // TODO: delete me
+    ROS_WARN("1");
+
     // Check that we can transform the line into the map frame
+    // TODO: Handle case where the line_msg has no frame (right now will just crash)
+    // TODO: This seems to crash if it can't find the transform????
     std::string* tf_err_msg;
     if (!tf_listener->canTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, tf_err_msg)){
         ROS_WARN_STREAM(
                 "Could not transform line from \"" << line_msg->header.frame_id <<  "to \"" << this->occ_grid_frame << ": " <<  *tf_err_msg);
         return;
     }
+
+    // TODO: delete me
+    ROS_WARN("2");
 
     sb_geom::Spline transformed_spline = transformSpline(spline, line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp);
 
