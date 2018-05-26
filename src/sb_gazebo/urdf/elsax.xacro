@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+<!--
+     The Model for elsa-x, a 2-wheel drive robot with front and back caster wheels
+-->
+<robot name="elsax" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="chassis_length" value="0.94"/>
+  <xacro:property name="chassis_width" value="0.75"/>
+  <xacro:property name="chassis_height" value="0.59"/>
+  <xacro:property name="chassis_mass" value="30"/>
+  <xacro:property name="chassis_elevation" value="0.1"/>
+
+  <xacro:property name="tower_height" value="0.4"/>
+  <xacro:property name="tower_thickness" value="0.05"/>
+  <xacro:property name="tower_mass" value="0"/>
+
+  <xacro:property name="wheel_radius" value="0.21"/>
+  <xacro:property name="wheel_width" value="0.12"/>
+  <xacro:property name="wheel_displace" value="0.0"/>
+  <xacro:property name="wheel_mass" value="1"/>
+
+  <xacro:property name="caster_radius" value="0.04" />
+  <xacro:property name="caster_mass" value="1"/>
+
+  <xacro:property name="camera_size" value="0.05"/>
+  <xacro:property name="camera_mass" value="0.1"/>
+  <xacro:property name="camera_angle" value="${pi/8}"/>
+
+  <xacro:property name="lidar_size" value="0.05"/>
+  <xacro:property name="lidar_elevation" value="0.1"/>
+  <xacro:property name="lidar_mass" value="0"/>
+  <xacro:property name="lidar_mass" value="0"/>
+  <xacro:property name="lidar_angle" value="0"/>
+
+  <xacro:property name="gps_size" value="0.05"/>
+  <xacro:property name="gps_mass" value="0"/>
+
+  <xacro:include filename="$(find sb_gazebo)/urdf/elsax.gazebo"/>
+  <xacro:include filename="$(find sb_gazebo)/urdf/materials.xacro"/>
+  <xacro:include filename="$(find sb_gazebo)/urdf/macros.xacro"/>
+
+
+  <!-- Footprint of the robot (because gazebo's base_link can't have interia) -->
+  <link name='base_link'/>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+  </joint>
+
+
+  <!-- The main body of the robot -->
+  <link name='chassis'>
+    <collision>
+      <origin xyz="0 0 ${chassis_height/2 + chassis_elevation}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 ${chassis_height/2 + 0.1}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 ${chassis_height/2 + 0.1}" rpy="0 0 0"/>
+      <mass value="${chassis_mass}"/>
+      <box_inertia m="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="${chassis_height}"/>
+    </inertial>
+  </link>
+
+
+  <!-- Drive wheels (Most of the work for these is done in macros.xacro) -->
+  <wheel lr="left" tY="1" fb="centre" wheel_displacement="${wheel_displace}"/>
+  <wheel lr="right" tY="-1" fb="centre" wheel_displacement="${wheel_displace}"/>
+
+  <!-- Caster Wheels -->
+  <caster_wheel lr="front" tY="0" fb="front" wheel_displacement="0.35" caster_radius="${caster_radius}"/>
+  <caster_wheel lr="back" tY="0" fb="back" wheel_displacement="-0.35" caster_radius="${caster_radius}"/>
+
+  <!-- Vertical Tower Uprights -->
+  <tower_vert lr="left" tY="1" tX="1"/>
+  <tower_vert lr="right" tY="-1" tX="1"/>
+
+
+  <!-- Horizontal Tower Top Bar -->
+  <joint name="tower_top_bar_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="tower_top_bar"/>
+    <origin
+        xyz="${(chassis_length/2) - (tower_thickness/2)} 0 ${chassis_height + chassis_elevation + tower_height - (tower_thickness/2)}"
+        rpy="0 0 0"/>
+  </joint>
+
+  <link name='tower_top_bar'>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${tower_thickness} ${chassis_width} ${tower_thickness}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${tower_thickness} ${chassis_width} ${tower_thickness}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="${tower_mass}"/>
+      <box_inertia m="${tower_mass}" x="${tower_thickness}" y="${chassis_width}" z="${tower_thickness}"/>
+    </inertial>
+
+  </link>
+
+
+  <!-- Camera -->
+  <joint name="camera_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="camera"/>
+    <origin xyz="${(chassis_length/2)} 0 ${chassis_height + chassis_elevation + tower_height + camera_size}"
+            rpy="0 ${camera_angle} 0"/>
+  </joint>
+
+  <link name="camera">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <inertial>
+      <mass value="${camera_mass}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <box_inertia m="${camera_mass}" x="${camera_size}" y="${camera_size}" z="${camera_size}"/>
+    </inertial>
+  </link>
+
+
+  <!-- Hack to get the "zed" output to the right orientation -->
+  <joint name="zed_orientation" type="fixed">
+    <parent link="camera"/>
+    <child link="zed_pointcloud"/>
+    <origin xyz="0 0 0" rpy="${-(pi/2)} 0 ${-(pi/2)}"/>
+  </joint>
+
+  <link name="zed_pointcloud"/>
+
+
+  <!-- End Hack -->
+
+  <!-- Lidar -->
+  <joint name="lidar_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="lidar"/>
+    <origin xyz="${chassis_length/2} 0 ${chassis_elevation + lidar_elevation}" rpy="0 ${lidar_angle} 0"/>
+  </joint>
+
+  <link name="lidar">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${lidar_size} ${lidar_size} ${lidar_size}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${lidar_size} ${lidar_size} ${lidar_size}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <inertial>
+      <mass value="${lidar_mass}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <box_inertia m="${lidar_mass}" x="${lidar_size}" y="${lidar_size}" z="${lidar_size}"/>
+    </inertial>
+  </link>
+
+</robot>

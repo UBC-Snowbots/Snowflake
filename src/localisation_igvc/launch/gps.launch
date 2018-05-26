@@ -1,0 +1,12 @@
+<launch>
+
+    <!-- Start the GPS Driver -->
+    <include file="$(find nmea_navsat_driver)/launch/nmea_gps.launch" />
+
+    <!-- Translate the GPS Messages to Odometry Messages for `robot_pose_ekf` -->
+    <include file="$(find localisation_igvc)/launch/gps_to_odom.launch"/>
+
+    <!-- Define the Transform from the base of the robot to the gps -->
+    <node pkg="tf" type="static_transform_publisher" name="gps_static_transform" args="0.25 0 0.75 0 0 0 1 base_link gps 100" />
+
+</launch>

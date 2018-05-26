@@ -6,10 +6,10 @@
     -->
     <node name="gps_to_odom" pkg="gps_common" type="utm_odometry_node"> 
         <param name="rot_covariance" value="99999" /> 
-        <param name="frame_id" value="base_link" /> 
+        <param name="frame_id" value="gps" /> 
  
-        <remap from="odom" to="/gps_driver/odom" /> 
-        <remap from="fix" to="/gps_driver/navsatfix" /> 
+        <remap from="odom" to="/gps/odom" /> 
+        <remap from="fix" to="/gps/navsatfix" /> 
     </node> 
 
 </launch>

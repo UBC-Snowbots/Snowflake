@@ -9,6 +9,8 @@
         49.2624439204, -123.248579687
         ]
         </rosparam>
+        <rosparam param="base_frame">base_link</rosparam>
+        <rosparam param="global_frame">map</rosparam>
     </node>
 
 </launch>

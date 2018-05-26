@@ -10,7 +10,7 @@
 
         <!-- rviz parameters -->
         <!-- frame id should match the one of "/height_filter/output" -->
-        <param name="frame_id" value="base_link" />
+        <param name="frame_id" value="camera_color_optical_frame" />
         <!-- scale of the points displayed in rviz -->
         <param name="scale" value="0.01" />
 
