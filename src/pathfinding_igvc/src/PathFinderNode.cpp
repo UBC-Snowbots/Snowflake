@@ -30,6 +30,8 @@ PathFinderNode::PathFinderNode(int argc,
     uint32_t queue_size = 1;
     this->publisher           = private_nh.advertise<nav_msgs::Path>(
     topic_to_publish_to, queue_size);
+
+    this->_listener = new tf::TransformListener();
 }
 
 void PathFinderNode::occupancyGridCallback(const nav_msgs::OccupancyGrid grid) {
@@ -52,7 +54,7 @@ void PathFinderNode::publishPath() {
     tf::StampedTransform transform;
 
     try {
-        this->_listener.lookupTransform(this->_global_frame_name, this->_base_frame_name,
+        this->_listener->lookupTransform(this->_global_frame_name, this->_base_frame_name,
                                         ros::Time(0), transform);
     } catch (tf::TransformException ex){
         // If we can't lookup the tf, then don't publish path

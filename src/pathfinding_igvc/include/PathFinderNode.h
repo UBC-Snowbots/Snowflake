@@ -22,7 +22,7 @@ class PathFinderNode {
     ros::Subscriber goal_subscriber;
     ros::Publisher publisher;
 
-    tf::TransformListener _listener;
+    tf::TransformListener *_listener;
 
     std::string _global_frame_name;
     std::string _base_frame_name;

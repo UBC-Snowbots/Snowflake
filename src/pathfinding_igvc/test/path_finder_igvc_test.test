@@ -3,7 +3,7 @@
 <launch>
     <node name="path_finder" pkg="pathfinding_igvc" type="path_finder" output="screen">
         <rosparam param="base_frame_name"> "base_link" </rosparam>
-        <rosparam param="global_frame_name"> "global_link" </rosparam>
+        <rosparam param="global_frame_name"> "map" </rosparam>
     </node>
     <test test-name="path_finder_rostest" pkg="pathfinding_igvc" type="path_finder_rostest" />
 </launch>
