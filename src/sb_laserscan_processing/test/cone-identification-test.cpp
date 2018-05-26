@@ -8,39 +8,6 @@
 #include <ConeIdentification.h>
 #include <gtest/gtest.h>
 
-/*
-TEST(ConeIdentification, testRegressionSlope1) {
-    std::vector<mapping_igvc::Point2D>edge_points;
-    mapping_igvc::Point2D p1; p1.x = 0; p1.y = 0;
-    mapping_igvc::Point2D p2; p2.x = 1; p2.y = 1;
-    mapping_igvc::Point2D p3; p3.x = 2; p3.y = 2;
-    edge_points.push_back(p1);
-    edge_points.push_back(p2);
-    edge_points.push_back(p3);
-
-    double slope = ConeIdentification::getRegressionSlope(edge_points);
-    EXPECT_NEAR(1.0, slope, 0.001);
-}
-
-TEST(ConeIdentification, testRegressionSlope2) {
-    std::vector<mapping_igvc::Point2D>edge_points;
-    mapping_igvc::Point2D p1; p1.x = 0; p1.y = 0;
-    mapping_igvc::Point2D p2; p2.x = 1; p2.y = 1.1;
-    mapping_igvc::Point2D p3; p3.x = 2; p3.y = 2.3;
-    mapping_igvc::Point2D p4; p4.x = 3; p4.y = 3.5;
-    mapping_igvc::Point2D p5; p5.x = 4; p5.y = 4.9;
-    mapping_igvc::Point2D p6; p6.x = 5; p6.y = 6.0;
-    edge_points.push_back(p1);
-    edge_points.push_back(p2);
-    edge_points.push_back(p3);
-    edge_points.push_back(p4);
-    edge_points.push_back(p5);
-    edge_points.push_back(p6);
-
-    double slope = ConeIdentification::getRegressionSlope(edge_points);
-    EXPECT_NEAR(1.217, slope, 0.02);
-}*/
-
 // Test 3 points->cone in an edge (forming a semi circle) - points are evenly
 // distributed
 TEST(ConeIdentification, edgeToCone3Points) {
