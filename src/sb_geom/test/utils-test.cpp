@@ -231,6 +231,19 @@ TEST_F(UtilsTest, getInterpolationPointsFromPolySegment_complex_polynomial) {
     }
 }
 
+// TODO: Add more tests for `getInterpolationPointsFromPolySegment`:
+/*
+ * Changing it to the following still lets tests pass, but is grossly incorrect:
+ * ```
+ *
+    for (double& root : roots) {
+        if (root > poly_segment.x_min() && root < poly_segment.x_max())
+            ;
+        interpolation_points.emplace_back(Point2D(root, poly_segment(root)));
+    }
+    ```
+ */
+
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
