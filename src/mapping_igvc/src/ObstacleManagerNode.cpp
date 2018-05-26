@@ -48,6 +48,8 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     // Setup Publisher(s)
     std::string topic = private_nh.resolveName("occ_grid");
     occ_grid_publisher = private_nh.advertise<nav_msgs::OccupancyGrid>(topic, 10);
+    topic = private_nh.resolveName("debug/lines");
+    rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(topic, 10);
 
     // Setup Transform Listener
     this->tf_listener = new tf::TransformListener();
@@ -129,5 +131,40 @@ sb_geom::Spline ObstacleManagerNode::transformSpline(sb_geom::Spline spline, std
     sb_geom::Spline transformed_spline(transformed_points);
 
     return transformed_spline;
+}
+
+void ObstacleManagerNode::publishObstacleMarkers(const ros::TimerEvent& timer_event) {
+    // TODO: Publish Cones
+
+    // Publish lines
+    std::vector<geometry_msgs::Point> lines_points;
+    for (sb_geom::Spline& spline : this->obstacle_manager.getLineObstacles()){
+        // Decompose the spline into a lot of points
+        // TODO: Make number of points in param
+        // TODO: Make scale and color a param
+        int num_points = 200;
+        for (int i = 0; i < num_points; i++){
+            sb_geom::Point2D spline_point = spline(1/num_points * i);
+            geometry_msgs::Point point;
+            point.x = spline_point.x();
+            point.y = spline_point.y();
+            point.z = 0;
+            lines_points.emplace_back(point);
+        }
+    }
+
+    visualization_msgs::Marker::_color_type color =
+            snowbots::RvizUtils::createMarkerColor(0.0, 1.0, 1.0, 1.0);
+    visualization_msgs::Marker::_scale_type scale =
+            snowbots::RvizUtils::createrMarkerScale(0.1, 0.1, 0.1);
+
+    visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(lines_points,
+                                      color,
+                                      scale,
+                                      this->occ_grid_frame,
+                                      "debug",
+                                      visualization_msgs::Marker::POINTS);
+
+    rviz_line_publisher.publish(marker);
 }
 
