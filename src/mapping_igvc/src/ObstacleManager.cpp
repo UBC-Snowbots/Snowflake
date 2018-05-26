@@ -27,17 +27,14 @@ ObstacleManager::ObstacleManager(double cone_merging_tolerance,
                                  double obstacle_inflation_buffer,
                                  double occ_grid_cell_size,
                                  unsigned int line_merging_max_iters,
-                                 unsigned int closest_line_max_iters,
-                                 std::string occ_grid_frame
+                                 unsigned int closest_line_max_iters
 ) :
 cone_merging_tolerance(cone_merging_tolerance),
 line_merging_tolerance(line_merging_tolerance),
 obstacle_inflation_buffer(obstacle_inflation_buffer),
 occ_grid_cell_size(occ_grid_cell_size),
 spline_merging_max_iters(line_merging_max_iters),
-closest_spline_max_iters(closest_line_max_iters),
-occ_grid_frame(occ_grid_frame),
-occ_grid_seq(0)
+closest_spline_max_iters(closest_line_max_iters)
 {}
 
 std::vector<mapping_igvc::ConeObstacle> ObstacleManager::getConeObstacles() {
@@ -234,11 +231,6 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
     }
 
     nav_msgs::OccupancyGrid occ_grid;
-
-    occ_grid.header.frame_id = occ_grid_frame;
-    occ_grid.header.stamp = ros::Time::now();
-    occ_grid.header.seq = occ_grid_seq;
-    occ_grid_seq++;
 
     // Set MapMetaData
     occ_grid.info.map_load_time = ros::Time(0);

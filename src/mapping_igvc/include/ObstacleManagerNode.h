@@ -37,6 +37,13 @@ private:
      */
     void lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr& line_msg);
 
+    /**
+     * Publishes the generated occupancy grid
+     *
+     * @param timer_event this param is required to let us call this function on a timer, but we ignore it
+     */
+    void publishGeneratedOccupancyGrid(const ros::TimerEvent& timer_event);
+
     // The principle class this node wraps, manages all obstacles and lets
     // us generate a map containing all known obstacles
     ObstacleManager obstacle_manager;
@@ -48,8 +55,15 @@ private:
     // Publisher for the generated occupancy grid
     ros::Publisher occ_grid_publisher;
 
+    // Timer for publishing the generated occupancy grid
+    ros::Timer occ_grid_generation_timer;
+
     // The frame the generated occupancy grid will be in
     std::string occ_grid_frame;
+
+    // The current sequence id for the published Occupancy Grid
+    // (we increment this each time we publish a new grid)
+    int occ_grid_seq;
 
 };
 #endif //MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H
