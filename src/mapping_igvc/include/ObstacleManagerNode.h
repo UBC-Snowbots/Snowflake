@@ -86,6 +86,9 @@ private:
     // Timer for publishing the generated occupancy grid
     ros::Timer occ_grid_generation_timer;
 
+    // Timer for publishing debug RViz Markers
+    ros::Timer debug_marker_generation_timer;
+
     // The frame the generated occupancy grid will be in
     std::string occ_grid_frame;
 

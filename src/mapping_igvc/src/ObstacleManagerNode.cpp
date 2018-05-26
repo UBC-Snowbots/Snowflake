@@ -49,7 +49,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     std::string topic = private_nh.resolveName("occ_grid");
     occ_grid_publisher = private_nh.advertise<nav_msgs::OccupancyGrid>(topic, 10);
     topic = private_nh.resolveName("debug/lines");
-    rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(topic, 10);
+    rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(topic, 1);
 
     // Setup Transform Listener
     this->tf_listener = new tf::TransformListener();
@@ -59,9 +59,14 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     // triggered when we receive a message, it is triggered after a set period
     // of time
     ros::Duration occ_grid_generation_period(1 / occ_grid_generation_rate);
-    
     occ_grid_generation_timer = private_nh.createTimer(
             occ_grid_generation_period, &ObstacleManagerNode::publishGeneratedOccupancyGrid, this);
+
+    // Setup timer for debug marker publishing
+    // TODO: Make this rate a seperate param
+    ros::Duration debug_marker_generation_period(1 / occ_grid_generation_rate);
+    debug_marker_generation_timer = private_nh.createTimer(
+            occ_grid_generation_period, &ObstacleManagerNode::publishObstacleMarkers, this);
 }
 
 void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle::ConstPtr &cone_msg) {
@@ -133,28 +138,30 @@ sb_geom::Spline ObstacleManagerNode::transformSpline(sb_geom::Spline spline, std
     return transformed_spline;
 }
 
+// TODO: Delete me
 void ObstacleManagerNode::publishObstacleMarkers(const ros::TimerEvent& timer_event) {
     // TODO: Publish Cones
 
     // Publish lines
     std::vector<geometry_msgs::Point> lines_points;
-    for (sb_geom::Spline& spline : this->obstacle_manager.getLineObstacles()){
+    for (sb_geom::Spline spline : this->obstacle_manager.getLineObstacles()){
         // Decompose the spline into a lot of points
         // TODO: Make number of points in param
         // TODO: Make scale and color a param
         int num_points = 200;
         for (int i = 0; i < num_points; i++){
-            sb_geom::Point2D spline_point = spline(1/num_points * i);
+            sb_geom::Point2D spline_point = spline(1.0/(double)num_points * (double)i);
             geometry_msgs::Point point;
             point.x = spline_point.x();
             point.y = spline_point.y();
             point.z = 0;
+            geometry_msgs::Point transformed_point;
             lines_points.emplace_back(point);
         }
     }
 
     visualization_msgs::Marker::_color_type color =
-            snowbots::RvizUtils::createMarkerColor(0.0, 1.0, 1.0, 1.0);
+            snowbots::RvizUtils::createMarkerColor(1.0, 0.0, 1.0, 1.0);
     visualization_msgs::Marker::_scale_type scale =
             snowbots::RvizUtils::createrMarkerScale(0.1, 0.1, 0.1);
 

@@ -44,7 +44,7 @@ LineExtractorNode::LineExtractorNode(int argc,
     SB_getParam(private_nh, scale_param, this->scale, default_scale);
 
     std::string frame_id_param   = "frame_id";
-    std::string default_frame_id = "line_extractor_test";
+    std::string default_frame_id = "base_link";
     SB_getParam(private_nh, frame_id_param, this->frame_id, default_frame_id);
 
     if (areParamsInvalid()) {
@@ -242,6 +242,8 @@ LineExtractorNode::vectorToLineObstacle(Eigen::VectorXf v,
     }
 
     getClusterXRange(line_obstacle.x_min, line_obstacle.x_max, cluster_index);
+
+    line_obstacle.header.frame_id = this->frame_id;
 
     return line_obstacle;
 }
