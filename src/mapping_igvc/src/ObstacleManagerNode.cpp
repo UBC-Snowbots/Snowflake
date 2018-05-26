@@ -56,6 +56,11 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
     // TODO (Part 4): Translate to `occ_grid_frame` before adding to obstacle manager
+    // To Transform:
+    // - convert to spline (which will select some interpolation points)
+    // - translate the interpolation points
+    // - generate a new spline with these interpolation points
+    // - add this new spline to the Manager
     obstacle_manager.addObstacle(*line_msg);
 }
 
