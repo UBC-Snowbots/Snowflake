@@ -49,6 +49,9 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     std::string topic = private_nh.resolveName("occ_grid");
     occ_grid_publisher = private_nh.advertise<nav_msgs::OccupancyGrid>(topic, 10);
 
+    // Setup Transform Listener
+    this->tf_listener = new tf::TransformListener();
+
     // Setup the timer that will publish the occupancy grid at a set frequency
     // NOTE: This acts similairly to a callback, expect that instead of being
     // triggered when we receive a message, it is triggered after a set period
@@ -69,7 +72,22 @@ void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle:
     // - translate the interpolation points
     // - generate a new spline with these interpolation points
     // - add this new spline to the Manager
-    obstacle_manager.addObstacle(*line_msg);
+
+    // Create a spline from the given polynomial line
+    sb_geom::PolynomialSegment poly_segment(line_msg->coefficients, line_msg->x_min, line_msg->x_max);
+    sb_geom::Spline spline(poly_segment);
+
+    // Check that we can transform the line into the map frame
+    std::string* tf_err_msg;
+    if (!tf_listener->canTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, tf_err_msg)){
+        ROS_WARN_STREAM(
+                "Could not transform line from \"" << line_msg->header.frame_id <<  "to \"" << this->occ_grid_frame << ": " <<  *tf_err_msg);
+        return;
+    }
+
+    sb_geom::Spline transformed_spline = transformSpline(spline, line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp);
+
+    obstacle_manager.addObstacle(transformed_spline);
 }
 
 void ObstacleManagerNode::publishGeneratedOccupancyGrid(const ros::TimerEvent &timer_event) {
@@ -81,5 +99,32 @@ void ObstacleManagerNode::publishGeneratedOccupancyGrid(const ros::TimerEvent &t
     occ_grid_seq++;
 
     occ_grid_publisher.publish(occ_grid);
+}
+
+sb_geom::Spline ObstacleManagerNode::transformSpline(sb_geom::Spline spline, std::string from_frame, std::string to_frame,
+                                                               ros::Time transform_time) {
+    // Transform the interpolation points that make up the spline
+    std::vector<sb_geom::Point2D> transformed_points;
+    for (sb_geom::Point2D& point : spline.getInterpolationPoints()) {
+        // Construct a PointStamped from our Point2D
+        geometry_msgs::PointStamped stamped_point;
+        stamped_point.header.stamp = transform_time;
+        stamped_point.header.frame_id = from_frame;
+        stamped_point.point.x = point.x();
+        stamped_point.point.y = point.y();
+        stamped_point.point.z = 0;
+        // Transform the PointStamped
+        geometry_msgs::PointStamped transformed_stamped_point;
+        tf_listener->transformPoint(to_frame, stamped_point, transformed_stamped_point);
+        // Convert back to Point2D
+        sb_geom::Point2D transformed_point(transformed_stamped_point.point.x, transformed_stamped_point.point.y);
+
+        transformed_points.emplace_back(transformed_point);
+    }
+
+    // Construct a new Spline from the transformed points
+    sb_geom::Spline transformed_spline(transformed_points);
+
+    return transformed_spline;
 }
 
