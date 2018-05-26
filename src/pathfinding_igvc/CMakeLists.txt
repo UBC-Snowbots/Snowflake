@@ -7,6 +7,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
 endif()
 
+
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS roscpp)
 find_package(sb_utils REQUIRED)
