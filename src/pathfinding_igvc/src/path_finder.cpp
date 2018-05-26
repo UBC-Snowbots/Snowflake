@@ -9,7 +9,7 @@
 
 int main(int argc, char** argv) {
     // Setup your ROS node
-    std::string node_name = "path_finder_node";
+    std::string node_name = "path_finder";
 
     // Create an instance of your class
     PathFinderNode node(argc, argv, node_name);
