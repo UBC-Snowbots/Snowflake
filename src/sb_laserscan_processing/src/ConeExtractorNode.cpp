@@ -48,7 +48,7 @@ ConeExtractorNode::ConeExtractorNode(int argc, char **argv, std::string node_nam
                 ang_threshold,
                 default_ang_threshold);
 
-    std::string subscribe_topic = "/scan"; // Setup subscriber to laserscan (Placeholder)
+    std::string subscribe_topic = "/robot/laser/scan"; // Setup subscriber to laserscan (Placeholder)
     laser_subscriber = nh.subscribe(subscribe_topic, queue_size, &ConeExtractorNode::laserCallBack, this);
 
     std::string output_cone_topic = "output_cone_obstacle"; //Placeholder
@@ -69,14 +69,7 @@ void ConeExtractorNode::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& pt
     std::vector<mapping_igvc::ConeObstacle> cones = ConeIdentification::identifyCones(laser_msg, cone_dist_tol, cone_rad_exp, cone_rad_tol, min_points_in_cone, ang_threshold);
     for (int i=0; i<cones.size(); i++){ //Publish cones individually
         cone_publisher.publish(cones[i]);
-
-        std::cout<<"Cone #:"<<i<<std::endl;
-        std::cout<<"X: "<<cones[i].center.x<<std::endl;
-        std::cout<<"Y: "<<cones[i].center.y<<std::endl;
-        std::cout<<"R: "<<cones[i].radius<<std::endl;
-        std::cout<<std::endl;
     }
-    std::cout<<"================="<<std::endl;
     publishMarkers(cones);
 }
 

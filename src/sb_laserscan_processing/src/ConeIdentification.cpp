@@ -37,19 +37,6 @@ std::vector<mapping_igvc::ConeObstacle> ConeIdentification::identifyCones(const 
                 edge_points.push_back(point);
             }
 
-            /*
-            mapping_igvc::Point2D point = laserToPoint(laser_msg.ranges[i], laser_msg.angle_min + i * laser_msg.angle_increment); //Convert to x-y point
-            edge_points.push_back(point);
-
-            //If out of dist_tol or end of points, analyze edge points so far to create cone, and clear edge_points
-            if ((getDist(edge_points.back(), point) > dist_tol) || i == numIndices - 1) {
-
-                std::cout << "Dist: " << getDist(edge_points.back(), point) << std::endl;
-
-                addConesInEdgeCluster(identified_cones, edge_points, radius_exp, radius_tol, min_points_in_cone,
-                                      ang_threshold, frame_id);
-                edge_points.clear();
-            }*/
         }
     }
     return identified_cones;
@@ -68,16 +55,12 @@ void ConeIdentification::addConesInEdgeCluster(std::vector<mapping_igvc::ConeObs
                 mapping_igvc::ConeObstacle potential_cone = edgeToCone(split_edges[i]);
 
                 if (fabs(potential_cone.radius - radius_exp) <= radius_tol) { //Within expected radius, valid cone
+
                     potential_cone.radius = radius_exp;
                     potential_cone.header.frame_id = frame_id;
                     potential_cone.header.stamp = ros::Time::now();
                     identified_cones.push_back(potential_cone);
                 }
-                /*
-                potential_cone.header.frame_id = frame_id;
-                potential_cone.header.stamp = ros::Time::now();
-                if (std::isfinite(potential_cone.radius))
-                    identified_cones.push_back(potential_cone);*/
             }
         }
     }
@@ -90,11 +73,6 @@ void ConeIdentification::addConesInEdgeCluster(std::vector<mapping_igvc::ConeObs
             potential_cone.header.stamp = ros::Time::now();
             identified_cones.push_back(potential_cone);
         }
-        /*
-        potential_cone.header.frame_id = frame_id;
-        potential_cone.header.stamp = ros::Time::now();
-        if (std::isfinite(potential_cone.radius))
-            identified_cones.push_back(potential_cone);*/
     }
 }
 
@@ -118,18 +96,6 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
     std::vector<double> angles; //index 0 corresponds to index min_points_in_cone of edge_points vector
     for (int i = min_points_in_cone; i < edge_points.size() - min_points_in_cone; i++){
 
-        /*
-        std::vector<mapping_igvc::Point2D> pointGroup1(edge_points.begin() + i - min_points_in_cone, edge_points.begin() + i + 1);
-        std::vector<mapping_igvc::Point2D> pointGroup2(edge_points.begin() + i, edge_points.begin() + i + min_points_in_cone + 1);
-        double slope1 = getRegressionSlope(pointGroup1);
-        double slope2 = getRegressionSlope(pointGroup2);
-        double ang = atan((slope1 - slope2) / (1 + slope1 * slope2));
-        ang = M_PI - ang;
-        //if (ang < 0) ang += 2 * M_PI;
-        std::cout<<"Slope1: "<<slope1<<std::endl;
-        std::cout<<"Slope2: "<<slope2<<std::endl;
-        std::cout<<"Angle: "<<ang<<std::endl;*/
-
         //Calculate the angle between the two lines we form
         double AB_x = edge_points[i].x - edge_points[i - min_points_in_cone].x;
         double AB_y = edge_points[i].y - edge_points[i - min_points_in_cone].y;
@@ -143,7 +109,7 @@ std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(co
         angles.push_back(ang);
     }
 
-    //Find local mins, then check if they are below threshold
+    //Find local mins, then check if they are below threshold - if true, mark as index to split at
     std::vector<size_t> splitIndices;
     for (int i = 1; i < angles.size() - 1; i++){
         bool isLocalMin = true;
@@ -239,12 +205,6 @@ mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(const std::vector<mapp
     cone.center.x = Xcenter + meanX; // estimated x position
     cone.center.y = Ycenter + meanY; //estimated y position
     cone.radius = sqrt(Xcenter*Xcenter + Ycenter*Ycenter + Mz - x - x); //estimated radius
-
-    /*
-    std::cout<<"X: "<<cone.center.x<<std::endl;
-    std::cout<<"Y: "<<cone.center.y<<std::endl;
-    std::cout<<"R: "<<cone.radius<<std::endl;
-    std::cout<<std::endl;*/
 
     return cone;
 }
