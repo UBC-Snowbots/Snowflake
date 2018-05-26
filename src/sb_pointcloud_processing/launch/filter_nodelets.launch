@@ -56,8 +56,8 @@
             filter_limit_min: 0
             filter_limit_max: 0.2
             filter_limit_negative: False
-            input_frame: zed_left_camera
-            output_frame: zed_left_camera
+            input_frame: base_link
+            output_frame: base_link
         </rosparam>
     </node>
 
