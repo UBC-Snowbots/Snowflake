@@ -12,13 +12,13 @@
             The minimum distance between two lines for them to be
             considered different from each other (and so not merged)
         -->
-        <rosparam param="line_merging_tolerance"> 0.5 </rosparam>
+        <rosparam param="line_merging_tolerance"> 1.0 </rosparam>
 
         <!--
             The buffer to add around each obstacle when generating the occupancy
             grid for our currently known world
         -->
-        <rosparam param="obstacle_inflation_buffer"> 0.1 </rosparam>
+        <rosparam param="obstacle_inflation_buffer"> 0.5 </rosparam>
 
         <!--
             The size (length/width) of the cells in occupancy grids this class

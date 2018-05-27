@@ -141,9 +141,9 @@ sb_geom::getInterpolationPointsFromPolySegment(PolynomialSegment poly_segment) {
     std::vector<double> roots = findRealRoots(poly_segment.deriv(1));
     std::sort(roots.begin(), roots.end());
     for (double& root : roots) {
-        if (root > poly_segment.x_min() && root < poly_segment.x_max())
-            ;
-        interpolation_points.emplace_back(Point2D(root, poly_segment(root)));
+        if (root > poly_segment.x_min() && root < poly_segment.x_max()) {
+            interpolation_points.emplace_back(Point2D(root, poly_segment(root)));
+        }
     }
 
     // Add the end point of the Polynomial Segment
