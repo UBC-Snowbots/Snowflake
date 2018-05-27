@@ -26,7 +26,7 @@ PathFinderNode::PathFinderNode(int argc,
             goal_subscriber_topic, refresh_rate, &PathFinderNode::goalCallback, this);
 
     std::string topic_to_publish_to =
-    "/path"; // dummy topic name
+    "path"; // dummy topic name
     uint32_t queue_size = 1;
     this->publisher           = private_nh.advertise<nav_msgs::Path>(
     topic_to_publish_to, queue_size);
@@ -55,12 +55,13 @@ void PathFinderNode::publishPath() {
 
     try {
         this->_listener->lookupTransform(this->_global_frame_name, this->_base_frame_name,
-                                        ros::Time(0), transform);
+                                        ros::Time::now(), transform);
     } catch (tf::TransformException ex){
         // If we can't lookup the tf, then don't publish path
         ROS_WARN_STREAM("Could not lookup tf between " << this->_global_frame_name
                                                        << " and "
                                                        << this->_base_frame_name);
+        ROS_WARN_STREAM(ex.what());
         return;
     }
 
@@ -69,5 +70,6 @@ void PathFinderNode::publishPath() {
     start.y = transform.getOrigin().y();
 
     nav_msgs::Path path = PathFinder::calculatePath(start, this->_goal, this->_grid);
+
     this->publisher.publish(path);
 }

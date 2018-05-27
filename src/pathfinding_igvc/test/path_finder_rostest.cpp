@@ -59,9 +59,6 @@ signed char _ = AStar::GRID_FREE;
 signed char X = AStar::GRID_OCCUPIED;
 
 TEST_F(PathFinderRosTest, TestPathFinder) {
-    static tf::TransformBroadcaster br;
-    br.sendTransform(tf::StampedTransform(tf::Transform::getIdentity(), ros::Time::now(), "map", "base_link"));
-
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
