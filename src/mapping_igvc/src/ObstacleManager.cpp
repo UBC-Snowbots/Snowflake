@@ -199,6 +199,7 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
     // TODO (Part 4): prune obstacles outside a given distance from us (might want a seperate function for this)
 
+    // TODO: We should switch these two "clean up" operations, as `mergeCloseLines` should problably come after we split loops
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     mergeCloseLines();
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
