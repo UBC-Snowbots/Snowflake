@@ -365,3 +365,34 @@ void ObstacleManager::mergeCloseLines() {
     }
 }
 
+void ObstacleManager::splitLineSelfLoops(double self_loop_max_angle) {
+    for (int i = 0; i < lines.size(); i++){
+        std::vector<sb_geom::Point2D> points = lines[i].getInterpolationPoints();
+        // Check if any 3 consecutive points form an angle < `self_loop_max_angle`
+        for (int j = 2; j < points.size()-2; j++){
+            double angle = interiorAngle(points[j], points[j+1], points[j+2]);
+            if (angle >= self_loop_max_angle){
+                // Remove the offending line
+                Spline line_to_split = lines[i];
+                lines.erase(lines.begin()+i);
+
+                // Split it into two lines at the point where the excessive angle occured
+                std::vector<Point2D> interpolation_points = line_to_split.getInterpolationPoints();
+                auto start = interpolation_points.begin();
+                auto split = interpolation_points.begin() + j + 2;
+                auto end = interpolation_points.begin() + interpolation_points.size();
+                std::vector<Point2D> s1_points(start, split+1);
+                std::vector<Point2D> s2_points(split, end);
+                lines.emplace_back(Spline(s1_points));
+                lines.emplace_back(Spline(s2_points));
+
+                // TODO: We don't need to go through all lines again, we can do something smarter here..
+                i = 0;
+                break;
+            }
+        }
+    }
+}
+
+
+

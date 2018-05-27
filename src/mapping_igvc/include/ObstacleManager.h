@@ -186,6 +186,14 @@ private:
      */
     void mergeCloseLines();
 
+    // TODO: Test me
+    /**
+     * Splits any known lines at points where they loop back on themselves
+     *
+     * @param self_loop_max_angle the maximum angle a line must form with itself for it to be considered "looped"
+     */
+    void splitLineSelfLoops(double self_loop_max_angle);
+
     // the minimum distance between the center of two cones for them to be
     // considered different from each other (and so not merged)
     double cone_merging_tolerance;
