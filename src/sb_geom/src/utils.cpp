@@ -177,7 +177,6 @@ double interiorAngle(Point2D p1, Point2D p2, Point2D p3) {
     double v1_len = std::sqrt(std::pow(v1_dx,2) + std::pow(v1_dy,2));
     double v2_len = std::sqrt(std::pow(v2_dx,2) + std::pow(v2_dy,2));
 
-
     // Take the dot product
     double dot_product = v1_dx * v2_dx + v1_dy * v2_dy;
 

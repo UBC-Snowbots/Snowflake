@@ -201,6 +201,8 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     mergeCloseLines();
+    // TODO: Is this the right place to do this? (keep in mind how expensive it is)
+    splitLineSelfLoops(0.47);
 
     // Find what cells are directly occupied (ie. overlapping) with
     // known obstacles

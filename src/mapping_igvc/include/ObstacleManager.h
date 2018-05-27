@@ -190,7 +190,8 @@ private:
     /**
      * Splits any known lines at points where they loop back on themselves
      *
-     * @param self_loop_max_angle the maximum angle a line must form with itself for it to be considered "looped"
+     * @param self_loop_max_angle the maximum angle (in radians) a line must
+     * form with itself for it to be considered "looped"
      */
     void splitLineSelfLoops(double self_loop_max_angle);
 
