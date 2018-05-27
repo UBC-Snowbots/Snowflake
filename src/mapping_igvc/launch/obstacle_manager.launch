@@ -1,6 +1,6 @@
 <launch>
 
-    <node name="ObstacleManager" pkg="mapping_igvc" type="obstacle_manager_node" output="screen">
+    <node name="obstacle_manager" pkg="mapping_igvc" type="obstacle_manager_node" output="screen">
 
         <!--
             The minimum distance between the center of two cones for them to be
@@ -18,7 +18,7 @@
             The buffer to add around each obstacle when generating the occupancy
             grid for our currently known world
         -->
-        <rosparam param="obstacle_inflation_buffer"> 0.1 </rosparam>
+        <rosparam param="obstacle_inflation_buffer"> 0.8 </rosparam>
 
         <!--
             The size (length/width) of the cells in occupancy grids this class
@@ -51,7 +51,9 @@
         -->
         <rosparam param="occ_grid_generation_rate"> 1.0 </rosparam>
 
+
         <remap from="line_obstacles" to="/line_extractor_node/output_line_obstacle" />
+        <remap from="cone_obstacles" to="/cone_extractor_node/output_cone_obstacle" />
 
     </node>
 

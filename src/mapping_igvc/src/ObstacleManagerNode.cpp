@@ -8,6 +8,8 @@
 
 #include <ObstacleManagerNode.h>
 
+// TODO: Remove all debug print statements in this file
+
 ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node_name) :
     // Since there is no default constructor for `ObstacleManager`, assign it some random
     // values for now (it will be overwritten later in this constructor)
@@ -70,11 +72,25 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
 }
 
 void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle::ConstPtr &cone_msg) {
-    // TODO (Part 4): Translate to `occ_grid_frame` before adding to obstacle manager
+    std::cout << "cone" << std::endl;
+
+    // Check if we can transform the cone into the map frame
+    // TODO: This seems to crash if it can't find the transform????
+    std::string* tf_err_msg;
+    if (!tf_listener->canTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, tf_err_msg)){
+        ROS_WARN_STREAM(
+                "Could not transform cone from \"" << line_msg->header.frame_id <<  "to \"" << this->occ_grid_frame << ": " <<  *tf_err_msg);
+        return;
+    }
+    PointStamped original_point;
+    original_point.x = cone_msg
+
+
     obstacle_manager.addObstacle(*cone_msg);
 }
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
+    std::cout << "line" << std::endl;
     // Create a spline from the given polynomial line
     sb_geom::PolynomialSegment poly_segment(line_msg->coefficients, line_msg->x_min, line_msg->x_max);
     sb_geom::Spline spline(poly_segment);
@@ -101,6 +117,7 @@ void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle:
 }
 
 void ObstacleManagerNode::publishGeneratedOccupancyGrid(const ros::TimerEvent &timer_event) {
+    std::cout << "map" << std::endl;
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
     occ_grid.header.stamp = ros::Time::now();
@@ -108,6 +125,9 @@ void ObstacleManagerNode::publishGeneratedOccupancyGrid(const ros::TimerEvent &t
     occ_grid.header.seq = occ_grid_seq;
     occ_grid_seq++;
 
+    std::cout << "publishing map" << std::endl;
+    ROS_INFO_STREAM(occ_grid.header);
+    ROS_INFO_STREAM(occ_grid.info);
     occ_grid_publisher.publish(occ_grid);
 }
 
