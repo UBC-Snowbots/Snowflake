@@ -49,7 +49,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
 
     // Setup Publisher(s)
     std::string topic = private_nh.resolveName("occ_grid");
-    occ_grid_publisher = private_nh.advertise<nav_msgs::OccupancyGrid>(topic, 10);
+    occ_grid_publisher = private_nh.advertise<nav_msgs::OccupancyGrid>(topic, 1);
     topic = private_nh.resolveName("debug/lines");
     rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(topic, 1);
 
@@ -74,28 +74,33 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
 void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle::ConstPtr &cone_msg) {
     std::cout << "cone" << std::endl;
 
+    mapping_igvc::ConeObstacle cone = *cone_msg;
+
+    // TODO: Checks for required header bits on msg?
     // Check if we can transform the cone into the map frame
     // TODO: This seems to crash if it can't find the transform????
     std::string* tf_err_msg;
-    if (!tf_listener->canTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, tf_err_msg)){
+    if (!tf_listener->canTransform(cone.header.frame_id, this->occ_grid_frame, cone.header.stamp, tf_err_msg)){
         ROS_WARN_STREAM(
-                "Could not transform cone from \"" << line_msg->header.frame_id <<  "to \"" << this->occ_grid_frame << ": " <<  *tf_err_msg);
+                "Could not transform cone from \"" << cone.header.frame_id <<  "to \"" << this->occ_grid_frame << ": " <<  *tf_err_msg);
         return;
     }
+
+    // Transform the Cone into the map frame
     geometry_msgs::PointStamped cone_center;
-    cone_center.point.x = cone_msg->center.x;
-    cone_center.point.y = cone_msg->center.y;
+    cone_center.point.x = cone.center.x;
+    cone_center.point.y = cone.center.y;
     cone_center.point.z = 0;
-    cone_center.header.stamp = cone_msg->header.stamp;
-    cone_center.header.frame_id = cone_msg->header.frame_id;
+    cone_center.header.stamp = cone.header.stamp;
+    cone_center.header.frame_id = cone.header.frame_id;
 
     geometry_msgs::PointStamped transformed_cone_center;
     tf_listener->transformPoint(this->occ_grid_frame, cone_center, transformed_cone_center);
 
-    cone_msg->center.x = transformed_cone_center.point.x;
-    cone_msg->center.y = transformed_cone_center.point.y;
+    cone.center.x = transformed_cone_center.point.x;
+    cone.center.y = transformed_cone_center.point.y;
 
-    obstacle_manager.addObstacle(*cone_msg);
+    obstacle_manager.addObstacle(cone);
 }
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
@@ -106,6 +111,8 @@ void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle:
 
     // TODO: delete me
     ROS_WARN("1");
+    
+    // TODO: Checks for required header bits on msg?
 
     // Check that we can transform the line into the map frame
     // TODO: Handle case where the line_msg has no frame (right now will just crash)

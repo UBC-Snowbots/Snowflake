@@ -15,5 +15,8 @@
         <!-- max angle needed to split edge clusters -->
         <param name="ang_threshold" value="1.8" type="double" />
 
+        <!-- the frame the computed cones will be set to -->
+        <param name="cone_frame" value="base_link" type="string" />
+
     </node>
 </launch>

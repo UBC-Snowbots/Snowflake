@@ -51,6 +51,7 @@ double sb_geom::minDistanceBetweenSplines(Spline s1,
     return distanceBetweenSplines(minimizing_u, minimizing_t);
 }
 
+// TODO: This breaks for degree 1, make unit test and fix
 std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly) {
     double* coefficients = &poly.coefficients()[0];
 
@@ -61,7 +62,8 @@ std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly) {
     unsigned int degree = poly.getDegree();
     while(degree > 0 && coefficients[degree - 1] == 0){
         degree--;
-    }    
+    } 
+
     // If the degree is 0, then there are no roots
     if (degree == 0) { return std::vector<double>(); }
 

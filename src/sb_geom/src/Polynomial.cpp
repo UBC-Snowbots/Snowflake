@@ -25,7 +25,8 @@ std::vector<double>& Polynomial::coefficients() {
 }
 
 unsigned int Polynomial::getDegree() {
-    return _coefficients.size()-1;
+    // TODO: Should this return size-1?
+    return _coefficients.size();
 }
 
 double Polynomial::operator()(double x) {

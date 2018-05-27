@@ -42,6 +42,8 @@ ConeExtractorNode::ConeExtractorNode(int argc,
     SB_getParam(
     private_nh, ang_threshold_param, ang_threshold, default_ang_threshold);
 
+    SB_getParam(private_nh, "cone_frame", cone_frame, std::string("base_link"));
+
     std::string subscribe_topic =
     "/robot/laser/scan"; // Setup subscriber to laserscan (Placeholder)
     laser_subscriber = nh.subscribe(
@@ -67,8 +69,10 @@ const sensor_msgs::LaserScan::ConstPtr& ptr) {
                                       cone_rad_tol,
                                       min_points_in_cone,
                                       ang_threshold);
-    for (int i = 0; i < cones.size(); i++) { // Publish cones individually
-        cone_publisher.publish(cones[i]);
+    for (mapping_igvc::ConeObstacle& cone : cones) { // Publish cones individually
+        cone.header.frame_id = cone_frame;
+        cone.header.stamp = ros::Time::now();
+        cone_publisher.publish(cone);
     }
     publishMarkers(cones);
 }
@@ -86,10 +90,12 @@ std::vector<mapping_igvc::ConeObstacle> cones) {
 
     marker.type = visualization_msgs::Marker::POINTS;
 
+    // TODO: Make scale a param
     // POINTS markers use x and y scale for width/height respectively
-    marker.scale.x = 0.1;
-    marker.scale.y = 0.1;
+    marker.scale.x = 0.4;
+    marker.scale.y = 0.4;
 
+    // TODO: Make color a param
     // Points are green
     marker.color.g = 1.0f;
     marker.color.a = 1.0;
