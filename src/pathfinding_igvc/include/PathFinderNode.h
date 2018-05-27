@@ -37,12 +37,36 @@ private:
     bool _receivied_grid = false;
 
   public:
+    // constructor
     PathFinderNode(int argc, char** argv, std::string node_name);
 
   private:
+    /**
+     * Function that receives the occupancy grid.
+     * It first stores the grid as a member variable of this class,
+     * and checks if a goal has been received. If we have a goal,
+     * then calculates the path and publishes it.
+     *
+     * @param grid the occupancy grid
+     */
     void occupancyGridCallback(const nav_msgs::OccupancyGrid grid);
+
+    /**
+     * Function that receives the goal point (in map frame)
+     * It first stores the goal as a member variable of this class,
+     * and checks if a grid has been received. If we have a grid,
+     * then calculates the path and publishes it.
+     *
+     * @param goal
+     */
     void goalCallback(const geometry_msgs::Point goal);
 
+    /**
+     * Function that publishes the path.
+     * It is responsible for getting the starting position by
+     * getting the current position of the robot through the tf
+     * tree, then calling the function that returns the path.
+     */
     void publishPath();
 };
 
