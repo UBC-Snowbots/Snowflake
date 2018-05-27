@@ -62,7 +62,7 @@ TEST_F(PathFinderRosTest, TestPathFinder) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(0.0, 0.0, 0.0);
+            PathFinderTestUtils::constructPose(3.0, 7.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -88,8 +88,8 @@ TEST_F(PathFinderRosTest, TestPathFinder) {
     test_grid_publisher.publish(grid);
 
     geometry_msgs::Point goal;
-    goal.x = 0.0;
-    goal.y = 8.0;
+    goal.x = 3.0;
+    goal.y = 15.0;
 
     test_goal_publisher.publish(goal);
 
@@ -105,11 +105,64 @@ TEST_F(PathFinderRosTest, TestPathFinder) {
 
     ASSERT_EQ(path.poses.size(), 9);
 
-    std::vector<float> expected_x = {
+    std::vector<float> expected_x_in_base_link = {
             0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 1.0, 0.0, 0.0};
-    std::vector<float> expected_y = {
+    std::vector<float> expected_y_in_base_link = {
             0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
 
+    for (int i = 0; i < path.poses.size(); i++) {
+        EXPECT_FLOAT_EQ(expected_x_in_base_link[i] + origin.position.x, path.poses[i].pose.position.x);
+        EXPECT_FLOAT_EQ(expected_y_in_base_link[i] + origin.position.y, path.poses[i].pose.position.y);
+    }
+}
+
+TEST_F(PathFinderRosTest, PathFindingWhenGoalNotInGrid) {
+    /* origin of OccupancyGrid */
+    // initialize origin of occupancy grid
+    geometry_msgs::Pose origin =
+            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+
+    /* map_meta_data of OccupancyGrid */
+    // initialize map_meta_data
+    nav_msgs::MapMetaData map_meta_data;
+    map_meta_data.resolution = 2.0;
+    map_meta_data.width      = 2;
+    map_meta_data.height     = 3;
+    // add origin to map_meta_data
+    map_meta_data.origin = origin;
+
+    /* OccupancyGrid */
+    // initialize occupancy grid
+    nav_msgs::OccupancyGrid grid;
+    // set map_meta_data
+    grid.info = map_meta_data;
+    grid.data = {
+            X, X, X, X, _, _,
+    };
+
+    test_grid_publisher.publish(grid);
+
+    /* Goal point in map frame */
+    geometry_msgs::Point goal;
+    goal.x = 3.0;
+    goal.y = -9999;
+
+    test_goal_publisher.publish(goal);
+
+    ros::Rate loop_rate(1);
+
+    // Wait for the message to get passed around
+    loop_rate.sleep();
+
+    // spinOnce allows ros to actually process your callbacks
+    // for the curious:
+    // http://answers.ros.org/question/11887/significance-of-rosspinonce/
+    ros::spinOnce();
+
+    EXPECT_EQ(path.poses.size(), 4);
+
+    std::vector<float> expected_x = {3.0, 1.0, 1.0, 3.0};
+    std::vector<float> expected_y = {7.0, 5.0, 3.0, 1.0};
     for (int i = 0; i < path.poses.size(); i++) {
         EXPECT_FLOAT_EQ(expected_x[i], path.poses[i].pose.position.x);
         EXPECT_FLOAT_EQ(expected_y[i], path.poses[i].pose.position.y);
