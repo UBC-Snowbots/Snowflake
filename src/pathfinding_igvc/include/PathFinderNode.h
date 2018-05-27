@@ -20,6 +20,7 @@
 #include <tf/transform_listener.h>
 
 class PathFinderNode {
+private:
     ros::Subscriber grid_subscriber;
     ros::Subscriber goal_subscriber;
     ros::Publisher publisher;
