@@ -158,3 +158,23 @@ double sb_geom::distance(Point2D p1, Point2D p2) {
     double dy = p1.y() - p2.y();
     return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 }
+
+double interiorAngle(Point2D p1, Point2D p2, Point2D p3) {
+    // Treat this as two vectors, v1:(p2 -> p1) and v2:(p2 -> p3)
+    double v1_dx = p1.x() - p2.x();
+    double v1_dy = p1.y() - p2.y();
+    double v2_dx = p3.x() - p2.x();
+    double v2_dy = p3.y() - p2.y();
+
+    double v1_len = std::sqrt(std::pow(v1_dx,2) + std::pow(v1_dy,2));
+    double v2_len = std::sqrt(std::pow(v2_dx,2) + std::pow(v2_dy,2));
+
+
+    // Take the dot product
+    double dot_product = v1_dx * v2_dx + v1_dy * v2_dy;
+
+    // Take the inner product to find the angle
+    double angle = std::acos(dot_product / (v1_len * v2_len));
+
+    return angle;
+}

@@ -82,6 +82,20 @@ getInterpolationPointsFromPolySegment(PolynomialSegment poly_segment);
  * @return the distance from `p1` to `p2`
  */
 double distance(Point2D p1, Point2D p2);
+
+// TODO: Test me
+// TODO: Better function name
+/**
+ * TODO: Better description
+ * Finds the minimum angle between the vectors formed by p2->p3 and p2->p1
+ *
+ * @param p1
+ * @param p2
+ * @param p3
+ * @return TODO
+ */
+double interiorAngle(Point2D p1, Point2D p2, Point2D p3);
+
 }
 
 #endif // SB_GEOM_UTILS_H
