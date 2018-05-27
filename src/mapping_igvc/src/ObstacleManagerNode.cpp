@@ -42,8 +42,8 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     );
 
     // Setup Subscriber(s)
-    cone_obstacle_subscriber = nh.subscribe<mapping_igvc::ConeObstacle>("cone_obstacles", 10, &ObstacleManagerNode::coneObstacleCallback, this);
-    line_obstacle_subscriber = nh.subscribe<mapping_igvc::LineObstacle>("line_obstacles", 10, &ObstacleManagerNode::lineObstacleCallback, this);
+    cone_obstacle_subscriber = nh.subscribe<mapping_igvc::ConeObstacle>("cone_obstacles", 5, &ObstacleManagerNode::coneObstacleCallback, this);
+    line_obstacle_subscriber = nh.subscribe<mapping_igvc::LineObstacle>("line_obstacles", 5, &ObstacleManagerNode::lineObstacleCallback, this);
 
     // Setup Publisher(s)
     std::string topic = private_nh.resolveName("occ_grid");
@@ -142,6 +142,7 @@ sb_geom::Spline ObstacleManagerNode::transformSpline(sb_geom::Spline spline, std
 void ObstacleManagerNode::publishObstacleMarkers(const ros::TimerEvent& timer_event) {
     // TODO: Publish Cones
 
+    // TODO: This whole function is a hack, it should burn
     // Publish lines
     std::vector<geometry_msgs::Point> lines_points;
     for (sb_geom::Spline spline : this->obstacle_manager.getLineObstacles()){
@@ -151,12 +152,15 @@ void ObstacleManagerNode::publishObstacleMarkers(const ros::TimerEvent& timer_ev
         int num_points = 200;
         for (int i = 0; i < num_points; i++){
             sb_geom::Point2D spline_point = spline(1.0/(double)num_points * (double)i);
-            geometry_msgs::Point point;
-            point.x = spline_point.x();
-            point.y = spline_point.y();
-            point.z = 0;
-            geometry_msgs::Point transformed_point;
-            lines_points.emplace_back(point);
+            geometry_msgs::PointStamped point;
+            point.header.frame_id = "map";
+            point.header.stamp = ros::Time(0);
+            point.point.x = spline_point.x();
+            point.point.y = spline_point.y();
+            point.point.z = 0;
+            geometry_msgs::PointStamped transformed_point;
+            tf_listener->transformPoint("base_link", point, transformed_point);
+            lines_points.emplace_back(transformed_point.point);
         }
     }
 
@@ -168,7 +172,7 @@ void ObstacleManagerNode::publishObstacleMarkers(const ros::TimerEvent& timer_ev
     visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(lines_points,
                                       color,
                                       scale,
-                                      this->occ_grid_frame,
+                                      "base_link",
                                       "debug",
                                       visualization_msgs::Marker::POINTS);
 

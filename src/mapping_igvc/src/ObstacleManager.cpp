@@ -348,7 +348,7 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
 
 void ObstacleManager::mergeCloseLines() {
     for (int i = 0; i < lines.size(); i++){
-        for (int j = i; j < lines.size(); j++){
+        for (int j = i+1; j < lines.size(); j++){
             // Check if any line is to close to any other line
             if (minDistanceBetweenSplines(lines[i], lines[j], closest_spline_max_iters) < line_merging_tolerance){
                 // Remove the second of the two lines

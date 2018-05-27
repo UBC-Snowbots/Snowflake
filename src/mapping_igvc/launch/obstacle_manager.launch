@@ -12,7 +12,7 @@
             The minimum distance between two lines for them to be
             considered different from each other (and so not merged)
         -->
-        <rosparam param="line_merging_tolerance"> 0.5 </rosparam>
+        <rosparam param="line_merging_tolerance"> 1.0 </rosparam>
 
         <!--
             The buffer to add around each obstacle when generating the occupancy
@@ -31,7 +31,7 @@
             The maximum number of iterations to use when merging splines
             larger values will make line merging slower, but more accurate
         -->
-        <rosparam param="line_merging_max_iters"> 10 </rosparam>
+        <rosparam param="line_merging_max_iters"> 40 </rosparam>
 
         <!--
             The maximum number of iterations to use when comparing a new spline
