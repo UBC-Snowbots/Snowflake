@@ -82,9 +82,18 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
                 "Could not transform cone from \"" << line_msg->header.frame_id <<  "to \"" << this->occ_grid_frame << ": " <<  *tf_err_msg);
         return;
     }
-    PointStamped original_point;
-    original_point.x = cone_msg
+    geometry_msgs::PointStamped cone_center;
+    cone_center.point.x = cone_msg->center.x;
+    cone_center.point.y = cone_msg->center.y;
+    cone_center.point.z = 0;
+    cone_center.header.stamp = cone_msg->header.stamp;
+    cone_center.header.frame_id = cone_msg->header.frame_id;
 
+    geometry_msgs::PointStamped transformed_cone_center;
+    tf_listener->transformPoint(this->occ_grid_frame, cone_center, transformed_cone_center);
+
+    cone_msg->center.x = transformed_cone_center.point.x;
+    cone_msg->center.y = transformed_cone_center.point.y;
 
     obstacle_manager.addObstacle(*cone_msg);
 }
