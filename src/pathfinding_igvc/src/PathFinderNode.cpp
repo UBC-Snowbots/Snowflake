@@ -2,6 +2,10 @@
  * Created By: Min Gyo Kim
  * Created On: May 23rd 2018
  * Description: Implementation of Path Finder Node
+ *              Once the node has received both occupancy grid and the goal point,
+ *              it retrieves the position of the robot through the tf tree, and
+ *              calls PathFinder's static methods to calculate the path.
+ *              Then it publishes the path.
  */
 
 #include <PathFinderNode.h>
