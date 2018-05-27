@@ -371,9 +371,9 @@ void ObstacleManager::splitLineSelfLoops(double self_loop_max_angle) {
     for (int i = 0; i < lines.size(); i++){
         std::vector<sb_geom::Point2D> points = lines[i].getInterpolationPoints();
         // Check if any 3 consecutive points form an angle < `self_loop_max_angle`
-        for (int j = 2; j < points.size()-2; j++){
-            double angle = interiorAngle(points[j], points[j+1], points[j+2]);
-            if (angle >= self_loop_max_angle){
+        for (int j = 1; j < points.size()-1; j++){
+            double angle = interiorAngle(points[j-1], points[j], points[j+1]);
+            if (angle <= self_loop_max_angle){
                 // Remove the offending line
                 Spline line_to_split = lines[i];
                 lines.erase(lines.begin()+i);
@@ -381,10 +381,25 @@ void ObstacleManager::splitLineSelfLoops(double self_loop_max_angle) {
                 // Split it into two lines at the point where the excessive angle occured
                 std::vector<Point2D> interpolation_points = line_to_split.getInterpolationPoints();
                 auto start = interpolation_points.begin();
-                auto split = interpolation_points.begin() + j + 2;
-                auto end = interpolation_points.begin() + interpolation_points.size();
+                auto split = interpolation_points.begin() + j;
+                auto end = interpolation_points.end();
+                // Note: we include the split point in both splines
                 std::vector<Point2D> s1_points(start, split+1);
                 std::vector<Point2D> s2_points(split, end);
+                // TODO: Delete me - this is a hack
+                std::cout << s1_points.size() << " " << s2_points.size() << std::endl;
+                for (Point2D point: interpolation_points) {
+                    std::cout << point.x() << "," << point.y() << " // ";
+                }
+                std::cout << std::endl;
+                for (Point2D point: s1_points) {
+                    std::cout << point.x() << "," << point.y() << " // ";
+                }
+                std::cout << std::endl;
+                for (Point2D point: s2_points) {
+                    std::cout << point.x() << "," << point.y() << " // ";
+                }
+                std::cout << std::endl;
                 lines.emplace_back(Spline(s1_points));
                 lines.emplace_back(Spline(s2_points));
 
