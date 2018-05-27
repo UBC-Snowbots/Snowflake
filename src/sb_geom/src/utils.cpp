@@ -59,8 +59,9 @@ std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly) {
     // non-zero, choose the degree to be less then the actual degree of the
     // polnomial so this is the case
     unsigned int degree = poly.getDegree();
-    for (; degree > 0 && coefficients[degree - 1] == 0; degree--) {}
-
+    while(degree > 0 && coefficients[degree - 1] == 0){
+        degree--;
+    }    
     // If the degree is 0, then there are no roots
     if (degree == 0) { return std::vector<double>(); }
 
@@ -107,8 +108,7 @@ double sb_geom::findClosestPointOnSplineToPoint(Spline spline,
                                                 Point2D point,
                                                 unsigned int max_iter) {
     // Define a function for the distance from the spline to the given point in
-    // terms
-    // of the position on the spline (`u`)
+    // terms of the position on the spline (`u`)
     auto distanceFromPointToSpline = [&](double u) {
         Point2D point_on_spline = spline(u);
         double dx               = point_on_spline.x() - point.x();
@@ -121,8 +121,16 @@ double sb_geom::findClosestPointOnSplineToPoint(Spline spline,
                                             {0}, // lower bound on the search
                                             {1}, // upper bound on the search
                                             dlib::max_function_calls(max_iter));
-
     double minimizing_u = min_result.x(0);
+
+    // Extra check to see if the end points are closer, as the minimization 
+    // function often misses these
+    if (distanceFromPointToSpline(0) < distanceFromPointToSpline(minimizing_u)){
+        minimizing_u = 0;
+    }
+    if (distanceFromPointToSpline(1) < distanceFromPointToSpline(minimizing_u)){
+        minimizing_u = 1;
+    }
 
     return minimizing_u;
 }
