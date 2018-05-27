@@ -4,7 +4,7 @@
           type="nodelet"
           name="rgb_to_hsv"
           args="load sb_pointcloud_processing/rgb_to_hsv nodelet_manager" output="screen">
-        <remap from="~/input" to="/zed/point_cloud/cloud_registered" />
+        <remap from="~/input" to="/camera/depth_registered/points" />
     </node>
 
     <node pkg="nodelet"
@@ -53,8 +53,8 @@
         <remap from="~input" to="/value_filter/output" />
         <rosparam>
             filter_field_name: z
-            filter_limit_min: -0.1
-            filter_limit_max: 0.1
+            filter_limit_min: 0
+            filter_limit_max: 0.2
             filter_limit_negative: False
             input_frame: zed_left_camera
             output_frame: zed_left_camera

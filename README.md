@@ -93,6 +93,7 @@ We've put together a seperate `README` file that should help to get you up and r
 
 ### Pull Requests
 Below are some notes we would like to highlight about pull requests: 
+- before opening a pull request, quickly run through the [pull request checklist](pull-request-checklist.md) and make sure you've satisfied everything
 - Once your pull request has been approved, please proceed to merge and close the pull request yourself
 - When your pull requests receive comments, please reply to each comment individually. 
 - If there were any fixes that were specific to resources you found (eg. stackoverflow thread), please comment them into the PR for future reference. 
