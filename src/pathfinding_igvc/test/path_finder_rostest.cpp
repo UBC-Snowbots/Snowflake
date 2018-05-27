@@ -4,15 +4,14 @@
  * Description: Ros tests for Path Finder Node
  */
 
-#include <gtest/gtest.h>
-#include <geometry_msgs/Point.h>
-#include <nav_msgs/OccupancyGrid.h>
-#include <ros/ros.h>
-#include <nav_msgs/Path.h>
-#include <AStar.h>
 #include "PathFinderTestUtils.h"
+#include <AStar.h>
+#include <geometry_msgs/Point.h>
+#include <gtest/gtest.h>
+#include <nav_msgs/OccupancyGrid.h>
+#include <nav_msgs/Path.h>
+#include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
-
 
 /**
  * This is the helper class which will publish and subscribe messages which will
@@ -26,17 +25,13 @@
  * the message recieved
  */
 class PathFinderRosTest : public testing::Test {
-protected:
+  protected:
     virtual void SetUp() {
-        test_goal_publisher =
-                nh_.advertise<geometry_msgs::Point>("/goal", 1);
+        test_goal_publisher = nh_.advertise<geometry_msgs::Point>("/goal", 1);
         test_grid_publisher =
-                nh_.advertise<nav_msgs::OccupancyGrid>("/occupancy_grid", 1);
-        test_subscriber =
-                nh_.subscribe("/path_finder/path",
-                              1,
-                              &PathFinderRosTest::callback,
-                              this);
+        nh_.advertise<nav_msgs::OccupancyGrid>("/occupancy_grid", 1);
+        test_subscriber = nh_.subscribe(
+        "/path_finder/path", 1, &PathFinderRosTest::callback, this);
 
         // Let the publishers and subscribers set itself up timely
         ros::Rate loop_rate(1);
@@ -49,10 +44,8 @@ protected:
     ros::Publisher test_grid_publisher;
     ros::Subscriber test_subscriber;
 
-public:
-    void callback(const nav_msgs::Path& incoming_path) {
-        path = incoming_path;
-    }
+  public:
+    void callback(const nav_msgs::Path& incoming_path) { path = incoming_path; }
 };
 
 signed char _ = AStar::GRID_FREE;
@@ -62,7 +55,7 @@ TEST_F(PathFinderRosTest, TestPathFinder) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 7.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 7.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
@@ -106,13 +99,15 @@ TEST_F(PathFinderRosTest, TestPathFinder) {
     ASSERT_EQ(path.poses.size(), 9);
 
     std::vector<float> expected_x_in_base_link = {
-            0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 1.0, 0.0, 0.0};
+    0.0, 0.0, 0.0, 0.0, 1.0, 2.0, 1.0, 0.0, 0.0};
     std::vector<float> expected_y_in_base_link = {
-            0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
+    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
 
     for (int i = 0; i < path.poses.size(); i++) {
-        EXPECT_FLOAT_EQ(expected_x_in_base_link[i] + origin.position.x, path.poses[i].pose.position.x);
-        EXPECT_FLOAT_EQ(expected_y_in_base_link[i] + origin.position.y, path.poses[i].pose.position.y);
+        EXPECT_FLOAT_EQ(expected_x_in_base_link[i] + origin.position.x,
+                        path.poses[i].pose.position.x);
+        EXPECT_FLOAT_EQ(expected_y_in_base_link[i] + origin.position.y,
+                        path.poses[i].pose.position.y);
     }
 }
 
@@ -120,7 +115,7 @@ TEST_F(PathFinderRosTest, PathFindingWhenGoalNotInGrid) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* map_meta_data of OccupancyGrid */
     // initialize map_meta_data
@@ -137,7 +132,7 @@ TEST_F(PathFinderRosTest, PathFindingWhenGoalNotInGrid) {
     // set map_meta_data
     grid.info = map_meta_data;
     grid.data = {
-            X, X, X, X, _, _,
+    X, X, X, X, _, _,
     };
 
     test_grid_publisher.publish(grid);
@@ -176,4 +171,3 @@ int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-
