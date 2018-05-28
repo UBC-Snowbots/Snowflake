@@ -105,6 +105,11 @@ class LineExtractorNode {
     std::string frame_id;
 
     /*
+     * The timestamp on the last received pointcloud
+     */
+    ros::Time last_cloud_time;
+
+    /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
      * been converted from sensor_msgs PointCloud2
      */

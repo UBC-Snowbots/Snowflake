@@ -89,6 +89,9 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
     // store converted pointcloud for use
     this->pclPtr = temp_cloud;
 
+    // save the timestamp of the received pointcloud
+    this->last_cloud_time = processed_pcl->header.stamp;
+
     // extract lines from the pointcloud
     extractLines();
 
@@ -105,8 +108,11 @@ void LineExtractorNode::extractLines() {
     std::vector<mapping_igvc::LineObstacle> line_obstacles =
     vectorsToMsgs(lines);
 
-    for (unsigned int i = 0; i < line_obstacles.size(); i++) {
-        publisher.publish(line_obstacles[i]);
+    for (mapping_igvc::LineObstacle& line_obstacle : line_obstacles){
+        // Stamp each line with the time of the cloud it came from
+        line_obstacle.header.stamp = this->last_cloud_time;
+
+        publisher.publish(line_obstacle);
     }
 
     visualizeClusters();

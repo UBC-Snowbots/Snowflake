@@ -69,6 +69,8 @@ TEST_F(LineExtractorRosTest, TestTwoNonLinearLinesWithNoise) {
     sensor_msgs::PointCloud2 msg;
     pcl::toROSMsg(pcl, msg);
 
+    msg.header.stamp = ros::Time(69);
+
     test_publisher.publish(msg);
     ros::Rate loop_rate(1);
 
@@ -103,6 +105,10 @@ TEST_F(LineExtractorRosTest, TestTwoNonLinearLinesWithNoise) {
 
     EXPECT_FLOAT_EQ(lineObstacle.x_min, true_min);
     EXPECT_FLOAT_EQ(lineObstacle.x_max, true_max);
+
+    // Check that the timestamp of the line matches the timestamp on the cloud
+    // that it came from
+    EXPECT_EQ(lineObstacle.header.stamp, msg.header.stamp);
 }
 
 int main(int argc, char** argv) {
