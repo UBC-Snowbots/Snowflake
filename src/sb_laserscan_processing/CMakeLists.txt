@@ -44,7 +44,7 @@ add_executable(cone_extractor_node
         src/ConeIdentification.cpp
         include/ConeIdentification.h
         )
-
+add_dependencies(cone_extractor_node ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(sample_package_node
