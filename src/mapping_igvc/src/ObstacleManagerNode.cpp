@@ -32,6 +32,9 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "closest_line_max_iters", closest_line_max_iters, 15);
     SB_getParam(private_nh, "occ_grid_frame", occ_grid_frame, std::string("map"));
     SB_getParam(private_nh, "occ_grid_generation_rate", occ_grid_generation_rate, 1.0);
+    double obstacle_tf_wait_seconds;
+    SB_getParam(private_nh, "obstacle_tf_wait", obstacle_tf_wait_seconds, 0.3);
+    obstacle_tf_wait = ros::Duration(obstacle_tf_wait_seconds);
 
     // Setup the Obstacle Manager
     obstacle_manager = ObstacleManager(
@@ -87,10 +90,11 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
     geometry_msgs::PointStamped transformed_cone_center;
 
     try {
-        // TODO: Make wait time a param
         // Wait a second to see if we get the tf (in case the obstacles are
         // publishing faster then the tf's are getting computed)
-        tf_listener->waitForTransform(cone_center.header.frame_id, this->occ_grid_frame, cone_center.header.stamp, ros::Duration(0.2));
+        tf_listener->waitForTransform(cone_center.header.frame_id, this->occ_grid_frame, cone_center.header.stamp, this->obstacle_tf_wait);
+
+        // Transform the obstacle
         tf_listener->transformPoint(this->occ_grid_frame, cone_center, transformed_cone_center);
     } catch (tf::TransformException except) {
         ROS_WARN_STREAM("Could not transform cone from \"" << cone.header.frame_id <<  "\" to \"" << this->occ_grid_frame << "\" : " << except.what());
@@ -112,7 +116,14 @@ void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle:
 
     // Transform the line into the map frame and add it to the map
     try {
+        // Wait a second to see if we get the tf (in case the obstacles are
+        // publishing faster then the tf's are getting computed)
+        tf_listener->waitForTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, this->obstacle_tf_wait);
+        
+        // Transform the obstacle
         sb_geom::Spline transformed_spline = transformSpline(spline, line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp);
+
+        // Add the obstacle to the map
         obstacle_manager.addObstacle(transformed_spline);
     } catch (tf::TransformException except) {
         ROS_WARN_STREAM("Could not transform line from \"" << line_msg->header.frame_id <<  "\" to \"" << this->occ_grid_frame << "\" : " << except.what());

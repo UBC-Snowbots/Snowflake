@@ -47,6 +47,14 @@
         <rosparam param="occ_grid_frame"> "map" </rosparam>
 
         <!--
+            The time to wait after receiving an obstacle if we don't yet 
+            have the information to transform the obstacle
+            (in cases where the obstacle is published before the transforms
+            we need to transform it to the map frame)
+        -->
+        <rosparam param="obstacle_tf_wait"> 0.3 </rosparam>
+
+        <!--
             The rate (in hz) to publish the generated occupancy grid at
         -->
         <rosparam param="occ_grid_generation_rate"> 1.0 </rosparam>

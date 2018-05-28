@@ -96,5 +96,9 @@ private:
     // (we increment this each time we publish a new grid)
     unsigned int occ_grid_seq;
 
+    // How long to wait for obstacle transformations
+    // (in cases where the obstacle is published before the transform)
+    ros::Duration obstacle_tf_wait;
+
 };
 #endif //MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H
