@@ -4,21 +4,21 @@
  * Description: GTest for ConeIdentification Implementation
  */
 
-#include "./LaserscanBuilder.h"
+#include "LaserscanBuilder.h"
 #include <ConeIdentification.h>
 #include <gtest/gtest.h>
 
 // Test 3 points->cone in an edge (forming a semi circle) - points are evenly
 // distributed
 TEST(ConeIdentification, edgeToCone3Points) {
-    std::vector<mapping_igvc::Point2D> edge_points;
-    mapping_igvc::Point2D p1;
+    std::vector<sb_geom_msgs::Point2D> edge_points;
+    sb_geom_msgs::Point2D p1;
     p1.x = -2;
     p1.y = 2;
-    mapping_igvc::Point2D p2;
+    sb_geom_msgs::Point2D p2;
     p2.x = 0;
     p2.y = 0;
-    mapping_igvc::Point2D p3;
+    sb_geom_msgs::Point2D p3;
     p3.x = 2;
     p3.y = 2;
     edge_points.push_back(p1);
@@ -35,23 +35,23 @@ TEST(ConeIdentification, edgeToCone3Points) {
 // Test 6 points->cone in an edge (forming a semi circle) - points are
 // symmetrical about y axis
 TEST(ConeIdentification, edgeToCone6Points) {
-    std::vector<mapping_igvc::Point2D> edge_points;
-    mapping_igvc::Point2D p1;
+    std::vector<sb_geom_msgs::Point2D> edge_points;
+    sb_geom_msgs::Point2D p1;
     p1.x = -2;
     p1.y = 2;
-    mapping_igvc::Point2D p2;
+    sb_geom_msgs::Point2D p2;
     p2.x = -1.73;
     p2.y = 1;
-    mapping_igvc::Point2D p3;
+    sb_geom_msgs::Point2D p3;
     p3.x = -1;
     p3.y = 0.268;
-    mapping_igvc::Point2D p4;
+    sb_geom_msgs::Point2D p4;
     p4.x = 1;
     p4.y = 0.268;
-    mapping_igvc::Point2D p5;
+    sb_geom_msgs::Point2D p5;
     p5.x = 1.73;
     p5.y = 1;
-    mapping_igvc::Point2D p6;
+    sb_geom_msgs::Point2D p6;
     p6.x = 2;
     p6.y = 2;
     edge_points.push_back(p1);
@@ -71,17 +71,17 @@ TEST(ConeIdentification, edgeToCone6Points) {
 // Test 4 points->cone in an edge (forming a quarter circle/arc) - points are
 // evenly distributed
 TEST(ConeIdentification, edgeToConeArc) {
-    std::vector<mapping_igvc::Point2D> edge_points;
-    mapping_igvc::Point2D p1;
+    std::vector<sb_geom_msgs::Point2D> edge_points;
+    sb_geom_msgs::Point2D p1;
     p1.x = 0;
     p1.y = 0;
-    mapping_igvc::Point2D p2;
+    sb_geom_msgs::Point2D p2;
     p2.x = 1;
     p2.y = 0.268;
-    mapping_igvc::Point2D p3;
+    sb_geom_msgs::Point2D p3;
     p3.x = 1.73;
     p3.y = 1;
-    mapping_igvc::Point2D p4;
+    sb_geom_msgs::Point2D p4;
     p4.x = 2;
     p4.y = 2;
     edge_points.push_back(p1);
@@ -98,14 +98,14 @@ TEST(ConeIdentification, edgeToConeArc) {
 
 // Test 3 points->cone forming very short arc
 TEST(ConeIdentification, shortArc) {
-    std::vector<mapping_igvc::Point2D> edge_points;
-    mapping_igvc::Point2D p1;
+    std::vector<sb_geom_msgs::Point2D> edge_points;
+    sb_geom_msgs::Point2D p1;
     p1.x = 0;
     p1.y = 0;
-    mapping_igvc::Point2D p2;
+    sb_geom_msgs::Point2D p2;
     p2.x = 0.07;
     p2.y = 0.001;
-    mapping_igvc::Point2D p3;
+    sb_geom_msgs::Point2D p3;
     p3.x = 0.13;
     p3.y = 0.004;
     edge_points.push_back(p1);
@@ -121,23 +121,23 @@ TEST(ConeIdentification, shortArc) {
 
 // Test unevenly distributed points->cone in an arc
 TEST(ConeIdentification, unevenArc) {
-    std::vector<mapping_igvc::Point2D> edge_points;
-    mapping_igvc::Point2D p1;
+    std::vector<sb_geom_msgs::Point2D> edge_points;
+    sb_geom_msgs::Point2D p1;
     p1.x = -2;
     p1.y = 2;
-    mapping_igvc::Point2D p2;
+    sb_geom_msgs::Point2D p2;
     p2.x = -1.99;
     p2.y = 1.8;
-    mapping_igvc::Point2D p3;
+    sb_geom_msgs::Point2D p3;
     p3.x = -1.936;
     p3.y = 1.498;
-    mapping_igvc::Point2D p4;
+    sb_geom_msgs::Point2D p4;
     p4.x = -1.845;
     p4.y = 1.228;
-    mapping_igvc::Point2D p5;
+    sb_geom_msgs::Point2D p5;
     p5.x = 0;
     p5.y = 0;
-    mapping_igvc::Point2D p6;
+    sb_geom_msgs::Point2D p6;
     p6.x = 1.014;
     p6.y = 0.276;
     edge_points.push_back(p1);
@@ -156,23 +156,23 @@ TEST(ConeIdentification, unevenArc) {
 
 // Test inaccurate points->cone (all points off slightly)
 TEST(ConeIdentification, arcWithNoise) {
-    std::vector<mapping_igvc::Point2D> edge_points;
-    mapping_igvc::Point2D p1;
+    std::vector<sb_geom_msgs::Point2D> edge_points;
+    sb_geom_msgs::Point2D p1;
     p1.x = -2.02;
     p1.y = 2.01;
-    mapping_igvc::Point2D p2;
+    sb_geom_msgs::Point2D p2;
     p2.x = -1.74;
     p2.y = 0.98;
-    mapping_igvc::Point2D p3;
+    sb_geom_msgs::Point2D p3;
     p3.x = -0.99;
     p3.y = 0.275;
-    mapping_igvc::Point2D p4;
+    sb_geom_msgs::Point2D p4;
     p4.x = 1.01;
     p4.y = 0.268;
-    mapping_igvc::Point2D p5;
+    sb_geom_msgs::Point2D p5;
     p5.x = 1.75;
     p5.y = 0.97;
-    mapping_igvc::Point2D p6;
+    sb_geom_msgs::Point2D p6;
     p6.x = 2.04;
     p6.y = 2.01;
     edge_points.push_back(p1);
