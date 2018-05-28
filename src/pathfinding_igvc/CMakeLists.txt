@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
+
+# TODO: This isn't really IGVC specific, could rename to `sb_pathfinding`?
 project(pathfinding_igvc)
 
 # Build in "Release" (with lots of compiler optimizations) by default
@@ -33,10 +35,10 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(sample_package_node src/sample_package_node.cpp)
-add_executable(path_finding
-        src/path_finding.cpp
-        src/PathFinding.cpp
-        include/PathFinding.h
+add_executable(path_to_twist
+    src/path_to_twist.cpp
+    src/PathToTwistNode.cpp
+    include/PathToTwistNode.h
         )
 
 add_executable(path_finder
@@ -62,7 +64,7 @@ add_executable(path_finder
 # target_link_libraries(sample_package_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(path_finding
+target_link_libraries(path_to_twist
         ${catkin_LIBRARIES}
         ${sb_utils_LIBRARIES}
         )
@@ -80,7 +82,7 @@ target_link_libraries(path_finder
 if (CATKIN_ENABLE_TESTING)
 
     # Adding gtests to the package
-    catkin_add_gtest(path-finding-test test/path-finding-test.cpp src/PathFinding.cpp)
+    catkin_add_gtest(path-finding-test test/path-to-twist-test.cpp src/PathToTwistNode.cpp)
     target_link_libraries(path-finding-test ${catkin_LIBRARIES})
 
     catkin_add_gtest(path-finder-test test/path-finder-test.cpp
@@ -129,10 +131,11 @@ if (CATKIN_ENABLE_TESTING)
     find_package(rostest REQUIRED)
     # name the test and link it to the .test file and the .cpp file itself, this will allow
     # "catkin_make run_tests" to be able to find and run this rostest
+    add_rostest_gtest(path_to_twist_rostest test/pathfinding_igvc_test.test test/path_to_twist_rostest.cpp)
+    target_link_libraries(path_to_twist_rostest ${catkin_LIBRARIES})
+
     add_rostest_gtest(path_finder_rostest test/path_finder_igvc_test.test test/path_finder_rostest.cpp)
     target_link_libraries(path_finder_rostest ${catkin_LIBRARIES})
 
-    add_rostest_gtest(path_finding_rostest test/pathfinding_igvc_test.test test/path_finding_rostest.cpp)
-    target_link_libraries(path_finding_rostest ${catkin_LIBRARIES})
 endif()
 
