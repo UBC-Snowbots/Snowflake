@@ -1,6 +1,5 @@
 <launch>
 
-    <!-- Setup pathfinding params -->
     <node name="path_to_twist" pkg="pathfinding_igvc" type="path_to_twist" output="screen">
         <!-- 
             The number of poses to average out in the path to compute the 

@@ -2,8 +2,13 @@
 
     <!-- Setup path finder params -->
     <node name="path_finder" pkg="pathfinding_igvc" type="path_finder" output="screen">
+        <!-- TODO: Comment explaining what we use these for -->
         <rosparam param="base_frame_name"> "/base_link" </rosparam>
         <rosparam param="global_frame_name"> "/map" </rosparam>
+
+        <remap from="/occupancy_grid" to="/obstacle_manager/occ_grid" />
+        <remap from="/goal" to="/gps_manager/current_waypoint" />
+
     </node>
 
 </launch>

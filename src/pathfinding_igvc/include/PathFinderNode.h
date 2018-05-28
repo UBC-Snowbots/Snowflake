@@ -59,7 +59,7 @@ class PathFinderNode {
      *
      * @param goal
      */
-    void goalCallback(const geometry_msgs::Point goal);
+    void goalCallback(const geometry_msgs::PointStamped goal);
 
     /**
      * Function that publishes the path.
