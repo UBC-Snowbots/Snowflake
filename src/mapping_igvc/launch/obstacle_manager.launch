@@ -64,7 +64,7 @@
             The radius around us in which to keep obstacles
             (obstacles outside this radius are pruned)
         -->
-        <rosparam param="obstacle_pruning_radius"> 10.0 </rosparam>
+        <rosparam param="obstacle_pruning_radius"> 15.0 </rosparam>
 
         <!--
             The rate (in hz) to publish the debug RViz markers at
