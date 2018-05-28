@@ -50,8 +50,8 @@ void PathFinderNode::occupancyGridCallback(const nav_msgs::OccupancyGrid grid) {
     if (this->_received_goal) { publishPath(); }
 }
 
-void PathFinderNode::goalCallback(const geometry_msgs::PointStamped goal) {
-    this->_goal          = goal.point;
+void PathFinderNode::goalCallback(const geometry_msgs::Point goal) {
+    this->_goal          = goal;
     this->_received_goal = true;
     if (this->_receivied_grid) { publishPath(); }
 }
