@@ -92,8 +92,16 @@ private:
     // Timer for publishing debug RViz Markers
     ros::Timer debug_marker_generation_timer;
 
+    // TODO: Better name?
+    // The radius around us in which keep obstacles
+    // (obstacles outside this radius are removed)
+    double obstacle_pruning_radius;
+
     // The frame the generated occupancy grid will be in
     std::string occ_grid_frame;
+
+    // The base frame of the robot
+    std::string robot_base_frame;
 
     // The current sequence id for the published Occupancy Grid
     // (we increment this each time we publish a new grid)

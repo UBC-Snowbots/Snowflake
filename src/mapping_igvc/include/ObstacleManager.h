@@ -166,6 +166,15 @@ public:
      */
     static void inflatePoint(nav_msgs::OccupancyGrid& occ_grid, sb_geom::Point2D point, double inflation_radius);
 
+    // TODO: Test me
+    /**
+     * Remove all obstacles outside `radius` of `center`
+     *
+     * @param center the center of the circle
+     * @param radius the radius of the circle
+     */
+    void pruneObstaclesOutsideCircle(sb_geom::Point2D center, double radius);
+
 private:
 
     /**
@@ -236,6 +245,9 @@ private:
     // to known splines. Larger values will make this more accurate (ie. we are
     // more likely to find the truly closest known spline), but slower
     unsigned int closest_spline_max_iters;
+
+    // Our current position
+    sb_geom::Point2D curr_position;
 
     // all known cones in our world
     std::vector<mapping_igvc::ConeObstacle> cones;

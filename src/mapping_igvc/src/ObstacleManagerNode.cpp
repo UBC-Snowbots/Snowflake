@@ -29,11 +29,14 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "line_merging_max_iters", line_merging_max_iters, 10);
     SB_getParam(private_nh, "closest_line_max_iters", closest_line_max_iters, 15);
     SB_getParam(private_nh, "occ_grid_frame", occ_grid_frame, std::string("map"));
+    SB_getParam(private_nh, "robot_base_frame", robot_base_frame, std::string("base_link"));
     SB_getParam(private_nh, "occ_grid_generation_rate", occ_grid_generation_rate, 1.0);
     SB_getParam(private_nh, "debug_marker_generation_rate", debug_marker_generation_rate, 1.0);
     SB_getParam(private_nh, "obstacle_tf_wait", obstacle_tf_wait_seconds, 0.3);
     obstacle_tf_wait = ros::Duration(obstacle_tf_wait_seconds);
     SB_getParam(private_nh, "line_marker_resolution", line_marker_resolution, 30);
+    SB_getParam(private_nh, "obstacle_pruning_radius", obstacle_pruning_radius, 10.0);
+
 
     // Setup the Obstacle Manager
     obstacle_manager = ObstacleManager(
@@ -132,6 +135,23 @@ void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle:
 }
 
 void ObstacleManagerNode::publishGeneratedOccupancyGrid(const ros::TimerEvent &timer_event) {
+    // TODO: THis obstacle removal process should be it's own function
+    // Get our most recent position
+    sb_geom::Point2D current_position;
+    try {
+        tf::StampedTransform transform;
+        tf_listener->lookupTransform(this->robot_base_frame, this->occ_grid_frame, ros::Time(0), transform);
+        current_position.x() = transform.getOrigin().x();
+        current_position.y() = transform.getOrigin().y();
+    } catch (tf::TransformException except) {
+        ROS_WARN_STREAM(except.what());
+        return;
+    }
+
+    // Remove obstacles far away from us
+    obstacle_manager.pruneObstaclesOutsideCircle(current_position, obstacle_pruning_radius);
+
+    // Generate the occupancy grid
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
     occ_grid.header.stamp = ros::Time::now();

@@ -46,10 +46,7 @@ std::vector<sb_geom::Spline> ObstacleManager::getLineObstacles() {
 }
 
 double ObstacleManager::distanceBetweenCones(mapping_igvc::ConeObstacle cone1, mapping_igvc::ConeObstacle cone2){
-        double dx = cone1.center.x - cone2.center.x;
-        double dy = cone1.center.y - cone2.center.y;
-        double distance = std::sqrt(std::pow(dx,2) + std::pow(dy,2));
-        return distance;
+    return distance(cone1.center, cone2.center);
 }
 
 
@@ -203,9 +200,8 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
 
 nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
-    // TODO (Part 4): prune obstacles outside a given distance from us (might want a seperate function for this)
-
     // TODO: All this cleanup stuff should probably be in it's own function
+
     // TODO: Make this angle a param
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     splitLineSelfLoops(0.47);
@@ -428,5 +424,46 @@ void ObstacleManager::splitLineSelfLoops(double self_loop_max_angle) {
     }
 }
 
+void ObstacleManager::pruneObstaclesOutsideCircle(sb_geom::Point2D center, double radius) {
+    // TODO: Make cones and lines seperate functions here
+
+    // Remove cones
+    for (int i = 0; i < cones.size(); i++){
+        if (distance(cones[i].center, center) > radius){
+            cones.erase(cones.begin() + i);
+        }
+    }
+
+    // Remove Lines
+    for (int i = 0; i < lines.size(); i++){
+        // Check for interpolation points outside of the radius to remove
+        std::vector<sb_geom::Point2D> interpolation_points = lines[i].getInterpolationPoints();
+        for (int j = 0; j < interpolation_points.size(); i++) {
+            sb_geom::Point2D point = interpolation_points[j];
+            if (distance(point, center) > radius){
+                // Remove the line
+                sb_geom::Spline spline = lines[i];
+                lines.erase(lines.begin() + i);
+
+                // Create two splines from the points before and after
+                // the interpolation point outside the radius
+                // (not including said interpolation point)
+                auto start = interpolation_points.begin();
+                auto split = interpolation_points.begin() + j;
+                auto end = interpolation_points.end();
+                // Note: we do NOT include the split point in either spline
+                std::vector<Point2D> s1_points(start, split);
+                std::vector<Point2D> s2_points(split+1, end);
+                lines.emplace_back(Spline(s1_points));
+                lines.emplace_back(Spline(s2_points));
+
+                // Decrement the line index counter since we just removed the line at `i` and
+                // so the line that was at `i+1` is now at `i`
+                i--;
+                break;
+            }
+        }
+    }
+}
 
 
