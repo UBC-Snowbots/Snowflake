@@ -8,8 +8,6 @@
 
 #include <ObstacleManagerNode.h>
 
-// TODO: Remove all debug print statements in this file
-
 ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node_name) :
     // Since there is no default constructor for `ObstacleManager`, assign it some random
     // values for now (it will be overwritten later in this constructor)
@@ -22,7 +20,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     ros::NodeHandle private_nh("~");
 
     // Get Params
-    double cone_merging_tolerance, line_merging_tolerance, obstacle_inflation_buffer, occ_grid_cell_size, occ_grid_generation_rate;
+    double cone_merging_tolerance, line_merging_tolerance, obstacle_inflation_buffer, occ_grid_cell_size, occ_grid_generation_rate, debug_marker_generation_rate, obstacle_tf_wait_seconds;
     int line_merging_max_iters, closest_line_max_iters;
     SB_getParam(private_nh, "cone_merging_tolerance", cone_merging_tolerance, 0.3);
     SB_getParam(private_nh, "line_merging_tolerance", line_merging_tolerance, 0.3);
@@ -32,9 +30,10 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "closest_line_max_iters", closest_line_max_iters, 15);
     SB_getParam(private_nh, "occ_grid_frame", occ_grid_frame, std::string("map"));
     SB_getParam(private_nh, "occ_grid_generation_rate", occ_grid_generation_rate, 1.0);
-    double obstacle_tf_wait_seconds;
+    SB_getParam(private_nh, "debug_marker_generation_rate", debug_marker_generation_rate, 1.0);
     SB_getParam(private_nh, "obstacle_tf_wait", obstacle_tf_wait_seconds, 0.3);
     obstacle_tf_wait = ros::Duration(obstacle_tf_wait_seconds);
+    SB_getParam(private_nh, "line_marker_resolution", line_marker_resolution, 30);
 
     // Setup the Obstacle Manager
     obstacle_manager = ObstacleManager(
@@ -70,8 +69,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
             occ_grid_generation_period, &ObstacleManagerNode::publishGeneratedOccupancyGrid, this);
 
     // Setup timer for debug marker publishing
-    // TODO: Make this rate a seperate param
-    ros::Duration debug_marker_generation_period(1 / occ_grid_generation_rate);
+    ros::Duration debug_marker_generation_period(1 / debug_marker_generation_rate);
     debug_marker_generation_timer = private_nh.createTimer(
             occ_grid_generation_period, &ObstacleManagerNode::publishObstacleMarkers, this);
 }
@@ -171,7 +169,6 @@ sb_geom::Spline ObstacleManagerNode::transformSpline(sb_geom::Spline spline, std
     return transformed_spline;
 }
 
-// TODO: Delete me
 void ObstacleManagerNode::publishObstacleMarkers(const ros::TimerEvent& timer_event) {
     // TODO: Cones and lines should be two different functions
     // Publish Cones
@@ -207,7 +204,7 @@ void ObstacleManagerNode::publishObstacleMarkers(const ros::TimerEvent& timer_ev
     for (sb_geom::Spline spline : this->obstacle_manager.getLineObstacles()){
         // Decompose the spline into a lot of points to make a marker from
         // TODO: Make number of points in param
-        int num_points = 500;
+        int num_points = spline.approxLength() * line_marker_resolution;
         std::vector<geometry_msgs::Point> line_points;
         for (int i = 0; i < num_points; i++){
             sb_geom::Point2D spline_point = spline(1.0/(double)num_points * (double)i);

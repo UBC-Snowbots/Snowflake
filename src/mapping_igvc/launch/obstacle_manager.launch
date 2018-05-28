@@ -59,6 +59,16 @@
         -->
         <rosparam param="occ_grid_generation_rate"> 1.0 </rosparam>
 
+        <!--
+            The rate (in hz) to publish the debug RViz markers at
+        -->
+        <rosparam param="debug_marker_generation_rate"> 1.0 </rosparam>
+
+        <!--
+            The number of points to sample (per meter) from each line
+            when generating the debug markers
+        -->
+        <rosparam param="line_marker_resolution"> 30 </rosparam>
 
         <remap from="line_obstacles" to="/line_extractor_node/output_line_obstacle" />
         <remap from="cone_obstacles" to="/cone_extractor_node/output_cone_obstacle" />
