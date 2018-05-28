@@ -77,8 +77,11 @@ private:
     // Publisher for the generated occupancy grid
     ros::Publisher occ_grid_publisher;
 
-    // Publisher for Line Obstacles
-    ros::Publisher rviz_line_publisher;
+    // Publisher for Line Obstacle Markers
+    ros::Publisher line_marker_publisher;
+
+    // Publisher for Cone Obstacle Markers
+    ros::Publisher cone_marker_publisher;
 
     // The listener that gets our transforms
     tf::TransformListener* tf_listener;

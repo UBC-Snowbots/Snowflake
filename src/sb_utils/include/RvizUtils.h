@@ -20,6 +20,7 @@ class RvizUtils {
      *
      *  @param points the points to be converted
      *  @param color the color of the points
+     *  @param scale the scale for each marker
      *  @param frame_id the frame id
      *  @param ns the namespace
      *
@@ -40,6 +41,7 @@ class RvizUtils {
      *
      *  @param points the points to be converted
      *  @param colors the color of each point
+     *  @param scale the scale for each marker
      *  @param frame_id the frame id
      *  @param ns the namespace
      *
@@ -59,6 +61,7 @@ class RvizUtils {
      *
      *  @param point the point to be converted
      *  @param color the color of the point
+     *  @param scale the scale for each marker
      *  @param frame_id the frame id
      *  @param ns the namespace
      *
@@ -78,6 +81,7 @@ class RvizUtils {
      *
      * @param points_array each array inside corresponds to one marker
      * @param color color of the points in the array
+     *  @param scale the scale for each marker
      * @param frame_id frame id of the markers
      * @param ns namespace of the markers
      * @param type type of the markers
@@ -128,7 +132,7 @@ class RvizUtils {
     /**
      * Helper function that sets up common marker parameters
      *
-     * @param scale the scale
+     * @param scale the scale for each marker
      * @param frame_id the frame id
      * @param ns the namespace
      * @param type the type of marker
@@ -140,6 +144,18 @@ class RvizUtils {
                             std::string ns,
                             int type = visualization_msgs::Marker::POINTS,
                             int id   = 0);
+
+    // TODO: Test me
+    /**
+     * Helper function to offset a vector of points relative to some origin point
+     *
+     * @param origin the point to offset all the points relative to
+     * @param points the points to offset
+     *
+     * @return `points` all offset relative to `origin`
+     */
+    static std::vector<geometry_msgs::Point> offsetPointsRelativeToPoint(geometry_msgs::Point origin, std::vector<geometry_msgs::Point> points);
+
 };
 };
 #endif // HOLE_TRACKER_RVIZUTILS_H

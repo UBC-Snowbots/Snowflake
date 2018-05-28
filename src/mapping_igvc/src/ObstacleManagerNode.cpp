@@ -54,7 +54,9 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     std::string topic = private_nh.resolveName("occ_grid");
     occ_grid_publisher = private_nh.advertise<nav_msgs::OccupancyGrid>(topic, 1);
     topic = private_nh.resolveName("debug/lines");
-    rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(topic, 1);
+    line_marker_publisher = private_nh.advertise<visualization_msgs::MarkerArray>(topic, 1);
+    topic = private_nh.resolveName("debug/cones");
+    cone_marker_publisher = private_nh.advertise<visualization_msgs::Marker>(topic, 1);
 
     // Setup Transform Listener
     this->tf_listener = new tf::TransformListener();
@@ -171,42 +173,67 @@ sb_geom::Spline ObstacleManagerNode::transformSpline(sb_geom::Spline spline, std
 
 // TODO: Delete me
 void ObstacleManagerNode::publishObstacleMarkers(const ros::TimerEvent& timer_event) {
-    // TODO: Publish Cones
-
-    // TODO: This whole function is a hack, it should burn
-    // Publish lines
-    std::vector<geometry_msgs::Point> lines_points;
-    for (sb_geom::Spline spline : this->obstacle_manager.getLineObstacles()){
-        // Decompose the spline into a lot of points
-        // TODO: Make number of points in param
-        // TODO: Make scale and color a param
-        int num_points = 200;
-        for (int i = 0; i < num_points; i++){
-            sb_geom::Point2D spline_point = spline(1.0/(double)num_points * (double)i);
-            geometry_msgs::PointStamped point;
-            point.header.frame_id = "map";
-            point.header.stamp = ros::Time(0);
-            point.point.x = spline_point.x();
-            point.point.y = spline_point.y();
-            point.point.z = 0;
-            geometry_msgs::PointStamped transformed_point;
-            tf_listener->transformPoint("base_link", point, transformed_point);
-            lines_points.emplace_back(transformed_point.point);
-        }
+    // TODO: Cones and lines should be two different functions
+    // Publish Cones
+    std::vector<geometry_msgs::Point> cone_points;
+    for (mapping_igvc::ConeObstacle cone_obstacle : this->obstacle_manager.getConeObstacles()){
+        geometry_msgs::Point cone_point;
+        // TODO: Cone scale should reflect actual size of cone
+        cone_point.x = cone_obstacle.center.x;
+        cone_point.y = cone_obstacle.center.y;
+        cone_point.z = 0;
+        cone_points.emplace_back(cone_point);
     }
 
+    // TODO: Make scale and color a param
     visualization_msgs::Marker::_color_type color =
             snowbots::RvizUtils::createMarkerColor(1.0, 0.0, 1.0, 1.0);
     visualization_msgs::Marker::_scale_type scale =
-            snowbots::RvizUtils::createrMarkerScale(0.1, 0.1, 0.1);
+            snowbots::RvizUtils::createrMarkerScale(0.4, 0.4, 0.4);
 
-    visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(lines_points,
+    // TODO: SHould be a CYLINDER MarkerArray instead
+    visualization_msgs::Marker cone_marker = snowbots::RvizUtils::createMarker(
+                                      cone_points,
                                       color,
                                       scale,
-                                      "base_link",
+                                      this->occ_grid_frame,
                                       "debug",
                                       visualization_msgs::Marker::POINTS);
 
-    rviz_line_publisher.publish(marker);
+    cone_marker_publisher.publish(cone_marker);
+
+    // Publish lines
+    std::vector<std::vector<geometry_msgs::Point>> lines_points;
+    for (sb_geom::Spline spline : this->obstacle_manager.getLineObstacles()){
+        // Decompose the spline into a lot of points to make a marker from
+        // TODO: Make number of points in param
+        int num_points = 500;
+        std::vector<geometry_msgs::Point> line_points;
+        for (int i = 0; i < num_points; i++){
+            sb_geom::Point2D spline_point = spline(1.0/(double)num_points * (double)i);
+            geometry_msgs::Point point;
+            point.x = spline_point.x();
+            point.y = spline_point.y();
+            point.z = 0;
+            line_points.emplace_back(point);
+        }
+        lines_points.emplace_back(line_points);
+    }
+
+    // TODO: Make scale and color a param
+    color =
+            snowbots::RvizUtils::createMarkerColor(1.0, 0.0, 1.0, 1.0);
+    scale =
+            snowbots::RvizUtils::createrMarkerScale(0.05, 0.05, 0.05);
+
+    visualization_msgs::MarkerArray line_marker_array = snowbots::RvizUtils::createMarkerArray(
+                                      lines_points,
+                                      color,
+                                      scale,
+                                      this->occ_grid_frame,
+                                      "debug",
+                                      visualization_msgs::Marker::LINE_STRIP);
+
+    line_marker_publisher.publish(line_marker_array);
 }
 

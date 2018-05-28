@@ -6,7 +6,7 @@
             The minimum distance between the center of two cones for them to be
             considered different from each other (and so not merged)
         -->
-        <rosparam param="cone_merging_tolerance"> 0.3 </rosparam>
+        <rosparam param="cone_merging_tolerance"> 0.6 </rosparam>
 
         <!--
             The minimum distance between two lines for them to be
@@ -18,7 +18,7 @@
             The buffer to add around each obstacle when generating the occupancy
             grid for our currently known world
         -->
-        <rosparam param="obstacle_inflation_buffer"> 0.8 </rosparam>
+        <rosparam param="obstacle_inflation_buffer"> 0.6 </rosparam>
 
         <!--
             The size (length/width) of the cells in occupancy grids this class

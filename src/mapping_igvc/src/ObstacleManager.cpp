@@ -45,6 +45,14 @@ std::vector<sb_geom::Spline> ObstacleManager::getLineObstacles() {
     return lines;
 }
 
+double ObstacleManager::distanceBetweenCones(mapping_igvc::ConeObstacle cone1, mapping_igvc::ConeObstacle cone2){
+        double dx = cone1.center.x - cone2.center.x;
+        double dy = cone1.center.y - cone2.center.y;
+        double distance = std::sqrt(std::pow(dx,2) + std::pow(dy,2));
+        return distance;
+}
+
+
 void ObstacleManager::addObstacle(mapping_igvc::ConeObstacle cone) {
 
     // NOTE: This is likely where obstacle pruning (of obstacles a given
@@ -54,9 +62,7 @@ void ObstacleManager::addObstacle(mapping_igvc::ConeObstacle cone) {
     std::vector<std::pair<double,int>> distances;
     for (int known_cone_index = 0; known_cone_index < cones.size(); known_cone_index++){
         mapping_igvc::ConeObstacle& known_cone = cones[known_cone_index];
-        double dx = cone.center.x - known_cone.center.x;
-        double dy = cone.center.y - known_cone.center.y;
-        double distance = std::sqrt(std::pow(dx,2) + std::pow(dy,2));
+        double distance = distanceBetweenCones(cone, known_cone);
         distances.emplace_back(std::make_pair(distance, known_cone_index));
     }
 
@@ -199,11 +205,13 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
     // TODO (Part 4): prune obstacles outside a given distance from us (might want a seperate function for this)
 
+    // TODO: All this cleanup stuff should probably be in it's own function
     // TODO: Make this angle a param
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     splitLineSelfLoops(0.47);
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     mergeCloseLines();
+    mergeCloseCones();
 
     // Find what cells are directly occupied (ie. overlapping) with
     // known obstacles
@@ -360,7 +368,28 @@ void ObstacleManager::mergeCloseLines() {
                 lines.erase(lines.begin()+j);
                 // Merge it back into the first
                 lines[i] = updateLineWithNewLine(lines[i], line);
-                // Reset counters
+                // Restart merging
+                i = 0;
+                j = 0;
+                break;
+            }
+        }
+    }
+}
+
+void ObstacleManager::mergeCloseCones() {
+    // Compare every cone to every other cone
+    for (int i = 0; i < cones.size(); i++){
+        for (int j = i+1; j < cones.size(); j++){
+            // Check if the two cones are too close together
+            if (distanceBetweenCones(cones[i], cones[j]) < cone_merging_tolerance){
+                // Remove the older of the two cones
+                if (cones[i].header.stamp < cones[j].header.stamp){
+                    cones.erase(cones.begin() + i);
+                } else {
+                    cones.erase(cones.begin() + j);
+                }
+                // Restart merging
                 i = 0;
                 j = 0;
                 break;

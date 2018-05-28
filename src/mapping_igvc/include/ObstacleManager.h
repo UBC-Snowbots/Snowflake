@@ -182,9 +182,26 @@ private:
 
     // TODO: Test me
     /**
+     * Finds the distance between the center of two given cones
+     *
+     * @param cone1
+     * @param cone2
+     *
+     * @return the distance between the centers of `cone1` and `cone2`
+     */
+    double distanceBetweenCones(mapping_igvc::ConeObstacle cone1, mapping_igvc::ConeObstacle cone2);
+
+    // TODO: Test me
+    /**
      * Merges any lines together that are within `line_merging_tolerance`
      */
     void mergeCloseLines();
+
+    // TODO: Test me
+    /**
+     * Merges together any cones that are within `line_merging_tolerance`
+     */
+    void mergeCloseCones();
 
     // TODO: Test me
     /**
