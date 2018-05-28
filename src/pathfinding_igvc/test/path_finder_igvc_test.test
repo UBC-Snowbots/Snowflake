@@ -1,0 +1,10 @@
+<!-- A .test file which launches the node and its corresponding rostest -->
+
+<launch>
+    <node name="path_finder" pkg="pathfinding_igvc" type="path_finder" output="screen">
+        <rosparam param="base_frame_name"> "/base_link" </rosparam>
+        <rosparam param="global_frame_name"> "/map" </rosparam>
+    </node>
+    <node pkg="tf" type="static_transform_publisher" name="base_link_broadcaster" args="3 7 0 0 0 0 1 map base_link 100" />
+    <test test-name="path_finder_rostest" pkg="pathfinding_igvc" type="path_finder_rostest" />
+</launch>

@@ -11,7 +11,7 @@ endif()
 
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS roscpp)
+find_package(catkin REQUIRED COMPONENTS roscpp tf)
 find_package(sb_utils REQUIRED)
 
 add_definitions(-std=c++14)
@@ -49,6 +49,7 @@ add_executable(path_finder
   include/PathConstructor.h
   include/PathFinder.h
   include/PathFinderUtils.h
+  include/PathFinderNode.h
   src/AStar.cpp
   src/FrameTransformer.cpp
   src/OccupancyGridAdapter.cpp
@@ -56,6 +57,7 @@ add_executable(path_finder
   src/PathConstructor.cpp
   src/PathFinder.cpp
   src/path_finder.cpp
+  src/PathFinderNode.cpp
   )
 
 ## Specify libraries to link a library or executable target against
@@ -131,5 +133,9 @@ if (CATKIN_ENABLE_TESTING)
     # "catkin_make run_tests" to be able to find and run this rostest
     add_rostest_gtest(path_to_twist_rostest test/pathfinding_igvc_test.test test/path_to_twist_rostest.cpp)
     target_link_libraries(path_to_twist_rostest ${catkin_LIBRARIES})
+
+    add_rostest_gtest(path_finder_rostest test/path_finder_igvc_test.test test/path_finder_rostest.cpp)
+    target_link_libraries(path_finder_rostest ${catkin_LIBRARIES})
+
 endif()
 
