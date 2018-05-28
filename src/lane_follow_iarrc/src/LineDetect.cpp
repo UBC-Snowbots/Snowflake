@@ -118,7 +118,7 @@ cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
         throw LineDetect::NoLaneIntersectException();
     }
 
-    create_point:
+create_point:
     // create a Point2d storing the intersect
     cv::Point2d intersect_point = {x_intersect, y_intersect};
 
