@@ -199,11 +199,11 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
     // TODO (Part 4): prune obstacles outside a given distance from us (might want a seperate function for this)
 
-    // TODO: We should switch these two "clean up" operations, as `mergeCloseLines` should problably come after we split loops
-    // TODO: Is this the right place to do this? (keep in mind how expensive it is)
-    mergeCloseLines();
+    // TODO: Make this angle a param
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     splitLineSelfLoops(0.47);
+    // TODO: Is this the right place to do this? (keep in mind how expensive it is)
+    mergeCloseLines();
 
     // Find what cells are directly occupied (ie. overlapping) with
     // known obstacles
@@ -350,9 +350,10 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
 }
 
 void ObstacleManager::mergeCloseLines() {
+    // Compare every line to every other line
     for (int i = 0; i < lines.size(); i++){
         for (int j = i+1; j < lines.size(); j++){
-            // Check if any line is to close to any other line
+            // Check if the two lines are too close together
             if (minDistanceBetweenSplines(lines[i], lines[j], closest_spline_max_iters) < line_merging_tolerance){
                 // Remove the second of the two lines
                 Spline line = lines[j];
@@ -387,20 +388,6 @@ void ObstacleManager::splitLineSelfLoops(double self_loop_max_angle) {
                 // Note: we include the split point in both splines
                 std::vector<Point2D> s1_points(start, split+1);
                 std::vector<Point2D> s2_points(split, end);
-                // TODO: Delete me - this is a hack
-                std::cout << s1_points.size() << " " << s2_points.size() << std::endl;
-                for (Point2D point: interpolation_points) {
-                    std::cout << point.x() << "," << point.y() << " // ";
-                }
-                std::cout << std::endl;
-                for (Point2D point: s1_points) {
-                    std::cout << point.x() << "," << point.y() << " // ";
-                }
-                std::cout << std::endl;
-                for (Point2D point: s2_points) {
-                    std::cout << point.x() << "," << point.y() << " // ";
-                }
-                std::cout << std::endl;
                 lines.emplace_back(Spline(s1_points));
                 lines.emplace_back(Spline(s2_points));
 

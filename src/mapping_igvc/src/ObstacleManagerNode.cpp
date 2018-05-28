@@ -72,19 +72,9 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
 }
 
 void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle::ConstPtr &cone_msg) {
-    std::cout << "cone" << std::endl;
-
     mapping_igvc::ConeObstacle cone = *cone_msg;
 
     // TODO: Checks for required header bits on msg?
-    // Check if we can transform the cone into the map frame
-    // TODO: This seems to crash if it can't find the transform????
-    std::string* tf_err_msg;
-    if (!tf_listener->canTransform(cone.header.frame_id, this->occ_grid_frame, cone.header.stamp, tf_err_msg)){
-        ROS_WARN_STREAM(
-                "Could not transform cone from \"" << cone.header.frame_id <<  "to \"" << this->occ_grid_frame << ": " <<  *tf_err_msg);
-        return;
-    }
 
     // Transform the Cone into the map frame
     geometry_msgs::PointStamped cone_center;
@@ -95,7 +85,17 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
     cone_center.header.frame_id = cone.header.frame_id;
 
     geometry_msgs::PointStamped transformed_cone_center;
-    tf_listener->transformPoint(this->occ_grid_frame, cone_center, transformed_cone_center);
+
+    try {
+        // TODO: Make wait time a param
+        // Wait a second to see if we get the tf (in case the obstacles are
+        // publishing faster then the tf's are getting computed)
+        tf_listener->waitForTransform(cone_center.header.frame_id, this->occ_grid_frame, cone_center.header.stamp, ros::Duration(0.2));
+        tf_listener->transformPoint(this->occ_grid_frame, cone_center, transformed_cone_center);
+    } catch (tf::TransformException except) {
+        ROS_WARN_STREAM("Could not transform cone from \"" << cone.header.frame_id <<  "\" to \"" << this->occ_grid_frame << "\" : " << except.what());
+        return;
+    }
 
     cone.center.x = transformed_cone_center.point.x;
     cone.center.y = transformed_cone_center.point.y;
@@ -104,36 +104,23 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
 }
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
-    std::cout << "line" << std::endl;
     // Create a spline from the given polynomial line
     sb_geom::PolynomialSegment poly_segment(line_msg->coefficients, line_msg->x_min, line_msg->x_max);
     sb_geom::Spline spline(poly_segment);
 
-    // TODO: delete me
-    ROS_WARN("1");
-    
     // TODO: Checks for required header bits on msg?
 
-    // Check that we can transform the line into the map frame
-    // TODO: Handle case where the line_msg has no frame (right now will just crash)
-    // TODO: This seems to crash if it can't find the transform????
-    std::string* tf_err_msg;
-    if (!tf_listener->canTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, tf_err_msg)){
-        ROS_WARN_STREAM(
-                "Could not transform line from \"" << line_msg->header.frame_id <<  "to \"" << this->occ_grid_frame << ": " <<  *tf_err_msg);
-        return;
+    // Transform the line into the map frame and add it to the map
+    try {
+        sb_geom::Spline transformed_spline = transformSpline(spline, line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp);
+        obstacle_manager.addObstacle(transformed_spline);
+    } catch (tf::TransformException except) {
+        ROS_WARN_STREAM("Could not transform line from \"" << line_msg->header.frame_id <<  "\" to \"" << this->occ_grid_frame << "\" : " << except.what());
     }
 
-    // TODO: delete me
-    ROS_WARN("2");
-
-    sb_geom::Spline transformed_spline = transformSpline(spline, line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp);
-
-    obstacle_manager.addObstacle(transformed_spline);
 }
 
 void ObstacleManagerNode::publishGeneratedOccupancyGrid(const ros::TimerEvent &timer_event) {
-    std::cout << "map" << std::endl;
     nav_msgs::OccupancyGrid occ_grid = obstacle_manager.generateOccupancyGrid();
 
     occ_grid.header.stamp = ros::Time::now();
@@ -141,9 +128,6 @@ void ObstacleManagerNode::publishGeneratedOccupancyGrid(const ros::TimerEvent &t
     occ_grid.header.seq = occ_grid_seq;
     occ_grid_seq++;
 
-    std::cout << "publishing map" << std::endl;
-    ROS_INFO_STREAM(occ_grid.header);
-    ROS_INFO_STREAM(occ_grid.info);
     occ_grid_publisher.publish(occ_grid);
 }
 
