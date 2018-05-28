@@ -19,10 +19,10 @@
 #include <tf/transform_datatypes.h>
 #include <tf2_msgs/TFMessage.h>
 
-class PathFinding {
+class PathToTwistNode {
   public:
     // The constructor
-    PathFinding(int argc, char** argv, std::string node_name);
+    PathToTwistNode(int argc, char** argv, std::string node_name);
 
     /**
      * Produces a twist message for the robot from the path message and

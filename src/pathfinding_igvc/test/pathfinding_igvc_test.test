@@ -1,10 +1,10 @@
 <!-- A .test file which launches the node and its corresponding rostest -->
 
 <launch>
-    <node name="path_finding" pkg="pathfinding_igvc" type="path_finding" output="screen">
+    <node name="path_to_twist" pkg="pathfinding_igvc" type="path_to_twist" output="screen">
         <rosparam param="num_poses"> 10 </rosparam>
         <rosparam param="base_frame"> "BASE_FRAME" </rosparam>
         <rosparam param="global_frame"> "GLOBAL_FRAME" </rosparam>
     </node>
-    <test test-name="path_finding_rostest" pkg="pathfinding_igvc" type="path_finding_rostest" />
+    <test test-name="path_to_twist_rostest" pkg="pathfinding_igvc" type="path_to_twist_rostest" />
 </launch>

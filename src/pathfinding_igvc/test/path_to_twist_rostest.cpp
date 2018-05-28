@@ -1,7 +1,7 @@
-#include <PathFinding.h>
+#include <PathToTwistNode.h>
 #include <gtest/gtest.h>
 
-class PathFindingTest : public testing::Test {
+class PathToTwistNodeTest : public testing::Test {
   protected:
     virtual void SetUp() {
         test_publisher_path =
@@ -9,7 +9,7 @@ class PathFindingTest : public testing::Test {
         test_publisher_tf =
         nh_.advertise<tf2_msgs::TFMessage>("/tf", 1); // TF publisher
         test_subscriber =
-        nh_.subscribe("/cmd_vel", 1, &PathFindingTest::callback, this);
+        nh_.subscribe("/cmd_vel", 1, &PathToTwistNodeTest::callback, this);
 
         // Let the publishers and subscribers set itself up timely
         ros::Rate loop_rate(1);
@@ -30,7 +30,7 @@ class PathFindingTest : public testing::Test {
     }
 };
 
-TEST_F(PathFindingTest, testStraightPathFinding) {
+TEST_F(PathToTwistNodeTest, testStraightPathFinding) {
     tf2_msgs::TFMessage tf_msg;
     std::vector<geometry_msgs::TransformStamped> all_transforms;
     geometry_msgs::TransformStamped transform_stamped;
@@ -74,7 +74,7 @@ TEST_F(PathFindingTest, testStraightPathFinding) {
     EXPECT_NEAR(M_PI / 4, turn_rate, 0.1);
 }
 
-TEST_F(PathFindingTest, testCurvedPathFinding) {
+TEST_F(PathToTwistNodeTest, testCurvedPathFinding) {
     tf2_msgs::TFMessage tf_msg;
     std::vector<geometry_msgs::TransformStamped> all_transforms;
     geometry_msgs::TransformStamped transform_stamped;
@@ -120,7 +120,7 @@ TEST_F(PathFindingTest, testCurvedPathFinding) {
     EXPECT_NEAR(0.55, turn_rate, 0.1);
 }
 
-TEST_F(PathFindingTest, testSharpUTurn) {
+TEST_F(PathToTwistNodeTest, testSharpUTurn) {
     tf2_msgs::TFMessage tf_msg;
     std::vector<geometry_msgs::TransformStamped> all_transforms;
     geometry_msgs::TransformStamped transform_stamped;
@@ -167,7 +167,7 @@ TEST_F(PathFindingTest, testSharpUTurn) {
     EXPECT_NEAR(1.28, turn_rate, 0.1);
 }
 
-TEST_F(PathFindingTest, testReceiveTF1) {
+TEST_F(PathToTwistNodeTest, testReceiveTF1) {
     // Send custom tf to update robot position to pos x=0, y=100, facing in pos
     // x direction
     // Then send a path msg (straight line) with the robot's new position in
@@ -212,7 +212,7 @@ TEST_F(PathFindingTest, testReceiveTF1) {
     EXPECT_NEAR(0, turn_rate, 0.1);
 }
 
-TEST_F(PathFindingTest, testReceiveTF2) {
+TEST_F(PathToTwistNodeTest, testReceiveTF2) {
     // Send custom tf to update robot position to pos x=50, y=50, facing in pos
     // y direction
     // Then send a path msg (straight line) with the robot's new position in
