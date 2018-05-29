@@ -109,7 +109,7 @@ private:
 
     // How long to wait for obstacle transformations
     // (in cases where the obstacle is published before the transform)
-    ros::Duration obstacle_tf_wait;
+    ros::Duration obstacle_tf_wait_time;
 
     // The number of points per meter to sample from each line when
     // generating debug markers for the lines

@@ -32,8 +32,8 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "robot_base_frame", robot_base_frame, std::string("base_link"));
     SB_getParam(private_nh, "occ_grid_generation_rate", occ_grid_generation_rate, 1.0);
     SB_getParam(private_nh, "debug_marker_generation_rate", debug_marker_generation_rate, 1.0);
-    SB_getParam(private_nh, "obstacle_tf_wait", obstacle_tf_wait_seconds, 0.3);
-    obstacle_tf_wait = ros::Duration(obstacle_tf_wait_seconds);
+    SB_getParam(private_nh, "obstacle_tf_wait_time", obstacle_tf_wait_seconds, 0.3);
+    obstacle_tf_wait_time = ros::Duration(obstacle_tf_wait_seconds);
     SB_getParam(private_nh, "line_marker_resolution", line_marker_resolution, 30);
     SB_getParam(private_nh, "obstacle_pruning_radius", obstacle_pruning_radius, 10.0);
 
@@ -95,7 +95,7 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
     try {
         // Wait a second to see if we get the tf (in case the obstacles are
         // publishing faster then the tf's are getting computed)
-        tf_listener->waitForTransform(cone_center.header.frame_id, this->occ_grid_frame, cone_center.header.stamp, this->obstacle_tf_wait);
+        tf_listener->waitForTransform(cone_center.header.frame_id, this->occ_grid_frame, cone_center.header.stamp, this->obstacle_tf_wait_time);
 
         // Transform the obstacle
         tf_listener->transformPoint(this->occ_grid_frame, cone_center, transformed_cone_center);
@@ -121,7 +121,7 @@ void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle:
     try {
         // Wait a second to see if we get the tf (in case the obstacles are
         // publishing faster then the tf's are getting computed)
-        tf_listener->waitForTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, this->obstacle_tf_wait);
+        tf_listener->waitForTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, this->obstacle_tf_wait_time);
         
         // Transform the obstacle
         sb_geom::Spline transformed_spline = transformSpline(spline, line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp);
