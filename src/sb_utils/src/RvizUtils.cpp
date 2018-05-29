@@ -41,9 +41,6 @@ Marker RvizUtils::createMarker(vector<geometry_msgs::Point> points,
     // Set the points
     marker.points = points;
 
-    // TODO: Make this an option (default true)
-    marker.frame_locked = true;
-
     return marker;
 }
 
@@ -141,6 +138,9 @@ void RvizUtils::setupMarker(Marker& marker,
     marker.ns              = ns;
 
     marker.scale = scale;
+
+    // TODO: Make this an option (default true)
+    marker.frame_locked = true;
 }
 
 std::vector<geometry_msgs::Point> RvizUtils::offsetPointsRelativeToPoint(geometry_msgs::Point origin, std::vector<geometry_msgs::Point> points) {

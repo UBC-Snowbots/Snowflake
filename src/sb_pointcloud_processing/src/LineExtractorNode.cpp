@@ -54,13 +54,13 @@ LineExtractorNode::LineExtractorNode(int argc,
     }
 
     std::string topic_to_subscribe_to = "input_pointcloud"; // dummy topic name
-    int refresh_rate                  = 10;
+    uint32_t queue_size                    = 1;
     subscriber                        = nh.subscribe(
-    topic_to_subscribe_to, refresh_rate, &LineExtractorNode::pclCallBack, this);
+    topic_to_subscribe_to, queue_size, &LineExtractorNode::pclCallBack, this);
 
     std::string topic_to_publish_to =
     "output_line_obstacle"; // dummy topic name
-    uint32_t queue_size = 1;
+    queue_size = 10;
     publisher           = private_nh.advertise<mapping_igvc::LineObstacle>(
     topic_to_publish_to, queue_size);
 
@@ -102,16 +102,31 @@ void LineExtractorNode::extractLines() {
     DBSCAN dbscan(this->minNeighbours, this->radius);
     this->clusters = dbscan.findClusters(this->pclPtr);
 
-    std::vector<Eigen::VectorXf> lines = regression.getLinesOfBestFit(
-    this->clusters, this->degreePoly, this->lambda);
+    // TODO: Put some of this functionality in another function
+    std::vector<std::pair<Eigen::VectorXf, double>> x_dependent_lines =
+            regression.getLinesOfBestFitWithStandardError(this->clusters, this->degreePoly, this->lambda);
 
-    std::vector<mapping_igvc::LineObstacle> line_obstacles =
-    vectorsToMsgs(lines);
+    std::vector<pcl::PointCloud<pcl::PointXYZ>> switched_clusters = switchXandYinClusters(this->clusters);
+
+    std::vector<std::pair<Eigen::VectorXf, double>> y_dependent_lines =
+            regression.getLinesOfBestFitWithStandardError(switched_clusters, this->degreePoly, this->lambda);
+
+    // TODO: This expression is bit redundant
+    // choose whichever of the x/y dependent lines fit each cluster the best
+    std::vector<mapping_igvc::LineObstacle> line_obstacles;
+    for (int i = 0; i < clusters.size(); i++){
+        if (x_dependent_lines[i].second < y_dependent_lines[i].second) {
+            mapping_igvc::LineObstacle line = vectorToLineObstacle(x_dependent_lines[i].first, clusters[i]);
+            line.dependent_on = mapping_igvc::LineObstacle::DEPENDENT_ON_X;
+            line_obstacles.emplace_back(line);
+        } else {
+            mapping_igvc::LineObstacle line = vectorToLineObstacle(y_dependent_lines[i].first, switched_clusters[i]);
+            line.dependent_on = mapping_igvc::LineObstacle::DEPENDENT_ON_Y;
+            line_obstacles.emplace_back(line);
+        }
+    }
 
     for (mapping_igvc::LineObstacle& line_obstacle : line_obstacles){
-        // Stamp each line with the time of the cloud it came from
-        line_obstacle.header.stamp = this->last_cloud_time;
-
         publisher.publish(line_obstacle);
     }
 
@@ -204,8 +219,10 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
         mapping_igvc::LineObstacle line_obstacle = line_obstacles[i];
 
         // draw the line as a series of points
-        for (float x = line_obstacle.x_min; x < line_obstacle.x_max;
+        for (float x = line_obstacle.min; x < line_obstacle.max;
              x += this->x_delta) {
+            // Compute the point assuming the polynomial is in terms of x
+            // ie. y(x)
             geometry_msgs::Point p;
             p.x = x;
 
@@ -215,6 +232,14 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
                 p.y += line_obstacle.coefficients[i] * pow(x, i);
             }
 
+            // Check if the point is in terms of y, if it is,
+            // we need to switch x and y
+            if (line_obstacle.dependent_on == mapping_igvc::LineObstacle::DEPENDENT_ON_Y){
+                double y = p.y;
+                double x = p.x;
+                p.y = x;
+                p.x = y;
+            }
             line_points.push_back(p);
         }
     }
@@ -228,11 +253,12 @@ bool LineExtractorNode::areParamsInvalid() {
 }
 
 std::vector<mapping_igvc::LineObstacle>
-LineExtractorNode::vectorsToMsgs(std::vector<Eigen::VectorXf> vectors) {
+LineExtractorNode::vectorsToMsgs(std::vector<Eigen::VectorXf> vectors,
+                                 vector<pcl::PointCloud<pcl::PointXYZ>> &clusters) {
     std::vector<mapping_igvc::LineObstacle> msgs;
 
-    for (unsigned int i = 0; i < vectors.size(); i++) {
-        msgs.push_back(vectorToLineObstacle(vectors[i], i));
+    for (unsigned int i = 0; i < clusters.size(); i++) {
+        msgs.push_back(vectorToLineObstacle(vectors[i], clusters[i]));
     }
 
     return msgs;
@@ -240,39 +266,72 @@ LineExtractorNode::vectorsToMsgs(std::vector<Eigen::VectorXf> vectors) {
 
 mapping_igvc::LineObstacle
 LineExtractorNode::vectorToLineObstacle(Eigen::VectorXf v,
-                                        unsigned int cluster_index) {
+                                        pcl::PointCloud<pcl::PointXYZ> &cluster) {
     mapping_igvc::LineObstacle line_obstacle = mapping_igvc::LineObstacle();
 
     for (unsigned int i = 0; i < v.size(); i++) {
         line_obstacle.coefficients.push_back(v(i));
     }
 
-    getClusterXRange(line_obstacle.x_min, line_obstacle.x_max, cluster_index);
+    getClusterRange(line_obstacle.min, line_obstacle.max, cluster, 0);
 
     line_obstacle.header.frame_id = this->frame_id;
+
+    // Stamp each line with the time of the cloud it came from
+    line_obstacle.header.stamp = this->last_cloud_time;
 
     return line_obstacle;
 }
 
-void LineExtractorNode::getClusterXRange(double& xmin,
-                                         double& xmax,
-                                         unsigned int cluster_index) {
-    pcl::PointCloud<pcl::PointXYZ> cluster = this->clusters[cluster_index];
-
-    double min, max;
+void LineExtractorNode::getClusterRange(double &min, double &max,
+                                        pcl::PointCloud<pcl::PointXYZ> &cluster,
+                                        mapping_igvc::LineObstacle::_dependent_on_type dependent_on) {
+    // Lambda function to get the right member variable depending on what
+    // the polynomial is in terms of
+    auto getRangeVariable = [&](pcl::PointXYZ p){
+        if (dependent_on == mapping_igvc::LineObstacle::DEPENDENT_ON_Y){
+            return p.y;
+        } else {
+            return p.x;
+        }
+    };
 
     if (cluster.size()) {
-        min = max = cluster[0].x;
+        min = max = getRangeVariable(cluster[0]);
     } else {
-        xmin = xmax = -1;
+        min = max = -1;
         return;
     }
 
     for (unsigned int i = 0; i < cluster.size(); i++) {
-        if (cluster[i].x < min) { min = cluster[i].x; }
-        if (cluster[i].x > max) { max = cluster[i].x; }
+        if (getRangeVariable(cluster[i]) < min) { min = getRangeVariable(cluster[i]); }
+        if (getRangeVariable(cluster[i]) > max) { max = getRangeVariable(cluster[i]); }
     }
 
-    xmin = min;
-    xmax = max;
+    min = min;
+    max = max;
+}
+
+std::vector<pcl::PointCloud<pcl::PointXYZ>>
+LineExtractorNode::switchXandYinClusters(
+        std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters) {
+    std::vector<pcl::PointCloud<pcl::PointXYZ>> switched_clusters;
+    for (pcl::PointCloud<pcl::PointXYZ>& cluster : clusters){
+        switched_clusters.emplace_back(switchXandYinCluster(cluster));
+    }
+
+    return switched_clusters;
+}
+
+pcl::PointCloud<pcl::PointXYZ>
+LineExtractorNode::switchXandYinCluster(pcl::PointCloud<pcl::PointXYZ> cluster) {
+    pcl::PointCloud<pcl::PointXYZ> switched_cluster = cluster;
+    for (pcl::PointXYZ& point : switched_cluster){
+        double x = point.x;
+        double y = point.y;
+        point.x = y;
+        point.y = x;
+    }
+
+    return switched_cluster;
 }

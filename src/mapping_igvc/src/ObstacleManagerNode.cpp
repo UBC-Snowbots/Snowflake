@@ -21,7 +21,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     ros::NodeHandle private_nh("~");
 
     // Get Params
-    double cone_merging_tolerance, line_merging_tolerance, obstacle_inflation_buffer, occ_grid_cell_size, occ_grid_generation_rate, debug_marker_generation_rate, obstacle_tf_wait_seconds;
+    double cone_merging_tolerance, line_merging_tolerance, obstacle_inflation_buffer, occ_grid_cell_size, occ_grid_generation_rate, debug_marker_generation_rate, obstacle_tf_wait_seconds, tf_cache_time;
     int line_merging_max_iters, closest_line_max_iters;
     SB_getParam(private_nh, "cone_merging_tolerance", cone_merging_tolerance, 0.3);
     SB_getParam(private_nh, "line_merging_tolerance", line_merging_tolerance, 0.3);
@@ -35,6 +35,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "debug_marker_generation_rate", debug_marker_generation_rate, 1.0);
     SB_getParam(private_nh, "obstacle_tf_wait", obstacle_tf_wait_seconds, 0.3);
     obstacle_tf_wait = ros::Duration(obstacle_tf_wait_seconds);
+    SB_getParam(private_nh, "tf_cache_time", tf_cache_time, 15.0);
     SB_getParam(private_nh, "line_marker_resolution", line_marker_resolution, 30);
     SB_getParam(private_nh, "obstacle_pruning_radius", obstacle_pruning_radius, 10.0);
 
@@ -62,7 +63,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     cone_marker_publisher = private_nh.advertise<visualization_msgs::Marker>(topic, 1);
 
     // Setup Transform Listener
-    this->tf_listener = new tf::TransformListener();
+    this->tf_listener = new tf::TransformListener(ros::Duration(tf_cache_time));
 
     // Setup the timer that will publish the occupancy grid at a set frequency
     // NOTE: This acts similairly to a callback, expect that instead of being
@@ -112,7 +113,6 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
 }
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
-    std::cout << "lineObstacleCallback" << std::endl;
     // Create a spline from the given polynomial line
     sb_geom::PolynomialSegment poly_segment(line_msg->coefficients, line_msg->min, line_msg->max);
 
@@ -129,26 +129,21 @@ void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle:
         }
     }
     sb_geom::Spline spline(interpolation_points);
-    ROS_INFO("CREAGTED SPLINE");
 
     // TODO: Checks for required header bits on msg?
 
     // Transform the line into the map frame and add it to the map
     try {
-        ROS_INFO("try1");
         // Wait a second to see if we get the tf (in case the obstacles are
         // publishing faster then the tf's are getting computed)
         tf_listener->waitForTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, this->obstacle_tf_wait);
 
-        ROS_INFO("try2");
         // Transform the obstacle
         sb_geom::Spline transformed_spline = transformSpline(spline, line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp);
 
-        ROS_INFO("try3");
         // Add the obstacle to the map
         obstacle_manager.addObstacle(transformed_spline);
     } catch (tf::TransformException except) {
-        ROS_INFO("except");
         ROS_WARN_STREAM("Could not transform line from \"" << line_msg->header.frame_id <<  "\" to \"" << this->occ_grid_frame << "\" : " << except.what());
     }
 

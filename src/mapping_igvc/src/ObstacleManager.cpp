@@ -199,8 +199,6 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
 }
 
 nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
-    std::cout << "geneertaing with #lines: " << lines.size() << std::endl;
-
     // TODO: All this cleanup stuff should probably be in it's own function
 
     // TODO: Make this angle a param
@@ -209,8 +207,6 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     mergeCloseLines();
     mergeCloseCones();
-
-    std::cout << "after cleaning - #lines: " << lines.size() << std::endl;
 
     // Find what cells are directly occupied (ie. overlapping) with
     // known obstacles

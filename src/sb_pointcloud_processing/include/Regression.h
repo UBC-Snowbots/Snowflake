@@ -18,6 +18,7 @@
 
 class Regression {
   public:
+
     /*
      * Returns a std::vector of Eigen::VectorXf
      * Each Eigen::VectorXf corresponds to the line of best fit of a
@@ -32,6 +33,23 @@ class Regression {
                       unsigned int poly_degree,
                       float lambda = 0);
 
+    // TODO: Test me
+    /**
+     * Gets a line of best fit for each given cluster and the standard error for that line
+     *
+     * @param clusters the clusters to get lines of best fit for
+     * @param poly_degree the degree of polynomial to fit to each cluster
+     * @param lambda Regularization parameter (Default: 0)
+     *
+     * @return a vector of pairs of polynomial lines (represented as a vector
+     * of ascending coefficients), and the associated standard error of the fit
+     * that the line resulted from
+     */
+    static std::vector<std::pair<Eigen::VectorXf, double>>
+    getLinesOfBestFitWithStandardError(std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+                      unsigned int poly_degree,
+                      float lambda = 0);
+
   private:
     /*
      * Returns a line of best fit given a cluster
@@ -40,6 +58,22 @@ class Regression {
     getLineOfCluster(pcl::PointCloud<pcl::PointXYZ> cluster,
                      unsigned int poly_degree,
                      float lambda = 0);
+
+    // TODO: Test me
+    /**
+     * Computes the standard error of a given polynomial for a given cluster
+     *
+     * standard_error = sqrt(sum(p.y - y(x) for p in cluster) / n) where:
+     * - n is the number of points in the cluster
+     * - y is the polynomial line
+     *
+     * @param cluster
+     * @param poly a polynomial represented as a vector of ascending coefficients
+     *
+     * @return the standard error of `poly` for `cluster`
+     */
+    static double getStandardError(pcl::PointCloud<pcl::PointXYZ> cluster,
+    Eigen::VectorXf poly);
 
     /*
      * Constructs a row in the matrix X given a data point and degree of

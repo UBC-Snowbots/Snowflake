@@ -55,6 +55,13 @@
         <rosparam param="obstacle_tf_wait"> 0.3 </rosparam>
 
         <!--
+            How long to save transforms before we delete them (in seconds).
+            If you're getting warnings about "extrapolating into the past",
+            try increasing this value
+        -->
+        <rosparam param="tf_cache_time">  15.0 </rosparam>
+
+        <!--
             The rate (in hz) to publish the generated occupancy grid at
         -->
         <rosparam param="occ_grid_generation_rate"> 1.0 </rosparam>
@@ -64,7 +71,7 @@
             The radius around us in which to keep obstacles
             (obstacles outside this radius are pruned)
         -->
-        <rosparam param="obstacle_pruning_radius"> 15.0 </rosparam>
+        <rosparam param="obstacle_pruning_radius"> 20.0 </rosparam>
 
         <!--
             The rate (in hz) to publish the debug RViz markers at
