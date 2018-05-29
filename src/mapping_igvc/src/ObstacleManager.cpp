@@ -441,7 +441,7 @@ void ObstacleManager::pruneObstaclesOutsideCircle(sb_geom::Point2D center, doubl
     for (int i = 0; i < lines.size(); i++){
         // Check for interpolation points outside of the radius to remove
         std::vector<sb_geom::Point2D> interpolation_points = lines[i].getInterpolationPoints();
-        for (int j = 0; j < interpolation_points.size(); i++) {
+        for (int j = 0; j < interpolation_points.size(); j++) {
             sb_geom::Point2D point = interpolation_points[j];
             if (distance(point, center) > radius){
                 // Remove the line
@@ -457,6 +457,8 @@ void ObstacleManager::pruneObstaclesOutsideCircle(sb_geom::Point2D center, doubl
                 // Note: we do NOT include the split point in either spline
                 std::vector<Point2D> s1_points(start, split);
                 std::vector<Point2D> s2_points(split+1, end);
+
+                // Only add splines with more then one point
                 if (s1_points.size() > 1){
                     lines.emplace_back(Spline(s1_points));
                 }
@@ -468,9 +470,11 @@ void ObstacleManager::pruneObstaclesOutsideCircle(sb_geom::Point2D center, doubl
                 // so the line that was at `i+1` is now at `i`
                 i--;
                 break;
+
             }
         }
     }
+
 }
 
 

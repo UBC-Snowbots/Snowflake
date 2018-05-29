@@ -160,7 +160,7 @@ void ObstacleManagerNode::publishGeneratedOccupancyGrid(const ros::TimerEvent &t
     sb_geom::Point2D current_position;
     try {
         tf::StampedTransform transform;
-        tf_listener->lookupTransform(this->robot_base_frame, this->occ_grid_frame, ros::Time(0), transform);
+        tf_listener->lookupTransform(this->occ_grid_frame, this->robot_base_frame, ros::Time(0), transform);
         current_position.x() = transform.getOrigin().x();
         current_position.y() = transform.getOrigin().y();
     } catch (tf::TransformException except) {
