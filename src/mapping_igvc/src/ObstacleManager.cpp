@@ -93,7 +93,7 @@ void ObstacleManager::addObstacle(mapping_igvc::ConeObstacle cone) {
 
 void ObstacleManager::addObstacle(mapping_igvc::LineObstacle line_obstacle) {
     // Convert the polynomial to a spline
-    sb_geom::PolynomialSegment poly_segment(line_obstacle.coefficients, line_obstacle.x_min, line_obstacle.x_max);
+    sb_geom::PolynomialSegment poly_segment(line_obstacle.coefficients, line_obstacle.min, line_obstacle.max);
     sb_geom::Spline spline(poly_segment);
 
     addObstacle(spline);
@@ -199,6 +199,7 @@ Spline ObstacleManager::updateLineWithNewLine(Spline current_line,
 }
 
 nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
+    std::cout << "geneertaing with #lines: " << lines.size() << std::endl;
 
     // TODO: All this cleanup stuff should probably be in it's own function
 
@@ -208,6 +209,8 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     mergeCloseLines();
     mergeCloseCones();
+
+    std::cout << "after cleaning - #lines: " << lines.size() << std::endl;
 
     // Find what cells are directly occupied (ie. overlapping) with
     // known obstacles
@@ -454,8 +457,12 @@ void ObstacleManager::pruneObstaclesOutsideCircle(sb_geom::Point2D center, doubl
                 // Note: we do NOT include the split point in either spline
                 std::vector<Point2D> s1_points(start, split);
                 std::vector<Point2D> s2_points(split+1, end);
-                lines.emplace_back(Spline(s1_points));
-                lines.emplace_back(Spline(s2_points));
+                if (s1_points.size() > 1){
+                    lines.emplace_back(Spline(s1_points));
+                }
+                if (s2_points.size() > 1){
+                    lines.emplace_back(Spline(s2_points));
+                }
 
                 // Decrement the line index counter since we just removed the line at `i` and
                 // so the line that was at `i+1` is now at `i`

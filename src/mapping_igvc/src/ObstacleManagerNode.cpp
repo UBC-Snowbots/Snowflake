@@ -7,6 +7,7 @@
  */
 
 #include <ObstacleManagerNode.h>
+#include <sb_geom/utils.h>
 
 ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node_name) :
     // Since there is no default constructor for `ObstacleManager`, assign it some random
@@ -111,24 +112,43 @@ void ObstacleManagerNode::coneObstacleCallback(const mapping_igvc::ConeObstacle:
 }
 
 void ObstacleManagerNode::lineObstacleCallback(const mapping_igvc::LineObstacle::ConstPtr &line_msg) {
+    std::cout << "lineObstacleCallback" << std::endl;
     // Create a spline from the given polynomial line
-    sb_geom::PolynomialSegment poly_segment(line_msg->coefficients, line_msg->x_min, line_msg->x_max);
-    sb_geom::Spline spline(poly_segment);
+    sb_geom::PolynomialSegment poly_segment(line_msg->coefficients, line_msg->min, line_msg->max);
+
+    // TODO: We should probably be handling this by defining PolynomialSegment in terms of y(x) or x(y)
+    // Switch X and Y in the spline interpolation points if the polynomial is
+    // defined in terms of y
+    std::vector<sb_geom::Point2D> interpolation_points = sb_geom::getInterpolationPointsFromPolySegment(poly_segment);
+    if (line_msg->dependent_on == mapping_igvc::LineObstacle::DEPENDENT_ON_Y) {
+        for (sb_geom::Point2D &point : interpolation_points) {
+            double x = point.x();
+            double y = point.y();
+            point.x() = y;
+            point.y() = x;
+        }
+    }
+    sb_geom::Spline spline(interpolation_points);
+    ROS_INFO("CREAGTED SPLINE");
 
     // TODO: Checks for required header bits on msg?
 
     // Transform the line into the map frame and add it to the map
     try {
+        ROS_INFO("try1");
         // Wait a second to see if we get the tf (in case the obstacles are
         // publishing faster then the tf's are getting computed)
         tf_listener->waitForTransform(line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp, this->obstacle_tf_wait);
-        
+
+        ROS_INFO("try2");
         // Transform the obstacle
         sb_geom::Spline transformed_spline = transformSpline(spline, line_msg->header.frame_id, this->occ_grid_frame, line_msg->header.stamp);
 
+        ROS_INFO("try3");
         // Add the obstacle to the map
         obstacle_manager.addObstacle(transformed_spline);
     } catch (tf::TransformException except) {
+        ROS_INFO("except");
         ROS_WARN_STREAM("Could not transform line from \"" << line_msg->header.frame_id <<  "\" to \"" << this->occ_grid_frame << "\" : " << except.what());
     }
 
