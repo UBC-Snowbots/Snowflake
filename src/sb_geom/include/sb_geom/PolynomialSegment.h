@@ -13,6 +13,7 @@
 
 namespace sb_geom {
 
+// TODO: Should be able to define this in terms of x or y (ie. y(x) or x(y) )
 // A segment of a polnomial line
 class PolynomialSegment : public Polynomial {
   public:
