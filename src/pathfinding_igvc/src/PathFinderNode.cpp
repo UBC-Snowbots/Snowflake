@@ -16,6 +16,8 @@ PathFinderNode::PathFinderNode(int argc, char** argv, std::string node_name) {
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
+    // TODO: we should have a "Path" frame, not a "map" frame
+    // TODO: Global frame should really just be the frame of the occ grid
     SB_getParam(private_nh,
                 std::string("global_frame_name"),
                 this->_global_frame_name,
@@ -25,7 +27,7 @@ PathFinderNode::PathFinderNode(int argc, char** argv, std::string node_name) {
                 this->_base_frame_name,
                 std::string("/base_link"));
 
-    std::string grid_subscriber_topic = "/occupancy_grid";
+     std::string grid_subscriber_topic = "/occupancy_grid";
     int refresh_rate                  = 10;
     this->grid_subscriber             = nh.subscribe(grid_subscriber_topic,
                                          refresh_rate,
@@ -62,7 +64,7 @@ void PathFinderNode::publishPath() {
     try {
         this->_listener->lookupTransform(this->_global_frame_name,
                                          this->_base_frame_name,
-                                         ros::Time::now(),
+                                         ros::Time(0),
                                          transform);
     } catch (tf::TransformException ex) {
         // If we can't lookup the tf, then don't publish path
@@ -80,5 +82,8 @@ void PathFinderNode::publishPath() {
     nav_msgs::Path path =
     PathFinder::calculatePath(start, this->_goal, this->_grid);
 
+    // TODO: We should probaly be publisshing this in either the map frame or it's own frame
+    path.header.frame_id = this->_global_frame_name;
     this->publisher.publish(path);
+
 }

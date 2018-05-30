@@ -35,7 +35,8 @@ AStar::GridPoint& goal_on_grid) {
     OccupancyGridAdapter(grid.info).convertFromMapToGridPoint(goal);
     bool grid_needs_resizing =
     !PathFinderUtils::isPointInsideGrid(grid.info, initial_goal_on_grid);
-    if (grid_needs_resizing) { OccupancyGridResizer::addSpaceAroundGrid(grid); }
+
+    OccupancyGridResizer::addSpaceAroundGrid(grid);
 
     OccupancyGridAdapter occupancy_grid_adapter =
     OccupancyGridAdapter(grid.info);
@@ -46,5 +47,11 @@ AStar::GridPoint& goal_on_grid) {
     !PathFinderUtils::isPointInsideGrid(grid.info, goal_on_grid);
     if (point_needs_fitting) {
         PathFinderUtils::fitPointInsideGrid(grid.info, goal_on_grid);
+    }
+
+    // TODO: Cleanup a bit?
+    point_needs_fitting = !PathFinderUtils::isPointInsideGrid(grid.info, start_on_grid);
+    if (point_needs_fitting) {
+        PathFinderUtils::fitPointInsideGrid(grid.info, start_on_grid);
     }
 }
