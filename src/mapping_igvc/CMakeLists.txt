@@ -14,7 +14,17 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
     message_generation
     std_msgs
+    sb_utils
+    sb_geom
+    tf
 )
+find_package(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -43,12 +53,12 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
     DIRECTORY msg
-    FILES ConeObstacle.msg LineObstacle.msg Point2D.msg
+    FILES ConeObstacle.msg LineObstacle.msg
 )
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-    DEPENDENCIES std_msgs
+    DEPENDENCIES sb_geom_msgs
 )
 
 ###################################
@@ -57,8 +67,8 @@ generate_messages(
 ## The catkin_package macro generates cmake config files for your package
 ## Declare things to be passed to dependent projects
 catkin_package(
-    #INCLUDE_DIRS include
-    CATKIN_DEPENDS message_runtime std_msgs
+    INCLUDE_DIRS include
+    CATKIN_DEPENDS message_runtime std_msgs sb_geom_msgs
 )
 
 ###########
@@ -68,12 +78,22 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-    ${catkin_INCLUDE_DIRS}
-    ./include
+        ${catkin_INCLUDE_DIRS}
+        ./include
 )
 
 ## Declare a C++ executable
-# TODO
+add_executable(obstacle_manager_node
+        src/obstacle_manager_node.cpp
+        src/ObstacleManagerNode.cpp
+        src/ObstacleManager.cpp
+        include/ObstacleManagerNode.h
+        )
+target_link_libraries(obstacle_manager_node
+        ${catkin_LIBRARIES}
+        )
+add_dependencies(obstacle_manager_node ${catkin_EXPORTED_TARGETS})
+add_dependencies(obstacle_manager_node mapping_igvc_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
@@ -87,7 +107,17 @@ include_directories(
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
-    #gTest
+    catkin_add_gtest(obstacle-manager-test
+            test/obstacle-manager-test.cpp
+            src/ObstacleManager.cpp
+            include/ObstacleManager.h
+            )
+    target_link_libraries(obstacle-manager-test
+            ${catkin_LIBRARIES}
+            )
+    add_dependencies(obstacle-manager-test ${catkin_EXPORTED_TARGETS})
+    add_dependencies(obstacle-manager-test mapping_igvc_generate_messages_cpp)
+
     # rostest
     # TODO: Maybe? Not sure if we need rostests for the ObstacleManager
 

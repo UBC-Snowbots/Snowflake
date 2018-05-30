@@ -31,6 +31,7 @@ class LineExtractorNode {
 
     LineExtractorNode(int argc, char** argv, std::string node_name);
 
+    // TODO: Test updated version
     // main entry function
     void extractLines();
 
@@ -105,6 +106,11 @@ class LineExtractorNode {
     std::string frame_id;
 
     /*
+     * The timestamp on the last received pointcloud
+     */
+    ros::Time last_cloud_time;
+
+    /*
      * @pclPtr stores the pointer to the PCL PointCloud after it has
      * been converted from sensor_msgs PointCloud2
      */
@@ -145,20 +151,41 @@ class LineExtractorNode {
      * Convert a list of vectors to a list of LineObstacle message
      */
     std::vector<mapping_igvc::LineObstacle>
-    vectorsToMsgs(std::vector<Eigen::VectorXf> vectors);
+    vectorsToMsgs(std::vector<Eigen::VectorXf> vectors,
+                  vector<pcl::PointCloud<pcl::PointXYZ>> &clusters);
 
     /*
      * Convert a vector to LineObstacle message
      */
     mapping_igvc::LineObstacle vectorToLineObstacle(Eigen::VectorXf vector,
-                                                    unsigned int cluster_index);
+                                                    pcl::PointCloud<pcl::PointXYZ> &cluster);
 
     /*
      * Get the minimum and maximum value of x value of all points in a cluster
      * @cluster_index: the index of cluster of interest in @clusters
      */
     void
-    getClusterXRange(double& xmin, double& xmax, unsigned int cluster_index);
+    getClusterRange(double &min, double &max,
+                    pcl::PointCloud<pcl::PointXYZ> &cluster,
+                    mapping_igvc::LineObstacle::_dependent_on_type dependent_on);
+
+    // TODO: Test me
+    /**
+     * Switch X and Y values for every point in each of the given clusters
+     *
+     * @param clusters the clusters in which to switch the X and Y values of each point
+     * @return the switched clusters
+     */
+    static std::vector<pcl::PointCloud<pcl::PointXYZ>> switchXandYinClusters(std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters);
+
+    // TODO: Test me
+    /**
+     * Switch X and Y values for every point in the given cluster
+     *
+     * @param cluster the cluster in which to switch the X and Y values of each point
+     * @return the switched cluster
+     */
+    static pcl::PointCloud<pcl::PointXYZ> switchXandYinCluster(pcl::PointCloud<pcl::PointXYZ> cluster);
 
     /*
      * Checks whether or not all the params we are getting from NodeHandler are

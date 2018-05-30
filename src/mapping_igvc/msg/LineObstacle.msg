@@ -5,7 +5,14 @@ Header header
 # The degree of the polynomial is determined by the number of coefficients
 float64[] coefficients
 
-# The min and max x values for the polynomial line
+# What the polynomial is in terms of / with respect to
+uint8 DEPENDENT_ON_X=0 # (ie. y(x) )
+uint8 DEPENDENT_ON_Y=1 # (ie. x(y) )
+uint8 dependent_on
+
+# The min and max values for the polynomial line
+# These are in terms of the DEPENDENT variable
+# (ie. x_min/x_max for y(x), y_min/y_max for x(y) )
 # this is what makes it a line segment, rather then a never-ending line
-float64 x_max
-float64 x_min
+float64 max
+float64 min

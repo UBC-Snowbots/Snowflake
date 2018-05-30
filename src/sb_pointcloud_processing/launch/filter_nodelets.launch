@@ -14,8 +14,8 @@
         <remap from="~input" to="rgb_to_hsv/output" />
         <rosparam>
             filter_field_name: h
-            filter_limit_min: 40
-            filter_limit_max: 170
+            filter_limit_min: 0
+            filter_limit_max: 30
             filter_limit_negative: False
         </rosparam>
     </node>
@@ -27,7 +27,7 @@
         <remap from="~input" to="/hue_filter/output" />
         <rosparam>
             filter_field_name: s
-            filter_limit_min: 0.1
+            filter_limit_min: 0.0
             filter_limit_max: 0.6
             filter_limit_negative: False
         </rosparam>
@@ -40,7 +40,7 @@
         <remap from="~input" to="/saturation_filter/output" />
         <rosparam>
             filter_field_name: v
-            filter_limit_min: 0.1
+            filter_limit_min: 0.0
             filter_limit_max: 1.0
             filter_limit_negative: False
         </rosparam>
@@ -53,11 +53,11 @@
         <remap from="~input" to="/value_filter/output" />
         <rosparam>
             filter_field_name: z
-            filter_limit_min: 0
-            filter_limit_max: 0.2
+            filter_limit_min: -0.5
+            filter_limit_max: 0.1
             filter_limit_negative: False
-            input_frame: zed_left_camera
-            output_frame: zed_left_camera
+            input_frame: base_link
+            output_frame: base_link
         </rosparam>
     </node>
 

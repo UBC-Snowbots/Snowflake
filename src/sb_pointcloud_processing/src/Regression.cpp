@@ -20,6 +20,21 @@ float lambda) {
     return lines;
 }
 
+std::vector<std::pair<Eigen::VectorXf, double>>
+Regression::getLinesOfBestFitWithStandardError(
+        std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+        unsigned int poly_degree, float lambda) {
+    std::vector<std::pair<Eigen::VectorXf, double>> results;
+
+    for (pcl::PointCloud<pcl::PointXYZ>& cluster : clusters){
+        Eigen::VectorXf line = getLineOfCluster(cluster, poly_degree, lambda);
+        double standard_error = getStandardError(cluster, line);
+        results.emplace_back(std::make_pair(line, standard_error));
+    }
+
+    return results;
+}
+
 Eigen::VectorXf
 Regression::getLineOfCluster(pcl::PointCloud<pcl::PointXYZ> cluster,
                              unsigned int poly_degree,
@@ -83,3 +98,19 @@ Eigen::VectorXf Regression::constructRow(float x, unsigned int poly_degree) {
 
     return row;
 }
+
+double Regression::getStandardError(pcl::PointCloud<pcl::PointXYZ> cluster,
+                                    Eigen::VectorXf poly) {
+    double sum_of_squared_differences = 0;
+    for (pcl::PointXYZ& point : cluster){
+        // compute y(x)
+        double y_x = 0;
+        for (int i = 0; i < poly.size(); i++){
+            y_x += poly[i] * std::pow(point.x, i);
+        }
+        sum_of_squared_differences += std::pow(y_x - point.y, 2);
+    }
+
+    return std::sqrt(sum_of_squared_differences / cluster.size());
+}
+

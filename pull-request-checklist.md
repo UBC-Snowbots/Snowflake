@@ -6,5 +6,6 @@ This file outlines a list of common things that should be addressed before openi
 - [ ] **Function comments**: All function definitions (usually in the `.h` file) should have a javadoc style comment at the start of them. For examples, see the classes defined in `src/sample_package`
 - [ ] **Remove commented out code**
 - [ ] **Remove extra print statements**: for example, those just used for testing
+- [ ] **Example Launch File for Nodes**: all new nodes should have a well commented launch file containing all possible params in the `launch` folder of their package.
 
 

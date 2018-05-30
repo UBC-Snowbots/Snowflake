@@ -24,6 +24,20 @@ Marker RvizUtils::createMarker(vector<geometry_msgs::Point> points,
     // Set the color
     marker.color = color;
 
+    // TODO: There are similar functions in this file that we should do this in....
+    // Set the origin to the first point and offset the rest of points relative
+    // to the first point
+    // We do this because points at really large x/y values don't seem to
+    // visualise very well in RViz
+    if (points.size() > 0){
+        geometry_msgs::Point origin = points[0];
+        marker.pose.position.x = origin.x;
+        marker.pose.position.y = origin.y;
+        marker.pose.position.z = origin.z;
+
+        points = offsetPointsRelativeToPoint(origin, points);
+    }
+
     // Set the points
     marker.points = points;
 
@@ -124,4 +138,16 @@ void RvizUtils::setupMarker(Marker& marker,
     marker.ns              = ns;
 
     marker.scale = scale;
+
+    // TODO: Make this an option (default true)
+    marker.frame_locked = true;
+}
+
+std::vector<geometry_msgs::Point> RvizUtils::offsetPointsRelativeToPoint(geometry_msgs::Point origin, std::vector<geometry_msgs::Point> points) {
+    for (geometry_msgs::Point& point : points){
+        point.x -= origin.x;
+        point.y -= origin.y;
+        point.z -= origin.z;
+    }
+    return points;
 }

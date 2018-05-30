@@ -14,7 +14,7 @@ ConeIdentification::identifyCones(const sensor_msgs::LaserScan& laser_msg,
                                   int min_points_in_cone,
                                   double ang_threshold) {
     std::vector<mapping_igvc::ConeObstacle> identified_cones;
-    std::vector<mapping_igvc::Point2D>
+    std::vector<sb_geom_msgs::Point2D>
     edge_points; // Represents points in a potential cluster
     std::string frame_id = laser_msg.header.frame_id;
 
@@ -35,7 +35,7 @@ ConeIdentification::identifyCones(const sensor_msgs::LaserScan& laser_msg,
             edge_points.clear();
         } else { // Laserscan point in range
 
-            mapping_igvc::Point2D point =
+            sb_geom_msgs::Point2D point =
             laserToPoint(laser_msg.ranges[i],
                          laser_msg.angle_min +
                          i * laser_msg.angle_increment); // Convert to x-y point
@@ -75,7 +75,7 @@ ConeIdentification::identifyCones(const sensor_msgs::LaserScan& laser_msg,
 
 void ConeIdentification::addConesInEdgeCluster(
 std::vector<mapping_igvc::ConeObstacle>& identified_cones,
-std::vector<mapping_igvc::Point2D>& edge_points,
+std::vector<sb_geom_msgs::Point2D>& edge_points,
 double radius_exp,
 double radius_tol,
 int min_points_in_cone,
@@ -85,7 +85,7 @@ std::string frame_id) {
         min_points_in_cone * 2 + 1) { // Needs minimum number of points to split
                                       // a potential multi-cone cluster
 
-        std::vector<std::vector<mapping_igvc::Point2D>> split_edges = splitEdge(
+        std::vector<std::vector<sb_geom_msgs::Point2D>> split_edges = splitEdge(
         edge_points, min_points_in_cone, ang_threshold); // Split edge points if
                                                          // multiple cones
                                                          // detected (Temp
@@ -123,24 +123,24 @@ std::string frame_id) {
     }
 }
 
-mapping_igvc::Point2D ConeIdentification::laserToPoint(double dist,
+sb_geom_msgs::Point2D ConeIdentification::laserToPoint(double dist,
                                                        double ang) {
-    mapping_igvc::Point2D point = mapping_igvc::Point2D();
+    sb_geom_msgs::Point2D point = sb_geom_msgs::Point2D();
     point.x                     = dist * cos(ang);
     point.y                     = dist * sin(ang);
     return point;
 }
 
-double ConeIdentification::getDist(const mapping_igvc::Point2D& p1,
-                                   const mapping_igvc::Point2D& p2) {
+double ConeIdentification::getDist(const sb_geom_msgs::Point2D& p1,
+                                   const sb_geom_msgs::Point2D& p2) {
     return sqrt(pow((p1.x - p2.x), 2) + pow((p1.y - p2.y), 2));
 }
 
-std::vector<std::vector<mapping_igvc::Point2D>> ConeIdentification::splitEdge(
-const std::vector<mapping_igvc::Point2D>& edge_points,
+std::vector<std::vector<sb_geom_msgs::Point2D>> ConeIdentification::splitEdge(
+const std::vector<sb_geom_msgs::Point2D>& edge_points,
 int min_points_in_cone,
 double ang_threshold) {
-    std::vector<std::vector<mapping_igvc::Point2D>> split_edges;
+    std::vector<std::vector<sb_geom_msgs::Point2D>> split_edges;
 
     std::vector<double> angles; // index 0 corresponds to index
                                 // min_points_in_cone of edge_points vector
@@ -178,13 +178,13 @@ double ang_threshold) {
     // Split edges based on qualified local mins
     size_t lastIndex = 0;
     for (int i = 0; i < splitIndices.size(); i++) {
-        std::vector<mapping_igvc::Point2D> split(
+        std::vector<sb_geom_msgs::Point2D> split(
         edge_points.begin() + lastIndex,
         edge_points.begin() + splitIndices[i] + 1);
         split_edges.push_back(split);
         lastIndex = splitIndices[i];
     }
-    std::vector<mapping_igvc::Point2D> lastSplit(
+    std::vector<sb_geom_msgs::Point2D> lastSplit(
     edge_points.begin() + lastIndex,
     edge_points.end()); // Add last cluster of edges
     split_edges.push_back(lastSplit);
@@ -193,7 +193,7 @@ double ang_threshold) {
 }
 
 mapping_igvc::ConeObstacle ConeIdentification::edgeToCone(
-const std::vector<mapping_igvc::Point2D>& edge_points) {
+const std::vector<sb_geom_msgs::Point2D>& edge_points) {
     mapping_igvc::ConeObstacle cone = mapping_igvc::ConeObstacle();
 
     int i, iter, IterMAX = 99;
@@ -270,21 +270,21 @@ const std::vector<mapping_igvc::Point2D>& edge_points) {
 }
 
 double ConeIdentification::getMeanX(
-const std::vector<mapping_igvc::Point2D>& edge_points) {
+const std::vector<sb_geom_msgs::Point2D>& edge_points) {
     double tot_x = 0;
     for (int i = 0; i < edge_points.size(); i++) { tot_x += edge_points[i].x; }
     return tot_x / edge_points.size();
 }
 
 double ConeIdentification::getMeanY(
-const std::vector<mapping_igvc::Point2D>& edge_points) {
+const std::vector<sb_geom_msgs::Point2D>& edge_points) {
     double tot_y = 0;
     for (int i = 0; i < edge_points.size(); i++) { tot_y += edge_points[i].y; }
     return tot_y / edge_points.size();
 }
 
 double ConeIdentification::getRegressionSlope(
-const std::vector<mapping_igvc::Point2D>& edge_points) {
+const std::vector<sb_geom_msgs::Point2D>& edge_points) {
     double meanX    = getMeanX(edge_points);
     double meanY    = getMeanY(edge_points);
     double sumNum   = 0;

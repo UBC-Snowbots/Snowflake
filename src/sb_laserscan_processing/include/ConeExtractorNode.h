@@ -47,6 +47,7 @@ class ConeExtractorNode {
     int min_points_in_cone; // Index difference between points used in edge
                             // cluster splitting algorithm
     double ang_threshold;   // Max angle needed to split edge clusters
+    std::string cone_frame; // The frame the computed cones are in
 };
 
 #endif // LASERSCAN_CONE_MANAGER_H

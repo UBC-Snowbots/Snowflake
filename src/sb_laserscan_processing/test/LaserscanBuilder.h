@@ -9,7 +9,7 @@
 #include <ConeIdentification.h>
 #include <iostream>
 #include <mapping_igvc/ConeObstacle.h>
-#include <mapping_igvc/Point2D.h>
+#include <sb_geom_msgs/Point2D.h>
 #include <math.h>
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
@@ -38,7 +38,7 @@ class LaserscanBuilder {
      * @param radius of cone
      */
     void addCone(double x, double y, double radius) {
-        mapping_igvc::Point2D
+        sb_geom_msgs::Point2D
         coneCenter; // The point of the center of the cone to add
         coneCenter.x = x;
         coneCenter.y = y;
@@ -50,7 +50,7 @@ class LaserscanBuilder {
             for (double range = laser_msg.range_min;
                  range <= laser_msg.range_max;
                  range += 0.01) {
-                mapping_igvc::Point2D point =
+                sb_geom_msgs::Point2D point =
                 ConeIdentification::laserToPoint(range, ang);
                 if (fabs(ConeIdentification::getDist(coneCenter, point) -
                          radius) <= point_tol) {

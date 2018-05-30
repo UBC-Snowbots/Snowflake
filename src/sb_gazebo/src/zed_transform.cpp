@@ -21,10 +21,14 @@ void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
     try {
         // Create an empty pointcloud
         sensor_msgs::PointCloud2 output;
+
         // Transform the pointcloud to the requested frame
         geometry_msgs::TransformStamped tf_stamped = tf_buffer.lookupTransform(
         msg->header.frame_id, output_frame, ros::Time(0), ros::Duration(1.0));
         tf2::doTransform(*msg, output, tf_stamped);
+
+        // Transfer the pointcloud timestamp to our new pointcloud
+        output.header.stamp = msg->header.stamp;
 
         // Publish the transformed pointcloud
         pub.publish(output);

@@ -23,7 +23,7 @@
     <rosparam param="output_frame"> "zed_pointcloud" </rosparam>
     
     <remap from="/input_pointcloud" to="/zed/camera/point_cloud/uncorrected_cloud_do_not_use"/>
-    <remap from="/output_pointcloud" to="/zed/camera/point_cloud/cloud_registered"/>
+    <remap from="/output_pointcloud" to="/camera/depth_registered/points"/>
   </node>
 
 </launch>
