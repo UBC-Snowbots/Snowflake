@@ -16,7 +16,16 @@
         -->
         <rosparam param="global_frame"> "map" </rosparam>
 
-        <remap from="/path" to="/path_finder/path"/>
+        <!-- The max linear/angular speeds -->
+        <rosparam param="max_linear_speed"> 0.5 </rosparam>
+        <rosparam param="max_angular_speed"> 0.2 </rosparam>
+
+        <!-- The scaling factors for the linear/angular speeds -->
+        <rosparam param="linear_speed_scaling_factor"> 0.4 </rosparam>
+        <rosparam param="angular_speed_scaling_factor"> 1 </rosparam>
+
+        <remap from="/path" to="/path_finder/path" />
+
     </node>
 
 </launch>

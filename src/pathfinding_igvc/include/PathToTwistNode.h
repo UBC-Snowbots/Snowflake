@@ -34,7 +34,7 @@ class PathToTwistNode {
      * @param num_poses number of poses to process including initial robot pos
      * @return calculated path message
      */
-    static geometry_msgs::Twist pathToTwist(nav_msgs::Path path_msg,
+    geometry_msgs::Twist pathToTwist(nav_msgs::Path path_msg,
                                             double x_pos,
                                             double y_pos,
                                             double orientation,
@@ -106,6 +106,12 @@ class PathToTwistNode {
     double robot_orientation;
 
     bool valid_cood; // Flag is set to true when we receive our first tf message
+
+    double linear_speed_scaling_factor;
+    double angular_speed_scaling_factor;
+
+    double max_linear_speed;
+    double max_angular_speed;
 };
 
 #endif // PATHFINDING_IGVC_PATHFINDING_H
