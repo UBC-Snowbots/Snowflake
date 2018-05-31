@@ -127,9 +127,12 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
     else if (turn_rate < -M_PI)
         turn_rate += 2 * M_PI;
 
+    // At this point, turn rate should be between -pi and pi
+    /*
     float speed =
     1.0 - fabs(fmod(turn_rate, M_PI) /
-               (M_PI)); // Could multiply this by some factor to scale speed
+               (M_PI)); // Could multiply this by some factor to scale speed*/
+    float speed = exp(-pow(turn_rate, 2) / 0.4);
 
     // Scale speeds
     speed *= linear_speed_scaling_factor;
