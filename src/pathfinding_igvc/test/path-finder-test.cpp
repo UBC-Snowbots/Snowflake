@@ -101,6 +101,47 @@ TEST(PathFinder, TestFullPath) {
     }
 }
 
+TEST(PathFinder, TestFullPathStartInOccupied) {
+    /* origin of OccupancyGrid */
+    // initialize origin of occupancy grid
+    geometry_msgs::Pose origin =
+            PathFinderTestUtils::constructPose(0.0, 0.0, 0.0);
+
+    /* mapMetaData of OccupancyGrid */
+    // initialize mapMetaData
+    nav_msgs::MapMetaData mapMetaData;
+    mapMetaData.resolution = 1.0;
+    mapMetaData.width      = 10;
+    mapMetaData.height     = 9;
+    // add origin to mapMetaData
+    mapMetaData.origin = origin;
+
+    /* OccupancyGrid */
+    // initialize occupancy grid
+    nav_msgs::OccupancyGrid grid;
+
+    // set mapMetaData
+    grid.info = mapMetaData;
+    grid.data = {_, _, _, X, X, X, _, X, X, _, _, X, _, _, _, _, X, _,
+                 _, _, _, X, X, X, X, _, X, X, X, _, _, X, _, _, _, _,
+                 X, _, X, X, _, _, _, X, _, _, _, X, _, X, X, X, _, X,
+                 _, X, X, X, X, _, _, _, _, X, _, _, X, _, X, _, _, _,
+                 _, X, _, _, _, X, _, _, _, X, _, _, _, _, X, _, _, _};
+
+    geometry_msgs::Point start;
+    start.x = 3.0;
+    start.y = 0.0;
+    geometry_msgs::Point goal;
+    goal.x = 0.0;
+    goal.y = 8.0;
+
+    nav_msgs::Path path = PathFinder::calculatePath(start, goal, grid);
+
+    EXPECT_GT(path.poses.size(), 0);
+    EXPECT_FLOAT_EQ(start.x, path.poses[0].pose.position.x);
+    EXPECT_FLOAT_EQ(start.y, path.poses[0].pose.position.y);
+}
+
 TEST(PathFinder, PathFindingWhenGoalNotInGrid) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid

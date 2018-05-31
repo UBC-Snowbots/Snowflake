@@ -125,6 +125,53 @@ class PathFinderUtils {
         point.row =
         point.row >= grid_info.height ? grid_info.height - 1 : point.row;
     }
+
+    static AStar::GridPoint getClosestFreeGridPointFromGridPoint(nav_msgs::OccupancyGrid grid, AStar::GridPoint point) {
+        int radius = 0;
+
+        int max_radius = 10000; //TODO: add to launch file?
+
+        while (radius < max_radius) {
+            // left
+            if ( (point.col - radius) > 0) {
+                AStar::GridPoint left(point.row, point.col - radius);
+                if (isGridPointFree(grid, left)) {
+                    return left;
+                }
+            }
+            // right
+            if ( (point.col + radius) < grid.info.width) {
+                AStar::GridPoint right(point.row, point.col + radius);
+                if (isGridPointFree(grid, right)) {
+                    return right;
+                }
+            }
+            // top
+            if ( (point.row + radius) < grid.info.height) {
+                AStar::GridPoint top(point.row + radius, point.col);
+                if (isGridPointFree(grid, top)) {
+                    return top;
+                }
+            }
+            // bottom
+            if ( (point.row - radius) > 0 ) {
+                AStar::GridPoint bottom(point.row - radius, point.col);
+                if (isGridPointFree(grid, bottom)) {
+                    return bottom;
+                }
+            }
+
+            // increase radius
+            radius++;
+        }
+
+        // couldn't find closest free grid point, so just return original point
+        return point;
+    }
+
+    static bool isGridPointFree(nav_msgs::OccupancyGrid grid, AStar::GridPoint point) {
+        return grid.data[point.row * grid.info.width + point.col] == AStar::GRID_FREE;
+    }
 };
 
 #endif // PATHFINDING_IGVC_PATHFINDERUTILS_H
