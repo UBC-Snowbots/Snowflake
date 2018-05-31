@@ -36,6 +36,10 @@ PathToTwistNode::PathToTwistNode(int argc, char** argv, std::string node_name) {
     SB_getParam(
     private_nh, "global_frame", global_frame, (std::string) "odom_combined");
     SB_getParam(private_nh, "num_poses", num_poses, 10);
+    SB_getParam(private_nh, "linear_speed_scaling_factor", linear_speed_scaling_factor, 1.0);
+    SB_getParam(private_nh, "angular_speed_scaling_factor", angular_speed_scaling_factor, 1.0);
+    SB_getParam(private_nh, "max_linear_speed", max_linear_speed, 1.0);
+    SB_getParam(private_nh, "max_angular_speed", max_angular_speed, 1.0);
 }
 
 void PathToTwistNode::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
@@ -85,7 +89,7 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
                                               bool valid_cood) {
     geometry_msgs::Twist twist_msg; // Initialize velocity message
 
-    if (!valid_cood) { // No TF received yet so don't move
+    if (!valid_cood || path_msg.poses.size() == 0) { // No TF received yet so don't move
         twist_msg.linear.x  = 0;
         twist_msg.angular.z = 0;
         return twist_msg;
@@ -110,6 +114,10 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
 
     float desired_angle = atan(y_sum / x_sum);
 
+    if (x_sum < 0) {
+        desired_angle += M_PI;
+    }
+
     float turn_rate = fmod(desired_angle - orientation,
                            2 * M_PI); // Keep turn_rate between -2pi and 2pi
 
@@ -120,8 +128,16 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
         turn_rate += 2 * M_PI;
 
     float speed =
-    1.0 - fabs(fmod(turn_rate, 2 * M_PI) /
-               (2 * M_PI)); // Could multiply this by some factor to scale speed
+    1.0 - fabs(fmod(turn_rate, M_PI) /
+               (M_PI)); // Could multiply this by some factor to scale speed
+
+    // Scale speeds
+    speed *= linear_speed_scaling_factor;
+    turn_rate *= angular_speed_scaling_factor;
+
+    // Cap speeds
+    speed = std::max(-(float)max_linear_speed, std::min(speed, (float)max_linear_speed));
+    turn_rate = std::max(-(float)max_angular_speed, std::min(turn_rate, (float)max_angular_speed));
 
     twist_msg.linear.x  = speed;
     twist_msg.angular.z = turn_rate;
