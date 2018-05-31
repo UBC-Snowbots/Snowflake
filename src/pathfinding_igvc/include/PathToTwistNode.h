@@ -74,7 +74,7 @@ class PathToTwistNode {
      * size of vectors
      * @return weighted values of given geometric vectors
      */
-    static float weightedSum(const std::vector<float>& vectors, int num_to_sum);
+    static float weightedSum(const std::vector<float>& vectors, int num_to_sum, int path_dropoff_factor);
 
   private:
     /**
@@ -112,6 +112,8 @@ class PathToTwistNode {
 
     double max_linear_speed;
     double max_angular_speed;
+
+    int path_dropoff_factor; //larger number indicates more points in path to consider in path to twist
 };
 
 #endif // PATHFINDING_IGVC_PATHFINDING_H

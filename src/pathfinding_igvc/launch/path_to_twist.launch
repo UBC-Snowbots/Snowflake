@@ -24,6 +24,10 @@
         <rosparam param="linear_speed_scaling_factor"> 0.4 </rosparam>
         <rosparam param="angular_speed_scaling_factor"> 1 </rosparam>
 
+        <!-- The path dropoff factor (how many points to consider for path to twist calc), higher is more points considered  -->
+        <rosparam param="path_dropoff_factor"> 20 </rosparam>
+
+
         <remap from="/path" to="/path_finder/path" />
 
     </node>

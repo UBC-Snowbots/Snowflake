@@ -40,6 +40,8 @@ PathToTwistNode::PathToTwistNode(int argc, char** argv, std::string node_name) {
     SB_getParam(private_nh, "angular_speed_scaling_factor", angular_speed_scaling_factor, 1.0);
     SB_getParam(private_nh, "max_linear_speed", max_linear_speed, 1.0);
     SB_getParam(private_nh, "max_angular_speed", max_angular_speed, 1.0);
+    SB_getParam(private_nh, "path_dropoff_factor", path_dropoff_factor, 20);
+
 }
 
 void PathToTwistNode::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
@@ -106,11 +108,8 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
                 x_pos,
                 y_pos); // x_vectors and y_vectors now updated
 
-    float x_sum = weightedSum(
-    x_vectors,
-    num_poses -
-    1); //-1 because number of vectors is one less than number of poses
-    float y_sum = weightedSum(y_vectors, num_poses - 1);
+    float x_sum = weightedSum(x_vectors, num_poses - 1, path_dropoff_factor); //-1 because number of vectors is one less than number of poses
+    float y_sum = weightedSum(y_vectors, num_poses - 1, path_dropoff_factor);
 
     float desired_angle = atan(y_sum / x_sum);
 
@@ -165,10 +164,12 @@ double y_pos) {
 }
 
 float PathToTwistNode::weightedSum(const std::vector<float>& vectors,
-                               int num_to_sum) {
+                               int num_to_sum, int path_dropoff_factor) {
     float weighted_sum = 0;
     for (int i = 0; i < num_to_sum; i++) {
         weighted_sum += vectors[i] / (i + 1); // 1/x scaling
+
+        weighted_sum += vectors[i] * exp(-pow(i+1, 2)) / path_dropoff_factor;
     }
     return weighted_sum;
 }
