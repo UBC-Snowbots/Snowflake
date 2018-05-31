@@ -5,7 +5,7 @@
             The number of poses to average out in the path to compute the 
             twist message
         -->
-        <rosparam param="num_poses"> 10 </rosparam>
+        <rosparam param="num_poses"> 5 </rosparam>
 
         <!--
             The frame of the robot

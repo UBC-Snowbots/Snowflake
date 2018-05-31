@@ -18,7 +18,7 @@
             The buffer to add around each obstacle when generating the occupancy
             grid for our currently known world
         -->
-        <rosparam param="obstacle_inflation_buffer"> 0.4 </rosparam>
+        <rosparam param="obstacle_inflation_buffer"> 0.7 </rosparam>
 
         <!--
             The size (length/width) of the cells in occupancy grids this class

@@ -114,6 +114,7 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
 
     float desired_angle = atan(y_sum / x_sum);
 
+    // Handle case where desired angle is behind us
     if (x_sum < 0) {
         desired_angle += M_PI;
     }

@@ -150,8 +150,14 @@ bool AStar::processSuccessor(GridPoint successor, GridPoint parent) {
     // Else do the following
     if (!this->_closed_list[successor.row][successor.col] &&
         isUnBlocked(successor)) {
-        double g_new, h_new, f_new;
-        g_new = this->_cell_details[parent.row][parent.col].g + 1.0;
+        double g_new, h_new, f_new, added_cost;
+        if (parent.row != successor.row && parent.col != successor.col){
+            // Cell is diagonal to it's parent
+            added_cost = std::sqrt(2);
+        } else {
+            added_cost = 1;
+        }
+        g_new = this->_cell_details[parent.row][parent.col].g + added_cost;
         h_new = calculateHValue(successor);
         f_new = g_new + h_new;
 
