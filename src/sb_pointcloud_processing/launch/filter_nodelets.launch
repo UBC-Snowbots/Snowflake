@@ -46,6 +46,8 @@
         </rosparam>
     </node>
 
+    <!-- TODO: remove, we no longer need height filter, as the voxel
+    grid filter also deals with height -->
     <node pkg="nodelet"
           type="nodelet"
           name="height_filter"
@@ -58,6 +60,21 @@
             filter_limit_negative: False
             input_frame: base_link
             output_frame: base_link
+        </rosparam>
+    </node>
+
+    <!-- Run a VoxelGrid filter to clean NaNs and downsample the data -->
+    <node pkg="nodelet"
+          type="nodelet"
+          name="voxel_grid"
+          args="load pcl/VoxelGrid pcl_manager" output="screen">
+        <remap from="~input" to="/height_filter/output" />
+        <rosparam>
+            filter_field_name: z
+            filter_limit_min: -0.4
+            filter_limit_max: 0.2
+            filter_limit_negative: False
+            leaf_size: 0.04
         </rosparam>
     </node>
 
