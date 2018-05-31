@@ -35,7 +35,6 @@ PathToTwistNode::PathToTwistNode(int argc, char** argv, std::string node_name) {
     private_nh, "base_frame", base_frame, (std::string) "base_link");
     SB_getParam(
     private_nh, "global_frame", global_frame, (std::string) "odom_combined");
-    SB_getParam(private_nh, "num_poses", num_poses, 10);
     SB_getParam(private_nh, "linear_speed_scaling_factor", linear_speed_scaling_factor, 1.0);
     SB_getParam(private_nh, "angular_speed_scaling_factor", angular_speed_scaling_factor, 1.0);
     SB_getParam(private_nh, "max_linear_speed", max_linear_speed, 1.0);
@@ -51,7 +50,6 @@ void PathToTwistNode::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
                                                  robot_x_pos,
                                                  robot_y_pos,
                                                  robot_orientation,
-                                                 num_poses,
                                                  valid_cood);
     twist_publisher.publish(twist_msg);
 }
@@ -87,7 +85,6 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
                                               double x_pos,
                                               double y_pos,
                                               double orientation,
-                                              int num_poses,
                                               bool valid_cood) {
     geometry_msgs::Twist twist_msg; // Initialize velocity message
 
@@ -104,12 +101,11 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
     calcVectors(inc_poses,
                 x_vectors,
                 y_vectors,
-                num_poses,
                 x_pos,
                 y_pos); // x_vectors and y_vectors now updated
 
-    double x_sum = weightedSum(x_vectors, num_poses - 1, path_dropoff_factor); //-1 because number of vectors is one less than number of poses
-    double y_sum = weightedSum(y_vectors, num_poses - 1, path_dropoff_factor);
+    double x_sum = weightedSum(x_vectors, path_dropoff_factor); //-1 because number of vectors is one less than number of poses
+    double y_sum = weightedSum(y_vectors, path_dropoff_factor);
 
     double desired_angle = atan(y_sum / x_sum);
 
@@ -150,23 +146,17 @@ void PathToTwistNode::calcVectors(
 const std::vector<geometry_msgs::PoseStamped>& poses,
 std::vector<double>& x_vectors,
 std::vector<double>& y_vectors,
-int num_poses,
 double x_pos,
 double y_pos) {
-    double x = poses[0].pose.position.x - x_pos;
-    double y = poses[0].pose.position.y - y_pos;
-    double mag = sqrt(pow(x, 2) + pow(y, 2));
-    x /= mag;
-    y /= mag;
-    x_vectors.push_back(x);
-    y_vectors.push_back(y);
+    double x; //x magnitude in pending vector
+    double y; //y magnitude in pending vector
+    double mag; //absolute magnitude in pending vector
 
-    for (int i = 1; i < num_poses; i++) {
-        x = poses[i].pose.position.x -
-            poses[i - 1].pose.position.x;
-        y = poses[i].pose.position.y -
-            poses[i - 1].pose.position.y;
+    for (int i = 0; i < poses.size(); i++) {
+        x = poses[i].pose.position.x - x_pos;
+        y = poses[i].pose.position.y - y_pos;
         mag = sqrt(pow(x, 2) + pow(y, 2));
+        //Calculate unit vector
         x /= mag;
         y /= mag;
         x_vectors.push_back(x);
@@ -174,12 +164,10 @@ double y_pos) {
     }
 }
 
-double PathToTwistNode::weightedSum(const std::vector<double>& vectors,
-                               int num_to_sum, int path_dropoff_factor) {
+double PathToTwistNode::weightedSum(const std::vector<double>& vectors, int path_dropoff_factor) {
     double weighted_sum = 0;
-    for (int i = 0; i < num_to_sum; i++) {
+    for (int i = 0; i < vectors.size(); i++) {
         //weighted_sum += vectors[i] / (i + 1); // 1/x scaling
-
         weighted_sum += vectors[i] * exp (-pow(i+1, 2) / path_dropoff_factor) ;
     }
     return weighted_sum;

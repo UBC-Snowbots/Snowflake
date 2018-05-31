@@ -38,7 +38,6 @@ class PathToTwistNode {
                                             double x_pos,
                                             double y_pos,
                                             double orientation,
-                                            int num_poses,
                                             bool valid_cood);
 
     /**
@@ -47,9 +46,6 @@ class PathToTwistNode {
      * @param poses : Array of pose messages
      * @param x_vectors Empty vector to represent x values of geometric vectors
      * @param y_vectors Empty vector to represent y values of geometric vectors
-     * @param num_poses Number of poses to process (including initial robot
-     * position),
-     * must be >=1 but <=size(x_vectors)-1
      * @param x_pos Current robot x position in global system
      * @param y_pos Current robot y position in global system
      */
@@ -57,7 +53,6 @@ class PathToTwistNode {
     calcVectors(const std::vector<geometry_msgs::PoseStamped>& poses,
                 std::vector<double>& x_vectors,
                 std::vector<double>& y_vectors,
-                int num_poses,
                 double x_pos,
                 double y_pos);
 
@@ -74,7 +69,7 @@ class PathToTwistNode {
      * size of vectors
      * @return weighted values of given geometric vectors
      */
-    static double weightedSum(const std::vector<double>& vectors, int num_to_sum, int path_dropoff_factor);
+    static double weightedSum(const std::vector<double>& vectors, int path_dropoff_factor);
 
   private:
     /**
@@ -98,7 +93,6 @@ class PathToTwistNode {
     std::string base_frame;   // The base frame of the robot ("base_link",
                               // "base_footprint", etc.)
     std::string global_frame; // The global frame ("map", "odom", etc.)
-    int num_poses;            // Rosparam: number of poses to process
 
     /* Robot coordinates in global system */
     double robot_x_pos;
