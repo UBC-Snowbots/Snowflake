@@ -128,15 +128,15 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
         turn_rate += 2 * M_PI;
 
     float speed =
-    1.0 - fabs(fmod(turn_rate, M_PI) /
-               (M_PI)); // Could multiply this by some factor to scale speed
+    1.0 - fabs(fmod(turn_rate, 2*M_PI) /
+               (2*M_PI)); // Could multiply this by some factor to scale speed
 
     // Scale speeds
     speed *= linear_speed_scaling_factor;
     turn_rate *= angular_speed_scaling_factor;
 
     // Cap speeds
-    speed = std::max(-(float)max_linear_speed, std::min(speed, (float)max_linear_speed));
+    speed = std::min(speed, (float)max_linear_speed);
     turn_rate = std::max(-(float)max_angular_speed, std::min(turn_rate, (float)max_angular_speed));
 
     twist_msg.linear.x  = speed;
