@@ -1,0 +1,23 @@
+<launch>
+
+    <!-- Start the GPS stack -->
+        <include file="$(find decision_igvc)/launch/gps_manager.launch"/>
+
+        <include file="$(find localisation_igvc)/launch/gps_to_odom.launch"/>
+        <include file="$(find localisation_igvc)/launch/ekf.launch"/>
+
+    <!-- Start the pointcloud processing stack -->
+        <include file="$(find sb_pointcloud_processing)/launch/filter_lines.launch"/>
+
+    <!-- Start the laserscan processing stack -->
+        <include file="$(find sb_laserscan_processing)/launch/cone_extractor.launch"/>
+
+    <!-- Start the obstacle manager -->
+        <include file="$(find mapping_igvc)/launch/obstacle_manager.launch"/>
+
+    <!-- Start the pathfinding stack -->
+        <include file="$(find pathfinding_igvc)/launch/path_finder.launch"/>
+
+        <include file="$(find pathfinding_igvc)/launch/path_to_twist.launch"/>
+
+</launch>
