@@ -55,8 +55,8 @@ class PathToTwistNode {
      */
     static void
     calcVectors(const std::vector<geometry_msgs::PoseStamped>& poses,
-                std::vector<float>& x_vectors,
-                std::vector<float>& y_vectors,
+                std::vector<double>& x_vectors,
+                std::vector<double>& y_vectors,
                 int num_poses,
                 double x_pos,
                 double y_pos);
@@ -74,7 +74,7 @@ class PathToTwistNode {
      * size of vectors
      * @return weighted values of given geometric vectors
      */
-    static float weightedSum(const std::vector<float>& vectors, int num_to_sum, int path_dropoff_factor);
+    static double weightedSum(const std::vector<double>& vectors, int num_to_sum, int path_dropoff_factor);
 
   private:
     /**

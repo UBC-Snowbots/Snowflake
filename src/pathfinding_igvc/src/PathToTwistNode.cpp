@@ -99,8 +99,8 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
 
     std::vector<geometry_msgs::PoseStamped> inc_poses = path_msg.poses;
 
-    std::vector<float> x_vectors; // holds x values for vectors
-    std::vector<float> y_vectors; // holds y values for vectors
+    std::vector<double> x_vectors; // holds x values for vectors
+    std::vector<double> y_vectors; // holds y values for vectors
     calcVectors(inc_poses,
                 x_vectors,
                 y_vectors,
@@ -108,16 +108,16 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
                 x_pos,
                 y_pos); // x_vectors and y_vectors now updated
 
-    float x_sum = weightedSum(x_vectors, num_poses - 1, path_dropoff_factor); //-1 because number of vectors is one less than number of poses
-    float y_sum = weightedSum(y_vectors, num_poses - 1, path_dropoff_factor);
+    double x_sum = weightedSum(x_vectors, num_poses - 1, path_dropoff_factor); //-1 because number of vectors is one less than number of poses
+    double y_sum = weightedSum(y_vectors, num_poses - 1, path_dropoff_factor);
 
-    float desired_angle = atan(y_sum / x_sum);
+    double desired_angle = atan(y_sum / x_sum);
 
     if (x_sum < 0) {
         desired_angle += M_PI;
     }
 
-    float turn_rate = fmod(desired_angle - orientation,
+    double turn_rate = fmod(desired_angle - orientation,
                            2 * M_PI); // Keep turn_rate between -2pi and 2pi
 
     // If pi < turn < 2pi or -2pi < turn < -pi, turn in other direction instead
@@ -128,18 +128,18 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
 
     // At this point, turn rate should be between -pi and pi
     /*
-    float speed =
+    double speed =
     1.0 - fabs(fmod(turn_rate, M_PI) /
                (M_PI)); // Could multiply this by some factor to scale speed*/
-    float speed = exp(-pow(turn_rate, 2) / 0.4);
+    double speed = exp(-pow(turn_rate, 2) / 0.4);
 
     // Scale speeds
     speed *= linear_speed_scaling_factor;
     turn_rate *= angular_speed_scaling_factor;
 
     // Cap speeds
-    speed = std::max(-(float)max_linear_speed, std::min(speed, (float)max_linear_speed));
-    turn_rate = std::max(-(float)max_angular_speed, std::min(turn_rate, (float)max_angular_speed));
+    speed = std::max(-(double)max_linear_speed, std::min(speed, (double)max_linear_speed));
+    turn_rate = std::max(-(double)max_angular_speed, std::min(turn_rate, (double)max_angular_speed));
 
     twist_msg.linear.x  = speed;
     twist_msg.angular.z = turn_rate;
@@ -148,28 +148,39 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
 
 void PathToTwistNode::calcVectors(
 const std::vector<geometry_msgs::PoseStamped>& poses,
-std::vector<float>& x_vectors,
-std::vector<float>& y_vectors,
+std::vector<double>& x_vectors,
+std::vector<double>& y_vectors,
 int num_poses,
 double x_pos,
 double y_pos) {
-    x_vectors.push_back(poses[0].pose.position.x - x_pos);
-    y_vectors.push_back(poses[0].pose.position.y - y_pos);
+    double x = poses[0].pose.position.x - x_pos;
+    double y = poses[0].pose.position.y - y_pos;
+    double mag = sqrt(pow(x, 2) + pow(y, 2));
+    x /= mag;
+    y /= mag;
+    x_vectors.push_back(x);
+    y_vectors.push_back(y);
+
     for (int i = 1; i < num_poses; i++) {
-        x_vectors.push_back(poses[i].pose.position.x -
-                            poses[i - 1].pose.position.x);
-        y_vectors.push_back(poses[i].pose.position.y -
-                            poses[i - 1].pose.position.y);
+        x = poses[i].pose.position.x -
+            poses[i - 1].pose.position.x;
+        y = poses[i].pose.position.y -
+            poses[i - 1].pose.position.y;
+        mag = sqrt(pow(x, 2) + pow(y, 2));
+        x /= mag;
+        y /= mag;
+        x_vectors.push_back(x);
+        y_vectors.push_back(y);
     }
 }
 
-float PathToTwistNode::weightedSum(const std::vector<float>& vectors,
+double PathToTwistNode::weightedSum(const std::vector<double>& vectors,
                                int num_to_sum, int path_dropoff_factor) {
-    float weighted_sum = 0;
+    double weighted_sum = 0;
     for (int i = 0; i < num_to_sum; i++) {
-        weighted_sum += vectors[i] / (i + 1); // 1/x scaling
+        //weighted_sum += vectors[i] / (i + 1); // 1/x scaling
 
-        weighted_sum += vectors[i] * exp(-pow(i+1, 2)) / path_dropoff_factor;
+        weighted_sum += vectors[i] * exp (-pow(i+1, 2) / path_dropoff_factor) ;
     }
     return weighted_sum;
 }
