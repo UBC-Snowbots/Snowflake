@@ -22,7 +22,7 @@ nav_msgs::Path PathFinder::calculatePath(geometry_msgs::Point start,
     grid, start, goal, start_on_grid, goal_on_grid);
 
     // if start is occupied, find closest free node
-    bool is_start_occupied = grid.data[start_on_grid.row * grid.info.width + start_on_grid.col] > AStar::GRID_FREE;
+    bool is_start_occupied = grid.data[start_on_grid.row * grid.info.width + start_on_grid.col] >= blocked_cell_threshold;
     if (is_start_occupied) {
         start_on_grid = PathFinderUtils::getClosestFreeGridPointFromGridPoint(grid, start_on_grid);
     }
