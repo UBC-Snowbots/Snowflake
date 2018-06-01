@@ -1,6 +1,6 @@
 <launch>
     <include file="$(find sb_pointcloud_processing)/launch/pointcloud_filters.launch" />
-    <!--<include file="$(find sb_pointcloud_processing)/launch/line_extractor.launch" />-->
+    <include file="$(find sb_pointcloud_processing)/launch/line_extractor.launch" />
 
 <!-- Defines the transform from the camera to base_link -->
 <!-- Realsense -->

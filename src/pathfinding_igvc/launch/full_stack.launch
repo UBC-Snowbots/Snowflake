@@ -14,5 +14,9 @@
         <include file="$(find mapping_igvc)/launch/obstacle_manager.launch"/>
 
     <!-- Start the pathfinding stack -->
+        <include file="$(find pathfinding_igvc)/launch/path_finder.launch"/>
 
+        <include file="$(find pathfinding_igvc)/launch/path_to_twist.launch"/>
+
+        
 </launch>

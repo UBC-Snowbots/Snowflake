@@ -24,7 +24,7 @@
             The coefficient for exponential gradient. The bigger this is,
             the faster it fades away from the obstacle.
         -->
-        <rosparam param="exp_coefficient">0.1</rosparam>
+        <rosparam param="exp_coefficient">0.08</rosparam>
 
         <!--
             The size (length/width) of the cells in occupancy grids this class
