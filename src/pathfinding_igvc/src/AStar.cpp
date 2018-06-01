@@ -221,8 +221,10 @@ bool AStar::isDestination(AStar::GridPoint point) {
 // A Utility Function to calculate the 'h' heuristics.
 double AStar::calculateHValue(AStar::GridPoint point) {
     // Return using the euclidean distance formula
-    return sqrt(pow(point.row - this->_goal.row, 2) +
+    /*return sqrt(pow(point.row - this->_goal.row, 2) +
                 pow(point.col - this->_goal.col, 2));
+    */
+    return 0.0;
 }
 
 bool AStar::isValid(AStar::GridPoint point) {
