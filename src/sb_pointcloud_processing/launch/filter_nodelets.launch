@@ -67,7 +67,7 @@
     <node pkg="nodelet"
           type="nodelet"
           name="voxel_grid"
-          args="load pcl/VoxelGrid pcl_manager" output="screen">
+          args="load pcl/VoxelGrid nodelet_manager" output="screen">
         <remap from="~input" to="/height_filter/output" />
         <rosparam>
             filter_field_name: z
