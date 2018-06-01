@@ -159,7 +159,8 @@ bool AStar::processSuccessor(GridPoint successor, GridPoint parent) {
         }
         g_new = this->_cell_details[parent.row][parent.col].g + added_cost;
         h_new = calculateHValue(successor);
-        f_new = g_new + h_new;
+        double gradient_cost = this->_grid[successor.row * this->_num_cols + successor.col];
+        f_new = g_new + h_new + gradient_cost;
 
         // If it isn’t on the open list, add it to
         // the open list. Make the current square
@@ -210,7 +211,7 @@ std::stack<AStar::GridPoint> AStar::tracePath() {
 }
 
 bool AStar::isUnBlocked(AStar::GridPoint point) {
-    return this->_grid[point.row * this->_num_cols + point.col] == GRID_FREE;
+    return this->_grid[point.row * this->_num_cols + point.col] < GRID_OCCUPIED;
 }
 
 bool AStar::isDestination(AStar::GridPoint point) {
