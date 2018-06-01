@@ -6,7 +6,7 @@
         <rosparam param="base_frame_name"> "/base_link" </rosparam>
         <rosparam param="global_frame_name"> "/map" </rosparam>
         <rosparam param="use_dijkstra">true</rosparam>
-        <rosparam param="blocked_cell_threshold">50</rosparam>
+        <rosparam param="blocked_cell_threshold">30</rosparam>
 
         <rosparam param="path_update_rate"> 0.1 </rosparam>
 

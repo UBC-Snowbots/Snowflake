@@ -5,8 +5,8 @@
         <!-- regularization constant for line of best fit -->
         <param name="lambda" value="0" type="double" />
         <!-- density parameters for DBSCAN -->
-        <param name="min_neighbours" value="5" type="int" />
-        <param name="radius" value="0.2" type="double" />
+        <param name="min_neighbours" value="13" type="int" />
+        <param name="radius" value="0.1" type="double" />
 
         <!-- rviz parameters -->
         <!-- frame id should match the one of "/height_filter/output" -->
