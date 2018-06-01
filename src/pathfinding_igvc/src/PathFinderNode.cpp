@@ -28,18 +28,18 @@ PathFinderNode::PathFinderNode(int argc, char** argv, std::string node_name) {
                 std::string("/base_link"));
 
      std::string grid_subscriber_topic = "/occupancy_grid";
-    int refresh_rate                  = 10;
+    uint32_t queue_size                    = 1;
     this->grid_subscriber             = nh.subscribe(grid_subscriber_topic,
-                                         refresh_rate,
+                                         queue_size,
                                          &PathFinderNode::occupancyGridCallback,
                                          this);
 
     std::string goal_subscriber_topic = "/goal";
     this->goal_subscriber             = nh.subscribe(
-    goal_subscriber_topic, refresh_rate, &PathFinderNode::goalCallback, this);
+    goal_subscriber_topic, queue_size, &PathFinderNode::goalCallback, this);
 
     std::string topic_to_publish_to = "path";
-    uint32_t queue_size             = 1;
+    queue_size             = 1;
     this->publisher =
     private_nh.advertise<nav_msgs::Path>(topic_to_publish_to, queue_size);
 
