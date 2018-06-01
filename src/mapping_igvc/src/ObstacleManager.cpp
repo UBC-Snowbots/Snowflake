@@ -27,14 +27,16 @@ ObstacleManager::ObstacleManager(double cone_merging_tolerance,
                                  double obstacle_inflation_buffer,
                                  double occ_grid_cell_size,
                                  unsigned int line_merging_max_iters,
-                                 unsigned int closest_line_max_iters
+                                 unsigned int closest_line_max_iters,
+                                 double exp_coefficient
 ) :
 cone_merging_tolerance(cone_merging_tolerance),
 line_merging_tolerance(line_merging_tolerance),
 obstacle_inflation_buffer(obstacle_inflation_buffer),
 occ_grid_cell_size(occ_grid_cell_size),
 spline_merging_max_iters(line_merging_max_iters),
-closest_spline_max_iters(closest_line_max_iters)
+closest_spline_max_iters(closest_line_max_iters),
+exp_coefficient(exp_coefficient)
 {}
 
 std::vector<mapping_igvc::ConeObstacle> ObstacleManager::getConeObstacles() {
@@ -295,14 +297,14 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
         // Inflate the obstacles (and thus mark sections of the grid as occupied)
         for (auto& point: occupied_points){
-            inflatePoint(occ_grid, point, obstacle_inflation_buffer);
+            inflatePoint(occ_grid, point, obstacle_inflation_buffer, exp_coefficient);
         }
     }
 
     return occ_grid;
 }
 
-void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::Point2D point, double inflation_radius) {
+void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::Point2D point, double inflation_radius, double exp_coefficient) {
     // Figure out how many cells the inflation radius corresponds to
     auto inflation_radius_num_of_cells = (int)std::ceil(inflation_radius / occ_grid.info.resolution);
 
@@ -350,11 +352,9 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
                 // 100->0 from the center to the edge of the inflation radius
                 int dy = center_cell_y - y;
                 int dx = center_cell_x - x ;
-                // signed char cell_weight = (int8_t)(100 * ((inflation_radius_num_of_cells - std::sqrt(std::pow(dy,2) + std::pow(dx,2))) / inflation_radius_num_of_cells));
                 
                 double distance = std::sqrt(std::pow(dy,2) + std::pow(dx,2));
-                double exp_coeff = 0.1;
-                signed char cell_weight = (int8_t) ( 100.0 * exp(-exp_coeff * distance) );
+                signed char cell_weight = (int8_t) ( 100.0 * exp(-exp_coefficient * distance) );
                 // To account for overlaps, we only want to increase the cell weight
                 signed char curr_cell_weight = occ_grid.data[y * occ_grid.info.width + x];
 

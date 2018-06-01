@@ -38,6 +38,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "tf_cache_time", tf_cache_time, 15.0);
     SB_getParam(private_nh, "line_marker_resolution", line_marker_resolution, 30);
     SB_getParam(private_nh, "obstacle_pruning_radius", obstacle_pruning_radius, 10.0);
+    SB_getParam(private_nh, "exp_coefficient", exp_coefficient, 0.1);
 
 
     // Setup the Obstacle Manager
@@ -47,7 +48,8 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
             obstacle_inflation_buffer,
             occ_grid_cell_size,
             (unsigned int)line_merging_max_iters,
-            (unsigned int)closest_line_max_iters
+            (unsigned int)closest_line_max_iters,
+            exp_coefficient
     );
 
     // Setup Subscriber(s)

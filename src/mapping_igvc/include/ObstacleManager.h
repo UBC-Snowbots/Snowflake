@@ -74,7 +74,8 @@ public:
             obstacle_inflation_buffer,
             occ_grid_cell_size,
             10,
-            15
+            15,
+            0.1
     ) {};
 
     /**
@@ -103,7 +104,8 @@ public:
                              double obstacle_inflation_buffer,
                              double occ_grid_cell_size,
                              unsigned int line_merging_max_iters,
-                             unsigned int closest_line_max_iters
+                             unsigned int closest_line_max_iters,
+                             double exp_coefficient
     );
 
     /**
@@ -166,7 +168,7 @@ public:
      * @param point
      * @param inflation_radius
      */
-    static void inflatePoint(nav_msgs::OccupancyGrid& occ_grid, sb_geom::Point2D point, double inflation_radius);
+    static void inflatePoint(nav_msgs::OccupancyGrid& occ_grid, sb_geom::Point2D point, double inflation_radius, double exp_coefficient);
 
     // TODO: Test me
     /**
@@ -256,6 +258,9 @@ private:
 
     // all known lines in our world
     std::vector<sb_geom::Spline> lines;
+
+    // exponential dropoff constant
+    double exp_coefficient;
 
 };
 

@@ -113,7 +113,9 @@ private:
 
     // The number of points per meter to sample from each line when
     // generating debug markers for the lines
-    int line_marker_resolution; 
+    int line_marker_resolution;
+
+    double exp_coefficient;
 
 };
 #endif //MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H
