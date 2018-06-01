@@ -19,8 +19,21 @@ nav_msgs::Path PathFinder::calculatePath(geometry_msgs::Point start,
     processGridAndGetStartAndGoalOnGrid(
     grid, start, goal, start_on_grid, goal_on_grid);
 
+    // if start is occupied, find closest free node
+    bool is_start_occupied = grid.data[start_on_grid.row * grid.info.width + start_on_grid.col] == AStar::GRID_OCCUPIED;
+    if (is_start_occupied) {
+        start_on_grid = PathFinderUtils::getClosestFreeGridPointFromGridPoint(grid, start_on_grid);
+    }
+
     std::stack<AStar::GridPoint> points =
     AStar::run(grid, start_on_grid, goal_on_grid);
+
+    // re-add the original start to the beginning of the path
+    if (is_start_occupied) {
+        AStar::GridPoint original_start = OccupancyGridAdapter(grid.info).convertFromMapToGridPoint(start);
+        points.push(original_start);
+    }
+
     return PathConstructor(OccupancyGridAdapter(grid.info))
     .constructPath(points);
 }
