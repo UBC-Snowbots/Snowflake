@@ -26,12 +26,26 @@ PathFinderNode::PathFinderNode(int argc, char** argv, std::string node_name) {
                 std::string("base_frame_name"),
                 this->_base_frame_name,
                 std::string("/base_link"));
+    SB_getParam(private_nh,
+                std::string("use_dijkstra"),
+                this->_use_dijkstra,
+                true);
+    SB_getParam(private_nh,
+                std::string("blocked_cell_threshold"),
+                this->_blocked_cell_threshold,
+                50);
+
+    std::cout << "**************************************" << std::endl;
+    std::cout << "use_dijkstra is " << this->_use_dijkstra << std::endl;
+    std::cout << "blocked_cell_threshold is " << this->_blocked_cell_threshold << std::endl;
+    std::cout << "**************************************" << std::endl;
 
     SB_getParam(private_nh,
                 std::string("path_update_rate"),
                 this->_path_update_rate,
                 (float) 0.1);
      std::string grid_subscriber_topic = "/occupancy_grid";
+
     uint32_t queue_size                    = 1;
     this->grid_subscriber             = nh.subscribe(grid_subscriber_topic,
                                          queue_size,
@@ -93,7 +107,7 @@ void PathFinderNode::publishPath() {
     start.y = transform.getOrigin().y();
 
     nav_msgs::Path path =
-    PathFinder::calculatePath(start, this->_goal, this->_grid);
+    PathFinder::calculatePath(start, this->_goal, this->_grid, this->_blocked_cell_threshold, this->_use_dijkstra);
 
     // TODO: We should probaly be publisshing this in either the map frame or it's own frame
     path.header.frame_id = this->_global_frame_name;

@@ -21,7 +21,7 @@ class AStar {
      * or GRID_OCCUPIED
      */
     static const int GRID_FREE     = 0;
-    static const int GRID_OCCUPIED = 50;
+    int GRID_OCCUPIED;
 
     /*
      * A representation of a point in grid with its col and row
@@ -44,9 +44,12 @@ class AStar {
      */
     static std::stack<GridPoint> run(nav_msgs::OccupancyGrid occupancy_grid,
                                      GridPoint start,
-                                     GridPoint goal);
+                                     GridPoint goal,
+                                        int blocked_cell_threshold,
+                                        bool use_dijkstra);
 
   private:
+    bool _use_dijkstra;
     /*
      * A representation of a point in grid along with its score.
      * Its score, f, is equal to g+h, where:
@@ -120,7 +123,9 @@ class AStar {
      */
     AStar(nav_msgs::OccupancyGrid occupancy_grid,
           GridPoint start,
-          GridPoint goal);
+          GridPoint goal,
+          int blocked_cell_threshold,
+          bool use_dijkstra);
 
     /**
      * Performs A* search and returns the path in a stack.

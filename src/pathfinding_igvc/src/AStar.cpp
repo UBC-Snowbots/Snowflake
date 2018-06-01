@@ -10,7 +10,12 @@ using namespace std;
 
 AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid,
              GridPoint start,
-             GridPoint goal) {
+             GridPoint goal,
+                int blocked_cell_threshold,
+                bool use_dijkstra) {
+    this->GRID_OCCUPIED = blocked_cell_threshold;
+    this->_use_dijkstra = use_dijkstra;
+
     this->_num_cols = occupancy_grid.info.width;
     this->_num_rows = occupancy_grid.info.height;
     this->_goal     = goal;
@@ -32,12 +37,14 @@ AStar::AStar(nav_msgs::OccupancyGrid occupancy_grid,
 
 std::stack<AStar::GridPoint> AStar::run(nav_msgs::OccupancyGrid occupancy_grid,
                                         GridPoint start,
-                                        GridPoint goal) {
+                                        GridPoint goal,
+                                        int blocked_cell_threshold,
+                                        bool use_dijkstra) {
     // The constructor is private because a path would only be found once
     // for a given occupancy grid and start and goal points. It's also a
     // way to force initialization of the class variables every time we
     // run the algorithm.
-    return AStar(occupancy_grid, start, goal).search();
+    return AStar(occupancy_grid, start, goal, blocked_cell_threshold, use_dijkstra).search();
 }
 
 std::stack<AStar::GridPoint> AStar::search() {
@@ -220,11 +227,15 @@ bool AStar::isDestination(AStar::GridPoint point) {
 
 // A Utility Function to calculate the 'h' heuristics.
 double AStar::calculateHValue(AStar::GridPoint point) {
-    // Return using the euclidean distance formula
-    /*return sqrt(pow(point.row - this->_goal.row, 2) +
-                pow(point.col - this->_goal.col, 2));
-    */
-    return 0.0;
+    if (this->_use_dijkstra) {
+        // dijkstra
+        return 0.0;
+    } else {
+        // ASTAR
+        // Return using the euclidean distance formula
+        return sqrt(pow(point.row - this->_goal.row, 2) +
+                    pow(point.col - this->_goal.col, 2));
+    }
 }
 
 bool AStar::isValid(AStar::GridPoint point) {

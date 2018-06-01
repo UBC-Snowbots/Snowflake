@@ -36,7 +36,9 @@ class PathFinder {
      */
     static nav_msgs::Path calculatePath(geometry_msgs::Point start,
                                         geometry_msgs::Point goal,
-                                        nav_msgs::OccupancyGrid grid);
+                                        nav_msgs::OccupancyGrid grid,
+                                        int blocked_cell_threshold,
+                                        bool use_dijkstra);
 
     /**
      * Takes in a grid and adds space around the grid if the goal is not

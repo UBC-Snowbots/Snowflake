@@ -38,6 +38,9 @@ class PathFinderNode {
     bool _received_goal  = false;
     bool _receivied_grid = false;
 
+    bool _use_dijkstra;
+    int _blocked_cell_threshold;
+
   public:
     // constructor
     PathFinderNode(int argc, char** argv, std::string node_name);
