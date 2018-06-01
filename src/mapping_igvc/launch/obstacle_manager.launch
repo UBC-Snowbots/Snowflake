@@ -18,14 +18,14 @@
             The buffer to add around each obstacle when generating the occupancy
             grid for our currently known world
         -->
-        <rosparam param="obstacle_inflation_buffer"> 1.5 </rosparam>
+        <rosparam param="obstacle_inflation_buffer"> 1.2 </rosparam>
 
         <!--
             The size (length/width) of the cells in occupancy grids this class
             generates. Raising this number will result in a higher resolution
             generated occupancy grid, but will make things slower
         -->
-        <rosparam param="occ_grid_cell_size"> 0.05 </rosparam>
+        <rosparam param="occ_grid_cell_size"> 0.01 </rosparam>
 
         <!--
             The maximum number of iterations to use when merging splines
@@ -71,7 +71,7 @@
             The radius around us in which to keep obstacles
             (obstacles outside this radius are pruned)
         -->
-        <rosparam param="obstacle_pruning_radius"> 25.0 </rosparam>
+        <rosparam param="obstacle_pruning_radius"> 10.0 </rosparam>
 
         <!--
             The rate (in hz) to publish the debug RViz markers at

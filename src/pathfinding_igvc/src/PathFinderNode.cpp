@@ -27,6 +27,10 @@ PathFinderNode::PathFinderNode(int argc, char** argv, std::string node_name) {
                 this->_base_frame_name,
                 std::string("/base_link"));
 
+    SB_getParam(private_nh,
+                std::string("path_update_rate"),
+                this->_path_update_rate,
+                (float) 0.1);
      std::string grid_subscriber_topic = "/occupancy_grid";
     uint32_t queue_size                    = 1;
     this->grid_subscriber             = nh.subscribe(grid_subscriber_topic,
@@ -44,20 +48,29 @@ PathFinderNode::PathFinderNode(int argc, char** argv, std::string node_name) {
     private_nh.advertise<nav_msgs::Path>(topic_to_publish_to, queue_size);
 
     this->_listener = new tf::TransformListener();
+
+    // Setup timer callback for updating the path
+    timer = nh.createTimer(ros::Duration(this->_path_update_rate),
+                           &PathFinderNode::updatePathCallback,
+                           this);
+
 }
 
 void PathFinderNode::occupancyGridCallback(const nav_msgs::OccupancyGrid grid) {
     this->_grid           = grid;
     this->_receivied_grid = true;
-    if (this->_received_goal) { publishPath(); }
 }
 
 void PathFinderNode::goalCallback(const geometry_msgs::PointStamped goal) {
     this->_goal          = goal.point;
     this->_received_goal = true;
-    if (this->_receivied_grid) { publishPath(); }
 }
 
+void PathFinderNode::updatePathCallback(const ros::TimerEvent& event)
+{
+    // Update the path
+    if (this->_receivied_grid && this->_received_goal) { publishPath(); }
+}
 void PathFinderNode::publishPath() {
     tf::StampedTransform transform;
 

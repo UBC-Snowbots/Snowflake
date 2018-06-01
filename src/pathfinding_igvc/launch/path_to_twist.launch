@@ -17,15 +17,15 @@
         <rosparam param="global_frame"> "map" </rosparam>
 
         <!-- The max linear/angular speeds -->
-        <rosparam param="max_linear_speed"> 0.5 </rosparam>
-        <rosparam param="max_angular_speed"> 0.8 </rosparam>
+        <rosparam param="max_linear_speed"> 1 </rosparam>
+        <rosparam param="max_angular_speed"> 0.2 </rosparam>
 
         <!-- The scaling factors for the linear/angular speeds -->
-        <rosparam param="linear_speed_scaling_factor"> 0.4 </rosparam>
-        <rosparam param="angular_speed_scaling_factor"> 2 </rosparam>
+        <rosparam param="linear_speed_scaling_factor"> 1 </rosparam>
+        <rosparam param="angular_speed_scaling_factor"> 0.7 </rosparam>
 
         <!-- The path dropoff factor (how many points to consider for path to twist calc), higher is more points considered  -->
-        <rosparam param="path_dropoff_factor"> 1000 </rosparam>
+        <rosparam param="path_dropoff_factor"> 200 </rosparam>
 
 
         <remap from="/path" to="/path_finder/path" />

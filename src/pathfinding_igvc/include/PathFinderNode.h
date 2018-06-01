@@ -30,6 +30,8 @@ class PathFinderNode {
     std::string _global_frame_name;
     std::string _base_frame_name;
 
+    float _path_update_rate;
+    
     geometry_msgs::Point _goal;
     nav_msgs::OccupancyGrid _grid;
 
@@ -68,6 +70,15 @@ class PathFinderNode {
      * tree, then calling the function that returns the path.
      */
     void publishPath();
+   
+    /**
+     *  Whenever a timer event occurs, the path is updated
+     *
+     *  @param event timer based event based on path_update_rate
+     */ 
+     void updatePathCallback(const ros::TimerEvent& event);
+
+    ros::Timer timer;
 };
 
 #endif // PROJECT_PATHFINDERNODE_H
