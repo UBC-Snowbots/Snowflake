@@ -4,8 +4,6 @@
  * and prints corresponding servo values to the left and write motors 
  * of Elsa.
  * 
- * PID loop has now been integrated, Kp, Ki, Kd values will need to be calibrated in physical testing
- * The library that was used can be found at:
  * 
  * https://playground.arduino.cc/Code/PIDLibrary
  * 
@@ -24,16 +22,13 @@
 #include <ros.h>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
-#include <nav_msgs/Odometry.h>
 #include<Servo.h>
-#include<PID_v1.h>
 
 
 Servo leftMotor;
 Servo rightMotor;
 const int leftMotorPin = 10;
 const int rightMotorPin = 11;
-const int lightRelayPin = A0;
 
 // timeout shut off variables
 int timeoutLength = 1000;
@@ -62,35 +57,11 @@ int minMotorWrite = 0;
 
 // The numbers we want to print to the motor ranging from 0 to 180 with 90 as the centerpoint (not moving)
 double setLinear = 90;
-double setAngular = 90;
-
-// The readings we receive from the encoders ranging from 0 to 180 with 90 as the centerpoint (not moving)
-double inputLinear = 90;
-double inputAngular = 90;
-
-// The value computed by the PID function from the set and input velocities ranging from 0 to 180 with 90 as the centerpoint (not moving)
-double outputLinear = 90;
-double outputAngular = 90;
+double setAngular = 0;
 
 // The numbers we will print to the motor based on converting PID outputs to left and right motor values
 int setLeftMotor = 90;
 int setRightMotor = 90;
-
-//Tuning parameters for the PID controllers:
-float linearKp = 2;
-float linearKi = 5;
-float linearKd = 1;
-float angularKp = 2;
-float angularKi = 5;
-float angularKd = 1;
-
-
-
-
-// Specify links for PID controller
-PID linearPID(&inputLinear, &outputLinear, &setLinear,linearKp,linearKi,linearKd, DIRECT);
-PID angularPID(&inputAngular, &outputAngular, &setAngular,angularKp,angularKi,angularKd, DIRECT);
-
 
 ros::NodeHandle nh;
 
@@ -119,34 +90,12 @@ void twistCallback( const geometry_msgs::Twist& twist_msg){
 }
 
 
-/*
- * Translates an odometry message from the encoders to monitor realized velocities that can be compared to set velocities by the PID loop
- * 
- * This function maps the odometry message from a range of (0, 255) to (0, 180) to be compatible with the Servo.h library
- * It then takes the linear x and angular z velocities from the odometry message and constrains them to the range in case 
- * there are any values that are too large to be printed to the servo motors
- * 
- * @param odom_msg the odometry message from the encoders
- */
-void odomCallback( const nav_msgs::Odometry& odom_msg) {
-
-    map(odom_msg.twist.twist.linear.x, 0, 255, 0, 180);
-    map(odom_msg.twist.twist.angular.z, 0, 255, 0, 180);
-
-    inputLinear = odom_msg.twist.twist.linear.x;
-    inputAngular = odom_msg.twist.twist.angular.z;
-
-    inputLinear = constrain(inputLinear, minMotorWrite, maxMotorWrite);
-    inputAngular = constrain(inputAngular, minMotorWrite, maxMotorWrite);
-
-}
 
 std_msgs::String str_msg;
 ros::Publisher firmwareTestLog("firmwareTestLog", &str_msg);
 
 ros::Subscriber<geometry_msgs::Twist> twist("/cmd_vel", &twistCallback );
 
-ros::Subscriber<nav_msgs::Odometry> odom("/encoder/odom", &odomCallback);
 
 
 void setup() {
@@ -154,26 +103,13 @@ void setup() {
     pinMode(rightMotorPin, OUTPUT);
     leftMotor.attach(leftMotorPin, minPWM, maxPWM);
     rightMotor.attach(rightMotorPin, minPWM, maxPWM);
-
-    linearPID.SetMode(AUTOMATIC);
-    angularPID.SetMode(AUTOMATIC);
     
     pinMode(lightRelayPin, OUTPUT);
     digitalWrite(lightRelayPin, LOW);
 
     nh.initNode();
     nh.subscribe(twist);
-    nh.subscribe(odom);
     nh.advertise(firmwareTestLog);
-
-    while(!nh.connected()) {nh.spinOnce();}
-    nh.getParam("~linear_Kp", &linearKp, 1);
-    nh.getParam("~linear_Ki", &linearKi, 1);
-    nh.getParam("~linear_Kd", &linearKd, 1);
-    nh.getParam("~angular_Kp", &angularKp, 1);
-    nh.getParam("~angular_Kp", &angularKi, 1);
-    nh.getParam("~angular_Kp", &angularKd, 1);
-    
     
 }
 
@@ -183,16 +119,11 @@ void loop() {
 
     currentMillisMotorTimeout = millis() - previousMillisMotorTimeout;
     currentMillisLightBlinker = millis() - previousMillisLightBlinker;
-    
+
     if(currentMillisMotorTimeout < 1000)  {
-      linearPID.Compute();
-      angularPID.Compute();
 
-      outputLinear = constrain(outputLinear, minMotorWrite, maxMotorWrite);
-      outputAngular = constrain(outputAngular, minMotorWrite, maxMotorWrite);
-
-      setLeftMotor = ((outputLinear - outputAngular - 90)/2) + 90;
-      setRightMotor = ((outputLinear + outputAngular - 90)/2) + 90;
+      setLeftMotor = ((setLinear - setAngular - 90)/2) + 90;
+      setRightMotor = ((setLinear + setAngular - 90)/2) + 90;
 
       leftMotor.write(setLeftMotor);
       rightMotor.write(setRightMotor);
@@ -214,7 +145,8 @@ void loop() {
       
     }
 
-    debug(2);
+
+    debug(1);
 
     
 }
@@ -228,25 +160,18 @@ void loop() {
  * 
  * @param debugNumber tells the debug function which message to print:
  *        1: outputLinear, outputAngular, setLeftMotor, setRightMotor
- *        2: linear and angular PID loop K values
  */
 void debug(int debugNumber) {
 
   switch(debugNumber) {
     case 1:
-    debugString1 = "output linear: " + String(outputLinear) + " output angular: " + String(outputAngular) + " set left motor: " + String(setLeftMotor) + " set right motor: " + String(setRightMotor);
+    debugString1 = "set linear: " + String(setLinear) + " set angular: " + String(setAngular) + " set left motor: " + String(setLeftMotor) + " set right motor: " + String(setRightMotor);
     debugString1.toCharArray(debugMessage1, 100);
     str_msg.data = debugMessage1;
-    firmwareTestLog.publish( &str_msg );
-    break;
-
-    case 2:
-    debugString2 = "linear kp: " + String(linearKp) + " ki: " + String(linearKi) + " kd: " + String(linearKd) + " angular kp: " + String(angularKp) + " ki: " + String(angularKi) + " kd: " + String(angularKd);
-    debugString2.toCharArray(debugMessage2, 100);
-    str_msg.data = debugMessage2;
     firmwareTestLog.publish( &str_msg );
     break;
     
   }
   
 }
+
