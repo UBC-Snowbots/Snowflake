@@ -159,7 +159,9 @@ public:
     /**
      * Inflates the given point (`point`) in `occ_grid` in a circle with radius: `inflation_radius`
      *
-     * This will set all grid cells within `inflation_radius` of `point` to 100
+     * This will set all grid cells within `inflation_radius` of `point` to a value in [0,100],
+     * where the cells at `point` will be 100, and the points farthest away will be 0
+     * (with the points in between in a linear gradient)
      * @param occ_grid
      * @param point
      * @param inflation_radius

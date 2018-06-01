@@ -26,7 +26,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     SB_getParam(private_nh, "cone_merging_tolerance", cone_merging_tolerance, 0.3);
     SB_getParam(private_nh, "line_merging_tolerance", line_merging_tolerance, 0.3);
     SB_getParam(private_nh, "obstacle_inflation_buffer", obstacle_inflation_buffer, 1.0);
-    SB_getParam(private_nh, "occ_grid_cell_size", occ_grid_cell_size, 1.0);
+    SB_getParam(private_nh, "occ_grid_cell_size", occ_grid_cell_size, 0.1);
     SB_getParam(private_nh, "line_merging_max_iters", line_merging_max_iters, 10);
     SB_getParam(private_nh, "closest_line_max_iters", closest_line_max_iters, 15);
     SB_getParam(private_nh, "occ_grid_frame", occ_grid_frame, std::string("map"));
@@ -51,6 +51,7 @@ ObstacleManagerNode::ObstacleManagerNode(int argc, char **argv, std::string node
     );
 
     // Setup Subscriber(s)
+    // TODO: Revert
     cone_obstacle_subscriber = nh.subscribe<mapping_igvc::ConeObstacle>("cone_obstacles", 5, &ObstacleManagerNode::coneObstacleCallback, this);
     line_obstacle_subscriber = nh.subscribe<mapping_igvc::LineObstacle>("line_obstacles", 5, &ObstacleManagerNode::lineObstacleCallback, this);
 
