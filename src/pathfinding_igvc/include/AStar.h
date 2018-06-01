@@ -21,7 +21,7 @@ class AStar {
      * or GRID_OCCUPIED
      */
     static const int GRID_FREE     = 0;
-    static const int GRID_OCCUPIED = 100;
+    static const int GRID_OCCUPIED = 50;
 
     /*
      * A representation of a point in grid with its col and row
