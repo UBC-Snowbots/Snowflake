@@ -1,8 +1,6 @@
 <launch>
 
     <!-- Start the GPS stack -->
-        <include file="$(find decision_igvc)/launch/gps_manager.launch"/>
-
         <include file="$(find localisation_igvc)/launch/gps_to_odom.launch"/>
         <include file="$(find localisation_igvc)/launch/ekf.launch"/>
 

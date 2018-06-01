@@ -350,8 +350,11 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
                 // 100->0 from the center to the edge of the inflation radius
                 int dy = center_cell_y - y;
                 int dx = center_cell_x - x ;
-                signed char cell_weight = (int8_t)(100 * ((inflation_radius_num_of_cells - std::sqrt(std::pow(dy,2) + std::pow(dx,2))) / inflation_radius_num_of_cells));
-
+                // signed char cell_weight = (int8_t)(100 * ((inflation_radius_num_of_cells - std::sqrt(std::pow(dy,2) + std::pow(dx,2))) / inflation_radius_num_of_cells));
+                
+                double distance = std::sqrt(std::pow(dy,2) + std::pow(dx,2));
+                double exp_coeff = 0.1;
+                signed char cell_weight = (int8_t) ( 100.0 * exp(-exp_coeff * distance) );
                 // To account for overlaps, we only want to increase the cell weight
                 signed char curr_cell_weight = occ_grid.data[y * occ_grid.info.width + x];
 
