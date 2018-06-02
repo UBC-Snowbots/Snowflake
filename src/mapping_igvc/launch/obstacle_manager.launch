@@ -70,14 +70,14 @@
         <!--
             The rate (in hz) to publish the generated occupancy grid at
         -->
-        <rosparam param="occ_grid_generation_rate"> 2.0 </rosparam>
+        <rosparam param="occ_grid_generation_rate"> 10.0 </rosparam>
 
 
         <!--
             The radius around us in which to keep obstacles
             (obstacles outside this radius are pruned)
         -->
-        <rosparam param="obstacle_pruning_radius"> 30.0 </rosparam>
+        <rosparam param="obstacle_pruning_radius"> 50.0 </rosparam>
 
         <!--
             The rate (in hz) to publish the debug RViz markers at

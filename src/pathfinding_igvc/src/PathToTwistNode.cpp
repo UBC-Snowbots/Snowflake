@@ -39,8 +39,8 @@ PathToTwistNode::PathToTwistNode(int argc, char** argv, std::string node_name) {
     SB_getParam(private_nh, "angular_speed_scaling_factor", angular_speed_scaling_factor, 1.0);
     SB_getParam(private_nh, "max_linear_speed", max_linear_speed, 1.0);
     SB_getParam(private_nh, "max_angular_speed", max_angular_speed, 1.0);
-    SB_getParam(private_nh, "path_dropoff_factor", path_dropoff_factor, 20);
-
+    SB_getParam(private_nh, "path_dropoff_factor", path_dropoff_factor, 20.0);
+    SB_getParam(private_nh, "linear_speed_dropoff_factor", linear_speed_dropoff_factor, 0.5);
 }
 
 void PathToTwistNode::pathCallBack(const nav_msgs::Path::ConstPtr& path_ptr) {
@@ -107,12 +107,9 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
     double x_sum = weightedSum(x_vectors, path_dropoff_factor); //-1 because number of vectors is one less than number of poses
     double y_sum = weightedSum(y_vectors, path_dropoff_factor);
 
-    double desired_angle = atan(y_sum / x_sum);
+    double desired_angle = atan2(y_sum, x_sum);
 
     // Handle case where desired angle is behind us
-    if (x_sum < 0) {
-        desired_angle += M_PI;
-    }
 
     double turn_rate = fmod(desired_angle - orientation,
                            2 * M_PI); // Keep turn_rate between -2pi and 2pi
@@ -123,12 +120,13 @@ geometry_msgs::Twist PathToTwistNode::pathToTwist(nav_msgs::Path path_msg,
     else if (turn_rate < -M_PI)
         turn_rate += 2 * M_PI;
 
+
     // At this point, turn rate should be between -pi and pi
     /*
     double speed =
     1.0 - fabs(fmod(turn_rate, M_PI) /
                (M_PI)); // Could multiply this by some factor to scale speed*/
-    double speed = exp(-pow(turn_rate, 2) / 0.4);
+    double speed = exp(-pow(turn_rate, 2) / linear_speed_dropoff_factor);
 
     // Scale speeds
     speed *= linear_speed_scaling_factor;
@@ -165,7 +163,7 @@ double y_pos) {
     }
 }
 
-double PathToTwistNode::weightedSum(const std::vector<double>& vectors, int path_dropoff_factor) {
+double PathToTwistNode::weightedSum(const std::vector<double>& vectors, double path_dropoff_factor) {
     double weighted_sum = 0;
     for (int i = 0; i < vectors.size(); i++) {
         //weighted_sum += vectors[i] / (i + 1); // 1/x scaling
