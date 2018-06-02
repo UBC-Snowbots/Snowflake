@@ -37,7 +37,7 @@
             The maximum number of iterations to use when merging splines
             larger values will make line merging slower, but more accurate
         -->
-        <rosparam param="line_merging_max_iters"> 10 </rosparam>
+        <rosparam param="line_merging_max_iters"> 30 </rosparam>
 
         <!--
             The maximum number of iterations to use when comparing a new spline
