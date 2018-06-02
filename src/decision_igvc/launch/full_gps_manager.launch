@@ -1,0 +1,17 @@
+<launch>
+
+    <!-- Launch GPS Manager -->
+    <node name="gps_manager" pkg="decision_igvc" type="gps_manager" output="screen">
+        <rosparam param="at_goal_tolerance">0.5</rosparam>
+        <rosparam param="waypoints">
+        [
+            49.2623080664, -123.24827465,
+            49.2627939117, -123.24822091,
+            49.2625886642, -123.248763753
+        ]
+        </rosparam>
+        <rosparam param="base_frame">base_link</rosparam>
+        <rosparam param="global_frame">map</rosparam>
+    </node>
+
+</launch>
