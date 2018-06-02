@@ -205,7 +205,7 @@ nav_msgs::OccupancyGrid ObstacleManager::generateOccupancyGrid() {
 
     // TODO: Make this angle a param
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
-    splitLineSelfLoops(0.47);
+    // splitLineSelfLoops(0.47);
     // TODO: Is this the right place to do this? (keep in mind how expensive it is)
     mergeCloseLines();
     mergeCloseCones();
@@ -354,7 +354,15 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
                 int dx = center_cell_x - x ;
                 
                 double distance = std::sqrt(std::pow(dy,2) + std::pow(dx,2));
-                signed char cell_weight = (int8_t) ( 100.0 * exp(-exp_coefficient * distance) );
+                // signed char cell_weight = (int8_t) ( 100.0 * exp(-exp_coefficient * distance) );
+                // double a = 100 / std::pow(distance, 2);
+                // signed char cell_weight = (int8_t) (a * std::pow(distance - inflation_radius_num_of_cells, 2));
+                signed char cell_weight;
+                if ( distance < exp_coefficient)
+                    cell_weight = 100;
+                else {
+                    cell_weight = (int8_t) (100 * exp(-0.15 * (distance - exp_coefficient))) ;
+                }
                 // To account for overlaps, we only want to increase the cell weight
                 signed char curr_cell_weight = occ_grid.data[y * occ_grid.info.width + x];
 
