@@ -21,10 +21,16 @@
         <rosparam param="obstacle_inflation_buffer"> 2.0 </rosparam>
 
         <!--
+            Occupied radius around obstacle. This value has to be less
+            than or equal to "obstacle_inflation_buffer".
+        -->
+        <rosparam param="occupied_radius">1.0</rosparam>
+
+        <!--
             The coefficient for exponential gradient. The bigger this is,
             the faster it fades away from the obstacle.
         -->
-        <rosparam param="exp_coefficient">1.0</rosparam>
+        <rosparam param="exp_coefficient">0.15</rosparam>
 
         <!--
             The size (length/width) of the cells in occupancy grids this class

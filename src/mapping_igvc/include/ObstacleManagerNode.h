@@ -116,6 +116,7 @@ private:
     int line_marker_resolution;
 
     double exp_coefficient;
+    double occupied_radius;
 
 };
 #endif //MAPPING_IGVC_OBSTACLE_MANAGER_NODE_H
