@@ -1,5 +1,5 @@
 <launch>
     <node name="sicklms" pkg="sicktoolbox_wrapper" type="sicklms" output="screen">
-        <param name="port" value="/dev/ttyUSB0" type="string"/>
+        <param name="port" value="/dev/ttyUSB1" type="string"/>
     </node>
 </launch>

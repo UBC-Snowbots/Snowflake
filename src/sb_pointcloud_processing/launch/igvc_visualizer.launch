@@ -6,5 +6,6 @@
 	<rosparam param="v_margin_of_error"> 0.3 </rosparam>
 	<rosparam param="image_update_rate"> 0.1 </rosparam>
         <remap from="/input_cloud" to="/camera/depth_registered/points" />
+        <remap from="/height_filter/output" to="voxel_grid/output" />
     </node>
 </launch>

@@ -27,7 +27,7 @@
             see examples in the `config` folder.
         -->
         <rosparam command="load" 
-            file="$(find drivers)/launch/config/test_cart.yaml" />
+            file="$(find drivers)/launch/config/elsa_x.yaml" />
     </node>
 
 </launch>

@@ -1,0 +1,20 @@
+<launch>
+<!--
+    This launch file is responsible for launching the full sensor stack
+-->
+
+
+    <!-- Launch localisation sensors -->
+    <include file="$(find localisation_igvc)/launch/localisation.launch"/>
+
+    <!-- Launch the camera -->
+    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"/>
+    <include file="$(find sb_pointcloud_processing)/launch/camera_transform.launch"/>
+
+    <!-- Launch the lidar -->
+    <include file="$(find sb_laserscan_processing)/launch/sick_lidar.launch"/>
+
+    <!-- Launch firmware -->
+    <include file="$(find drivers)/launch/firmware_serial_driver.launch"/>
+
+</launch>
