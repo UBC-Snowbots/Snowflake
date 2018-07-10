@@ -59,7 +59,7 @@ const sensor_msgs::Image::ConstPtr& image) {
 
     imageInput = rosToMat(image);
 
-    // Filter out non-green colors
+    // Filter out non-ZZ colors
     Mat filteredImage;
     filter.filterImage(imageInput, filteredImage);
     filterOutput = filteredImage;

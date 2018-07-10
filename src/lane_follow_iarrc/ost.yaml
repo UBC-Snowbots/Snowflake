@@ -1,3 +1,7 @@
+# Calibration for the fisheye camera
+#
+# http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration
+
 image_width: 640
 image_height: 480
 camera_name: narrow_stereo

@@ -111,7 +111,7 @@ cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
             if (y_intersect > 0) goto create_point;
         }
 
-        // throw an exception since no valid intersect root exists
+        // otherwise throw an exception since no valid intersect root exists
         std::cout << "intersect_roots = " << std::endl
                   << intersect_roots << std::endl
                   << std::endl;
@@ -144,9 +144,7 @@ Polynomial LineDetect::fitPolyToLine(std::vector<cv::Point2d> points,
                                      int order) {
     Polynomial PolyLine = Polynomial();
 
-    int order_plus_one = order + 1;
-    assert(points.size() >= order_plus_one);
-    assert(order <= 4);
+    assert(points.size() >= order + 1);
 
     std::vector<double> xv(points.size(), 0);
     std::vector<double> yv(points.size(), 0);
@@ -156,14 +154,14 @@ Polynomial LineDetect::fitPolyToLine(std::vector<cv::Point2d> points,
         yv[i] = points[i].y;
     }
 
-    Eigen::MatrixXd A(xv.size(), order_plus_one);
+    Eigen::MatrixXd A(xv.size(), order + 1);
     Eigen::VectorXd yvMapped = Eigen::VectorXd::Map(&yv.front(), yv.size());
     Eigen::VectorXd result;
 
     // create matrix
     for (size_t i = 0; i < points.size(); i++)
 
-        for (size_t j = 0; j < order_plus_one; j++)
+        for (size_t j = 0; j <= order; j++)
             A(i, j) = pow((xv.at(i)), j);
 
     // solve for linear least squares fit to get the coefficients

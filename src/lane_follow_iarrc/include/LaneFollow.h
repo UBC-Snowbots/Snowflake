@@ -19,8 +19,9 @@
 #include <image_transport/image_transport.h>
 
 // Snowbots
-#include "IPM.h"
 #include "LineDetect.h"
+#include "IPM.h"
+#include "sb_utils.h"
 
 using namespace ros;
 using namespace cv;
@@ -66,11 +67,18 @@ class LaneFollow {
      */
     double getAngleFromOriginToIntersectPoint(cv::Point2d intersect_point);
 
+    /**
+     * Initializes the corners of the filter
+     */
+    void IPMFilter(float ipm_base_width,
+                   float ipm_top_width,
+                   float ipm_base_displacement,
+                   float ipm_top_displacement,
+                   float image_height,
+                   float image_width);
+
     // Instantiate LineDetect to generate the lane lines
     LineDetect ld;
-
-    // Instantiate IPM to perform IPM on points
-    IPM ipm;
 
     // Filtered image subscriber node
     image_transport::Subscriber filtered_image_sub;
@@ -78,11 +86,14 @@ class LaneFollow {
     // Steering driver publisher node
     ros::Publisher stay_in_lane_pub;
 
-    // Image processing Mat pipeline
+    // Image processing pipeline Mat
     cv::Mat filtered_image;
 
     // Recommended steer to follow lane
     geometry_msgs::Twist steering_output;
+
+    // Whether or not we received the first image
+    bool receivedFirstImage;
 
     // Angle of destination point to robot
     double intersect_angle;
@@ -97,6 +108,23 @@ class LaneFollow {
     // Speed scalars
     double angular_speed_multiplier;
     double linear_speed_multiplier;
+
+    // IPM filter variables
+    float ipm_base_width,
+          ipm_top_width,
+          ipm_base_displacement,
+          ipm_top_displacement;
+
+    // Corners of the portion of the image to be filtered
+    int x1, y1;
+    int x2, y2;
+    int x3, y3;
+    int x4, y4;
+
+    // Filters and their variables
+    IPM ipm;
+    std::vector<cv::Point2f> orig_points;
+    std::vector<cv::Point2f> dst_points;
 };
 
 #endif

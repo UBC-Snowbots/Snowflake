@@ -15,6 +15,9 @@ LaneFollow::LaneFollow(int argc, char** argv, std::string node_name) {
     // ROS
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
+    ros::NodeHandle private_nh("~");
+
+    receivedFirstImage = false;
 
     // setup image transport
     image_transport::ImageTransport it(nh);
@@ -24,6 +27,11 @@ LaneFollow::LaneFollow(int argc, char** argv, std::string node_name) {
     std::string output_topic = "lane_follow/recommended_steer";
 
     uint32_t queue_size = 1;
+
+    SB_getParam(private_nh, "ipm_base_width", ipm_base_width, (float) 1);
+    SB_getParam(private_nh, "ipm_top_width", ipm_top_width, (float) 0.5);
+    SB_getParam(private_nh, "ipm_base_displacement", ipm_base_displacement, (float) 0);
+    SB_getParam(private_nh, "ipm_top_displacement", ipm_top_displacement, (float) 0.25);
 
     // set up subscriber
     filtered_image_sub = it.subscribe(
@@ -36,6 +44,13 @@ LaneFollow::LaneFollow(int argc, char** argv, std::string node_name) {
 
 void LaneFollow::laneFollowCallback(
 const sensor_msgs::Image::ConstPtr& filteredImage) {
+    if (!receivedFirstImage) {
+        ros::NodeHandle private_nh("~");
+        ROS_INFO("First image received! (Lane Follow)");
+        receivedFirstImage = true;
+
+        IPMFilter(ipm_base_width, ipm_top_width, ipm_base_displacement, ipm_top_displacement, filteredImage->height, filteredImage->width);
+    }
     // set don't care components to zero
     LaneFollow::steering_output.linear.y  = 0;
     LaneFollow::steering_output.linear.z  = 0;
@@ -109,7 +124,13 @@ std::vector<std::vector<cv::Point2d>> filtered_points) {
         for (int j = 0; j < filtered_points[i].size(); j++) {
             cv::Point2d point = ipm.applyHomographyInv(filtered_points[i][j]);
 
-            points[i].emplace_back(point);
+            // initialize an empty vector at the start of every column
+            if (j == 0) {
+                std::vector<Point2d> set_point;
+                points.push_back(set_point);
+            }
+
+            points[i].push_back(point);
         }
     }
 
@@ -125,4 +146,37 @@ LaneFollow::getAngleFromOriginToIntersectPoint(cv::Point2d intersect_point) {
     double intersect_angle = atan(dx / y);
 
     return intersect_angle;
+}
+
+void LaneFollow::IPMFilter(float ipm_base_width,
+                             float ipm_top_width,
+                             float ipm_base_displacement,
+                             float ipm_top_displacement,
+                             float image_height,
+                             float image_width) {
+    x1 = image_width / 2 - ipm_base_width / 2 * image_width;
+    y1 = (1 - ipm_base_displacement) * image_height;
+    x2 = image_width / 2 + ipm_base_width / 2 * image_width;
+    y2 = (1 - ipm_base_displacement) * image_height;
+    x3 = image_width / 2 + ipm_top_width / 2 * image_width;
+    y3 = image_height * ipm_top_displacement;
+    x4 = image_width / 2 - ipm_top_width / 2 * image_width;
+    y4 = image_height * ipm_top_displacement;
+
+    // Set up the IPM points
+    orig_points.push_back(Point2f(x1, y1));
+    orig_points.push_back(Point2f(x2, y2));
+    orig_points.push_back(Point2f(x3, y3));
+    orig_points.push_back(Point2f(x4, y4));
+
+    dst_points.push_back(Point2f(0, image_height));
+    dst_points.push_back(Point2f(image_width, image_height));
+    dst_points.push_back(Point2f(image_width, 0));
+    dst_points.push_back(Point2f(0, 0));
+
+    // Create the IPM transformer
+    ipm = IPM(Size(image_width, image_height),
+              Size(image_width, image_height),
+              orig_points,
+              dst_points);
 }

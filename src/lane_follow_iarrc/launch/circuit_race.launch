@@ -2,41 +2,30 @@
 
     <!-- Start the camera -->
     <node name="camera" pkg="sb_vision" type="camera" output="screen"/>
-	
+
+	<!-- Load the camera calibration file -->
 	<rosparam command="load" file="$(find lane_follow_iarrc)/ost.yaml" />
 
     <!-- Launch our HSV Filter -->
     <node name="hsv_filter" pkg="sb_vision" type="hsv_filter" output="screen">
-        <rosparam param="update_frequency">5</rosparam>
-        <rosparam param="show_image_window">true</rosparam>
-        <rosparam param="show_calibration_window">true</rosparam>
+        <rosparam param="update_frequency"> 5 </rosparam>
+        <rosparam param="show_image_window"> true </rosparam>
+        <rosparam param="show_calibration_window"> true </rosparam>
 
         <!-- Input topic -->
-        <remap from="vision/hsv_input_image" to="/robot/camera1/raw_image"/>
+        <remap from="vision/hsv_input_image" to="/usb_cam/image_rect_color"/>
     </node>
 
 
     <!-- Launch our IPM Filter -->
     <node name="ipm_filter" pkg="sb_vision" type="ipm_filter" output="screen">
-        <rosparam param="ipm_base_width">1</rosparam>
-        <rosparam param="ipm_top_width">0.5</rosparam>
-        <rosparam param="ipm_top_displacement">0.25</rosparam>
-        <rosparam param="ipm_base_displacement">0</rosparam>
+        <rosparam param="ipm_base_width"> 1 </rosparam>
+        <rosparam param="ipm_top_width"> 0.5 </rosparam>
+        <rosparam param="ipm_top_displacement"> 0.25 </rosparam>
+        <rosparam param="ipm_base_displacement"> 0 </rosparam>
 
         <!-- Input topic -->
         <remap from="vision/ipm_input_image" to="vision/hsv_output_image"/>
     </node>
-
-
-   <!-- Start the circuit race controller -->
-   <node name="lane_follow" pkg="lane_follow_iarrc" type="lane_follow" output="screen">
-        <rosparam param="angular_speed_multiplier">1</rosparam>
-        <rosparam param="linear_speed_multiplier">1</rosparam>
-        <rosparam param="angular_vel_cap">0.75</rosparam>
-        <rosparam param="linear_vel_cap">1</rosparam>
-
-       <!-- Input topic -->
-       <remap from="vision/complete_filtered_image" to="vision/ipm_output_image"/>
-   </node>
 
 </launch>
