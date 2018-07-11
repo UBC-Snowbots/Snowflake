@@ -28,10 +28,10 @@ LaneFollow::LaneFollow(int argc, char** argv, std::string node_name) {
 
     uint32_t queue_size = 1;
 
-    SB_getParam(private_nh, "ipm_base_width", ipm_base_width, (float) 1);
-    SB_getParam(private_nh, "ipm_top_width", ipm_top_width, (float) 0.5);
-    SB_getParam(private_nh, "ipm_base_displacement", ipm_base_displacement, (float) 0);
-    SB_getParam(private_nh, "ipm_top_displacement", ipm_top_displacement, (float) 0.25);
+    SB_getParam(private_nh, "ipm_base_width", ipm_base_width, (float)1);
+    SB_getParam(private_nh, "ipm_top_width", ipm_top_width, (float)0.5);
+    SB_getParam(private_nh, "ipm_base_displacement", ipm_base_displacement, (float)0);
+    SB_getParam(private_nh, "ipm_top_displacement", ipm_top_displacement, (float)0.25);
 
     // set up subscriber
     filtered_image_sub = it.subscribe(
@@ -42,15 +42,21 @@ LaneFollow::LaneFollow(int argc, char** argv, std::string node_name) {
     nh.advertise<geometry_msgs::Twist>(output_topic, queue_size);
 }
 
-void LaneFollow::laneFollowCallback(
-const sensor_msgs::Image::ConstPtr& filteredImage) {
+void LaneFollow::laneFollowCallback(const sensor_msgs::Image::ConstPtr &filteredImage) {
     if (!receivedFirstImage) {
         ros::NodeHandle private_nh("~");
-        ROS_INFO("First image received! (Lane Follow)");
-        receivedFirstImage = true;
 
-        IPMFilter(ipm_base_width, ipm_top_width, ipm_base_displacement, ipm_top_displacement, filteredImage->height, filteredImage->width);
+        receivedFirstImage = true;
+        ROS_INFO("First image received for LaneFollow");
+
+        IPMFilter(ipm_base_width,
+                  ipm_top_width,
+                  ipm_base_displacement,
+                  ipm_top_displacement,
+                  filteredImage->height,
+                  filteredImage->width);
     }
+
     // set don't care components to zero
     LaneFollow::steering_output.linear.y  = 0;
     LaneFollow::steering_output.linear.z  = 0;
@@ -58,34 +64,44 @@ const sensor_msgs::Image::ConstPtr& filteredImage) {
     LaneFollow::steering_output.angular.y = 0;
 
     // convert filtered Image to filtered Mat
-    filtered_image = this->rosToMat(filteredImage);
+    filtered_image = this->rosImageToMat(filteredImage);
 
+    // point of origin
+    // in the ROS coordinate frame
     origin_point = filtered_image.cols / 2;
 
-    // generate left and right lane points
+    // generate left and right lane points in the filtered image
+    // in the cartesian coordinate frame
     std::vector<std::vector<cv::Point2d>> filtered_lane_points =
     ld.getLanePoints(filtered_image);
 
-    // make sure we only have two sets of lane points
-    assert(filtered_lane_points.size() == 2);
+    drawWindows(filtered_image,
+                filtered_lane_points,
+                ld.window_width,
+                ld.vertical_slices);
 
-    // convert the filtered lane points to raw lane points
-    std::vector<std::vector<Point2d>> lane_points =
-    this->transformPoints(filtered_lane_points);
+    // convert the filtered lane points to lane points in perspective
+    // in the cartesian coordinate frame
+    std::vector<std::vector<Point2d>> perspective_lane_points =
+            this->getPerspectiveLanePoints(filtered_lane_points);
 
-    // generate the left and right lane line polynomials
-    std::vector<Polynomial> lane_lines = ld.getLaneLines(lane_points);
+    // generate the left and right lane line polynomials in perspective
+    // in the cartesian coordinate frame
+    std::vector<Polynomial> perspective_lane_lines =
+    ld.getLaneLines(perspective_lane_points);
 
-    // get the intersection point of the left and right lane lines
-    cv::Point2d intersect_point =
-    ld.getIntersectionPoint(lane_lines, ld.getDegree());
+    // get the intersect point of the left and right lane lines in perspective
+    // in the ROS coordinate frame
+    cv::Point2d lane_intersect_point =
+            ld.getLaneIntersectPoint(perspective_lane_lines, ld.degree);
 
-    // get the intersection angle
-    intersect_angle = this->getAngleFromOriginToIntersectPoint(intersect_point);
+    // get the angle of the lane intersect point from the origin point
+    // in the ROS coordinate frame
+    lane_intersect_angle = this->getAngleFromOriginToIntersectPoint(lane_intersect_point);
 
     // figure out how fast we should turn
     steering_output.angular.z =
-    pow(intersect_angle, 2.0) * angular_speed_multiplier;
+    pow(lane_intersect_angle, 2.0) * angular_speed_multiplier;
 
     // limit the angular speed if needed
     if (steering_output.angular.z > angular_vel_cap)
@@ -108,7 +124,7 @@ const sensor_msgs::Image::ConstPtr& filteredImage) {
     stay_in_lane_pub.publish(steering_output);
 }
 
-cv::Mat LaneFollow::rosToMat(const sensor_msgs::Image::ConstPtr& image) {
+cv::Mat LaneFollow::rosImageToMat(const sensor_msgs::Image::ConstPtr &image) {
     cv_bridge::CvImagePtr imagePtr;
 
     imagePtr = cv_bridge::toCvCopy(image, image->encoding);
@@ -116,44 +132,69 @@ cv::Mat LaneFollow::rosToMat(const sensor_msgs::Image::ConstPtr& image) {
     return imagePtr->image;
 }
 
-std::vector<std::vector<Point2d>> LaneFollow::transformPoints(
-std::vector<std::vector<cv::Point2d>> filtered_points) {
-    std::vector<std::vector<Point2d>> points;
+void LaneFollow::drawWindows(cv::Mat &filtered_image,
+                 std::vector<std::vector<cv::Point2d>> lane_points,
+                 int window_width,
+                 int vertical_slices) {
+    // make sure we only have two sets of lane points
+    assert(lane_points.size() == 2);
 
-    for (int i = 0; i < filtered_points.size(); i++) {
-        for (int j = 0; j < filtered_points[i].size(); j++) {
-            cv::Point2d point = ipm.applyHomographyInv(filtered_points[i][j]);
+    for (auto &lane_point : lane_points) {
+        for (auto &j : lane_point) {
+            // make sure all lane points are in first quadrant
+            // in the cartesian coordinate frame
+            assert(j.x >= 0 && j.y >= 0);
 
-            // initialize an empty vector at the start of every column
-            if (j == 0) {
-                std::vector<Point2d> set_point;
-                points.push_back(set_point);
-            }
+            cv::Point2d top_left_vertex = {
+                    j.x - window_width + (filtered_image.rows / vertical_slices) / 2,
+                    j.y - window_width + (filtered_image.rows / vertical_slices) / 2};
 
-            points[i].push_back(point);
+            cv::Point2d bottom_right_vertex = {
+                    j.x + window_width - (filtered_image.rows / vertical_slices) / 2,
+                    j.y + window_width - (filtered_image.rows / vertical_slices) / 2};
+
+            cv::rectangle(filtered_image,
+                          top_left_vertex,
+                          bottom_right_vertex,
+                          cv::Scalar(0, 255, 0));
+        }
+    }
+}
+
+std::vector<std::vector<Point2d>>
+LaneFollow::getPerspectiveLanePoints(std::vector<std::vector<cv::Point2d>> filtered_lane_points) {
+    // contains left and right lane points in perspective
+    std::vector<std::vector<Point2d>> perspective_lane_points(
+    filtered_lane_points.size(), std::vector<cv::Point2d>());
+
+    for (int i = 0; i < filtered_lane_points.size(); i++) {
+        for (int j = 0; j < filtered_lane_points[i].size(); j++) {
+            cv::Point2d point = ipm.applyHomographyInv(filtered_lane_points[i][j]);
+
+            perspective_lane_points[i].push_back(point);
         }
     }
 
-    return points;
+    return perspective_lane_points;
 }
 
-double
-LaneFollow::getAngleFromOriginToIntersectPoint(cv::Point2d intersect_point) {
-    double y  = intersect_point.y;
-    double x  = intersect_point.x;
+double LaneFollow::getAngleFromOriginToIntersectPoint(cv::Point2d lane_intersect_point) {
+    double x  = lane_intersect_point.x;
+    double y  = lane_intersect_point.y;
+
     double dx = x - origin_point;
 
-    double intersect_angle = atan(dx / y);
+    double lane_intersect_angle = atan(dx / y);
 
-    return intersect_angle;
+    return lane_intersect_angle;
 }
 
 void LaneFollow::IPMFilter(float ipm_base_width,
-                             float ipm_top_width,
-                             float ipm_base_displacement,
-                             float ipm_top_displacement,
-                             float image_height,
-                             float image_width) {
+                           float ipm_top_width,
+                           float ipm_base_displacement,
+                           float ipm_top_displacement,
+                           float image_height,
+                           float image_width) {
     x1 = image_width / 2 - ipm_base_width / 2 * image_width;
     y1 = (1 - ipm_base_displacement) * image_height;
     x2 = image_width / 2 + ipm_base_width / 2 * image_width;

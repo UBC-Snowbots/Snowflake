@@ -16,8 +16,8 @@ TEST(LineDetect, getHistogramSmallSizeTest) {
 
     LineDetect TestLineDetect;
 
-    intvec test_histogram     = TestLineDetect.getHistogram(test_image);
-    intvec expected_histogram = {0, 1, 0, 0};
+    int_vec test_histogram     = TestLineDetect.getHistogram(test_image);
+    int_vec expected_histogram = {0, 1, 0, 0};
 
     EXPECT_EQ(expected_histogram, test_histogram);
 }
@@ -37,14 +37,14 @@ TEST(LineDetect, getHistogramLargeSizeTest) {
 
     LineDetect TestLineDetect;
 
-    intvec test_histogram     = TestLineDetect.getHistogram(test_image);
-    intvec expected_histogram = {0, 0, 4, 0, 2, 0, 0, 0, 3, 1};
+    int_vec test_histogram     = TestLineDetect.getHistogram(test_image);
+    int_vec expected_histogram = {0, 0, 4, 0, 2, 0, 0, 0, 3, 1};
 
     EXPECT_EQ(expected_histogram, test_histogram);
 }
 
 TEST(LineDetect, getBaseHistogramPeakPositionSmallSizeTest) {
-    intvec test_histogram = {2, 1, 7, 6, 2, 1, 6, 6, 0};
+    int_vec test_histogram = {2, 1, 7, 6, 2, 1, 6, 6, 0};
 
     LineDetect TestLineDetect;
 
@@ -56,7 +56,7 @@ TEST(LineDetect, getBaseHistogramPeakPositionSmallSizeTest) {
 }
 
 TEST(LineDetect, getBaseHistogramPeakPositionLargeSizeTest) {
-    intvec test_histogram = {0, 1, 3, 5, 2, 1, 1, 2, 6, 2, 0, 3};
+    int_vec test_histogram = {0, 1, 3, 5, 2, 1, 1, 2, 6, 2, 0, 3};
 
     LineDetect TestLineDetect;
 
@@ -199,7 +199,7 @@ TEST(LineDetect, fitPolyToLineRightLineCurveStraightTest) {
                 0.00001);
 }
 
-TEST(LineDetect, getIntersectionPointCenterTest) {
+TEST(LineDetect, getLaneIntersectPointCenterTest) {
     std::vector<Polynomial> test_lane_lines;
 
     Polynomial TestLeftLinePolynomial;
@@ -216,15 +216,15 @@ TEST(LineDetect, getIntersectionPointCenterTest) {
 
     LineDetect TestLineDetect;
 
-    cv::Point2d test_intersection_point =
-    TestLineDetect.getIntersectionPoint(test_lane_lines, test_order);
+    cv::Point2d test_intersect_point =
+            TestLineDetect.getLaneIntersectPoint(test_lane_lines, test_order);
 
-    cv::Point2d expected_intersection_point = {4.39143, 8.83210};
+    cv::Point2d expected_intersect_point = {8.83210, -4.39143};
 
     EXPECT_NEAR(
-    expected_intersection_point.x, test_intersection_point.x, 0.00001);
+    expected_intersect_point.x, test_intersect_point.x, 0.00001);
     EXPECT_NEAR(
-    expected_intersection_point.y, test_intersection_point.y, 0.00001);
+    expected_intersect_point.y, test_intersect_point.y, 0.00001);
 }
 
 // lane curving right
@@ -307,7 +307,7 @@ TEST(LineDetect, fitPolyToLineRightLineCurveRightTest) {
                 0.00001);
 }
 
-TEST(LineDetect, getIntersectionPointRightTest) {
+TEST(LineDetect, getLaneIntersectPointRightTest) {
     std::vector<Polynomial> test_lane_lines;
 
     Polynomial TestLeftLanePolynomial;
@@ -324,15 +324,15 @@ TEST(LineDetect, getIntersectionPointRightTest) {
 
     LineDetect TestLineDetect;
 
-    cv::Point2d test_intersection_point =
-    TestLineDetect.getIntersectionPoint(test_lane_lines, test_order);
+    cv::Point2d test_intersect_point =
+            TestLineDetect.getLaneIntersectPoint(test_lane_lines, test_order);
 
-    cv::Point2d expected_intersection_point = {12.55519, 7.89850};
+    cv::Point2d expected_intersect_point = {7.89850, -12.55519};
 
     EXPECT_NEAR(
-    expected_intersection_point.x, test_intersection_point.x, 0.00001);
+    expected_intersect_point.x, test_intersect_point.x, 0.00001);
     EXPECT_NEAR(
-    expected_intersection_point.y, test_intersection_point.y, 0.00001);
+    expected_intersect_point.y, test_intersect_point.y, 0.00001);
 }
 
 // lane curving left in normal perspective view
@@ -427,7 +427,7 @@ TEST(LineDetect, fitPolyToLineRightLineCurveLeftTest) {
                 0.00001);
 }
 
-TEST(LineDetect, getIntersectionPointLeftTest) {
+TEST(LineDetect, getLaneIntersectPointLeftTest) {
     std::vector<Polynomial> test_lane_lines;
 
     Polynomial TestLeftLanePolynomial;
@@ -444,18 +444,18 @@ TEST(LineDetect, getIntersectionPointLeftTest) {
 
     LineDetect TestLineDetect;
 
-    cv::Point2d test_intersection_point =
-    TestLineDetect.getIntersectionPoint(test_lane_lines, test_order);
+    cv::Point2d test_intersect_point =
+            TestLineDetect.getLaneIntersectPoint(test_lane_lines, test_order);
 
-    cv::Point2d expected_intersection_point = {23.22649, 15.58456};
+    cv::Point2d expected_intersect_point = {15.58456, -23.22649};
 
     EXPECT_NEAR(
-    expected_intersection_point.x, test_intersection_point.x, 0.00001);
+    expected_intersect_point.x, test_intersect_point.x, 0.00001);
     EXPECT_NEAR(
-    expected_intersection_point.y, test_intersection_point.y, 0.00001);
+    expected_intersect_point.y, test_intersect_point.y, 0.00001);
 }
 
-TEST(LineDetect, getIntersectionPointNoneTest) {
+TEST(LineDetect, getLaneIntersectPointNoneTest) {
     std::vector<Polynomial> test_lane_lines;
 
     Polynomial TestLeftLanePolynomial;
@@ -471,8 +471,8 @@ TEST(LineDetect, getIntersectionPointNoneTest) {
     LineDetect TestLineDetect;
 
     try {
-        cv::Point2d test_intersection_point =
-        TestLineDetect.getIntersectionPoint(test_lane_lines, test_order);
+        cv::Point2d test_intersect_point =
+                TestLineDetect.getLaneIntersectPoint(test_lane_lines, test_order);
     } catch (std::exception& error) {
         EXPECT_EQ(error.what(),
                   std::string("no lane intersects found - frame discarded"));

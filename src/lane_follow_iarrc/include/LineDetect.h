@@ -22,7 +22,7 @@ struct Polynomial {
 };
 
 // Defines a vector of integer type
-typedef std::vector<int> intvec;
+typedef std::vector<int> int_vec;
 
 // Defines a window slice
 struct Window {
@@ -42,20 +42,20 @@ class LineDetect {
     /**
      * Gets the intersection point of the lane lines
      *
-     * @param_one left and right lane polynomials
-     * @param_two desired order of polynomial
+     * @param_one left and right lane line polynomials
+     * @param_two order of the polynomials
      *
-     * @return intersection point
+     * @return lane intersection point
      */
-    cv::Point2d getIntersectionPoint(std::vector<Polynomial> lane_lines,
-                                     int order);
+    cv::Point2d getLaneIntersectPoint(std::vector<Polynomial> lane_lines,
+                                      int order);
 
     /**
      * Creates lane lines from lane points
      *
      * @param_one left and right lane points
      *
-     * @return left and right lane polynomials
+     * @return left and right lane line polynomials
      *
      */
     std::vector<Polynomial>
@@ -72,7 +72,7 @@ class LineDetect {
     Polynomial fitPolyToLine(std::vector<cv::Point2d> points, int order);
 
     /**
-     * Creates the lane points to model the lane lines
+     * Creates lane points which model lane lines in the filtered image
      *
      * @param_one filtered image
      * @param_two left and right base windows
@@ -80,7 +80,7 @@ class LineDetect {
      * @return left and right lane points
      */
     std::vector<std::vector<cv::Point2d>>
-    getLanePoints(cv::Mat& filtered_image);
+    getLanePoints(cv::Mat &filtered_image);
 
     /**
      * Creates two base windows to cover left and right lanes
@@ -89,18 +89,18 @@ class LineDetect {
      *
      * @return left and right base windows
      */
-    std::vector<Window> getBaseWindows(cv::Mat& filtered_image);
+    std::vector<Window> getBaseWindows(cv::Mat &filtered_image);
 
     /**
      * Creates a histogram of region of interest (ROI)
      *
-     * Stores white pixel density as peaks
+     * Looks for white pixel density
      *
      * @param_one ROI
      *
      * @return histogram
      */
-    intvec getHistogram(cv::Mat& ROI);
+    int_vec getHistogram(cv::Mat &ROI);
 
     /**
      * Finds the base histogram's peak positions
@@ -111,7 +111,7 @@ class LineDetect {
      * @param base histogram
      * @return peak location indices
      */
-    std::pair<int, int> getBaseHistogramPeakPositions(intvec base_histogram);
+    std::pair<int, int> getBaseHistogramPeakPositions(int_vec base_histogram);
 
     /**
      * Creates a window by slicing the left/right base window bottom up
@@ -122,18 +122,18 @@ class LineDetect {
      *
      * @return window slice
      */
-    cv::Mat getWindowSlice(cv::Mat& filtered_image,
+    cv::Mat getWindowSlice(cv::Mat &filtered_image,
                            Window BaseWindow,
                            int vertical_slice_index);
 
     /**
-     * Finds a window's peak position
+     * Finds the peak of a window's histogram
      *
-     * @param_one window histogram
+     * @param_one window's histogram
      *
-     * @return peak location index
+     * @return peak column position
      */
-    int getWindowHistogramPeakPosition(intvec window_histogram);
+    int getWindowHistogramPeakPosition(int_vec window_histogram);
 
     // Exception class to throw when no intersect roots exist
     class NoLaneIntersectException : public std::exception {
@@ -142,19 +142,11 @@ class LineDetect {
         }
     };
 
-    /**
-     * gets degree
-     *
-     * @return degree
-     */
-    int getDegree();
-
-  private:
     // white color value
     int white;
 
     // number of window slices
-    int num_vertical_slices;
+    int vertical_slices;
 
     // lane polynomial degree
     int degree;

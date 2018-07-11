@@ -35,9 +35,9 @@ class LaneFollow {
     /**
      * Callback for the filtered image
      *
-     * @param address of filtered image matrix
+     * @param filtered image
      */
-    void laneFollowCallback(const sensor_msgs::Image::ConstPtr& filteredImage);
+    void laneFollowCallback(const sensor_msgs::Image::ConstPtr &filteredImage);
 
     /**
      * Converts Image to Mat
@@ -46,30 +46,43 @@ class LaneFollow {
      *
      * @return Mat
      */
-    cv::Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
+    cv::Mat rosImageToMat(const sensor_msgs::Image::ConstPtr &image);
 
     /**
-     * Converts filtered lane points to raw lane points
+     * Draws windows
+     *
+     * @param filtered image
+     * @param lane points
+     * @param window width
+     * @param vertical slices
+     *
+     * @return vertical slices
+     */
+    void drawWindows(cv::Mat &filtered_image,
+                     std::vector<std::vector<cv::Point2d>> lane_points,
+                     int window_width,
+                     int vertical_slices);
+
+    /**
+     * Converts filtered lane points to perspective lane points
      *
      * @param left and right filtered lane points
      *
-     * @return left and right raw lane points
+     * @return left and right perspective lane points
      */
     std::vector<std::vector<Point2d>>
-    transformPoints(std::vector<std::vector<cv::Point2d>> filtered_points);
+    getPerspectiveLanePoints(std::vector<std::vector<cv::Point2d>> filtered_lane_points);
 
     /**
-     * Gets intersect angle from origin to intersection point
+     * Gets the angle of the lane intersect point from the origin point
      *
-     * @param intersection point
+     * @param lane intersect point
      *
-     * @return intersect angle
+     * @return lane intersect angle
      */
-    double getAngleFromOriginToIntersectPoint(cv::Point2d intersect_point);
+    double getAngleFromOriginToIntersectPoint(cv::Point2d lane_intersect_point);
 
-    /**
-     * Initializes the corners of the filter
-     */
+    // Initializes the corners of the filter
     void IPMFilter(float ipm_base_width,
                    float ipm_top_width,
                    float ipm_base_displacement,
@@ -96,7 +109,7 @@ class LaneFollow {
     bool receivedFirstImage;
 
     // Angle of destination point to robot
-    double intersect_angle;
+    double lane_intersect_angle;
 
     // Origin of the robot
     int origin_point;

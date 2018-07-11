@@ -10,10 +10,10 @@
 
 using namespace cv;
 
-LineDetect::LineDetect() : white(255), num_vertical_slices(10), degree(3) {}
+LineDetect::LineDetect() : white(255), vertical_slices(10), degree(3) {}
 
-cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
-                                             int order) {
+cv::Point2d LineDetect::getLaneIntersectPoint(std::vector<Polynomial> lane_lines,
+                                              int order) {
     Polynomial LeftLanePolynomial  = lane_lines[0];
     Polynomial RightLanePolynomial = lane_lines[1];
     Polynomial IntersectPolynomial = Polynomial();
@@ -119,10 +119,10 @@ cv::Point2d LineDetect::getIntersectionPoint(std::vector<Polynomial> lane_lines,
     }
 
 create_point:
-    // create a Point2d storing the intersect
-    cv::Point2d intersect_point = {x_intersect, y_intersect};
+    // create a Point2d storing the intersect in the ROS coordinate frame
+    cv::Point2d lane_intersect_point = {y_intersect, -x_intersect};
 
-    return intersect_point;
+    return lane_intersect_point;
 }
 
 std::vector<Polynomial>
@@ -132,7 +132,7 @@ LineDetect::getLaneLines(std::vector<std::vector<cv::Point2d>> lane_points) {
     // contains left and right lane polynomials
     std::vector<Polynomial> lane_lines;
 
-    for (std::vector<cv::Point2d> const& points : lane_points) {
+    for (std::vector<cv::Point2d> const &points : lane_points) {
         poly_line = this->fitPolyToLine(points, degree);
         lane_lines.emplace_back(poly_line);
     }
@@ -177,7 +177,7 @@ Polynomial LineDetect::fitPolyToLine(std::vector<cv::Point2d> points,
 }
 
 std::vector<std::vector<cv::Point2d>>
-LineDetect::getLanePoints(cv::Mat& filtered_image) {
+LineDetect::getLanePoints(cv::Mat &filtered_image) {
     std::vector<Window> base_windows = this->getBaseWindows(filtered_image);
 
     // contains left and right lane points
@@ -185,49 +185,49 @@ LineDetect::getLanePoints(cv::Mat& filtered_image) {
     base_windows.size(), std::vector<cv::Point2d>());
 
     // iterate through window slices bottom up
-    for (int window_slice_index = 0; window_slice_index < num_vertical_slices;
+    for (int window_slice_index = 0; window_slice_index < vertical_slices;
          window_slice_index++) {
         // iterate through base windows left to right
-        for (int window_index = 0; window_index < base_windows.size();
-             window_index++) {
+        for (int lor_window_index = 0; lor_window_index < base_windows.size();
+             lor_window_index++) {
             // obtain the base window
-            Window BaseWindow =
-            base_windows.at(static_cast<unsigned long>(window_index));
+            Window BaseWindow = base_windows.at(
+            static_cast<unsigned long>(lor_window_index));
 
             // obtain the window slice
-            cv::Mat window_slice = this->getWindowSlice(
-            filtered_image, BaseWindow, window_slice_index);
+            cv::Mat window_slice = this->getWindowSlice(filtered_image,
+                                                        BaseWindow,
+                                                        window_slice_index);
 
             // obtain the window histogram
-            intvec window_histogram = this->getHistogram(window_slice);
+            int_vec window_histogram = this->getHistogram(window_slice);
 
             // obtain the window histogram's peak
             int peak = this->getWindowHistogramPeakPosition(window_histogram);
 
-            // set x value of a lane point
+            // adjust the base window's center to align with peak
             BaseWindow.center += peak - window_slice.cols / 2;
 
-            // set y value of a lane point
+            // get y value of a lane point
             int y =
-            (window_slice_index * filtered_image.rows / num_vertical_slices) +
+            (window_slice_index * filtered_image.rows / vertical_slices) +
             window_slice.rows / 2;
 
             // create the lane point
             cv::Point2d point{(double) BaseWindow.center, (double) y};
 
             // and push it back to the lane points vector
-            lane_points[window_index].push_back(point);
+            lane_points[lor_window_index].push_back(point);
         }
     }
 
     return lane_points;
 }
 
-std::vector<Window> LineDetect::getBaseWindows(cv::Mat& filtered_image) {
-    // set width of windows
+std::vector<Window> LineDetect::getBaseWindows(cv::Mat &filtered_image) {
     window_width = filtered_image.cols / 6;
 
-    intvec base_histogram = this->getHistogram(filtered_image);
+    int_vec base_histogram = this->getHistogram(filtered_image);
 
     std::pair<int, int> peaks =
     this->getBaseHistogramPeakPositions(base_histogram);
@@ -244,8 +244,8 @@ std::vector<Window> LineDetect::getBaseWindows(cv::Mat& filtered_image) {
     return base_windows;
 }
 
-intvec LineDetect::getHistogram(cv::Mat& ROI) {
-    intvec histogram(ROI.cols, 0);
+int_vec LineDetect::getHistogram(cv::Mat &ROI) {
+    int_vec histogram(ROI.cols, 0);
 
     // counts number of white pixels in each column
     for (int i = 0; i < ROI.rows; i++) {
@@ -260,7 +260,7 @@ intvec LineDetect::getHistogram(cv::Mat& ROI) {
 }
 
 std::pair<int, int>
-LineDetect::getBaseHistogramPeakPositions(intvec base_histogram) {
+LineDetect::getBaseHistogramPeakPositions(int_vec base_histogram) {
     // contains left and right peaks
     std::pair<int, int> peaks(0, 0);
 
@@ -289,22 +289,22 @@ LineDetect::getBaseHistogramPeakPositions(intvec base_histogram) {
     return peaks;
 }
 
-cv::Mat LineDetect::getWindowSlice(cv::Mat& filtered_image,
+cv::Mat LineDetect::getWindowSlice(cv::Mat &filtered_image,
                                    Window BaseWindow,
                                    int vertical_slice_index) {
     // create window slice
     cv::Mat window_slice = filtered_image(
 
-    Range(vertical_slice_index * filtered_image.rows / num_vertical_slices,
+    Range(vertical_slice_index * filtered_image.rows / vertical_slices,
           (vertical_slice_index + 1) * filtered_image.rows /
-          num_vertical_slices),
+          vertical_slices),
 
     Range(BaseWindow.getLeftSide(), BaseWindow.getRightSide()));
 
     return window_slice;
 }
 
-int LineDetect::getWindowHistogramPeakPosition(intvec window_histogram) {
+int LineDetect::getWindowHistogramPeakPosition(int_vec window_histogram) {
     int peak       = 0;
     int peak_value = 0;
 
@@ -316,8 +316,4 @@ int LineDetect::getWindowHistogramPeakPosition(intvec window_histogram) {
     }
 
     return peak;
-}
-
-int LineDetect::getDegree() {
-    return degree;
 }
