@@ -59,6 +59,12 @@ add_executable(ipm_filter
     include/IPM.h
     )
 
+add_executable(image_merger
+        src/ImageMergerNode.cpp
+        src/image_merger.cpp
+        include/ImageMergerNode.h
+        )
+
 add_executable(camera src/camera_init.cpp)
 
 add_executable(circle_detection
@@ -80,6 +86,11 @@ target_link_libraries(ipm_filter
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
     )
+
+target_link_libraries(image_merger
+        ${catkin_LIBRARIES}
+        ${OpenCV_LIBS}
+        )
 
 target_link_libraries(circle_detection
     ${catkin_LIBRARIES}
