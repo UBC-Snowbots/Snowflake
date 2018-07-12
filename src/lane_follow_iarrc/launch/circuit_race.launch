@@ -13,7 +13,7 @@
         <rosparam param="show_calibration_window"> true </rosparam>
 
         <!-- Input topic -->
-        <remap from="vision/hsv_input_image" to="/usb_cam/image_rect_color"/>
+        <remap from="vision/hsv_input_image" to="/robot/camera1/raw_image"/>
     </node>
 
 
