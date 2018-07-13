@@ -42,8 +42,6 @@ int main(int argc, char** argv) {
             break;
         }
 
-        imshow(inputWindow, inputImage);
-
         sensor_msgs::ImagePtr msg =
         cv_bridge::CvImage(std_msgs::Header(), "bgr8", inputImage).toImageMsg();
 

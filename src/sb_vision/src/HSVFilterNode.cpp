@@ -42,6 +42,15 @@ HSVFilterNode::HSVFilterNode(int argc, char** argv, std::string node_name) {
     SB_getParam(private_nh, "show_image_window", showWindow, true);
     SB_getParam(
     private_nh, "show_calibration_window", isCalibratingManually, false);
+    SB_getParam(
+            private_nh, "image_window_x_pos", image_window_x_pos, 0);
+    SB_getParam(
+            private_nh, "image_window_y_pos", image_window_y_pos, 0);
+    SB_getParam(
+            private_nh, "calibration_window_x_pos", calibration_window_x_pos, 0);
+    SB_getParam(
+            private_nh, "calibration_window_y_pos", calibration_window_y_pos, 0);
+
 
     setUpFilter();
 }
@@ -124,7 +133,11 @@ void HSVFilterNode::setUpFilter() {
 
 void HSVFilterNode::updateFilter() {
     // Color filter calibration
-    if (isCalibratingManually) filter.manualCalibration();
+    if (isCalibratingManually)
+    {
+        filter.manualCalibration();
+        filter.moveWindow(calibration_window_x_pos, calibration_window_y_pos);
+    }
 
     int a = waitKey(20);
     // Press 'm' to calibrate manually, press m again to save
@@ -173,4 +186,5 @@ void HSVFilterNode::showRawAndFilteredImageWindow() {
     resize(filterOutputBGR, image2Roi, sub_window_size);
 
     cv::imshow(displayWindowName, main_image);
+    cv::moveWindow(displayWindowName, image_window_x_pos, image_window_y_pos);
 }

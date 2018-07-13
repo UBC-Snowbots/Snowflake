@@ -63,14 +63,6 @@ private:
      */
     void secondImageCallBack(const sensor_msgs::Image::ConstPtr &image);
 
-
-    /**
-     * Whenever a timer event occurs, the image is updated
-     *
-     * @param event timer based event based on image_update_rate
-     */
-    void updateVisualizerCallback(const ros::TimerEvent& event);
-
     /**
      * Converts ros::sensor_msgs::Image into a cv::Mat
      *
@@ -93,10 +85,6 @@ private:
      */
     image_transport::Publisher merged_pub;
 
-    // Timer Variables
-    ros::Timer timer;
-    float image_update_rate;
-
     // The name and size of the display window
     std::string display_window_name;
 
@@ -109,6 +97,9 @@ private:
     bool received_second_image;
 
     cv::Mat merged_image;
+
+    // Image window variables
+    bool show_window;
 };
 
 #endif

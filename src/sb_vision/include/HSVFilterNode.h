@@ -112,6 +112,8 @@ class HSVFilterNode {
     int image_width, image_height;
     bool showWindow;
     bool isCalibratingManually;
+    int image_window_x_pos, image_window_y_pos;
+    int calibration_window_x_pos, calibration_window_y_pos;
 };
 
 #endif

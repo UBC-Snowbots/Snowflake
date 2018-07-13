@@ -71,6 +71,7 @@ class HSVFilter {
      */
     std::string getValues(void);
 
+    void moveWindow(int x_pos, int y_pos);
   private:
     /**
      * Initializator
@@ -79,4 +80,5 @@ class HSVFilter {
      */
     void createFilter(
     int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, int iHighV);
+
 };

@@ -100,3 +100,7 @@ std::string HSVFilter::getValues(void) {
            << _iLowV << " " << _iHighV << "\n";
     return values.str();
 }
+
+void HSVFilter::moveWindow(int x_pos, int y_pos) {
+    cv::moveWindow(manualCalibrationWindow, x_pos, y_pos);
+}
