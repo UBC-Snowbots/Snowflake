@@ -1,6 +1,6 @@
 /*
  * Created By: Raad Khan
- * Created On: April 23, 2017
+ * Created On: July 1, 2017
  * Description: Takes in an image feed and uses LineDetect to generate
  *              lane lines and a destination point, then broadcasts a
  *              Twist message to stay within the lanes.
@@ -28,10 +28,10 @@ LaneFollow::LaneFollow(int argc, char** argv, std::string node_name) {
 
     uint32_t queue_size = 1;
 
-    SB_getParam(private_nh, "ipm_base_width", ipm_base_width, (float)1);
-    SB_getParam(private_nh, "ipm_top_width", ipm_top_width, (float)0.5);
-    SB_getParam(private_nh, "ipm_base_displacement", ipm_base_displacement, (float)0);
-    SB_getParam(private_nh, "ipm_top_displacement", ipm_top_displacement, (float)0.25);
+    SB_getParam(private_nh, "ipm_base_width", ipm_base_width, (float) 1);
+    SB_getParam(private_nh, "ipm_top_width", ipm_top_width, (float) 0.5);
+    SB_getParam(private_nh, "ipm_base_displacement", ipm_base_displacement, (float) 0);
+    SB_getParam(private_nh, "ipm_top_displacement", ipm_top_displacement, (float) 0.25);
 
     // set up subscriber
     filtered_image_sub = it.subscribe(
@@ -126,9 +126,7 @@ void LaneFollow::laneFollowCallback(const sensor_msgs::Image::ConstPtr &filtered
 
 cv::Mat LaneFollow::rosImageToMat(const sensor_msgs::Image::ConstPtr &image) {
     cv_bridge::CvImagePtr imagePtr;
-
     imagePtr = cv_bridge::toCvCopy(image, image->encoding);
-
     return imagePtr->image;
 }
 

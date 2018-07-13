@@ -1,6 +1,6 @@
 /*
  * Created By: Raad Khan
- * Created On: April 23, 2017
+ * Created On: July 1, 2017
  * Description: Takes in an image feed and uses LineDetect to generate
  *              lane lines and a destination point, then broadcasts a
  *              Twist message to stay within the lanes.
@@ -49,7 +49,7 @@ class LaneFollow {
     cv::Mat rosImageToMat(const sensor_msgs::Image::ConstPtr &image);
 
     /**
-     * Draws windows
+     * Draws windows made by LineDetect
      *
      * @param filtered image
      * @param lane points

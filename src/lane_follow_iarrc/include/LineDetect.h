@@ -2,15 +2,15 @@
  * Created by: Raad Khan
  * Created On: July 1, 2017
  * Description: Detects lane lines and generates destination point.
- * Usage: LaneFollow node instantiates this helper class.
+ * Usage: LaneFollow node uses this as a helper class.
  */
 
 #ifndef LANE_FOLLOW_LINEDETECT_H
 #define LANE_FOLLOW_LINEDETECT_H
 
+#include <opencv2/core.hpp>
 #include <exception>
 #include <iostream>
-#include <opencv2/core.hpp>
 
 using namespace cv;
 
