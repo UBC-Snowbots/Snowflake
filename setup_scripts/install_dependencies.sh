@@ -12,22 +12,24 @@
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "================================================================" 
-echo "Installing ROS Kinetic"
+echo "Installing ROS Melodic"
 echo "================================================================"
 
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 0xB01FA116
+sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
 sudo apt-get update
-sudo apt-get install ros-kinetic-desktop-full
+sudo apt-get install ros-melodic-desktop-full
 
 echo "================================================================"
 echo "Installing other ROS dependencies specified by our packages"
 echo "================================================================"
 
+# Init Rosdep
+sudo rosdep init
 # Update Rosdeps
 rosdep update
 # Install all required dependencies to build this repo
-rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro kinetic --skip-keys=librealsense2 -y 
+rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro melodic --skip-keys=librealsense2 -y 
 
 echo "================================================================"
 echo "Installing other dependencies specified by our packages"

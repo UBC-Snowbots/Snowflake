@@ -47,7 +47,7 @@ fi
 # Copy the new phidgets udev rules to the rule folder
 # From the installation to the udev folder
 # Apt should theoretically do this but it doesn't
-sudo cp /opt/ros/kinetic/share/phidgets_api/udev/99-phidgets.rules $FILE
+sudo cp /opt/ros/melodic/share/phidgets_api/udev/99-phidgets.rules $FILE
 
 echo "================================================================"
 echo "Finished Installing phidgets udev rules"
