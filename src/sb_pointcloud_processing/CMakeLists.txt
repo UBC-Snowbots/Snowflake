@@ -68,15 +68,6 @@ add_executable(line_extractor_node
   include/Regression.h
 )
 
-add_executable(igvc_visualizer 
-  src/igvc_visualizer.cpp 
-  src/IGVCVisualizerNode.cpp
-  src/ColourspaceConverter.cpp
-  include/IGVCVisualizerNode.h
-  include/ColourspaceConverter.h
-  )
-
-
 add_library(sb_pointcloud_processing
     include/rgb_to_hsv.h
     src/rgb_to_hsv.cpp
@@ -105,10 +96,6 @@ target_link_libraries(line_extractor_node
 add_dependencies(line_extractor_node
     ${mapping_igvc_EXPORTED_TARGETS}
 )
-
-target_link_libraries(igvc_visualizer
-    ${catkin_LIBRARIES} 
-    ${sb_utils_LIBRARIES})
 
 install(
     TARGETS
