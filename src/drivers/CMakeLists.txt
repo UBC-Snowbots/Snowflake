@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(drivers)
 
-add_definitions(-std=c++1z)
+# Unfortunately some 3rd party libraries we use aren't support in C++17,
+# so we have to stick with C++14 for now
+add_definitions(-std=c++14)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
