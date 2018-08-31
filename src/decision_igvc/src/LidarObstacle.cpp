@@ -5,7 +5,13 @@
  *              and provides various utilities for working with obstacles
  */
 
+// STD Includes
+#include <numeric>
+#include <math.h>
+
+// Snowbots Includes
 #include <LidarObstacle.h>
+
 
 LidarObstacle::LidarObstacle(){};
 
@@ -80,7 +86,7 @@ distance_t LidarObstacle::getMaxDistance() {
 float LidarObstacle::dangerScore() {
     // angle score increases as an obstacle's angle relative to the robot
     // increases
-    float angle_score = cos(getAvgAngle());
+    float angle_score = std::cos(getAvgAngle());
     // distance score increases as an obstacle's distance relative to the robot
     // increases
     float distance_score = (1 / getMinDistance());
