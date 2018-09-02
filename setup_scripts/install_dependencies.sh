@@ -35,7 +35,7 @@ rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro melodic --
 # official rosdep (https://github.com/ros/rosdistro/pull/19012). 
 # Once that goes through we can (and should) delete this and uncomment
 # the libdlib-dev rosdep in the `sb_geom` `package.xml` file 
-sudo apt-get install libdlib-dev
+sudo apt-get install -y libdlib-dev
 
 echo "================================================================"
 echo "Installing other dependencies specified by our packages"
