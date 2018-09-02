@@ -6,12 +6,11 @@
  */
 
 // STD Includes
-#include <numeric>
 #include <math.h>
+#include <numeric>
 
 // Snowbots Includes
 #include <LidarObstacle.h>
-
 
 LidarObstacle::LidarObstacle(){};
 

@@ -5,8 +5,8 @@
  */
 
 // STD Includes
-#include <numeric>
 #include <cmath>
+#include <numeric>
 #include <stack>
 
 // Snowbots Includes
