@@ -21,15 +21,33 @@ sudo apt-get update -y
 sudo apt-get install ros-melodic-desktop-full -y
 
 echo "================================================================"
+echo "Installing Project Dependent ROS packages."
+echo "================================================================"
+
+# Setup the workspace
+# Setup directory for pulling external pkgs
+# Download packages from merged .rosinstall files
+cd $CURR_DIR/..
+wstool update
+
+echo "================================================================"
 echo "Installing other ROS dependencies specified by our packages"
 echo "================================================================"
+
+cd $CURR_DIR
 
 # Init Rosdep
 sudo rosdep init
 # Update Rosdeps
 rosdep update
 # Install all required dependencies to build this repo
-rosdep install --from-paths $CURR_DIR/../src --ignore-src --rosdistro melodic --skip-keys=librealsense2 -y 
+# (unfortunately this is not recursive, so we have to manually specify a few
+# directories)
+rosdep install --from-paths \
+    $CURR_DIR/../src \
+    $CURR_DIR/../src/external_pkgs \
+    $CURR_DIR/../src/external_pkgs/navigation \
+    --ignore-src --rosdistro melodic --skip-keys=librealsense2 -y 
 
 # We're currently waiting for a PR to go through to add this as an 
 # official rosdep (https://github.com/ros/rosdistro/pull/19012). 
@@ -50,18 +68,6 @@ echo "================================================================"
 sudo apt-get install -y\
     clang-format\
     python-rosinstall
-
-
-echo "================================================================"
-echo "Installing Project Dependent ROS packages."
-echo "================================================================"
-
-# Setup the workspace
-# Setup directory for pulling external pkgs
-# Download packages from merged .rosinstall files
-cd $CURR_DIR/..
-wstool update
-
 
 echo "================================================================"
 echo "Finished Installing Utilities"
