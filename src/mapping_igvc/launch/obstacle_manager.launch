@@ -1,0 +1,104 @@
+<launch>
+
+    <node name="obstacle_manager" pkg="mapping_igvc" type="obstacle_manager_node" output="screen">
+
+        <!--
+            The minimum distance between the center of two cones for them to be
+            considered different from each other (and so not merged)
+        -->
+        <rosparam param="cone_merging_tolerance"> 0.6 </rosparam>
+
+        <!--
+            The minimum distance between two lines for them to be
+            considered different from each other (and so not merged)
+        -->
+        <rosparam param="line_merging_tolerance"> 1.0 </rosparam>
+
+        <!--
+            The buffer to add around each obstacle when generating the occupancy
+            grid for our currently known world
+        -->
+        <rosparam param="obstacle_inflation_buffer"> 2.0 </rosparam>
+
+        <!--
+            Occupied radius around obstacle. This value has to be less
+            than or equal to "obstacle_inflation_buffer".
+        -->
+        <rosparam param="occupied_radius">1.0</rosparam>
+
+        <!--
+            The coefficient for exponential gradient. The bigger this is,
+            the faster it fades away from the obstacle.
+        -->
+        <rosparam param="exp_coefficient">0.15</rosparam>
+
+        <!--
+            The size (length/width) of the cells in occupancy grids this class
+            generates. Raising this number will result in a higher resolution
+            generated occupancy grid, but will make things slower
+        -->
+        <rosparam param="occ_grid_cell_size"> 0.1 </rosparam>
+
+        <!--
+            The maximum number of iterations to use when merging splines
+            larger values will make line merging slower, but more accurate
+        -->
+        <rosparam param="line_merging_max_iters"> 30 </rosparam>
+
+        <!--
+            The maximum number of iterations to use when comparing a new spline
+            to known splines. Larger values will make this more accurate (ie. we are
+            more likely to find the truly closest known spline), but slower
+        -->
+        <rosparam param="closest_line_max_iters"> 15 </rosparam>
+
+        <!--
+            The frame of the generated occupancy grid. Obstacles will be 
+            translated into this frame before being added to the occupancy grid
+        -->
+        <rosparam param="occ_grid_frame"> "map" </rosparam>
+
+        <!--
+            The time to wait after receiving an obstacle if we don't yet 
+            have the information to transform the obstacle
+            (in cases where the obstacle is published before the transforms
+            we need to transform it to the map frame)
+        -->
+        <rosparam param="obstacle_tf_wait"> 0.3 </rosparam>
+
+        <!--
+            How long to save transforms before we delete them (in seconds).
+            If you're getting warnings about "extrapolating into the past",
+            try increasing this value
+        -->
+        <rosparam param="tf_cache_time">  15.0 </rosparam>
+
+        <!--
+            The rate (in hz) to publish the generated occupancy grid at
+        -->
+        <rosparam param="occ_grid_generation_rate"> 10.0 </rosparam>
+
+
+        <!--
+            The radius around us in which to keep obstacles
+            (obstacles outside this radius are pruned)
+        -->
+        <rosparam param="obstacle_pruning_radius"> 50.0 </rosparam>
+
+        <!--
+            The rate (in hz) to publish the debug RViz markers at
+        -->
+        <rosparam param="debug_marker_generation_rate"> 1.0 </rosparam>
+
+        <!--
+            The number of points to sample (per meter) from each line
+            when generating the debug markers
+        -->
+        <rosparam param="line_marker_resolution"> 30 </rosparam>
+
+        <remap from="line_obstacles" to="/line_extractor_node/output_line_obstacle" />
+        <remap from="cone_obstacles" to="/cone_extractor_node/output_cone_obstacle" />
+
+    </node>
+
+</launch>

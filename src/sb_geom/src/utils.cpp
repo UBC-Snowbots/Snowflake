@@ -51,6 +51,7 @@ double sb_geom::minDistanceBetweenSplines(Spline s1,
     return distanceBetweenSplines(minimizing_u, minimizing_t);
 }
 
+// TODO: This breaks for degree 1, make unit test and fix
 std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly) {
     double* coefficients = &poly.coefficients()[0];
 
@@ -59,7 +60,9 @@ std::vector<double> sb_geom::findRealRoots(sb_geom::Polynomial poly) {
     // non-zero, choose the degree to be less then the actual degree of the
     // polnomial so this is the case
     unsigned int degree = poly.getDegree();
-    for (; degree > 0 && coefficients[degree - 1] == 0; degree--) {}
+    while(degree > 0 && coefficients[degree - 1] == 0){
+        degree--;
+    } 
 
     // If the degree is 0, then there are no roots
     if (degree == 0) { return std::vector<double>(); }
@@ -107,8 +110,7 @@ double sb_geom::findClosestPointOnSplineToPoint(Spline spline,
                                                 Point2D point,
                                                 unsigned int max_iter) {
     // Define a function for the distance from the spline to the given point in
-    // terms
-    // of the position on the spline (`u`)
+    // terms of the position on the spline (`u`)
     auto distanceFromPointToSpline = [&](double u) {
         Point2D point_on_spline = spline(u);
         double dx               = point_on_spline.x() - point.x();
@@ -121,8 +123,16 @@ double sb_geom::findClosestPointOnSplineToPoint(Spline spline,
                                             {0}, // lower bound on the search
                                             {1}, // upper bound on the search
                                             dlib::max_function_calls(max_iter));
-
     double minimizing_u = min_result.x(0);
+
+    // Extra check to see if the end points are closer, as the minimization 
+    // function often misses these
+    if (distanceFromPointToSpline(0) < distanceFromPointToSpline(minimizing_u)){
+        minimizing_u = 0;
+    }
+    if (distanceFromPointToSpline(1) < distanceFromPointToSpline(minimizing_u)){
+        minimizing_u = 1;
+    }
 
     return minimizing_u;
 }
@@ -141,9 +151,9 @@ sb_geom::getInterpolationPointsFromPolySegment(PolynomialSegment poly_segment) {
     std::vector<double> roots = findRealRoots(poly_segment.deriv(1));
     std::sort(roots.begin(), roots.end());
     for (double& root : roots) {
-        if (root > poly_segment.x_min() && root < poly_segment.x_max())
-            ;
-        interpolation_points.emplace_back(Point2D(root, poly_segment(root)));
+        if (root > poly_segment.x_min() && root < poly_segment.x_max()) {
+            interpolation_points.emplace_back(Point2D(root, poly_segment(root)));
+        }
     }
 
     // Add the end point of the Polynomial Segment
@@ -157,4 +167,23 @@ double sb_geom::distance(Point2D p1, Point2D p2) {
     double dx = p1.x() - p2.x();
     double dy = p1.y() - p2.y();
     return std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+}
+
+double sb_geom::interiorAngle(Point2D p1, Point2D p2, Point2D p3) {
+    // Treat this as two vectors, v1:(p2 -> p1) and v2:(p2 -> p3)
+    double v1_dx = p1.x() - p2.x();
+    double v1_dy = p1.y() - p2.y();
+    double v2_dx = p3.x() - p2.x();
+    double v2_dy = p3.y() - p2.y();
+
+    double v1_len = std::sqrt(std::pow(v1_dx,2) + std::pow(v1_dy,2));
+    double v2_len = std::sqrt(std::pow(v2_dx,2) + std::pow(v2_dy,2));
+
+    // Take the dot product
+    double dot_product = v1_dx * v2_dx + v1_dy * v2_dy;
+
+    // Take the inner product to find the angle
+    double angle = std::acos(dot_product / (v1_len * v2_len));
+
+    return angle;
 }
