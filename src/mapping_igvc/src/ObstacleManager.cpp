@@ -56,9 +56,6 @@ double ObstacleManager::distanceBetweenCones(mapping_igvc::ConeObstacle cone1, m
 
 void ObstacleManager::addObstacle(mapping_igvc::ConeObstacle cone) {
 
-    // NOTE: This is likely where obstacle pruning (of obstacles a given
-    // distance away from us) would occur
-
     // Find the distance to every known cone from this one
     std::vector<std::pair<double,int>> distances;
     for (int known_cone_index = 0; known_cone_index < cones.size(); known_cone_index++){
@@ -104,9 +101,6 @@ void ObstacleManager::addObstacle(mapping_igvc::LineObstacle line_obstacle) {
 }
 
 void ObstacleManager::addObstacle(Spline spline) {
-
-    // NOTE: This is likely where obstacle pruning (of obstacles a given
-    // distance away from us) would occur
 
     // Find the distance from this line_obstacle to every other known line_obstacle
     // (in parallel)
@@ -356,9 +350,6 @@ void ObstacleManager::inflatePoint(nav_msgs::OccupancyGrid &occ_grid, sb_geom::P
                 int dx = center_cell_x - x ;
                 
                 double distance = std::sqrt(std::pow(dy,2) + std::pow(dx,2));
-                // signed char cell_weight = (int8_t) ( 100.0 * exp(-exp_coefficient * distance) );
-                // double a = 100 / std::pow(distance, 2);
-                // signed char cell_weight = (int8_t) (a * std::pow(distance - inflation_radius_num_of_cells, 2));
                 signed char cell_weight;
                 if ( distance < occupied_radius)
                     cell_weight = 100;
