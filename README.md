@@ -31,7 +31,7 @@ You will be downloading an Ubuntu ISO and multiple ROS packages with their respe
 It is highly recommended that you have access to high speed internet while doing this entire setup; 
 if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 
-1. Install Ubuntu 18.04 (NOTE: To run you should get 18.04, as other Ubuntu Versions will be much more painful to setup with our repo **not** another version) (**Backup your important data first**) (We recommend you use a minimum of 30GB of space) 
+1. Install Ubuntu 18.04 (**Note**: Download 18.04, **not** another version, as other Ubuntu versions will make setting up this repo much more painful) (**Backup your important data first**) (We recommend you use a minimum of 30GB of space) 
     - For dual-booting: [Windows Instructions](https://askubuntu.com/questions/1031993/how-to-install-ubuntu-18-04-alongside-windows-10), [Mac Instructions](https://www.maketecheasier.com/install-dual-boot-ubuntu-mac/)
     - _Note_: You should always choose the "install alongside Windows/OSX" during your installation (step 7 in the windows tutorial)
 2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
