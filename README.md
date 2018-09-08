@@ -32,7 +32,7 @@ It is highly recommended that you have access to high speed internet while doing
 if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 
 1. Install Ubuntu 18.04 (**Note**: Download 18.04, **not** another version, as other Ubuntu versions will make setting up this repo much more painful) (**Backup your important data first**) (We recommend you use a minimum of 30GB of space) 
-    - For dual-booting: [Windows Instructions](https://askubuntu.com/questions/1031993/how-to-install-ubuntu-18-04-alongside-windows-10), [Mac Instructions](https://www.maketecheasier.com/install-dual-boot-ubuntu-mac
+    - For dual-booting: [Windows Instructions](https://askubuntu.com/questions/1031993/how-to-install-ubuntu-18-04-alongside-windows-10), [Mac Instructions](https://www.maketecheasier.com/install-dual-boot-ubuntu-mac)
 2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
 3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students)
     - _JetBrains will send an initial email to confirm the UBC email you inputted, 
