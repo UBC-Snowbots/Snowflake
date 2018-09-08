@@ -4,8 +4,14 @@
  * Description: Tests for LidarDecision and LidarObstacle
  */
 
+// Snowbots Includes
 #include <LidarObstacle.h>
+
+// Library Includes
 #include <gtest/gtest.h>
+
+// STD Includes
+#include <math.h>
 
 class LidarObstacleTest : public testing::Test {
   protected:

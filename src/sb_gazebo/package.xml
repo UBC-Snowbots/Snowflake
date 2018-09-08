@@ -40,8 +40,10 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>gazebo_ros</build_depend>
   <build_depend>tf2_sensor_msgs</build_depend>
+
   <run_depend>gazebo_ros</run_depend>
   <run_depend>tf2_sensor_msgs</run_depend>
   <run_depend>teleop_twist_keyboard</run_depend>

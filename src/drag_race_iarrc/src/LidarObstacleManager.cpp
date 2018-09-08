@@ -4,9 +4,13 @@
  * Description: TODO
  */
 
-#include <LidarObstacleManager.h>
+// STD Includes
 #include <cmath>
+#include <numeric>
 #include <stack>
+
+// Snowbots Includes
+#include <LidarObstacleManager.h>
 
 // TODO: We should probably get rid of the default constructor here.....
 LidarObstacleManager::LidarObstacleManager()

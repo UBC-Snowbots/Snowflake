@@ -366,12 +366,12 @@ TEST(ConeIdentification, twoOverlappingCones) {
                                       ang_threshold);
 
     EXPECT_NEAR(cones[0].radius, 1.0, 0.01);
-    EXPECT_NEAR(cones[0].center.x, 3.0, 0.01);
-    EXPECT_NEAR(cones[0].center.y, -0.5, 0.01);
+    EXPECT_NEAR(cones[0].center.x, 3.0, 0.015);
+    EXPECT_NEAR(cones[0].center.y, -0.5, 0.015);
 
     EXPECT_NEAR(cones[1].radius, 1.0, 0.01);
-    EXPECT_NEAR(cones[1].center.x, 3.0, 0.01);
-    EXPECT_NEAR(cones[1].center.y, 0.5, 0.01);
+    EXPECT_NEAR(cones[1].center.x, 3.0, 0.015);
+    EXPECT_NEAR(cones[1].center.y, 0.5, 0.015);
 }
 
 // Test identifyCones with 3 cones in a cluster (their laserscan points overlap)
@@ -402,7 +402,7 @@ TEST(ConeIdentification, threeOverlappingCones) {
     EXPECT_NEAR(cones[0].center.y, -1.3, 0.03);
 
     EXPECT_NEAR(cones[1].radius, 1.0, 0.01);
-    EXPECT_NEAR(cones[1].center.x, 3.5, 0.03);
+    EXPECT_NEAR(cones[1].center.x, 3.5, 0.05);
     EXPECT_NEAR(cones[1].center.y, 0, 0.03);
 
     EXPECT_NEAR(cones[2].radius, 1.0, 0.01);

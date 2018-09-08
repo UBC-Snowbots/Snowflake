@@ -5,6 +5,11 @@
  *              and provides various utilities for working with obstacles
  */
 
+// STD Includes
+#include <math.h>
+#include <numeric>
+
+// Snowbots Includes
 #include <LidarObstacle.h>
 
 // TODO: min wall length, and determination of whether to merge obstacles and

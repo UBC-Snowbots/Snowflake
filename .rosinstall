@@ -4,13 +4,12 @@
 - git:
     local-name: src/external_pkgs/realsense
     uri: https://github.com/intel-ros/realsense.git
-    version: 2.0.3
 - git:
     local-name: src/external_pkgs/ros_arduino_bridge
     uri: https://github.com/UBC-Snowbots/ros_arduino_bridge.git
 - git:
     local-name: src/external_pkgs/sicktoolbox
-    uri: https://github.com/ros-drivers/sicktoolbox.git
+    uri: https://github.com/UBC-Snowbots/sicktoolbox.git
 - git:
     local-name: src/external_pkgs/sicktoolbox_wrapper
     uri: https://github.com/ros-drivers/sicktoolbox_wrapper.git

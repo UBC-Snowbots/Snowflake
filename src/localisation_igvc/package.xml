@@ -41,7 +41,17 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
+
+  <!-- 
+       TODO
+       `robot_pose_ekf` has not yet been migrated to ROS Melodic, so we
+       manually install it via the `.rosinstall` file (in the 
+       `navigation` repo). Once it's been migrated to Melodic, we should
+       uncomment this to enforce the dependency.
+  -->
+  <!--
   <run_depend>robot_pose_ekf</run_depend>
+  -->
   <run_depend>phidgets_drivers</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>gps_common</run_depend>
