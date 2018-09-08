@@ -31,8 +31,8 @@ You will be downloading an Ubuntu ISO and multiple ROS packages with their respe
 It is highly recommended that you have access to high speed internet while doing this entire setup; 
 if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 
-1. Install Ubuntu 16.04 (**Backup your important data first**) (We recommend you use a minimum of 30GB of space) 
-    - For dual-booting: [Windows Instructions](http://www.tecmint.com/install-ubuntu-16-04-alongside-with-windows-10-or-8-in-dual-boot/), [Mac Instructions](http://www.howtogeek.com/187410/how-to-install-and-dual-boot-linux-on-a-mac/)
+1. Install Ubuntu 18.04 (NOTE: To run you should get 18.04, as other Ubuntu Versions will be much more painful to setup with our repo **not** another version) (**Backup your important data first**) (We recommend you use a minimum of 30GB of space) 
+    - For dual-booting: [Windows Instructions](https://askubuntu.com/questions/1031993/how-to-install-ubuntu-18-04-alongside-windows-10), [Mac Instructions](https://www.maketecheasier.com/install-dual-boot-ubuntu-mac/)
     - _Note_: You should always choose the "install alongside Windows/OSX" during your installation (step 7 in the windows tutorial)
 2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
 3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students)
