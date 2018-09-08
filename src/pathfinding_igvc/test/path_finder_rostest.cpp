@@ -52,7 +52,7 @@ signed char _ = AStar::GRID_FREE;
 signed char X = AStar::GRID_OCCUPIED;
 
 // TODO: Uncomment and fix, see issue #339
-//TEST_F(PathFinderRosTest, TestPathFinder) {
+// TEST_F(PathFinderRosTest, TestPathFinder) {
 //    /* origin of OccupancyGrid */
 //    // initialize origin of occupancy grid
 //    geometry_msgs::Pose origin =
@@ -112,9 +112,8 @@ signed char X = AStar::GRID_OCCUPIED;
 //    }
 //}
 
-
 // TODO: Uncomment and fix, see issue #339
-//TEST_F(PathFinderRosTest, PathFindingWhenGoalNotInGrid) {
+// TEST_F(PathFinderRosTest, PathFindingWhenGoalNotInGrid) {
 //    /* origin of OccupancyGrid */
 //    // initialize origin of occupancy grid
 //    geometry_msgs::Pose origin =

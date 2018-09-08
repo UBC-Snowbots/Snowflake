@@ -9,7 +9,7 @@
 #include <gtest/gtest.h>
 
 // TODO: Uncomment and fix, see issue #339
-//TEST(PathConstructor, TestConstructPath) {
+// TEST(PathConstructor, TestConstructPath) {
 //    /* origin of OccupancyGrid */
 //    // initialize origin of occupancy grid
 //    geometry_msgs::Pose origin =
@@ -45,7 +45,8 @@
 //    tf::Quaternion q1;
 //    tf::quaternionMsgToTF(path.poses[0].pose.orientation, q1);
 //
-//    /* we lose resolution by converting a point into a grid, so allow more error
+//    /* we lose resolution by converting a point into a grid, so allow more
+//    error
 //     */
 //    EXPECT_NEAR(q1.getAngle(), M_PI + M_PI / 6, 0.5);
 //}
