@@ -26,7 +26,7 @@ class PathConstructor {
      * @param occupancy_grid_adapter
      * @return PathConstructor
      */
-    PathConstructor(OccupancyGridAdapter occupancy_grid_adapter);
+    PathConstructor(OccupancyGridAdapter *occupancy_grid_adapter);
 
     /**
      * Takes in a stack of GridPoints and returns a path
