@@ -6,8 +6,8 @@
 
 #include <PathConstructor.h>
 
-PathConstructor::PathConstructor(OccupancyGridAdapter *occupancy_grid_adapter) {
-    this->_occupancy_grid_adapter = occupancy_grid_adapter;
+PathConstructor::PathConstructor(std::shared_ptr<OccupancyGridAdapter> occupancy_grid_adapter_ptr) {
+    this->_occupancy_grid_adapter = occupancy_grid_adapter_ptr;
 }
 
 nav_msgs::Path

@@ -25,8 +25,7 @@
     map_meta_data.origin = origin;
 
     /* OccupancyGridAdapter */
-    OccupancyGridAdapter *occupancy_grid_adapter =
-    new OccupancyGridAdapter(map_meta_data);
+    std::shared_ptr<OccupancyGridAdapter> occupancy_grid_adapter_ptr(new OccupancyGridAdapter(map_meta_data));
 
     /* first point in path*/
     AStar::GridPoint point1(-99 - sqrt(3), -99 - 1);
@@ -39,7 +38,7 @@
     points.push(point1);
     points.push(point2);
 
-    PathConstructor path_constructor(occupancy_grid_adapter);
+    PathConstructor path_constructor(occupancy_grid_adapter_ptr);
     nav_msgs::Path path = path_constructor.constructPath(points);
 
     tf::Quaternion q1;
@@ -49,10 +48,10 @@
     error
      */
     EXPECT_NEAR(q1.getAngle(), M_PI + M_PI / 6, 0.5);
-    EXPECT_FLOAT_EQ(path.poses[0].pose.position.x, occupancy_grid_adapter->convertFromGridToMapPoint(point2).x);
-    EXPECT_FLOAT_EQ(path.poses[0].pose.position.y, occupancy_grid_adapter->convertFromGridToMapPoint(point2).y);
-    EXPECT_FLOAT_EQ(path.poses[1].pose.position.x, occupancy_grid_adapter->convertFromGridToMapPoint(point1).x);
-    EXPECT_FLOAT_EQ(path.poses[1].pose.position.y, occupancy_grid_adapter->convertFromGridToMapPoint(point1).y);
+    EXPECT_FLOAT_EQ(path.poses[0].pose.position.x, occupancy_grid_adapter_ptr->convertFromGridToMapPoint(point2).x);
+    EXPECT_FLOAT_EQ(path.poses[0].pose.position.y, occupancy_grid_adapter_ptr->convertFromGridToMapPoint(point2).y);
+    EXPECT_FLOAT_EQ(path.poses[1].pose.position.x, occupancy_grid_adapter_ptr->convertFromGridToMapPoint(point1).x);
+    EXPECT_FLOAT_EQ(path.poses[1].pose.position.y, occupancy_grid_adapter_ptr->convertFromGridToMapPoint(point1).y);
 }
 
 int main(int argc, char** argv) {
