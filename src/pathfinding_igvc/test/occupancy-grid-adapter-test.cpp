@@ -54,15 +54,12 @@ TEST(OccupancyGridAdapter, TestConvertFromMapToGridPoint) {
 
     /* OccupancyGridAdapter */
     OccupancyGridAdapter adapter = OccupancyGridAdapter(map_meta_data);
-
-    AStar::GridPoint point;
-    point.col = 3;
-    point.row = 2;
+    AStar::GridPoint point(-99, -99);
 
     geometry_msgs::Point map_point = adapter.convertFromGridToMapPoint(point);
 
-    EXPECT_FLOAT_EQ(map_point.x, 3.0 + 3 * 2);
-    EXPECT_FLOAT_EQ(map_point.y, 3.0 + 2 * 2);
+    EXPECT_FLOAT_EQ(map_point.x, 3.0 - 99 * 2);
+    EXPECT_FLOAT_EQ(map_point.y, 3.0 - 99 * 2);
 }
 
 int main(int argc, char** argv) {
