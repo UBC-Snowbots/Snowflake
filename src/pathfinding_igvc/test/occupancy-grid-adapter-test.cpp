@@ -41,7 +41,7 @@ TEST(OccupancyGridAdapter, TestConvertFromMapToGridPoint) {
     /* origin of OccupancyGrid */
     // initialize origin of occupancy grid
     geometry_msgs::Pose origin =
-            PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
 
     /* mapMetaData of OccupancyGrid */
     // initialize mapMetaData
