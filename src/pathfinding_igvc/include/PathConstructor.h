@@ -13,7 +13,7 @@
 #include <OccupancyGridAdapter.h>
 
 class PathConstructor {
-    OccupancyGridAdapter* _occupancy_grid_adapter;
+    std::shared_ptr<OccupancyGridAdapter> _occupancy_grid_adapter;
 
   public:
     /**
@@ -26,7 +26,8 @@ class PathConstructor {
      * @param occupancy_grid_adapter
      * @return PathConstructor
      */
-    PathConstructor(OccupancyGridAdapter occupancy_grid_adapter);
+    PathConstructor(
+    std::shared_ptr<OccupancyGridAdapter> occupancy_grid_adapter_ptr);
 
     /**
      * Takes in a stack of GridPoints and returns a path

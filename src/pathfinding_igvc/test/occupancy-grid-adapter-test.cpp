@@ -37,6 +37,31 @@ TEST(OccupancyGridAdapter, TestIndexOfPointInGrid) {
     EXPECT_EQ(grid_point.row, 0);
 }
 
+TEST(OccupancyGridAdapter, TestConvertFromMapToGridPoint) {
+    /* origin of OccupancyGrid */
+    // initialize origin of occupancy grid
+    geometry_msgs::Pose origin =
+    PathFinderTestUtils::constructPose(3.0, 3.0, 0.0);
+
+    /* mapMetaData of OccupancyGrid */
+    // initialize mapMetaData
+    nav_msgs::MapMetaData map_meta_data;
+    map_meta_data.resolution = 2.0;
+    map_meta_data.width      = 2;
+    map_meta_data.height     = 2;
+    // add origin to mapMetaData
+    map_meta_data.origin = origin;
+
+    /* OccupancyGridAdapter */
+    OccupancyGridAdapter adapter = OccupancyGridAdapter(map_meta_data);
+    AStar::GridPoint point(-99, -99);
+
+    geometry_msgs::Point map_point = adapter.convertFromGridToMapPoint(point);
+
+    EXPECT_FLOAT_EQ(map_point.x, 3.0 - 99 * 2);
+    EXPECT_FLOAT_EQ(map_point.y, 3.0 - 99 * 2);
+}
+
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
