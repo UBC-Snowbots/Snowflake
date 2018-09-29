@@ -146,17 +146,6 @@ bool BallExtractorNode::areParamsInvalid() {
     return this->minNeighbours < 0 || this->radius < 0;
 }
 
-//std::vector<mapping_igvc::LineObstacle>
-//LineExtractorNode::vectorsToMsgs(std::vector<Eigen::VectorXf> vectors) {
-//    std::vector<mapping_igvc::LineObstacle> msgs;
-//
-//    for (unsigned int i = 0; i < vectors.size(); i++) {
-//        msgs.push_back(vectorToLineObstacle(vectors[i], i));
-//    }
-//
-//    return msgs;
-//}
-
 //
 //void LineExtractorNode::getClusterXRange(double& xmin,
 //                                         double& xmax,
