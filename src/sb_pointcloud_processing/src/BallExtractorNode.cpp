@@ -76,26 +76,21 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
     return;
 }
 
-//void LineExtractorNode::extractLines() {
-//    DBSCAN dbscan(this->minNeighbours, this->radius);
-//    this->clusters = dbscan.findClusters(this->pclPtr);
-//
-//    std::vector<Eigen::VectorXf> lines = regression.getLinesOfBestFit(
-//    this->clusters, this->degreePoly, this->lambda);
-//
-//    std::vector<mapping_igvc::LineObstacle> line_obstacles =
-//    vectorsToMsgs(lines);
-//
-//    for (unsigned int i = 0; i < line_obstacles.size(); i++) {
-//        publisher.publish(line_obstacles[i]);
-//    }
-//
-//    visualizeClusters();
-//    visualizeLineObstacles(line_obstacles);
-//
-//    return;
-//}
-//
+void BallExtractorNode::extractBall() {
+    // TODO: initialize dbscan inside findClusters method
+    DBSCAN dbscan(this->minNeighbours, this->radius);
+    this->clusters = dbscan.findClusters(this->pclPtr);
+
+    // TODO: actually calculate the center of ball
+    geometry_msgs::Point center_of_ball;
+
+    this->publisher.publish(center_of_ball);
+
+    visualizeClusters();
+
+    return;
+}
+
 //void LineExtractorNode::visualizeClusters() {
 //    std::vector<geometry_msgs::Point> cluster_points;
 //    std::vector<std_msgs::ColorRGBA> colors;
