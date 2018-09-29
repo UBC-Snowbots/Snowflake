@@ -6,72 +6,53 @@
 
 #include <BallExtractorNode.h>
 
-//LineExtractorNode::LineExtractorNode(int argc,
-//                                     char** argv,
-//                                     std::string node_name) {
-//    ros::init(argc, argv, node_name);
-//    ros::NodeHandle nh;
-//    ros::NodeHandle private_nh("~");
-//
-//    std::string degree_polynomial_param = "degree_polynomial";
-//    int default_degree_polynomial       = 3;
-//    SB_getParam(private_nh,
-//                degree_polynomial_param,
-//                this->degreePoly,
-//                default_degree_polynomial);
-//
-//    std::string lambda_param = "lambda";
-//    float default_lambda     = 0;
-//    SB_getParam(private_nh, lambda_param, this->lambda, default_lambda);
-//
-//    std::string min_neighbours_param = "min_neighbours";
-//    int default_min_neighbours       = 3;
-//    SB_getParam(private_nh,
-//                min_neighbours_param,
-//                this->minNeighbours,
-//                default_min_neighbours);
-//
-//    std::string radius_param = "radius";
-//    float default_radius     = 0.1;
-//    SB_getParam(private_nh, radius_param, this->radius, default_radius);
-//
-//    std::string delta_x_param = "x_delta";
-//    float default_delta_x     = 0.01;
-//    SB_getParam(private_nh, delta_x_param, this->x_delta, default_delta_x);
-//
-//    std::string scale_param = "scale";
-//    float default_scale     = 0.1;
-//    SB_getParam(private_nh, scale_param, this->scale, default_scale);
-//
-//    std::string frame_id_param   = "frame_id";
-//    std::string default_frame_id = "line_extractor_test";
-//    SB_getParam(private_nh, frame_id_param, this->frame_id, default_frame_id);
-//
-//    if (areParamsInvalid()) {
-//        ROS_DEBUG(
-//        "Detected invalid params - make sure all params are positive");
-//        ros::shutdown();
-//    }
-//
-//    std::string topic_to_subscribe_to = "input_pointcloud"; // dummy topic name
-//    int refresh_rate                  = 10;
-//    subscriber                        = nh.subscribe(
-//    topic_to_subscribe_to, refresh_rate, &LineExtractorNode::pclCallBack, this);
-//
-//    std::string topic_to_publish_to =
-//    "output_line_obstacle"; // dummy topic name
-//    uint32_t queue_size = 1;
-//    publisher           = private_nh.advertise<mapping_igvc::LineObstacle>(
-//    topic_to_publish_to, queue_size);
-//
-//    std::string rviz_line_topic = "debug/output_line_obstacle";
-//    rviz_line_publisher = private_nh.advertise<visualization_msgs::Marker>(
-//    rviz_line_topic, queue_size);
-//
-//    std::string rviz_cluster_topic = "debug/clusters";
-//    rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
-//    rviz_cluster_topic, queue_size);
-//}
+BallExtractorNode::BallExtractorNode(int argc,
+                                     char** argv,
+                                     std::string node_name) {
+    ros::init(argc, argv, node_name);
+    ros::NodeHandle nh;
+    ros::NodeHandle private_nh("~");
+
+    std::string min_neighbours_param = "min_neighbours";
+    int default_min_neighbours       = 3;
+    SB_getParam(private_nh,
+                min_neighbours_param,
+                this->minNeighbours,
+                default_min_neighbours);
+
+    std::string radius_param = "radius";
+    float default_radius     = 0.1;
+    SB_getParam(private_nh, radius_param, this->radius, default_radius);
+
+    std::string scale_param = "scale";
+    float default_scale     = 0.1;
+    SB_getParam(private_nh, scale_param, this->scale, default_scale);
+
+    std::string frame_id_param   = "frame_id";
+    std::string default_frame_id = "ball_extractor_test";
+    SB_getParam(private_nh, frame_id_param, this->frame_id, default_frame_id);
+
+    if (areParamsInvalid()) {
+        ROS_DEBUG(
+        "Detected invalid params - make sure all params are positive");
+        ros::shutdown();
+    }
+
+    std::string topic_to_subscribe_to = "input_pointcloud"; // dummy topic name
+    int refresh_rate                  = 10;
+    subscriber                        = nh.subscribe(
+    topic_to_subscribe_to, refresh_rate, &BallExtractorNode::pclCallBack, this);
+
+    std::string topic_to_publish_to =
+    "output_ball_obstacle"; // dummy topic name
+    uint32_t queue_size = 1;
+    publisher           = private_nh.advertise<geometry_msgs::Point>(
+    topic_to_publish_to, queue_size);
+
+    std::string rviz_cluster_topic = "debug/clusters";
+    rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
+    rviz_cluster_topic, queue_size);
+}
 //
 //void LineExtractorNode::pclCallBack(
 //const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
