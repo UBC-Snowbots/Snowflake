@@ -81,8 +81,12 @@ void BallExtractorNode::extractBall() {
     DBSCAN dbscan(this->minNeighbours, this->radius, DBSCAN::YZ);
     this->clusters = dbscan.findClusters(this->pclPtr);
 
+    if (this->clusters.size() < 1) {
+        return;
+    }
+
     // TODO: actually calculate the center of ball
-    geometry_msgs::Point center_of_ball;
+    geometry_msgs::Point center_of_ball = this->getCenterOfCluster(0);
 
     this->publisher.publish(center_of_ball);
 
@@ -144,4 +148,32 @@ std::vector<std_msgs::ColorRGBA>& colors) {
 
 bool BallExtractorNode::areParamsInvalid() {
     return this->minNeighbours < 0 || this->radius < 0;
+}
+
+geometry_msgs::Point BallExtractorNode::getCenterOfCluster(unsigned int cluster_index) {
+    pcl::PointCloud<pcl::PointXYZ> cluster = this->clusters[cluster_index];
+
+    double x_min = -1;
+    double y_min, y_max, z_min, z_max = -1;
+
+    if (cluster.size()) {
+        y_min = y_max = cluster[0].y;
+        z_min = z_max = cluster[0].z;
+        x_min = cluster[0].x;
+    }
+
+    for (auto it = cluster.begin(); it != cluster.end(); it++) {
+        if (it->y < y_min) { y_min = it->y; }
+        if (it->y > y_max) { y_max = it->y; }
+        if (it->z < z_min) { z_min = it->y; }
+        if (it->z > z_max) { z_max = it->y; }
+        if (it->x < x_min) { x_min = it->y; }
+    }
+
+    geometry_msgs::Point center;
+    center.y = (y_min + y_max) / 2;
+    center.z = (z_min + z_max) / 2;
+    center.x = x_min;
+
+    return center;
 }

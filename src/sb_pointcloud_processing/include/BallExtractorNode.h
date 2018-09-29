@@ -96,11 +96,14 @@ class BallExtractorNode {
     void visualizeClusters();
 
     /*
-     * Get the minimum and maximum value of x value of all points in a cluster
+     * Get the center of the cluster
+     * The z value of the center is min and max / 2
+     * The y value of the center is min and max / 2
+     * The x value of the center is the min
      * @cluster_index: the index of cluster of interest in @clusters
      */
-    void
-    getClusterXRange(double& xmin, double& xmax, unsigned int cluster_index);
+    geometry_msgs::Point
+    getCenterOfCluster(unsigned int cluster_index);
 
     /*
      * Checks whether or not all the params we are getting from NodeHandler are
