@@ -4,8 +4,8 @@
  * Description: Header file for Ball Extractor Node
  */
 
-#ifndef LINE_EXTRACTOR_IGVC_NODE_H
-#define LINE_EXTRACTOR_IGVC_NODE_H
+#ifndef BALL_EXTRACTOR_IGVC_NODE_H
+#define BALL_EXTRACTOR_IGVC_NODE_H
 
 #include "DBSCAN.h"
 #include "Regression.h"
@@ -168,4 +168,4 @@ class LineExtractorNode {
     bool areParamsInvalid();
 };
 
-#endif // PROJECT_LINEEXTRACTOR_H
+#endif // PROJECT_BALL_EXTRACTOR_H
