@@ -68,6 +68,15 @@ add_executable(line_extractor_node
   include/Regression.h
 )
 
+add_executable(ball_extractor_node
+  include/BallExtractorNode.h
+  include/DBSCAN.h
+  src/ball_extractor_node.cpp
+  src/BallExtractorNode.cpp
+  src/DBSCAN.cpp
+  )
+
+
 add_library(sb_pointcloud_processing
     include/rgb_to_hsv.h
     src/rgb_to_hsv.cpp
@@ -92,6 +101,12 @@ target_link_libraries(line_extractor_node
     ${PCL_COMMON_LIBRARIES}
     ${PCL_IO_LIBRARIES}
 )
+
+target_link_libraries(ball_extractor_node
+  ${catkin_LIBRARIES}
+  ${PCL_COMMON_LIBRARIES}
+  ${PCL_IO_LIBRARIES}
+  )
 
 add_dependencies(line_extractor_node
     ${mapping_igvc_EXPORTED_TARGETS}
