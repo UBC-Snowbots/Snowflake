@@ -74,7 +74,7 @@ private:
     void setRadius(float new_radius);
 
   private:
-    static double dist(pcl::PointXYZ p1, pcl::PointXYZ p2);
+    double dist(pcl::PointXYZ p1, pcl::PointXYZ p2);
     bool isPointVisited(unsigned int p_index);
     bool isPointExpanded(unsigned int p_index);
 

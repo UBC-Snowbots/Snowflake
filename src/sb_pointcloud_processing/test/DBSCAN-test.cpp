@@ -339,6 +339,96 @@ TEST(DBSCAN, TestClusterTwoPolynomialLinesWithNoise) {
     EXPECT_EQ(LineExtractor::TestUtils::getNumPoints(args), clusters[1].size());
 }
 
+// YZ tests
+
+TEST(DBSCAN, YZClusterTwoNearPoints) {
+    float min_neighbours = 1;
+    float radius         = 5;
+    DBSCAN dbscan(min_neighbours, radius, DBSCAN::YZ);
+
+    pcl::PointCloud<pcl::PointXYZ> pcl;
+
+    //    Test two near points
+    pcl::PointXYZ p1;
+    p1.x = 1;
+    p1.y = 1;
+    p1.z = 1;
+    pcl.push_back(p1);
+
+    pcl::PointXYZ p2;
+    p2.x = 9999;
+    p2.y = 1.1;
+    p2.z = 1.1;
+    pcl.push_back(p2);
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr = pcl.makeShared();
+
+    vector<pcl::PointCloud<pcl::PointXYZ>> clusters =
+            dbscan.findClusters(pcl_ptr);
+    ASSERT_EQ(1, clusters.size());
+    ASSERT_EQ(2, clusters[0].size());
+}
+
+TEST(DBSCAN, YZTestClusterTwoFarPoints) {
+    int min_neighbours = 1;
+    int radius         = 5;
+    DBSCAN dbscan(min_neighbours, radius, DBSCAN::YZ);
+
+    pcl::PointCloud<pcl::PointXYZ> pcl;
+
+    //    Test two far points
+    pcl::PointXYZ p1;
+    p1.x = 1;
+    p1.y = 1;
+    p1.z = 1;
+    pcl.push_back(p1);
+
+    pcl::PointXYZ p3;
+    p3.x = 1;
+    p3.y = 1;
+    p3.z = 10;
+    pcl.push_back(p3);
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr = pcl.makeShared();
+
+    vector<pcl::PointCloud<pcl::PointXYZ>> clusters =
+            dbscan.findClusters(pcl_ptr);
+    EXPECT_EQ(0, clusters.size());
+}
+
+TEST(DBSCAN, YZTestExpandCluster) {
+    int min_neighbours = 2;
+    int radius         = 5;
+    DBSCAN dbscan(min_neighbours, radius, DBSCAN::YZ);
+
+    pcl::PointCloud<pcl::PointXYZ> pcl;
+
+    pcl::PointXYZ p1;
+    p1.x = 1;
+    p1.y = 1;
+    p1.z = 1;
+    pcl.push_back(p1);
+
+    pcl::PointXYZ p2;
+    p2.x = 9999;
+    p2.y = 2;
+    p2.z = 1;
+    pcl.push_back(p2);
+
+    pcl::PointXYZ p3;
+    p3.x = 99999;
+    p3.y = 3;
+    p3.z = 1;
+    pcl.push_back(p3);
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr = pcl.makeShared();
+
+    vector<pcl::PointCloud<pcl::PointXYZ>> clusters =
+            dbscan.findClusters(pcl_ptr);
+    ASSERT_EQ(1, clusters.size());
+    EXPECT_EQ(3, clusters[0].size());
+}
+
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

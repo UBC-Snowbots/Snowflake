@@ -110,9 +110,18 @@ void DBSCAN::findNeighbors() {
 }
 
 double DBSCAN::dist(pcl::PointXYZ p1, pcl::PointXYZ p2) {
-    double dx = abs(p1.x - p2.x);
-    double dy = abs(p1.y - p2.y);
-    return sqrt(pow(dx, 2) + pow(dy, 2));
+    double dx, dy, dz;
+
+    switch(this->_plane) {
+        case DBSCAN::YZ:
+            dy = abs(p1.y - p2.y);
+            dz = abs(p1.z - p2.z);
+            return sqrt(pow(dy, 2) + pow(dz, 2));
+        default:
+            dx = abs(p1.x - p2.x);
+            dy = abs(p1.y - p2.y);
+            return sqrt(pow(dx, 2) + pow(dy, 2));
+    }
 }
 
 bool DBSCAN::isPointVisited(unsigned int p_index) {
