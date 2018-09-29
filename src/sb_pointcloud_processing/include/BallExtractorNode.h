@@ -7,11 +7,9 @@
 #ifndef BALL_EXTRACTOR_IGVC_NODE_H
 #define BALL_EXTRACTOR_IGVC_NODE_H
 
-#include "DBSCAN.h"
-#include "Regression.h"
+#include <DBSCAN.h>
 #include <RvizUtils.h>
 #include <iostream>
-#include <mapping_igvc/LineObstacle.h>
 #include <math.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
