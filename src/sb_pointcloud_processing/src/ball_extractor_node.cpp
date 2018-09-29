@@ -4,14 +4,14 @@
  * Description: Spawns Line Extractor Node
  */
 
-#include <LineExtractorNode.h>
+#include <BallExtractorNode.h>
 
 int main(int argc, char** argv) {
     // Set up ROS node
-    std::string node_name = "line_extractor_node";
+    std::string node_name = "ball_extractor_node";
 
     // Create an instance of the class
-    LineExtractorNode node(argc, argv, node_name);
+    BallExtractorNode node(argc, argv, node_name);
 
     // Start up
     ros::spin();
