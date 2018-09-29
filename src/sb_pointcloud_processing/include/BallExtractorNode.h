@@ -20,17 +20,17 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <string>
 
-class LineExtractorNode {
+class BallExtractorNode {
   public:
     /*
      * @clusters stores the output from DBSCAN
      */
     std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters;
 
-    LineExtractorNode(int argc, char** argv, std::string node_name);
+    BallExtractorNode(int argc, char** argv, std::string node_name);
 
     // main entry function
-    void extractLines();
+    void extractBall();
 
     /*
      * @clusters: input clusters
@@ -49,28 +49,7 @@ class LineExtractorNode {
   private:
     ros::Subscriber subscriber;
     ros::Publisher publisher;
-    ros::Publisher rviz_line_publisher;
     ros::Publisher rviz_cluster_publisher;
-
-    /*
-     * @regression takes in the output from @dbscan and outputs a LineObstacle
-     * for each cluster.
-     * A line has the same index as its corresponding cluster
-     * (line of clusters[i] is lines[i])
-     */
-    Regression regression;
-
-    /*
-     * @degreePoly is a hyperparameter to regression that determines
-     * the degree of polynomial of the line of best fit
-     */
-    int degreePoly;
-
-    /*
-     * @lmabda is a hyperparameter to regression that determines
-     * the strength of regularization
-     */
-    float lambda;
 
     /*
      * @minNeighbours is a hyperparameter to DBSCAN that determines
@@ -85,12 +64,6 @@ class LineExtractorNode {
      * be considered as 'core' points
      */
     float radius;
-
-    /*
-     * @x_delta is the parameter for visualizing LineObstacle. It
-     * determines the x interval between adjacent points in RViz.
-     */
-    float x_delta;
 
     /*
      * scale of the marker points
@@ -116,40 +89,11 @@ class LineExtractorNode {
     void pclCallBack(const sensor_msgs::PointCloud2ConstPtr processed_pcl);
 
     /*
-     * @line_obstacles a list of LineObstacle messages
-     * This function takes in @line_obstacles and publishes a message
-     * to rviz for visualization at "~/debug/output_line_obstacle".
-     */
-    void visualizeLineObstacles(
-    std::vector<mapping_igvc::LineObstacle> line_obstacles);
-
-    /*
      * This function makes a Marker for all points in @clusters
      * with a different color for each cluster and publishes a message
      * to rviz for visualization at "~/debug/clusters".
      */
     void visualizeClusters();
-
-    /*
-     * @line_obstacles: list of line obstacle messages
-     * This function converts each line obstacle into a list of
-     * geometry_msgs:Point and then merges all of them into a single
-     * vector.
-     */
-    std::vector<geometry_msgs::Point> convertLineObstaclesToPoints(
-    std::vector<mapping_igvc::LineObstacle> line_obstacles);
-
-    /*
-     * Convert a list of vectors to a list of LineObstacle message
-     */
-    std::vector<mapping_igvc::LineObstacle>
-    vectorsToMsgs(std::vector<Eigen::VectorXf> vectors);
-
-    /*
-     * Convert a vector to LineObstacle message
-     */
-    mapping_igvc::LineObstacle vectorToLineObstacle(Eigen::VectorXf vector,
-                                                    unsigned int cluster_index);
 
     /*
      * Get the minimum and maximum value of x value of all points in a cluster
