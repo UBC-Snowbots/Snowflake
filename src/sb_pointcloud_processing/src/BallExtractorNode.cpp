@@ -146,26 +146,26 @@ bool BallExtractorNode::areParamsInvalid() {
     return this->minNeighbours < 0 || this->radius < 0;
 }
 
-//
-//void LineExtractorNode::getClusterXRange(double& xmin,
-//                                         double& xmax,
-//                                         unsigned int cluster_index) {
-//    pcl::PointCloud<pcl::PointXYZ> cluster = this->clusters[cluster_index];
-//
-//    double min, max;
-//
-//    if (cluster.size()) {
-//        min = max = cluster[0].x;
-//    } else {
-//        xmin = xmax = -1;
-//        return;
-//    }
-//
-//    for (unsigned int i = 0; i < cluster.size(); i++) {
-//        if (cluster[i].x < min) { min = cluster[i].x; }
-//        if (cluster[i].x > max) { max = cluster[i].x; }
-//    }
-//
-//    xmin = min;
-//    xmax = max;
-//}
+
+void BallExtractorNode::getClusterXRange(double& xmin,
+                                         double& xmax,
+                                         unsigned int cluster_index) {
+    pcl::PointCloud<pcl::PointXYZ> cluster = this->clusters[cluster_index];
+
+    double min, max;
+
+    if (cluster.size()) {
+        min = max = cluster[0].x;
+    } else {
+        xmin = xmax = -1;
+        return;
+    }
+
+    for (unsigned int i = 0; i < cluster.size(); i++) {
+        if (cluster[i].x < min) { min = cluster[i].x; }
+        if (cluster[i].x > max) { max = cluster[i].x; }
+    }
+
+    xmin = min;
+    xmax = max;
+}
