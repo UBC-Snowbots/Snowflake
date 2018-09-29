@@ -142,11 +142,10 @@ std::vector<std_msgs::ColorRGBA>& colors) {
     }
 }
 
-//bool LineExtractorNode::areParamsInvalid() {
-//    return this->degreePoly < 0 || this->lambda < 0 ||
-//           this->minNeighbours < 0 || this->radius < 0;
-//}
-//
+bool BallExtractorNode::areParamsInvalid() {
+    return this->minNeighbours < 0 || this->radius < 0;
+}
+
 //std::vector<mapping_igvc::LineObstacle>
 //LineExtractorNode::vectorsToMsgs(std::vector<Eigen::VectorXf> vectors) {
 //    std::vector<mapping_igvc::LineObstacle> msgs;
