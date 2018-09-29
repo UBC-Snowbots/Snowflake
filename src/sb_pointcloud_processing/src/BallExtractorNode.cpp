@@ -141,58 +141,7 @@ std::vector<std_msgs::ColorRGBA>& colors) {
         }
     }
 }
-//
-//void LineExtractorNode::visualizeLineObstacles(
-//std::vector<mapping_igvc::LineObstacle> line_obstacles) {
-//    std::vector<geometry_msgs::Point> lines_points =
-//    convertLineObstaclesToPoints(line_obstacles);
-//
-//    visualization_msgs::Marker::_color_type color =
-//    snowbots::RvizUtils::createMarkerColor(0.0, 1.0, 1.0, 1.0);
-//    visualization_msgs::Marker::_scale_type scale =
-//    snowbots::RvizUtils::createrMarkerScale(
-//    this->scale, this->scale, this->scale);
-//
-//    std::string ns = "debug";
-//
-//    visualization_msgs::Marker marker =
-//    snowbots::RvizUtils::createMarker(lines_points,
-//                                      color,
-//                                      scale,
-//                                      this->frame_id,
-//                                      ns,
-//                                      visualization_msgs::Marker::POINTS);
-//
-//    rviz_line_publisher.publish(marker);
-//}
-//
-//std::vector<geometry_msgs::Point>
-//LineExtractorNode::convertLineObstaclesToPoints(
-//std::vector<mapping_igvc::LineObstacle> line_obstacles) {
-//    std::vector<geometry_msgs::Point> line_points;
-//    // iterate through all lines
-//    for (unsigned int i = 0; i < line_obstacles.size(); i++) {
-//        mapping_igvc::LineObstacle line_obstacle = line_obstacles[i];
-//
-//        // draw the line as a series of points
-//        for (float x = line_obstacle.x_min; x < line_obstacle.x_max;
-//             x += this->x_delta) {
-//            geometry_msgs::Point p;
-//            p.x = x;
-//
-//            // calculate y with a polynomial function
-//            for (unsigned int i = 0; i < line_obstacle.coefficients.size();
-//                 i++) {
-//                p.y += line_obstacle.coefficients[i] * pow(x, i);
-//            }
-//
-//            line_points.push_back(p);
-//        }
-//    }
-//
-//    return line_points;
-//}
-//
+
 //bool LineExtractorNode::areParamsInvalid() {
 //    return this->degreePoly < 0 || this->lambda < 0 ||
 //           this->minNeighbours < 0 || this->radius < 0;
@@ -208,20 +157,7 @@ std::vector<std_msgs::ColorRGBA>& colors) {
 //
 //    return msgs;
 //}
-//
-//mapping_igvc::LineObstacle
-//LineExtractorNode::vectorToLineObstacle(Eigen::VectorXf v,
-//                                        unsigned int cluster_index) {
-//    mapping_igvc::LineObstacle line_obstacle = mapping_igvc::LineObstacle();
-//
-//    for (unsigned int i = 0; i < v.size(); i++) {
-//        line_obstacle.coefficients.push_back(v(i));
-//    }
-//
-//    getClusterXRange(line_obstacle.x_min, line_obstacle.x_max, cluster_index);
-//
-//    return line_obstacle;
-//}
+
 //
 //void LineExtractorNode::getClusterXRange(double& xmin,
 //                                         double& xmax,
