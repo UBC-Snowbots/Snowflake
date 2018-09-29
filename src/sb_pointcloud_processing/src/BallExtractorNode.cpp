@@ -53,29 +53,29 @@ BallExtractorNode::BallExtractorNode(int argc,
     rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
     rviz_cluster_topic, queue_size);
 }
-//
-//void LineExtractorNode::pclCallBack(
-//const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
-//    pcl::PCLPointCloud2 pcl_pc2;
-//
-//    // convert sensor_msgs::PointCloud2 to pcl::PCLPointCloud2
-//    pcl_conversions::toPCL(*processed_pcl, pcl_pc2);
-//
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr temp_cloud(
-//    new pcl::PointCloud<pcl::PointXYZ>);
-//
-//    // convert pcl::PointCloud2 to pcl::PointCloud<pcl::PointXYZ>
-//    pcl::fromPCLPointCloud2(pcl_pc2, *temp_cloud);
-//
-//    // store converted pointcloud for use
-//    this->pclPtr = temp_cloud;
-//
-//    // extract lines from the pointcloud
-//    extractLines();
-//
-//    return;
-//}
-//
+
+void BallExtractorNode::pclCallBack(
+const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
+    pcl::PCLPointCloud2 pcl_pc2;
+
+    // convert sensor_msgs::PointCloud2 to pcl::PCLPointCloud2
+    pcl_conversions::toPCL(*processed_pcl, pcl_pc2);
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr temp_cloud(
+    new pcl::PointCloud<pcl::PointXYZ>);
+
+    // convert pcl::PointCloud2 to pcl::PointCloud<pcl::PointXYZ>
+    pcl::fromPCLPointCloud2(pcl_pc2, *temp_cloud);
+
+    // store converted pointcloud for use
+    this->pclPtr = temp_cloud;
+
+    // extract ball from the pointcloud
+    extractBall();
+
+    return;
+}
+
 //void LineExtractorNode::extractLines() {
 //    DBSCAN dbscan(this->minNeighbours, this->radius);
 //    this->clusters = dbscan.findClusters(this->pclPtr);
