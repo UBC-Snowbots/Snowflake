@@ -1,0 +1,16 @@
+<launch>
+    <node name="ball_extractor_node" pkg="sb_pointcloud_processing" type="ball_extractor_node" output="screen">
+        <!-- density parameters for DBSCAN -->
+        <param name="min_neighbours" value="60" type="int" />
+        <param name="radius" value="0.05" type="double" />
+
+        <!-- rviz parameters -->
+        <!-- frame id should match the one of "/height_filter/output" -->
+        <param name="frame_id" value="camera_color_optical_frame" />
+        <!-- scale of the points displayed in rviz -->
+        <param name="scale" value="0.01" />
+
+        <!-- subscribe to /height_filter/output for input point cloud -->
+        <remap from="/input_pointcloud" to="/height_filter/output" />
+    </node>
+</launch>
