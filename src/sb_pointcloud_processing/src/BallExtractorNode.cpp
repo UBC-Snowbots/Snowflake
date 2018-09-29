@@ -91,55 +91,56 @@ void BallExtractorNode::extractBall() {
     return;
 }
 
-//void LineExtractorNode::visualizeClusters() {
-//    std::vector<geometry_msgs::Point> cluster_points;
-//    std::vector<std_msgs::ColorRGBA> colors;
-//    convertClustersToPointsWithColors(this->clusters, cluster_points, colors);
-//
-//    visualization_msgs::Marker::_scale_type scale =
-//    snowbots::RvizUtils::createrMarkerScale(
-//    this->scale, this->scale, this->scale);
-//
-//    std::string ns = "debug";
-//
-//    visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
-//    cluster_points, colors, scale, this->frame_id, ns);
-//
-//    rviz_cluster_publisher.publish(marker);
-//}
-//
-//void LineExtractorNode::convertClustersToPointsWithColors(
-//std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
-//std::vector<geometry_msgs::Point>& cluster_points,
-//std::vector<std_msgs::ColorRGBA>& colors) {
-//    std::vector<float> color_library_r = {1.0, 0.0, 0.0};
-//    std::vector<float> color_library_g = {0.0, 0.0, 1.0};
-//    std::vector<float> color_library_b = {0.0, 1.0, 0.0};
-//
-//    for (unsigned int c = 0; c < clusters.size(); c++) {
-//        pcl::PointCloud<pcl::PointXYZ> cluster = clusters[c];
-//
-//        // assign color to this cluster
-//        std_msgs::ColorRGBA color;
-//
-//        color.r = color_library_r[c % color_library_r.size()];
-//        color.g = color_library_g[c % color_library_g.size()];
-//        color.b = color_library_b[c % color_library_b.size()];
-//        color.a = 1.0;
-//
-//        // push all the points in this cluster along with its color
-//        for (unsigned int p = 0; p < cluster.size(); p++) {
-//            pcl::PointXYZ pcl_point = cluster[p];
-//
-//            geometry_msgs::Point msg_point;
-//            msg_point.x = pcl_point.x;
-//            msg_point.y = pcl_point.y;
-//
-//            cluster_points.push_back(msg_point);
-//            colors.push_back(color);
-//        }
-//    }
-//}
+// TODO: duplicate function from LineExtractorNode - refactor this
+void BallExtractorNode::visualizeClusters() {
+    std::vector<geometry_msgs::Point> cluster_points;
+    std::vector<std_msgs::ColorRGBA> colors;
+    convertClustersToPointsWithColors(this->clusters, cluster_points, colors);
+
+    visualization_msgs::Marker::_scale_type scale =
+    snowbots::RvizUtils::createrMarkerScale(
+    this->scale, this->scale, this->scale);
+
+    std::string ns = "debug";
+
+    visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
+    cluster_points, colors, scale, this->frame_id, ns);
+
+    rviz_cluster_publisher.publish(marker);
+}
+
+void BallExtractorNode::convertClustersToPointsWithColors(
+std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
+std::vector<geometry_msgs::Point>& cluster_points,
+std::vector<std_msgs::ColorRGBA>& colors) {
+    std::vector<float> color_library_r = {1.0, 0.0, 0.0};
+    std::vector<float> color_library_g = {0.0, 0.0, 1.0};
+    std::vector<float> color_library_b = {0.0, 1.0, 0.0};
+
+    for (unsigned int c = 0; c < clusters.size(); c++) {
+        pcl::PointCloud<pcl::PointXYZ> cluster = clusters[c];
+
+        // assign color to this cluster
+        std_msgs::ColorRGBA color;
+
+        color.r = color_library_r[c % color_library_r.size()];
+        color.g = color_library_g[c % color_library_g.size()];
+        color.b = color_library_b[c % color_library_b.size()];
+        color.a = 1.0;
+
+        // push all the points in this cluster along with its color
+        for (unsigned int p = 0; p < cluster.size(); p++) {
+            pcl::PointXYZ pcl_point = cluster[p];
+
+            geometry_msgs::Point msg_point;
+            msg_point.x = pcl_point.x;
+            msg_point.y = pcl_point.y;
+
+            cluster_points.push_back(msg_point);
+            colors.push_back(color);
+        }
+    }
+}
 //
 //void LineExtractorNode::visualizeLineObstacles(
 //std::vector<mapping_igvc::LineObstacle> line_obstacles) {
