@@ -112,7 +112,7 @@ void DBSCAN::findNeighbors() {
 double DBSCAN::dist(pcl::PointXYZ p1, pcl::PointXYZ p2) {
     double dx, dy, dz;
 
-    switch(this->_plane) {
+    switch (this->_plane) {
         case DBSCAN::YZ:
             dy = abs(p1.y - p2.y);
             dz = abs(p1.z - p2.z);

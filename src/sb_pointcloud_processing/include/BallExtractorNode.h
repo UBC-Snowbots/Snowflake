@@ -102,8 +102,7 @@ class BallExtractorNode {
      * The x value of the center is the min
      * @cluster_index: the index of cluster of interest in @clusters
      */
-    geometry_msgs::Point
-    getCenterOfCluster(unsigned int cluster_index);
+    geometry_msgs::Point getCenterOfCluster(unsigned int cluster_index);
 
     /*
      * Checks whether or not all the params we are getting from NodeHandler are

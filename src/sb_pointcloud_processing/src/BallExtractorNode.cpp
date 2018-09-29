@@ -46,8 +46,8 @@ BallExtractorNode::BallExtractorNode(int argc,
     std::string topic_to_publish_to =
     "output_ball_obstacle"; // dummy topic name
     uint32_t queue_size = 1;
-    publisher           = private_nh.advertise<geometry_msgs::Point>(
-    topic_to_publish_to, queue_size);
+    publisher =
+    private_nh.advertise<geometry_msgs::Point>(topic_to_publish_to, queue_size);
 
     std::string rviz_cluster_topic = "debug/clusters";
     rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
@@ -81,9 +81,7 @@ void BallExtractorNode::extractBall() {
     DBSCAN dbscan(this->minNeighbours, this->radius, DBSCAN::YZ);
     this->clusters = dbscan.findClusters(this->pclPtr);
 
-    if (this->clusters.size() < 1) {
-        return;
-    }
+    if (this->clusters.size() < 1) { return; }
 
     // TODO: actually calculate the center of ball
     geometry_msgs::Point center_of_ball = this->getCenterOfCluster(0);
@@ -150,7 +148,8 @@ bool BallExtractorNode::areParamsInvalid() {
     return this->minNeighbours < 0 || this->radius < 0;
 }
 
-geometry_msgs::Point BallExtractorNode::getCenterOfCluster(unsigned int cluster_index) {
+geometry_msgs::Point
+BallExtractorNode::getCenterOfCluster(unsigned int cluster_index) {
     pcl::PointCloud<pcl::PointXYZ> cluster = this->clusters[cluster_index];
 
     double x_min = -1;
@@ -159,7 +158,7 @@ geometry_msgs::Point BallExtractorNode::getCenterOfCluster(unsigned int cluster_
     if (cluster.size()) {
         y_min = y_max = cluster[0].y;
         z_min = z_max = cluster[0].z;
-        x_min = cluster[0].x;
+        x_min         = cluster[0].x;
     }
 
     for (auto it = cluster.begin(); it != cluster.end(); it++) {

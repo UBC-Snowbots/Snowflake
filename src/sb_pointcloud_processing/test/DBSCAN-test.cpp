@@ -364,7 +364,7 @@ TEST(DBSCAN, YZClusterTwoNearPoints) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr = pcl.makeShared();
 
     vector<pcl::PointCloud<pcl::PointXYZ>> clusters =
-            dbscan.findClusters(pcl_ptr);
+    dbscan.findClusters(pcl_ptr);
     ASSERT_EQ(1, clusters.size());
     ASSERT_EQ(2, clusters[0].size());
 }
@@ -392,7 +392,7 @@ TEST(DBSCAN, YZTestClusterTwoFarPoints) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr = pcl.makeShared();
 
     vector<pcl::PointCloud<pcl::PointXYZ>> clusters =
-            dbscan.findClusters(pcl_ptr);
+    dbscan.findClusters(pcl_ptr);
     EXPECT_EQ(0, clusters.size());
 }
 
@@ -424,7 +424,7 @@ TEST(DBSCAN, YZTestExpandCluster) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr = pcl.makeShared();
 
     vector<pcl::PointCloud<pcl::PointXYZ>> clusters =
-            dbscan.findClusters(pcl_ptr);
+    dbscan.findClusters(pcl_ptr);
     ASSERT_EQ(1, clusters.size());
     EXPECT_EQ(3, clusters[0].size());
 }
