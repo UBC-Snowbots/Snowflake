@@ -40,6 +40,7 @@ cd $CURR_DIR
 sudo rosdep init
 # Update Rosdeps
 rosdep update
+
 # Install all required dependencies to build this repo
 # (unfortunately this is not recursive, so we have to manually specify a few
 # directories)
