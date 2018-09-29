@@ -16,6 +16,9 @@ using namespace std;
 using namespace std::tr1;
 
 class DBSCAN {
+public:
+    enum Plane { XY, YZ };
+private:
     /*
      * This variable stores the PointCloud input that we want to cluster
      */
@@ -48,15 +51,16 @@ class DBSCAN {
 
     int _min_neighbors = 5;
     float _radius      = 5;
-
     unsigned int _sequential_cut_off = 1000;
+    Plane _plane;
 
   public:
-    /*
+/*
      * Constructor:
      * Takes in minimum number of neighbours and radius as parameters
+     * as well as plane (XY or YZ)
      */
-    DBSCAN(int min_neighbours = 5, float radius = 5);
+    DBSCAN(int min_neighbours = 5, float radius = 5, Plane plane = XY);
 
     /*
      * Main entry function:
