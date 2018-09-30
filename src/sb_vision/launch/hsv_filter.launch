@@ -2,9 +2,6 @@
     
     <!-- Launch our HSV Filter -->
     <node name="hsv_filter" pkg="sb_vision" type="hsv_filter" output="screen">
-
-        <remap from="/robot/vision/raw_image" to="zed/camera/image_raw"/>
-
         <rosparam param="update_frequency"> 5 </rosparam>
         <rosparam param="show_image_window"> true </rosparam>
         <rosparam param="show_calibration_window"> true </rosparam>

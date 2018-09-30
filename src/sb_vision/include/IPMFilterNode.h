@@ -32,13 +32,13 @@
 #include <vector>
 
 // I/O
+#include <cstdio>
 #include <fstream>
 #include <iostream>
-#include <stdio.h>
 
 // Snowbots
-#include <IPMFilter.h>
-#include <sb_utils.h>
+#include "IPMFilter.h"
+#include "sb_utils.h"
 
 using namespace cv;
 
@@ -70,7 +70,7 @@ class IPMFilterNode {
     Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
 
     /**
-     * Subscribes to the raw camera image node
+     * Subscribes to the hsv filter image node
      */
     image_transport::Subscriber image_sub;
 

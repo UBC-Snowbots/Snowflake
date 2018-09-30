@@ -7,7 +7,7 @@
     <node name="camera" pkg="sb_vision" type="camera" output="screen"/>
 
     <!-- Start green light detection -->
-    <include file="$(find vision)/launch/stoplight_detection.launch"/>
+    <include file="$(find sb_vision)/launch/stoplight_detection.launch"/>
 
     <!-- Start the steering driver to control the robot -->
     <include file="$(find drivers)/launch/steering_driver.launch"/> 
@@ -27,7 +27,7 @@
             <rosparam param="min_wall_length"> 0.4 </rosparam>
             <rosparam param="obstacle_ticks_threshold">10</rosparam>
 
-        <!-- Stop zone detection param -->
+        <!-- Stop Zone Detection Params -->
             <rosparam param="collision_distance">3.0</rosparam>
             <rosparam param="front_angle">3.1415</rosparam>
             <rosparam param="side_angle_max">1.57</rosparam>
@@ -35,13 +35,12 @@
             <rosparam param="region_fill_percentage">0.5</rosparam>
             <rosparam param="front_collision_only">true</rosparam>
 
-
         <!-- Line Detection Params -->
             <!-- The maximum distance between cones in the same group
                 (we get one best fit line per group) -->
             <rosparam param="cone_grouping_tolerance"> 1.8 </rosparam>
             <!-- Whether or not we will prioritise lines found to the right
-                (otherwise will proritise lines on the left) -->
+                (otherwise will prioritise lines on the left) -->
             <rosparam param="line_to_the_right"> true </rosparam>
             <!-- The maximum distance from the robot we will look for a line -->
             <rosparam param="max_distance_from_robot"> 2 </rosparam>
@@ -54,7 +53,6 @@
             <rosparam param="theta_scaling_multiplier"> 1.75 </rosparam>
             <rosparam param="angular_vel_cap"> 0.75 </rosparam>
             <rosparam param="linear_vel_cap"> 1 </rosparam>
-            
     </node>
 
 </launch>

@@ -5,17 +5,18 @@
  *
  */
 
-#include <IPMFilterNode.h>
+#include "IPMFilterNode.h"
 
 using namespace cv;
 using namespace cv_bridge;
 
 IPMFilterNode::IPMFilterNode(int argc, char** argv, std::string node_name) {
+
     receivedFirstImage = false;
 
     // Set topics
-    std::string image_topic  = "/vision/hsv_filtered_image";
-    std::string output_topic = "/vision/ipm_filtered_image";
+    std::string image_topic  = "vision/ipm_input_image";
+    std::string output_topic = "vision/ipm_output_image";
 
     // ROS
     ros::init(argc, argv, node_name);
@@ -67,10 +68,19 @@ const sensor_msgs::ImageConstPtr& msg) {
     // Filter the image
     ipmFilter->filterImage(imageInput, IPMFilteredImage);
 
+    // Show the image
+    std::string displayWindowName  = "Snowbots - IPMFilterNode";
+    namedWindow(displayWindowName, CV_WINDOW_AUTOSIZE);
+    imshow(displayWindowName, IPMFilteredImage);
+    moveWindow(displayWindowName, 50, 50);
+    waitKey(100);
+
     // Outputs the image
     sensor_msgs::ImagePtr output_message =
     cv_bridge::CvImage(std_msgs::Header(), "mono8", IPMFilteredImage)
     .toImageMsg();
+
+    std::cout << output_message->height << std::endl;
     ipm_filter_pub.publish(output_message);
 }
 

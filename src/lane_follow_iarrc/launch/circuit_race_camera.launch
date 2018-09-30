@@ -1,0 +1,63 @@
+<launch>
+
+    <!-- Start the camera -->
+    <node name="camera" pkg="sb_vision" type="camera" output="screen"/>
+
+	<!-- Load the camera calibration file -->
+	<rosparam command="load" file="$(find lane_follow_iarrc)/ost.yaml" />
+
+    <!-- Launch both of our HSV Filter -->
+    <node name="white_line_filter" pkg="sb_vision" type="hsv_filter" output="screen">
+        <rosparam param="update_frequency"> 5 </rosparam>
+        
+        <rosparam param="show_image_window"> false </rosparam>
+        <rosparam param="image_window_x_pos"> 0 </rosparam>
+        <rosparam param="image_window_y_pos"> 0 </rosparam>
+        
+        <rosparam param="show_calibration_window"> false </rosparam>
+        <rosparam param="calibration_window_x_pos"> 1500 </rosparam>
+        <rosparam param="calibration_window_y_pos"> 0 </rosparam>
+        
+        <!-- Input topic -->
+        <remap from="vision/hsv_input_image" to="/robot/camera1/raw_image"/>
+        <!-- Output topic --> 
+        <remap from="vision/hsv_output_image" to="vision/white_line_image"/>
+    </node>
+
+    <node name="yellow_line_filter" pkg="sb_vision" type="hsv_filter" output="screen">
+        <rosparam param="update_frequency"> 5 </rosparam>
+        
+        <rosparam param="show_image_window"> false </rosparam>
+        <rosparam param="image_window_x_pos"> 0 </rosparam>
+        <rosparam param="image_window_y_pos"> 480 </rosparam>
+        
+        <rosparam param="show_calibration_window"> false </rosparam>
+        <rosparam param="calibration_window_x_pos"> 1500 </rosparam>
+        <rosparam param="calibration_window_y_pos"> 480 </rosparam>
+        <!-- Input topic -->
+        <remap from="vision/hsv_input_image" to="/robot/camera1/raw_image"/>
+        <!-- Output topic -->
+        <remap from="vision/hsv_output_image" to="vision/yellow_line_image"/>
+    </node>
+
+    <node name="image_merger" pkg="sb_vision" type="image_merger" output="screen">
+        
+        <!-- Input topics -->
+        <remap from="robot/vision/first_image" to="vision/white_line_image"/>
+        <remap from="robot/vision/second_image" to="vision/yellow_line_image"/>
+        <!-- Output topic -->
+        <remap from="vision/merged_image" to="vision/image_merger_output"/>
+
+    </node>    
+    <!-- Launch our IPM Filter -->
+    <node name="ipm_filter" pkg="sb_vision" type="ipm_filter" output="screen">
+        <rosparam param="ipm_base_width"> 1 </rosparam>
+        <rosparam param="ipm_top_width"> 0.5 </rosparam>
+        <rosparam param="ipm_top_displacement"> 0.25 </rosparam>
+        <rosparam param="ipm_base_displacement"> 0 </rosparam>
+
+        <!-- Input topic -->
+        <remap from="vision/ipm_input_image" to="vision/image_merger_output"/>
+    </node>
+
+</launch>

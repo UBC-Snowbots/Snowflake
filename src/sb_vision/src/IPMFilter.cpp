@@ -5,7 +5,7 @@
  *
  */
 
-#include <IPMFilter.h>
+#include "IPMFilter.h"
 
 using namespace cv;
 

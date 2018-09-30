@@ -22,7 +22,7 @@ find_package(sb_utils REQUIRED)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
-# TODO: Wait. Do we need this line if we're not "exporting" the headers from the package
+# TODO: Do we need this line if we're not "exporting" the headers from the package?
 catkin_package(
   INCLUDE_DIRS include
 )
