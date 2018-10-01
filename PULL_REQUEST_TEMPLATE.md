@@ -14,7 +14,7 @@ Closes #_TODO: Issue number here (this automatically closes the issue when this 
 - [ ] **Function comments**: All function definitions (usually in the `.h` file) should have a javadoc style comment at the start of them. For examples, see the classes defined in `src/sample_package`
 - [ ] **Remove all commented out code**
 - [ ] **Remove extra print statements**: for example, those just used for testing
-- [ ] **Resolve all TODO's**: All `TODO` (or similar) statements should either be removed or associated with a github issue
+- [ ] **Resolve all TODO's**: All `TODO` (or similar) statements should either be completed or associated with a github issue
 
 ***Feel free to make additions of things that we should be checking to this file if you think there's something missing!!!!***
 
