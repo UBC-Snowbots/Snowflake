@@ -6,7 +6,7 @@ This file outlines a list of common things that should be addressed when opening
 
 **Description of Change:** _TODO_
 
-**Resolves**: _TODO: Issue number(s) here_ 
+Closes #_TODO: Issue number here (this automatically closes the issue when this PR is merged. To add more issues, just copy and fill out this line!)_
 
 ### Checklist
 *(Please check every item to indicate your code complies with it. This will hopefully save both you and the reviewer(s) a lot of time!)*
