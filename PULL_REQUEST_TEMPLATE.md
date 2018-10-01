@@ -9,7 +9,7 @@ This file outlines a list of common things that should be addressed when opening
 Closes #_TODO: Issue number here (this automatically closes the issue when this PR is merged. To add more issues, just copy and fill out this line!)_
 
 ### Checklist
-*(Please check every item to indicate your code complies with it. This will hopefully save both you and the reviewer(s) a lot of time!)*
+*(Please check every item to indicate your code complies with it (by changing `[ ]`->`[x]`). This will hopefully save both you and the reviewer(s) a lot of time!)*
 - [ ] **Start of document comments**: each `.cpp` and `.h` file should have a comment at the start of it. See files in `src/sample_package` for examples.
 - [ ] **Function comments**: All function definitions (usually in the `.h` file) should have a javadoc style comment at the start of them. For examples, see the classes defined in `src/sample_package`
 - [ ] **Remove all commented out code**
