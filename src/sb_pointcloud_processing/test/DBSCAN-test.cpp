@@ -429,6 +429,80 @@ TEST(DBSCAN, YZTestExpandCluster) {
     EXPECT_EQ(3, clusters[0].size());
 }
 
+TEST(DBSCAN, YZClusterCircle) {
+    int min_neighbours = 60;
+    float radius         = 0.05;
+    DBSCAN dbscan(min_neighbours, radius, DBSCAN::YZ);
+
+    pcl::PointCloud<pcl::PointXYZ> pcl;
+
+    // radius
+    float r = 0.03;
+    float r_pow_2 = pow(r, 2);
+    float x = 5.92;
+    float y_center = 99;
+    float z_center = -50;
+    float y_delta = 0.0005;
+    std::vector<float> ys;
+    std::vector<float> zs;
+
+    for (float y = -r; y <= r; y += y_delta) {
+        float y_pow_2 = pow(y, 2);
+
+        float z1 = sqrt(r_pow_2 - y_pow_2);
+        pcl.push_back(pcl::PointXYZ(x, y + y_center, z1 + z_center));
+        ys.push_back(y + y_center);
+        zs.push_back(z1 + z_center);
+
+        float z2 = -sqrt(r_pow_2 - y_pow_2);
+        pcl.push_back(pcl::PointXYZ(x, y + y_center, z2 + z_center));
+        ys.push_back(y + y_center);
+        zs.push_back(z2 + z_center);
+    }
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr = pcl.makeShared();
+
+    vector<pcl::PointCloud<pcl::PointXYZ>> clusters =
+            dbscan.findClusters(pcl_ptr);
+    ASSERT_EQ(1, clusters.size());
+    EXPECT_EQ(pcl.size(), clusters[0].size());
+
+    pcl::PointCloud<pcl::PointXYZ> cluster = clusters[0];
+
+    struct {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
+        {
+            return a.y < b.y;
+        }
+    } customLessY;
+
+    std::sort(cluster.begin(), cluster.end(), customLessY);
+
+    for (int i = 0; i < cluster.size(); i++) {
+        pcl::PointXYZ p = cluster[i];
+        EXPECT_FLOAT_EQ(p.y, ys[i]);
+    }
+
+    struct {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
+        {
+            return a.z < b.z;
+        }
+    } customLessZ;
+
+    std::sort(cluster.begin(), cluster.end(), customLessZ);
+    std::sort(zs.begin(), zs.end());
+
+    for (int i = 0; i < cluster.size(); i++) {
+        pcl::PointXYZ p = cluster[i];
+        EXPECT_FLOAT_EQ(p.z, zs[i]);
+    }
+
+    for (auto p : cluster) {
+        EXPECT_FLOAT_EQ(p.x, x);
+    }
+}
+
 int main(int argc, char** argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
