@@ -1,7 +1,7 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: January 20, 2018
- * Description: Ros tests for Line Extractor Node
+ * Description: Ros tests for Ball Extractor Node
  */
 
 #include "./TestUtils.h"
@@ -73,7 +73,7 @@ TEST_F(BallExtractorRosTest, TestTwoNonLinearLinesWithNoise) {
         zs.push_back(z2 + z_center);
     }
 
-    // add noise
+    // add noise - should not be part of the tennis ball cluster
     pcl.push_back(pcl::PointXYZ(429, 13843, -9358));
     pcl.push_back(pcl::PointXYZ(48297, -438973, 8794));
 

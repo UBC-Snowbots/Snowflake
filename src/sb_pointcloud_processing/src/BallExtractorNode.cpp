@@ -1,7 +1,7 @@
 /*
  * Created By: Min Gyo Kim
  * Created On: January 20, 2018
- * Description: Node implementation for Line Extractor Node
+ * Description: Node implementation for Ball Extractor Node
  */
 
 #include <BallExtractorNode.h>
