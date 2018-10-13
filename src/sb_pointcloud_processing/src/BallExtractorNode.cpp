@@ -77,13 +77,11 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 }
 
 void BallExtractorNode::extractBall() {
-    // TODO: initialize dbscan inside findClusters method
     DBSCAN dbscan(this->minNeighbours, this->radius, DBSCAN::YZ);
     this->clusters = dbscan.findClusters(this->pclPtr);
 
     if (this->clusters.size() < 1) { return; }
 
-    // TODO: actually calculate the center of ball
     geometry_msgs::Point center_of_ball = this->getCenterOfCluster(0);
 
     this->publisher.publish(center_of_ball);
