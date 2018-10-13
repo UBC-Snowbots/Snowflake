@@ -152,22 +152,34 @@ geometry_msgs::Point
 BallExtractorNode::getCenterOfCluster(unsigned int cluster_index) {
     pcl::PointCloud<pcl::PointXYZ> cluster = this->clusters[cluster_index];
 
-    double x_min = -1;
-    double y_min, y_max, z_min, z_max = -1;
+    struct {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
+        {
+            return a.y < b.y;
+        }
+    } lessY;
 
-    if (cluster.size()) {
-        y_min = y_max = cluster[0].y;
-        z_min = z_max = cluster[0].z;
-        x_min         = cluster[0].x;
-    }
+    float y_min = std::min_element(cluster.begin(), cluster.end(), lessY)->y;
+    float y_max = std::max_element(cluster.begin(), cluster.end(), lessY)->y;
 
-    for (auto it = cluster.begin(); it != cluster.end(); it++) {
-        if (it->y < y_min) { y_min = it->y; }
-        if (it->y > y_max) { y_max = it->y; }
-        if (it->z < z_min) { z_min = it->y; }
-        if (it->z > z_max) { z_max = it->y; }
-        if (it->x < x_min) { x_min = it->y; }
-    }
+    struct {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
+        {
+            return a.z < b.z;
+        }
+    } lessZ;
+
+    float z_min = std::min_element(cluster.begin(), cluster.end(), lessZ)->z;
+    float z_max = std::max_element(cluster.begin(), cluster.end(), lessZ)->z;
+
+    struct {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
+        {
+            return a.x < b.x;
+        }
+    } lessX;
+
+    float x_min = std::min_element(cluster.begin(), cluster.end(), lessX)->x;
 
     geometry_msgs::Point center;
     center.y = (y_min + y_max) / 2;

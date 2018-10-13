@@ -166,6 +166,13 @@ if (CATKIN_ENABLE_TESTING)
       ${mapping_igvc_EXPORTED_TARGETS}
       )
 
+    add_rostest_gtest(ball_extractor_rostest
+      test/ball_extractor_test.test
+      test/ball_extractor_rostest.cpp
+      src/DBSCAN.cpp
+      )
+    target_link_libraries(ball_extractor_rostest ${catkin_LIBRARIES})
+
     add_rostest_gtest(pointcloud_nodelet_filters_rostest test/pointcloud_nodelet_filters.test test/pointcloud_nodelet_filters_rostest.cpp)
     target_link_libraries(pointcloud_nodelet_filters_rostest ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 

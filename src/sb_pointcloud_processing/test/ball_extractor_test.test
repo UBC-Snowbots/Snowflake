@@ -1,0 +1,17 @@
+<!-- A .test file which launches BallExtractor node and its corresponding rostest -->
+<!-- The param values here are specifically for the rostest -->
+
+<launch>
+    <node name="ball_extractor_node" pkg="sb_pointcloud_processing" type="ball_extractor_node">
+        <!-- density parameters for DBSCAN -->
+        <param name="min_neighbours" value="60" type="int" />
+        <param name="radius" value="0.05" type="double" />
+
+        <!-- rviz parameters -->
+        <!-- frame id should match the one of "/height_filter/output" -->
+        <param name="frame_id" value="camera_color_optical_frame" />
+        <!-- scale of the points displayed in rviz -->
+        <param name="scale" value="0.01" />
+    </node>
+    <test test-name="ball_extractor_rostest" pkg="sb_pointcloud_processing" type="ball_extractor_rostest" />
+</launch>
