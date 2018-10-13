@@ -431,18 +431,18 @@ TEST(DBSCAN, YZTestExpandCluster) {
 
 TEST(DBSCAN, YZClusterCircle) {
     int min_neighbours = 60;
-    float radius         = 0.05;
+    float radius       = 0.05;
     DBSCAN dbscan(min_neighbours, radius, DBSCAN::YZ);
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
     // radius
-    float r = 0.03;
-    float r_pow_2 = pow(r, 2);
-    float x = 5.92;
+    float r        = 0.03;
+    float r_pow_2  = pow(r, 2);
+    float x        = 5.92;
     float y_center = 99;
     float z_center = -50;
-    float y_delta = 0.0005;
+    float y_delta  = 0.0005;
     std::vector<float> ys;
     std::vector<float> zs;
 
@@ -463,15 +463,14 @@ TEST(DBSCAN, YZClusterCircle) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr = pcl.makeShared();
 
     vector<pcl::PointCloud<pcl::PointXYZ>> clusters =
-            dbscan.findClusters(pcl_ptr);
+    dbscan.findClusters(pcl_ptr);
     ASSERT_EQ(1, clusters.size());
     EXPECT_EQ(pcl.size(), clusters[0].size());
 
     pcl::PointCloud<pcl::PointXYZ> cluster = clusters[0];
 
     struct {
-        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
-        {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const {
             return a.y < b.y;
         }
     } customLessY;
@@ -484,8 +483,7 @@ TEST(DBSCAN, YZClusterCircle) {
     }
 
     struct {
-        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
-        {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const {
             return a.z < b.z;
         }
     } customLessZ;
@@ -498,9 +496,7 @@ TEST(DBSCAN, YZClusterCircle) {
         EXPECT_FLOAT_EQ(p.z, zs[i]);
     }
 
-    for (auto p : cluster) {
-        EXPECT_FLOAT_EQ(p.x, x);
-    }
+    for (auto p : cluster) { EXPECT_FLOAT_EQ(p.x, x); }
 }
 
 int main(int argc, char** argv) {

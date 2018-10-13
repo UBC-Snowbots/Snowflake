@@ -153,8 +153,7 @@ BallExtractorNode::getCenterOfCluster(unsigned int cluster_index) {
     pcl::PointCloud<pcl::PointXYZ> cluster = this->clusters[cluster_index];
 
     struct {
-        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
-        {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const {
             return a.y < b.y;
         }
     } lessY;
@@ -163,8 +162,7 @@ BallExtractorNode::getCenterOfCluster(unsigned int cluster_index) {
     float y_max = std::max_element(cluster.begin(), cluster.end(), lessY)->y;
 
     struct {
-        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
-        {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const {
             return a.z < b.z;
         }
     } lessZ;
@@ -173,8 +171,7 @@ BallExtractorNode::getCenterOfCluster(unsigned int cluster_index) {
     float z_max = std::max_element(cluster.begin(), cluster.end(), lessZ)->z;
 
     struct {
-        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const
-        {
+        bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const {
             return a.x < b.x;
         }
     } lessX;

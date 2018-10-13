@@ -5,10 +5,10 @@
  */
 
 #include "./TestUtils.h"
+#include <geometry_msgs/Point.h>
 #include <gtest/gtest.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <std_msgs/Float32.h>
-#include <geometry_msgs/Point.h>
 
 /**
  * This is the helper class which will publish and subscribe messages which will
@@ -43,21 +43,19 @@ class BallExtractorRosTest : public testing::Test {
     ros::Subscriber test_subscriber;
 
   public:
-    void callback(const geometry_msgs::Point& ball) {
-        ballObstacle = ball;
-    }
+    void callback(const geometry_msgs::Point& ball) { ballObstacle = ball; }
 };
 
-TEST_F(BallExtractorRosTest, TestTwoNonLinearLinesWithNoise) {\
+TEST_F(BallExtractorRosTest, TestTwoNonLinearLinesWithNoise) {
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
     // radius
-    float r = 0.03;
-    float r_pow_2 = pow(r, 2);
-    float x = 5.92;
+    float r        = 0.03;
+    float r_pow_2  = pow(r, 2);
+    float x        = 5.92;
     float y_center = 99;
     float z_center = -50;
-    float y_delta = 0.0005;
+    float y_delta  = 0.0005;
     std::vector<float> ys;
     std::vector<float> zs;
 
@@ -96,11 +94,11 @@ TEST_F(BallExtractorRosTest, TestTwoNonLinearLinesWithNoise) {\
     EXPECT_FLOAT_EQ(x, ballObstacle.x);
     float y_min = *std::min_element(ys.begin(), ys.end());
     float y_max = *std::max_element(ys.begin(), ys.end());
-    EXPECT_FLOAT_EQ((y_min + y_max)/2, ballObstacle.y);
+    EXPECT_FLOAT_EQ((y_min + y_max) / 2, ballObstacle.y);
 
     float z_min = *std::min_element(zs.begin(), zs.end());
     float z_max = *std::max_element(zs.begin(), zs.end());
-    EXPECT_FLOAT_EQ((z_min + z_max)/2, ballObstacle.z);
+    EXPECT_FLOAT_EQ((z_min + z_max) / 2, ballObstacle.z);
 }
 
 int main(int argc, char** argv) {
