@@ -2,9 +2,12 @@
  * Created By: Min Gyo Kim
  * Created On: September 29, 2018
  * Description: Header file for Ball Extractor Node
- *  This node subscribes to a point cloud topic and expects the topic to contain a point cloud
- *  that is filtered to contain roughly only the points that represent the tennis ball.
- *  Then the node performs DBSCAN on the Y-Z plane, and calculates a rough estimate of the
+ *  This node subscribes to a point cloud topic and expects the topic to contain
+ * a point cloud
+ *  that is filtered to contain roughly only the points that represent the
+ * tennis ball.
+ *  Then the node performs DBSCAN on the Y-Z plane, and calculates a rough
+ * estimate of the
  *  center of the tennis ball, and publishes the point.
  */
 
