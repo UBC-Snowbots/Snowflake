@@ -19,4 +19,7 @@
 - git: 
     local-name: src/external_pkgs/navigation
     uri: 'https://github.com/UBC-Snowbots/navigation.git'
+- git: 
+    local-name: src/mapping_urc/multi_resolution_graph
+    uri: 'https://github.com/garethellis0/multi_resolution_graph.git'
 
