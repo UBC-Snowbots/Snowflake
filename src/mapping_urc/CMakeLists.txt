@@ -34,13 +34,13 @@ include_directories(
 )
 
 ## Declare a C++ executable
-# TODO
+# TODO: Issue #348
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-# TODO
+# TODO: Issue #348
 
 #############
 ## Testing ##
@@ -48,9 +48,9 @@ include_directories(
 
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
-    #TODO: gTest
+    #TODO: gTest (Issue #348)
 
-    #TODO: rosTest
+    #TODO: rosTest (Issue #348)
 
 endif()
 
