@@ -3,6 +3,8 @@ UBC Snowbots Repository for competitions.
 
 ![alt tag](https://travis-ci.org/UBC-Snowbots/Snowflake.svg?branch=core)
 
+DO NOT MERGE ME
+
 ## Table of Contents
 - [Installation and Setup](#installation-and-setup)
   - [Important Notes](#important-notes)
