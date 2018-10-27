@@ -4,6 +4,7 @@
 - git:
     local-name: src/external_pkgs/realsense
     uri: https://github.com/intel-ros/realsense.git
+    version: 2.16.1
 - git:
     local-name: src/external_pkgs/ros_arduino_bridge
     uri: https://github.com/UBC-Snowbots/ros_arduino_bridge.git
