@@ -64,6 +64,10 @@ sudo apt-get install -y\
     clang-format\
     python-rosinstall
 
+sudo apt-get install libtmglib3
+sudo apt-get install libtmglib-dev
+sudo apt-get install libtm-perl
+
 echo "================================================================"
 echo "Finished Installing Utilities"
 echo "================================================================"
