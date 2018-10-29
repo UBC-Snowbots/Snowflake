@@ -9,7 +9,6 @@
   <license>TODO</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <buildtool_depend>libalglib-dev</buildtool_depend>
 
   <build_depend>roscpp</build_depend>
   <build_depend>message_generation</build_depend>
