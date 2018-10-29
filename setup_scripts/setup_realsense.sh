@@ -14,7 +14,7 @@ sudo rm -f /etc/apt/sources.list.d/realsense-public.list
 
 sudo apt-get update -y
 
-# TODO: We can (and SHOULD) switch back to using the below line once 
+# TODO (#359): We can (and SHOULD) switch back to using the below line once 
 # the ros realsense packages are updated to work with librealsense2 2.16.2
 # see https://github.com/intel-ros/realsense/issues/502 for updates.
 # (Right now we just peg the version to 2.16.1)
