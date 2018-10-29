@@ -20,11 +20,11 @@ sudo apt-get update -y
 # (Right now we just peg the version to 2.16.1)
 # sudo apt-get install -y librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg 
 version="2.16.1-0~realsense0.51"
-sudo apt-get install librealsense2-dkms
-sudo apt install librealsense2=${version}
-sudo apt-get install librealsense2-utils=${version}  
-sudo apt-get install librealsense2-dev=${version}
-sudo apt-get install librealsense2-dbg=${version}
+sudo apt-get install librealsense2-dkms -y
+sudo apt install librealsense2=${version} -y
+sudo apt-get install librealsense2-utils=${version} -y
+sudo apt-get install librealsense2-dev=${version} -y
+sudo apt-get install librealsense2-dbg=${version} -y
 
 echo "================================================================"
 echo "Finished configuring realsense. "
