@@ -29,7 +29,11 @@ find_path (ALGLIB_INCLUDE_DIRS
     /usr/include/libalglib/
     )
 
+
 find_library (ALGLIB_LIBRARIES NAMES alglib)
+
+message(INFO " ALGLIB_INCLUDE_DIRS: " ${ALGLIB_INCLUDE_DIRS})
+message(INFO " ALGLIB_LIBRARIES: " ${ALGLIB_LIBRARIES})
 
 # handle the QUIETLY and REQUIRED arguments and set ALGLIB_FOUND to TRUE if
 # all listed variables are TRUE
