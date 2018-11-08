@@ -9,6 +9,8 @@
 
 // Messages
 #include <geometry_msgs/Point.h>
+#include <geometry_msgs/Polygon.h>
+
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 
@@ -73,6 +75,24 @@ class RvizUtils {
                  int type = visualization_msgs::Marker::POINTS,
                  int id   = 0);
 
+    /**
+     *  Turn a polygon into a marker for rviz
+     *
+     *  @param polygon the polygon to be converted
+     *  @param color the color of the point
+     *  @param frame_id the frame id
+     *  @param ns the namespace
+     *
+     *  @return an rviz marker
+     */
+    static visualization_msgs::Marker
+    createPolygonMarker(geometry_msgs::Polygon polygon,
+                visualization_msgs::Marker::_color_type color,
+                visualization_msgs::Marker::_scale_type scale,
+                std::string frame_id,
+                std::string ns,
+                int type = visualization_msgs::Marker::LINE_STRIP,
+                int id   = 1);
     /**
      * Creates a Marker Array (array of Markers)
      *

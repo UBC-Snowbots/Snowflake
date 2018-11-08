@@ -81,6 +81,13 @@ target_link_libraries(sb_pointcloud_processing
     ${PCL_LIBRARIES}
 )
 
+add_executable(risk_analysis
+        src/risk_analysis.cpp
+        src/RiskAnalysisNode.cpp
+        src/RiskAnalysis.cpp
+        include/RiskAnalysis.h
+        include/RiskAnalysisNode.h
+        )
 add_executable(test_pcl_generator_node
   src/test_pcl_generator_node.cpp
   test/TestUtils.h
@@ -96,6 +103,12 @@ target_link_libraries(line_extractor_node
 add_dependencies(line_extractor_node
     ${mapping_igvc_EXPORTED_TARGETS}
 )
+
+target_link_libraries(risk_analysis
+        ${catkin_LIBRARIES}
+        ${PCL_COMMON_LIBRARIES}
+        ${PCL_IO_LIBRARIES}
+        )
 
 install(
     TARGETS
