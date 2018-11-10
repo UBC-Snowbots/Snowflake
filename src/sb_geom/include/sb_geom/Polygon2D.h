@@ -46,7 +46,7 @@ class Polygon2D {
      /**
       * Gets the points making up the boundary of this Polygon
       */
-      std::vector<Point2D> getBoundryPoints() { return this->boundary_points; }
+      std::vector<Point2D> getBoundaryPoints() { return this->boundary_points; }
 
   private:
     // The points that make up the boundary of this area
@@ -55,6 +55,6 @@ class Polygon2D {
 };
 
 inline bool operator==(Polygon2D poly1, Polygon2D poly2) {
-    return poly1.getBoundryPoints() == poly2.getBoundryPoints();
+    return poly1.getBoundaryPoints() == poly2.getBoundaryPoints();
 }
 }
