@@ -57,6 +57,7 @@ class BallExtractorNode {
     ros::Subscriber subscriber;
     ros::Publisher publisher;
     ros::Publisher rviz_cluster_publisher;
+    ros::Publisher rviz_ball_publisher;
 
     /*
      * @minNeighbours is a hyperparameter to DBSCAN that determines
@@ -101,6 +102,12 @@ class BallExtractorNode {
      * to rviz for visualization at "~/debug/clusters".
      */
     void visualizeClusters();
+
+    /*
+     * This function makes a Marker for the given geometry_msgs::Point
+     * and publishes it to rviz for visualization at "~/debug/ball".
+     */
+    void visualizeBall(geometry_msgs::Point ball);
 
     /*
      * Get the center of the cluster

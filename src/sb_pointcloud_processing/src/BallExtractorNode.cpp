@@ -52,6 +52,10 @@ BallExtractorNode::BallExtractorNode(int argc,
     std::string rviz_cluster_topic = "debug/clusters";
     rviz_cluster_publisher = private_nh.advertise<visualization_msgs::Marker>(
     rviz_cluster_topic, queue_size);
+
+    std::string rviz_ball_topic = "debug/ball";
+    rviz_ball_publisher = private_nh.advertise<visualization_msgs::Marker>(
+            rviz_ball_topic, queue_size);
 }
 
 void BallExtractorNode::pclCallBack(
@@ -86,8 +90,35 @@ void BallExtractorNode::extractBall() {
     this->publisher.publish(center_of_ball);
 
     visualizeClusters();
+    visualizeBall(center_of_ball);
 
     return;
+}
+
+void BallExtractorNode::visualizeBall(geometry_msgs::Point ball) {
+    std_msgs::ColorRGBA color;
+    color.a = 1;
+    color.r = 0;
+    color.b = 1;
+    color.g = 1;
+
+    std::vector<std_msgs::ColorRGBA> colors = { color };
+
+    visualization_msgs::Marker::_scale_type scale =
+            snowbots::RvizUtils::createrMarkerScale(
+                    this->scale, this->scale, this->scale);
+
+    std::string ns = "debug";
+
+    visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
+            ball,
+            colors,
+            scale,
+            this->frame_id,
+            ns
+    );
+
+    rviz_ball_publisher.publish(marker);
 }
 
 // TODO: duplicate function from LineExtractorNode - refactor this
