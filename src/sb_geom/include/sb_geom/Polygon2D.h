@@ -1,3 +1,9 @@
+/*
+ * Created By: Gareth Ellis
+ * Created On:  Nov. 11th, 2018
+ * Description: A class representing a 2D Polygon
+ */
+
 #pragma once
 
 // Snowbots Includes
