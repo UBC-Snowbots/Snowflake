@@ -11,7 +11,6 @@
 TEST(DBSCAN, ClusterTwoNearPoints) {
     float min_neighbours = 1;
     float radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -37,7 +36,6 @@ TEST(DBSCAN, ClusterTwoNearPoints) {
 TEST(DBSCAN, TestClusterTwoFarPoints) {
     int min_neighbours = 1;
     int radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -62,7 +60,6 @@ TEST(DBSCAN, TestClusterTwoFarPoints) {
 TEST(DBSCAN, TestExpandCluster) {
     int min_neighbours = 2;
     int radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -92,7 +89,6 @@ TEST(DBSCAN, TestExpandCluster) {
 TEST(DBSCAN, TestClusterTwoShortHorizontalLines) {
     int min_neighbours = 2;
     int radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -122,7 +118,6 @@ TEST(DBSCAN, TestClusterTwoShortHorizontalLines) {
 TEST(DBSCAN, TestClusterTwoSlopedLines) {
     int min_neighbours = 2;
     int radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -152,7 +147,6 @@ TEST(DBSCAN, TestClusterTwoSlopedLines) {
 TEST(DBSCAN, TestClusterTwoSlopedLinesWithOutliers) {
     int min_neighbours = 2;
     int radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -186,7 +180,6 @@ TEST(DBSCAN, TestClusterTwoSlopedLinesWithOutliers) {
 TEST(DBSCAN, TestClusterTwoLongHorizontalLines) {
     int min_neighbours = 1;
     int radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -216,7 +209,6 @@ TEST(DBSCAN, TestClusterTwoLongHorizontalLines) {
 TEST(DBSCAN, TestClusterBorder) {
     int min_neighbours = 1;
     int radius         = 6;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -246,7 +238,6 @@ TEST(DBSCAN, TestClusterBorder) {
 TEST(DBSCAN, TestClusterTwoPolynomialLines) {
     int min_neighbours = 1;
     int radius         = 3;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -276,7 +267,6 @@ TEST(DBSCAN, TestClusterTwoPolynomialLines) {
 TEST(DBSCAN, TestClusterOnePolynomialLinesWithNoise) {
     int min_neighbours = 1;
     int radius         = 80;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -312,7 +302,6 @@ TEST(DBSCAN, TestClusterOnePolynomialLinesWithNoise) {
 TEST(DBSCAN, TestClusterTwoPolynomialLinesWithNoise) {
     int min_neighbours = 1;
     int radius         = 80;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -344,7 +333,6 @@ TEST(DBSCAN, TestClusterTwoPolynomialLinesWithNoise) {
 TEST(DBSCAN, YZClusterTwoNearPoints) {
     float min_neighbours = 1;
     float radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -372,7 +360,6 @@ TEST(DBSCAN, YZClusterTwoNearPoints) {
 TEST(DBSCAN, YZTestClusterTwoFarPoints) {
     int min_neighbours = 1;
     int radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -399,7 +386,6 @@ TEST(DBSCAN, YZTestClusterTwoFarPoints) {
 TEST(DBSCAN, YZTestExpandCluster) {
     int min_neighbours = 2;
     int radius         = 5;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 
@@ -432,7 +418,6 @@ TEST(DBSCAN, YZTestExpandCluster) {
 TEST(DBSCAN, YZClusterCircle) {
     int min_neighbours = 60;
     float radius       = 0.05;
-    
 
     pcl::PointCloud<pcl::PointXYZ> pcl;
 

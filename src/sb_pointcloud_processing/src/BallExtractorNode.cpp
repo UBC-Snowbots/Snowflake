@@ -61,9 +61,9 @@ BallExtractorNode::BallExtractorNode(int argc,
 void BallExtractorNode::pclCallBack(
 const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
     if (this->_execution_count == 0) {
-        std::cout << this->_execution_count << ": " << ros::Time::now().toNSec() << endl;
+        std::cout << this->_execution_count << ": " << ros::Time::now().toNSec()
+                  << endl;
     }
-
 
     pcl::PCLPointCloud2 pcl_pc2;
 
@@ -81,9 +81,10 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 
     // extract ball from the pointcloud
     extractBall();
-    
+
     if (++this->_execution_count % 100 == 0) {
-        std::cout << this->_execution_count << ": " << ros::Time::now().toNSec() << endl;
+        std::cout << this->_execution_count << ": " << ros::Time::now().toNSec()
+                  << endl;
     }
 
     return;
