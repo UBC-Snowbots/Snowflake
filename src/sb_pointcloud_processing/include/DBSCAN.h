@@ -55,13 +55,23 @@ class DBSCAN {
     unsigned int _sequential_cut_off = 1000;
     Plane _plane;
 
-  public:
     /*
-         * Constructor:
-         * Takes in minimum number of neighbours and radius as parameters
-         * as well as plane (XY or YZ)
-         */
+     * Constructor:
+     * Takes in minimum number of neighbours and radius as parameters
+     * as well as plane (XY or YZ)
+     */
     DBSCAN(int min_neighbours = 5, float radius = 5, Plane plane = XY);
+    ~DBSCAN() {
+        delete [] this->_neighbors;
+    }
+
+  public:
+
+    static vector<pcl::PointCloud<pcl::PointXYZ>> getClusters(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr,
+                                                              int min_neighbours = 5,
+                                                              float radius = 5,
+                                                              Plane plane = XY
+    );
 
     /*
      * Main entry function:

@@ -77,8 +77,7 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 }
 
 void BallExtractorNode::extractBall() {
-    DBSCAN dbscan(this->minNeighbours, this->radius, DBSCAN::YZ);
-    this->clusters = dbscan.findClusters(this->pclPtr);
+    this->clusters = DBSCAN::getClusters(this->pclPtr, this->minNeighbours, this->radius);
 
     if (this->clusters.size() < 1) { return; }
 
