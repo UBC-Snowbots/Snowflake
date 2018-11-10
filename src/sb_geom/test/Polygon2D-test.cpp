@@ -17,11 +17,7 @@ class Polygon2DTest : public testing::Test {
 };
 
 TEST_F(Polygon2DTest, constructing_from_Point2D_classes) {
-    std::vector<sb_geom::Point2D> points = {
-            {10, 20},
-            {34.22, 9},
-            {34, 9.33}
-    };
+    std::vector<sb_geom::Point2D> points = {{10, 20}, {34.22, 9}, {34, 9.33}};
     Polygon2D polygon2D(points);
     EXPECT_EQ(points, polygon2D.getBoundaryPoints());
 }
@@ -40,8 +36,7 @@ TEST_F(Polygon2DTest, constructing_from_Point2D_msgs) {
     point_msgs.emplace_back(point2D_msg);
 
     Polygon2D polygon2D(point_msgs);
-    std::vector<sb_geom::Point2D> points(
-            point_msgs.begin(), point_msgs.end());
+    std::vector<sb_geom::Point2D> points(point_msgs.begin(), point_msgs.end());
     EXPECT_EQ(points, polygon2D.getBoundaryPoints());
 }
 
@@ -59,8 +54,8 @@ TEST_F(Polygon2DTest, constructing_from_polygon2d_msg) {
     polygon2D_msg.points.emplace_back(point2D_msg);
 
     Polygon2D polygon2D(polygon2D_msg);
-    std::vector<sb_geom::Point2D> points(
-            polygon2D_msg.points.begin(), polygon2D_msg.points.end());
+    std::vector<sb_geom::Point2D> points(polygon2D_msg.points.begin(),
+                                         polygon2D_msg.points.end());
     EXPECT_EQ(points, polygon2D.getBoundaryPoints());
 }
 

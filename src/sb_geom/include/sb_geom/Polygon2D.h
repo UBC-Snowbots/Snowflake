@@ -23,9 +23,8 @@ class Polygon2D {
      * @param boundary_points A vector of points representing the boundary,
      * where the first and last points are assumed to be connected
      */
-    explicit Polygon2D(const std::vector<Point2D>& boundary_points):
-    boundary_points
-    (std::move(boundary_points)) {};
+    explicit Polygon2D(const std::vector<Point2D>& boundary_points)
+      : boundary_points(std::move(boundary_points)){};
 
     /**
      * Constructs a Polygon2D from a given list of point messages
@@ -33,20 +32,21 @@ class Polygon2D {
      * @param boundary_points A vector of point messages representing the
      * boundary, where the first and last points are assumed to be connected
      */
-    explicit Polygon2D(const std::vector<sb_geom_msgs::Point2D>&
-            boundary_points):
-            Polygon2D(std::vector<Point2D>(boundary_points.begin(), boundary_points.end())) {};
+    explicit Polygon2D(
+    const std::vector<sb_geom_msgs::Point2D>& boundary_points)
+      : Polygon2D(
+        std::vector<Point2D>(boundary_points.begin(), boundary_points.end())){};
 
     /**
      * Constructs a Polygon2D from a given Polygon2D ROS message
      */
-     explicit Polygon2D(const sb_geom_msgs::Polygon2D& polygon2D): Polygon2D
-     (polygon2D.points) {};
+    explicit Polygon2D(const sb_geom_msgs::Polygon2D& polygon2D)
+      : Polygon2D(polygon2D.points){};
 
-     /**
-      * Gets the points making up the boundary of this Polygon
-      */
-      std::vector<Point2D> getBoundaryPoints() { return this->boundary_points; }
+    /**
+     * Gets the points making up the boundary of this Polygon
+     */
+    std::vector<Point2D> getBoundaryPoints() { return this->boundary_points; }
 
   private:
     // The points that make up the boundary of this area
