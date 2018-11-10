@@ -11,6 +11,6 @@
         <param name="scale" value="0.01" />
 
         <!-- subscribe to /height_filter/output for input point cloud -->
-        <remap from="/input_pointcloud" to="/height_filter/output" />
+        <remap from="/input_pointcloud" to="/value_filter/output" />
     </node>
 </launch>
