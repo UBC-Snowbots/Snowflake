@@ -110,6 +110,13 @@ add_dependencies(sb_geom ${catkin_EXPORTED_TARGETS})
 
 if (CATKIN_ENABLE_TESTING)
 
+    catkin_add_gtest(Polygon2D-test
+            test/Polygon2D-test.cpp
+            ${sb_geom_SRCS}
+            )
+    target_link_libraries(Polygon2D-test ${ALL_LIBRARIES})
+    add_dependencies(Polygon2D-test ${catkin_EXPORTED_TARGETS})
+
     catkin_add_gtest(Polynomial-test
             test/Polynomial-test.cpp
             ${sb_geom_SRCS}

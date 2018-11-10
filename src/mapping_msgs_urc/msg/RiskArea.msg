@@ -2,5 +2,5 @@
 # An area with associated risk score
 #
 
-geometry_msgs/Polygon area
+sb_geom_msgs/Polygon2D area
 std_msgs/Float64 score
