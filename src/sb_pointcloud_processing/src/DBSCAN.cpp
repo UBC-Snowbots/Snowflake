@@ -21,11 +21,11 @@ void DBSCAN::setRadius(float new_radius) {
     this->_radius = new_radius;
 }
 
-vector<pcl::PointCloud<pcl::PointXYZ>> DBSCAN::getClusters(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr,
-                                                   int min_neighbours,
-                                                   float radius,
-                                                   DBSCAN::Plane plane
-) {
+vector<pcl::PointCloud<pcl::PointXYZ>>
+DBSCAN::getClusters(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr,
+                    int min_neighbours,
+                    float radius,
+                    DBSCAN::Plane plane) {
     return DBSCAN(min_neighbours, radius, plane).findClusters(pcl_ptr);
 }
 

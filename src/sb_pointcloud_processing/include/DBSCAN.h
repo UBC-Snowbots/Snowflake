@@ -61,17 +61,14 @@ class DBSCAN {
      * as well as plane (XY or YZ)
      */
     DBSCAN(int min_neighbours = 5, float radius = 5, Plane plane = XY);
-    ~DBSCAN() {
-        delete [] this->_neighbors;
-    }
+    ~DBSCAN() { delete[] this->_neighbors; }
 
   public:
-
-    static vector<pcl::PointCloud<pcl::PointXYZ>> getClusters(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr,
-                                                              int min_neighbours = 5,
-                                                              float radius = 5,
-                                                              Plane plane = XY
-    );
+    static vector<pcl::PointCloud<pcl::PointXYZ>>
+    getClusters(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr,
+                int min_neighbours = 5,
+                float radius       = 5,
+                Plane plane        = XY);
 
     /*
      * Main entry function:

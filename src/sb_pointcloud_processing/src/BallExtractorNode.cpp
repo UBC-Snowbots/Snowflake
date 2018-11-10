@@ -55,7 +55,7 @@ BallExtractorNode::BallExtractorNode(int argc,
 
     std::string rviz_ball_topic = "debug/ball";
     rviz_ball_publisher = private_nh.advertise<visualization_msgs::Marker>(
-            rviz_ball_topic, queue_size);
+    rviz_ball_topic, queue_size);
 }
 
 void BallExtractorNode::pclCallBack(
@@ -81,7 +81,8 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 }
 
 void BallExtractorNode::extractBall() {
-    this->clusters = DBSCAN::getClusters(this->pclPtr, this->minNeighbours, this->radius);
+    this->clusters =
+    DBSCAN::getClusters(this->pclPtr, this->minNeighbours, this->radius);
 
     if (this->clusters.size() < 1) { return; }
 
@@ -102,21 +103,16 @@ void BallExtractorNode::visualizeBall(geometry_msgs::Point ball) {
     color.b = 1;
     color.g = 1;
 
-    std::vector<std_msgs::ColorRGBA> colors = { color };
+    std::vector<std_msgs::ColorRGBA> colors = {color};
 
     visualization_msgs::Marker::_scale_type scale =
-            snowbots::RvizUtils::createrMarkerScale(
-                    this->scale, this->scale, this->scale);
+    snowbots::RvizUtils::createrMarkerScale(
+    this->scale, this->scale, this->scale);
 
     std::string ns = "debug";
 
-    visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
-            ball,
-            colors,
-            scale,
-            this->frame_id,
-            ns
-    );
+    visualization_msgs::Marker marker =
+    snowbots::RvizUtils::createMarker(ball, colors, scale, this->frame_id, ns);
 
     rviz_ball_publisher.publish(marker);
 }
