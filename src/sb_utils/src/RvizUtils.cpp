@@ -81,7 +81,12 @@ Marker RvizUtils::createPolygonMarker(geometry_msgs::Polygon polygon, visualizat
     marker.color = color;
 
     // Setup the line strip
-    marker.points = polygon.points;
+    marker.points.reserve(polygon.points.size());
+    for (int i = 0; i < polygon.points.size(); i++) {
+        marker.points[i].x = polygon.points[i].x;
+        marker.points[i].y = polygon.points[i].y;
+        marker.points[i].z = polygon.points[i].z;
+    }
 
     return marker;
 }
