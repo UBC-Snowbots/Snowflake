@@ -79,7 +79,7 @@ class RvizUtils {
      *  Turn a polygon into a marker for rviz
      *
      *  @param polygon the polygon to be converted
-     *  @param color the color of the point
+     *  @param color the color of the polygon
      *  @param frame_id the frame id
      *  @param ns the namespace
      *
