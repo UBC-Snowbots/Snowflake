@@ -8,6 +8,7 @@
 #ifndef PROJECT_REACTIVESYSTEMPATHFINDER_H
 #define PROJECT_REACTIVESYSTEMPATHFINDER_H
 
+#include <DBScanPoly.h>
 #include <iostream>
 #include <math.h>
 #include <std_msgs/Float64.h>
@@ -21,15 +22,13 @@
 #include <mapping_msgs_urc/RiskAreaStamped.h>
 
 
-
-
 class ReactiveSystemPathfinder {
 public:
 
     /**
      * Entrypoint for pathfinding algorithm
      */
-    static nav_msgs::Path pathFinder(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point curr_pos, geometry_msgs::Point goal_pos, double risk_threshold);
+    static nav_msgs::Path pathFinder(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point32 curr_pos, geometry_msgs::Point32 goal_pos, double risk_threshold, double cluster_threshold);
 
 
     /**
@@ -38,23 +37,25 @@ public:
     static std::vector<geometry_msgs::Polygon> filterRiskPolygons(mapping_msgs_urc::RiskAreaArray& risk_areas, double risk_threshold);
 
 
+
+    // The next 3 functions could be combined into some type of convex hull clustering algorithm
+
     /**
-     * Identify adjacent and overlapping polygons and group them into buckets
-     * NOTE: Use DBSCAN adapted for rectangular polygons / some other rectangle clustering algorithm
+     * Identify adjacent and overlapping polygons and group them into clusters -> main logic is located in DBScanPoly
      */
-    static std::vector<std::vector<geometry_msgs::Polygon>> clusterRiskPolygons(std::vector<geometry_msgs::Polygon> polygons);
+    static std::vector<std::vector<geometry_msgs::Polygon>> clusterRiskPolygons(std::vector<geometry_msgs::Polygon> polygons, double cluster_threshold);
 
 
     /**
      * Converts clusters of polygons into clusters of points, removing redundant points in the process
      */
-    static std::vector<std::vector<geometry_msgs::Point>> polygonClustersToPoints(std::vector<std::vector<geometry_msgs::Polygon>> polygon_clusters);
+    static std::vector<std::vector<geometry_msgs::Point32>> polygonClustersToPoints(std::vector<std::vector<geometry_msgs::Polygon>> polygon_clusters);
 
 
     /**
      * Performs convex hull algorithm on each cluster of points, returning a vector of resultant polygons (size of resultant polygons should equal number of clusters entered)
      */
-    static std::vector<geometry_msgs::Polygon> massConvexHull(std::vector<std::vector<geometry_msgs::Point>> point_clusters);
+    static std::vector<geometry_msgs::Polygon> massConvexHull(std::vector<std::vector<geometry_msgs::Point32>> point_clusters);
 
 
     //May need to perform outward polygon offsetting/polygon expansion to account for robot size (doesn't get too close to edges)
@@ -65,7 +66,7 @@ public:
     /**
      * Constructs a path from currPos to goalPos avoiding any polygons in the way
      */
-    static nav_msgs::Path constructPath(std::vector<geometry_msgs::Polygon> polygon_obstacles, geometry_msgs::Point curr_pos, geometry_msgs::Point goal_pos);
+    static nav_msgs::Path constructPath(std::vector<geometry_msgs::Polygon> polygon_obstacles, geometry_msgs::Point32 curr_pos, geometry_msgs::Point32 goal_pos);
 
 
 
@@ -75,8 +76,7 @@ public:
     /**
     * Convex hull algorithm, gives minimum area enclosing convex polygon given a group of points
     */
-    static std::vector<geometry_msgs::Polygon> convexHull(std::vector<geometry_msgs::Point> points);
-
+    static std::vector<geometry_msgs::Polygon> convexHull(std::vector<geometry_msgs::Point32> points);
 };
 
 #endif //PROJECT_REACTIVESYSTEMPATHFINDER_H

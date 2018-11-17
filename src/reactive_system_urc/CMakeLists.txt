@@ -42,9 +42,11 @@ add_executable(reactive_system_node
         src/ReactiveSystemNode.cpp
         src/ReactiveSystemController.cpp
         src/ReactiveSystemPathfinder.cpp
+        src/DBScanPoly.cpp
         include/ReactiveSystemNode.h
         include/ReactiveSystemController.h
         include/ReactiveSystemPathfinder.h
+        include/DBScanPoly.h
         )
 
 
