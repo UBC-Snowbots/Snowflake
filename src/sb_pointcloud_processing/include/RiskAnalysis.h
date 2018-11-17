@@ -36,7 +36,7 @@ public:
      RiskAnalysis(float region_width, float region_height, int num_vertical_cell_div,
                     int num_horizontal_cell_div, int region_min_points);
 
-     /*
+     /**
       * Required empty constructor
       */
      RiskAnalysis();
@@ -46,22 +46,22 @@ public:
       */
       mapping_msgs_urc::RiskAreaArray assessPointCloudRisk(pcl::PCLPointCloud2 point_cloud);
 
+      std::vector<std::vector<RegionOfPoints>> initialisePointRegions(pcl::PCLPointCloud2 point_cloud);
 
+      void fillPointRegions(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl, std::vector<std::vector<RegionOfPoints>> &regions);
 
+      mapping_msgs_urc::RiskAreaArray analysePointRegions(std::vector<std::vector<RegionOfPoints>> regions);
+
+      float calculateStandardDeviation(std::vector<float> values);
+
+      geometry_msgs::Polygon getRegionAreaFromIndices(int row, int column);
+
+      int determineRow(float x);
+
+      int determineColumn(float y);
 private:
 
-    std::vector<std::vector<RegionOfPoints>> initialisePointRegions(pcl::PCLPointCloud2 point_cloud);
 
-    void fillPointRegions(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl, std::vector<std::vector<RegionOfPoints>> &regions);
-
-    mapping_msgs_urc::RiskAreaArray analysePointRegions(std::vector<std::vector<RegionOfPoints>> regions);
-
-    float calculateStandardDeviation(std::vector<float> values);
-
-    geometry_msgs::Polygon getRegionAreaFromIndices(int row, int column);
-
-    int determineRow(float x);
-    int determineColumn(float y);
 
     float region_width;
     float region_height;

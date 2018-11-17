@@ -72,19 +72,19 @@ void RiskAnalysisNode::pclCallBack(const sensor_msgs::PointCloud2ConstPtr point_
     // convert sensor_msgs::PointCloud2 to pcl::PCLPointCloud2
     pcl_conversions::toPCL(*point_cloud, pcl_pc2);
 
-    // extract risk areas
-    pcl_risk_areas = risk_analysis.assessPointCloudRisk(pcl_pc2);
+    // extract risk
+    pcl_risk = risk_analysis.assessPointCloudRisk(pcl_pc2);
 
-    publishMarkers(pcl_risk_areas);
+    publishMarkers(pcl_risk);
 
     visualization_msgs::MarkerArray risk_area_markers;
-    std::string frame_id;
+    std::string frame_id = "camera_color_optical_frame";
     std::string ns = "debug";
 
-    for (int i = 0; i < pcl_risk_areas.areas.size(); i++) {
+    for (int i = 0; i < pcl_risk.areas.size(); i++) {
         visualization_msgs::Marker risk_area_marker = snowbots::RvizUtils::createPolygonMarker(
-                pcl_risk_areas.areas[i].area,
-                convertRiskToColor(pcl_risk_areas.areas[i].score.data),
+                pcl_risk.areas[i].area,
+                convertRiskToColor(pcl_risk.areas[i].score.data),
                 snowbots::RvizUtils::createrMarkerScale(0.1, 0, 0),
                 frame_id,
                 ns
@@ -98,7 +98,7 @@ void RiskAnalysisNode::pclCallBack(const sensor_msgs::PointCloud2ConstPtr point_
 }
 
 void RiskAnalysisNode::publishMarkers(mapping_msgs_urc::RiskAreaArray risk_areas) {
-    risk_areas.header.frame_id =
+    risk_areas.header.frame_id = "camera_color_optical_frame";
 
     risk_areas.header.seq = seq_count;
     seq_count++;

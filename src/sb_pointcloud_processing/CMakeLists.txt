@@ -148,6 +148,8 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(colourspace-converter-test test/colourspace-converter-test.cpp include/ColourspaceConverter.h src/ColourspaceConverter.cpp)
     target_link_libraries(colourspace-converter-test ${PCL_LIBRARIES})
 
+    catkin_add_gtest(risk-analysis-test test/risk-analysis-test.cpp src/RiskAnalysis.cpp include/RiskAnalysis.h)
+    target_link_libraries(risk-analysis-test ${PCL_LIBRARIES})
 
     # Adding rostest to the package
     find_package(rostest REQUIRED)

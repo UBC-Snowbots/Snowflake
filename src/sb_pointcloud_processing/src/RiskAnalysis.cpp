@@ -128,22 +128,22 @@ float RiskAnalysis::calculateStandardDeviation(std::vector<float> values) {
 geometry_msgs::Polygon RiskAnalysis::getRegionAreaFromIndices(int row, int column) {
     geometry_msgs::Point32 top_left_point;
     top_left_point.x = region_height - row*cell_height;
-    top_left_point.y = region_width / 2 - column*cell_width;
+    top_left_point.y = region_width / 2.0 - column*cell_width;
     top_left_point.z = 0;
 
     geometry_msgs::Point32 top_right_point;
     top_right_point.x = region_height - row*cell_height;
-    top_right_point.y = region_width / 2 - (column + 1)*cell_width;
+    top_right_point.y = region_width / 2.0 - (column + 1)*cell_width;
     top_right_point.z = 0;
 
     geometry_msgs::Point32 bottom_left_point;
     bottom_left_point.x = region_width - (row + 1)*cell_height;
-    bottom_left_point.y = region_width / 2 - column*cell_width;
+    bottom_left_point.y = region_width / 2.0 - column*cell_width;
     bottom_left_point.z = 0;
 
     geometry_msgs::Point32 bottom_right_point;
-    bottom_right_point.x = region_width - (row + 1)*cell_height;
-    bottom_right_point.y = region_width / 2 - (column + 1)*cell_width;
+    bottom_right_point.x = region_width - (row + 1.0)*cell_height;
+    bottom_right_point.y = region_width / 2.0 - (column + 1.0)*cell_width;
     bottom_right_point.z = 0;
 
     geometry_msgs::Polygon region_area;
