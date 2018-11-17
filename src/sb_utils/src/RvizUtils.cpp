@@ -70,6 +70,22 @@ Marker RvizUtils::createMarker(geometry_msgs::Point point,
     return marker;
 }
 
+Marker RvizUtils::createPolygonMarker(geometry_msgs::Polygon polygon, visualization_msgs::Marker::_color_type color,
+                                      visualization_msgs::Marker::_scale_type scale, std::string frame_id,
+                                      std::string ns, int type, int id) {
+    Marker marker;
+
+    setupMarker(marker, scale, frame_id, ns, type, id);
+
+    // Set the color
+    marker.color = color;
+
+    // Setup the line strip
+    marker.points = polygon.points;
+
+    return marker;
+}
+
 MarkerArray
 RvizUtils::createMarkerArray(vector<vector<geometry_msgs::Point>> points_array,
                              Marker::_color_type color,
