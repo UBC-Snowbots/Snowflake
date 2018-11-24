@@ -43,11 +43,12 @@ add_executable(reactive_system_node
         src/ReactiveSystemController.cpp
         src/ReactiveSystemPathfinder.cpp
         src/DBScanPoly.cpp
+        src/ConvexHull.cpp
         include/ReactiveSystemNode.h
         include/ReactiveSystemController.h
         include/ReactiveSystemPathfinder.h
         include/DBScanPoly.h
-        )
+        include/ConvexHull.h)
 
 
 ## Specify libraries to link a library or executable target against

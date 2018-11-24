@@ -17,14 +17,14 @@ class DBScanPoly{
 public:
 
     //Main entrypoint, note that min_adj_polys should be 1
-    static std::vector<std::vector<geometry_msgs::Polygon>> findClusters(std::vector<geometry_msgs::Polygon> polygons, double threshold);
+    static std::vector<std::vector<geometry_msgs::Polygon>> findClusters(std::vector<geometry_msgs::Polygon> polygons, double dist_tol);
 
 
     //Helper for expanding clusters
-    static void expand(std::vector<geometry_msgs::Polygon> &polygons, std::vector<geometry_msgs::Polygon> &cur_cluster, geometry_msgs::Polygon target_poly, int seed_index, std::vector<bool> &is_clustered, double threshold);
+    static void expand(std::vector<geometry_msgs::Polygon> &polygons, std::vector<geometry_msgs::Polygon> &cur_cluster, geometry_msgs::Polygon target_poly, int seed_index, std::vector<bool> &is_clustered, double dist_tol);
 
     //Helper
-    static bool arePolygonsClose(geometry_msgs::Polygon poly1, geometry_msgs::Polygon poly2, double threshold);
+    static bool arePolygonsClose(geometry_msgs::Polygon poly1, geometry_msgs::Polygon poly2, double dist_tol);
 
 };
 

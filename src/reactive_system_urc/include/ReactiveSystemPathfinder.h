@@ -9,6 +9,7 @@
 #define PROJECT_REACTIVESYSTEMPATHFINDER_H
 
 #include <DBScanPoly.h>
+#include <ConvexHull.h>
 #include <iostream>
 #include <math.h>
 #include <std_msgs/Float64.h>
@@ -27,8 +28,10 @@ public:
 
     /**
      * Entrypoint for pathfinding algorithm
+     * risk_threshold refers to the minimum risk score for polygons to be placed in a cluster
+     * cluster_dist_tol refers to the max distance between two polygons in a cluster
      */
-    static nav_msgs::Path pathFinder(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point32 curr_pos, geometry_msgs::Point32 goal_pos, double risk_threshold, double cluster_threshold);
+    static nav_msgs::Path pathFinder(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point32 curr_pos, geometry_msgs::Point32 goal_pos, double risk_threshold, double cluster_dist_tol, double point_dist_tol);
 
 
     /**
@@ -37,19 +40,16 @@ public:
     static std::vector<geometry_msgs::Polygon> filterRiskPolygons(mapping_msgs_urc::RiskAreaArray& risk_areas, double risk_threshold);
 
 
-
-    // The next 3 functions could be combined into some type of convex hull clustering algorithm
-
     /**
      * Identify adjacent and overlapping polygons and group them into clusters -> main logic is located in DBScanPoly
      */
-    static std::vector<std::vector<geometry_msgs::Polygon>> clusterRiskPolygons(std::vector<geometry_msgs::Polygon> polygons, double cluster_threshold);
+    static std::vector<std::vector<geometry_msgs::Polygon>> clusterRiskPolygons(std::vector<geometry_msgs::Polygon> polygons, double cluster_dist_tol);
 
 
     /**
      * Converts clusters of polygons into clusters of points, removing redundant points in the process
      */
-    static std::vector<std::vector<geometry_msgs::Point32>> polygonClustersToPoints(std::vector<std::vector<geometry_msgs::Polygon>> polygon_clusters);
+    static std::vector<std::vector<geometry_msgs::Point32>> polygonClustersToPoints(std::vector<std::vector<geometry_msgs::Polygon>> polygon_clusters, double point_dist_tol);
 
 
     /**
@@ -74,9 +74,9 @@ public:
     /* HELPER FUNCTIONS */
 
     /**
-    * Convex hull algorithm, gives minimum area enclosing convex polygon given a group of points
-    */
-    static std::vector<geometry_msgs::Polygon> convexHull(std::vector<geometry_msgs::Point32> points);
+     * Returns true if points are within dist_tol (only checks x and y for fast computations)
+     */
+    static bool closePoints(geometry_msgs::Point32 p1, geometry_msgs::Point32 p2, double dist_tol);
 };
 
 #endif //PROJECT_REACTIVESYSTEMPATHFINDER_H
