@@ -158,7 +158,7 @@ TEST_F(RvizUtilsRosTest, multiplePointMarkersInArray) {
     // Make sure message metadata is correct
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
     EXPECT_EQ(ns, risk_area_marker.ns);
-    
+
     EXPECT_POINT_EQ(points, risk_area_marker.points);
 }
 
