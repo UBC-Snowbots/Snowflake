@@ -19,7 +19,7 @@ sudo apt-get update -y
 # see https://github.com/intel-ros/realsense/issues/502 for updates.
 # (Right now we just peg the version to 2.16.1)
 # sudo apt-get install -y librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg 
-version="2.16.1-0~realsense0.51"
+version="2.16.1-0~realsense0.13"
 sudo apt-get install librealsense2-dkms -y
 sudo apt install librealsense2=${version} -y
 sudo apt-get install librealsense2-utils=${version} -y
