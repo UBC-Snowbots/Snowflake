@@ -29,6 +29,7 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_msgs
   sensor_msgs
   mapping_igvc
+        mapping_msgs_urc
   )
 find_package(PCL 1.3 REQUIRED COMPONENTS
   common

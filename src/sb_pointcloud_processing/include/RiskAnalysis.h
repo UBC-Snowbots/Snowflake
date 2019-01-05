@@ -14,6 +14,9 @@
 #include "mapping_msgs_urc/RiskArea.h"
 #include "mapping_msgs_urc/RiskAreaArray.h"
 
+#include "sb_geom_msgs/Point2D.h"
+#include "sb_geom_msgs/Polygon2D.h"
+
 // Point Cloud
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/conversions.h>
@@ -24,7 +27,7 @@
 #include <numeric>
 
 typedef struct {
-    geometry_msgs::Polygon region_area;
+    sb_geom_msgs::Polygon2D region_area;
     std::vector<geometry_msgs::Point> points;
 } RegionOfPoints;
 
@@ -54,7 +57,7 @@ public:
 
       float calculateStandardDeviation(std::vector<float> values);
 
-      geometry_msgs::Polygon getRegionAreaFromIndices(int row, int column);
+      sb_geom_msgs::Polygon2D getRegionAreaFromIndices(int row, int column);
 
       int determineRow(float x);
 

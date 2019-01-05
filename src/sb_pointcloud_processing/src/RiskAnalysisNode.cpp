@@ -82,13 +82,13 @@ void RiskAnalysisNode::pclCallBack(const sensor_msgs::PointCloud2ConstPtr point_
     std::string ns = "debug";
 
     for (int i = 0; i < pcl_risk.areas.size(); i++) {
-        visualization_msgs::Marker risk_area_marker = snowbots::RvizUtils::createPolygonMarker(
+        visualization_msgs::Marker risk_area_marker = snowbots::RvizUtils::createPolygonMarker2D(
                 pcl_risk.areas[i].area,
                 convertRiskToColor(pcl_risk.areas[i].score.data),
-                snowbots::RvizUtils::createrMarkerScale(0.1, 0, 0),
+                snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
                 frame_id,
                 ns
-                );
+        );
 
         risk_area_markers.markers.push_back(risk_area_marker);
     }

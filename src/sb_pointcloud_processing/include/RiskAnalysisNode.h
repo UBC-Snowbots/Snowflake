@@ -62,7 +62,7 @@ private:
 
     int seq_count;
 
-    mapping_msgs_urc::RiskAreaArray pcl_risk_areas;
+    mapping_msgs_urc::RiskAreaArray pcl_risk;
 
     std::vector<visualization_msgs::Marker::_color_type> gradient;
 

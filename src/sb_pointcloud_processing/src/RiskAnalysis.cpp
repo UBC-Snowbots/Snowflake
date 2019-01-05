@@ -50,7 +50,7 @@ std::vector<std::vector<RegionOfPoints>> RiskAnalysis::initialisePointRegions(pc
         for (int j = 0; j < num_horizontal_cell_div; j++) {
             RegionOfPoints new_region;
 
-            geometry_msgs::Polygon region_area;
+            sb_geom_msgs::Polygon2D region_area;
             region_area = getRegionAreaFromIndices(i, j);
             new_region.region_area = region_area;
 
@@ -125,28 +125,24 @@ float RiskAnalysis::calculateStandardDeviation(std::vector<float> values) {
     return stdev;
 }
 
-geometry_msgs::Polygon RiskAnalysis::getRegionAreaFromIndices(int row, int column) {
-    geometry_msgs::Point32 top_left_point;
+sb_geom_msgs::Polygon2D RiskAnalysis::getRegionAreaFromIndices(int row, int column) {
+    sb_geom_msgs::Point2D top_left_point;
     top_left_point.x = region_height - row*cell_height;
     top_left_point.y = region_width / 2.0 - column*cell_width;
-    top_left_point.z = 0;
 
-    geometry_msgs::Point32 top_right_point;
+    sb_geom_msgs::Point2D top_right_point;
     top_right_point.x = region_height - row*cell_height;
     top_right_point.y = region_width / 2.0 - (column + 1)*cell_width;
-    top_right_point.z = 0;
 
-    geometry_msgs::Point32 bottom_left_point;
+    sb_geom_msgs::Point2D bottom_left_point;
     bottom_left_point.x = region_width - (row + 1)*cell_height;
     bottom_left_point.y = region_width / 2.0 - column*cell_width;
-    bottom_left_point.z = 0;
 
-    geometry_msgs::Point32 bottom_right_point;
+    sb_geom_msgs::Point2D bottom_right_point;
     bottom_right_point.x = region_width - (row + 1.0)*cell_height;
     bottom_right_point.y = region_width / 2.0 - (column + 1.0)*cell_width;
-    bottom_right_point.z = 0;
 
-    geometry_msgs::Polygon region_area;
+    sb_geom_msgs::Polygon2D region_area;
     region_area.points.push_back(top_left_point);
     region_area.points.push_back(top_right_point);
     region_area.points.push_back(bottom_right_point);
