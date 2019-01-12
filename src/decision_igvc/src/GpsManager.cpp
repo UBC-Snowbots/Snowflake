@@ -104,6 +104,7 @@ geometry_msgs::TransformStamped global_to_local_transform) {
     tf2::doTransform(p, output, t_stamped);
     output.point.z = 0; // Necessary to remove vertical transform of waypoint
 
+    snowbots::RvizUtils::createMarkerScale(0, 0, 0);
     // Create marker
     std::vector<std_msgs::ColorRGBA> colors;
     std_msgs::ColorRGBA color;
@@ -113,7 +114,7 @@ geometry_msgs::TransformStamped global_to_local_transform) {
     rviz_marker_publisher.publish(snowbots::RvizUtils::createMarker(
     output.point,
     colors,
-    snowbots::RvizUtils::createrMarkerScale(0.5, 0.5, 0.5),
+    snowbots::RvizUtils::createMarkerScale(0.5, 0.5, 0.5),
     base_frame,
     "debug",
     visualization_msgs::Marker::POINTS));

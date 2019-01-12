@@ -106,16 +106,43 @@ namespace RvizUtils {
      *
      *  @return an rviz marker
      */
-     template <typename T>
-     visualization_msgs::Marker
+    template <typename T>
+    visualization_msgs::Marker
     createPolygonMarker2D(T polygon,
                           visualization_msgs::Marker::_color_type color,
                           visualization_msgs::Marker::_scale_type scale,
                           std::string frame_id,
                           std::string ns,
                           int type = visualization_msgs::Marker::LINE_STRIP,
-                          int id = 1);
+                          int id   = 1) {
+        visualization_msgs::Marker marker;
 
+        marker.header.stamp       = ros::Time::now();
+        marker.action             = visualization_msgs::Marker::ADD;
+        marker.pose.orientation.w = 1.0;
+
+        marker.type = type;
+        marker.id   = id;
+
+        marker.header.frame_id = frame_id;
+        marker.ns              = ns;
+
+        marker.scale = scale;
+
+        // Set the color
+        marker.color = color;
+
+        // Setup the line strip
+        for (int i = 0; i < polygon.points.size(); i++) {
+            geometry_msgs::Point point;
+            point.x = polygon.points[i].x;
+            point.y = polygon.points[i].y;
+            point.z = 0;
+            marker.points.push_back(point);
+        }
+
+        return marker;
+    }
     /**
      *  Turn a polygon into a marker for rviz
      *
@@ -128,12 +155,12 @@ namespace RvizUtils {
      */
     visualization_msgs::Marker
     createPolygonMarker3D(geometry_msgs::Polygon polygon,
-                        visualization_msgs::Marker::_color_type color,
-                        visualization_msgs::Marker::_scale_type scale,
-                        std::string frame_id,
-                        std::string ns,
-                        int type = visualization_msgs::Marker::LINE_STRIP,
-                        int id   = 1);
+                          visualization_msgs::Marker::_color_type color,
+                          visualization_msgs::Marker::_scale_type scale,
+                          std::string frame_id,
+                          std::string ns,
+                          int type = visualization_msgs::Marker::LINE_STRIP,
+                          int id   = 1);
 
     /**
      * Creates a Marker Array (array of Markers)
@@ -179,8 +206,6 @@ namespace RvizUtils {
      */
     visualization_msgs::Marker::_scale_type
     createMarkerScale(float x, float y, float z);
-
-
 };
 };
 #endif // HOLE_TRACKER_RVIZUTILS_H

@@ -54,12 +54,12 @@ TEST_F(RvizUtilsRosTest, boxPolygonMarker) {
     polygon.points.push_back(initialisePoint32(1, 1, 0));
 
     visualization_msgs::Marker risk_area_marker =
-            snowbots::RvizUtils::createPolygonMarker3D(
-                    polygon,
-                    snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
-                    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
-                    frame_id,
-                    ns);
+    snowbots::RvizUtils::createPolygonMarker3D(
+    polygon,
+    snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
+    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
+    frame_id,
+    ns);
 
     // Make sure message metadata is correct
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
@@ -78,12 +78,12 @@ TEST_F(RvizUtilsRosTest, trianglePolygonMarker) {
     polygon.points.push_back(initialisePoint32(0, 1, 0));
 
     visualization_msgs::Marker risk_area_marker =
-            snowbots::RvizUtils::createPolygonMarker3D(
-                    polygon,
-                    snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
-                    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
-                    frame_id,
-                    ns);
+    snowbots::RvizUtils::createPolygonMarker3D(
+    polygon,
+    snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
+    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
+    frame_id,
+    ns);
 
     // Make sure message metadata is correct
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);

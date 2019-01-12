@@ -9,38 +9,37 @@
 #include <ros/ros.h>
 
 // Utilities
-#include <sb_utils.h>
 #include <RvizUtils.h>
+#include <sb_utils.h>
 
 // Messages
-#include <sensor_msgs/PointCloud2.h>
-#include <geometry_msgs/Polygon.h>
 #include "mapping_msgs_urc/RiskArea.h"
 #include "mapping_msgs_urc/RiskAreaArray.h"
+#include <geometry_msgs/Polygon.h>
+#include <sensor_msgs/PointCloud2.h>
 
 // Point Cloud
 #include <pcl/PCLPointCloud2.h>
-#include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
 #include <tr1/unordered_map>
 
 // Risk Analysis
 #include "RiskAnalysis.h"
 
 class RiskAnalysisNode {
-public:
-
+  public:
     /**
      * Constructor
      */
-     RiskAnalysisNode(int argc, char **argv, std::string node_name);
+    RiskAnalysisNode(int argc, char** argv, std::string node_name);
 
-private:
-
+  private:
     /*
      * The callback function is called whenever the node receives a
      * PointCloud message. It converts sensor_msgs PointCloud2 pointer
-     * to PCL PointCloud pointer and then extracts risk areas from the PointCloud
+     * to PCL PointCloud pointer and then extracts risk areas from the
+     * PointCloud
      *
      * @param point_cloud the received PointCloud message
      */
@@ -71,4 +70,4 @@ private:
     ros::Publisher risk_marker_publisher;
 };
 
-#endif //RISKANALYSISNODE_H
+#endif // RISKANALYSISNODE_H
