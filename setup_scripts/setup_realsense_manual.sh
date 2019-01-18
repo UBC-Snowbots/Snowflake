@@ -13,7 +13,7 @@ echo "================================================================"
 echo "Preparing Linux Backend and Dev Environment for realsense."
 echo "================================================================"
 
-cd $CURR_DIR/../src/external_libs/librealsense
+cd $CURR_DIR/../external_libs/librealsense
 
 # Core packages required to build librealsense binaries
 sudo apt-get install -y git libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev

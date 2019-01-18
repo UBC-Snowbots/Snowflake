@@ -6,7 +6,7 @@
     uri: https://github.com/intel-ros/realsense.git
     version: 2.0.4
 - git:
-    local-name: src/external_libs/librealsense
+    local-name: external_libs/librealsense
     uri: https://github.com/IntelRealsense/librealsense.git
     version: v2.16.0
 - git:
