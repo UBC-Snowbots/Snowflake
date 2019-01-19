@@ -1,6 +1,6 @@
 /**
- * This is a rostest instead of a normal test, because RvizUtils uses
- * ros node functionalities. (eg. ros::Time::now())
+ * This is a rostest, because RvizUtils uses ros node functionalities.
+ * (eg. ros::time::now())
  */
 
 #include "RvizUtils.h"
