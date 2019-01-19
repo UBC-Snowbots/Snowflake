@@ -30,7 +30,7 @@ private:
     */
     void riskCallBack(const mapping_msgs_urc::RiskAreaArray::ConstPtr& ptr);
 
-    void goalCallBack(const geometry_msgs::Point32::ConstPtr& ptr);
+    void goalCallBack(const sb_geom_msgs::Point2D::ConstPtr& ptr);
 
     /* ros params */
     float traj_time_inc; //size of unit increments in a trajectory calculation
@@ -40,7 +40,7 @@ private:
     int num_angular_vel; //number of possible turning velocities to consider
     float risk_dist_tol_sq; //squared "radius" of the robot
 
-    geometry_msgs::Point32 goal_pos; //current goal position to head towards
+    sb_geom_msgs::Point2D goal_pos; //current goal position to head towards
 
 };
 

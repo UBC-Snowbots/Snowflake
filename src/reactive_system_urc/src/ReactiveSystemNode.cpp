@@ -47,10 +47,9 @@ ReactiveSystemNode::ReactiveSystemNode(int argc,
             private_nh, risk_dist_tol_sq_param, risk_dist_tol_sq, default_risk_dist_tol_sq);
 
     //Initial goal is at current position
-    geometry_msgs::Point32 initial_goal;
+    sb_geom_msgs::Point2D initial_goal;
     initial_goal.x = 0;
     initial_goal.y = 0;
-    initial_goal.z = 0;
     goal_pos = initial_goal;
 
 
@@ -81,11 +80,10 @@ void ReactiveSystemNode::riskCallBack(const mapping_msgs_urc::RiskAreaArray::Con
             num_angular_vel, risk_dist_tol_sq);
 
     twist_publisher.publish(twist_msg);
-
 }
 
-void ReactiveSystemNode::goalCallBack(const geometry_msgs::Point32::ConstPtr& ptr) {
-    geometry_msgs::Point32 goal = *ptr;
+void ReactiveSystemNode::goalCallBack(const sb_geom_msgs::Point2D::ConstPtr& ptr) {
+    sb_geom_msgs::Point2D goal = *ptr;
     goal_pos = goal; //update current goal
 
 }

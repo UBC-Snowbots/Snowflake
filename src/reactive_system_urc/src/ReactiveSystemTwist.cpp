@@ -5,7 +5,7 @@
 
 #include <ReactiveSystemTwist.h>
 
-geometry_msgs::Twist ReactiveSystemTwist::getTwist(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point32 goal_pos, float traj_time_inc, int traj_num_incs, float linear_vel, float max_angular_vel, int num_angular_vel, float risk_dist_tol_sq) {
+geometry_msgs::Twist ReactiveSystemTwist::getTwist(mapping_msgs_urc::RiskAreaArray risk_areas, sb_geom_msgs::Point2D goal_pos, float traj_time_inc, int traj_num_incs, float linear_vel, float max_angular_vel, int num_angular_vel, float risk_dist_tol_sq) {
 
     geometry_msgs::Twist twist;
     twist.linear.x = linear_vel;
@@ -16,7 +16,7 @@ geometry_msgs::Twist ReactiveSystemTwist::getTwist(mapping_msgs_urc::RiskAreaArr
 
     for (int i = -num_angular_vel; i <= num_angular_vel; i++){
         float angular_vel = i * (max_angular_vel/num_angular_vel);
-        std::vector<geometry_msgs::Point32> trajectory = getArcTrajectory(linear_vel, angular_vel, traj_time_inc, traj_num_incs);
+        std::vector<sb_geom_msgs::Point2D> trajectory = getArcTrajectory(linear_vel, angular_vel, traj_time_inc, traj_num_incs);
         float traj_score = getTrajectoryScore(trajectory, goal_pos, risk_areas, risk_dist_tol_sq);
         if (traj_score < min_traj_score) {
             min_traj_score = traj_score;
@@ -28,26 +28,26 @@ geometry_msgs::Twist ReactiveSystemTwist::getTwist(mapping_msgs_urc::RiskAreaArr
 }
 
 
-std::vector<geometry_msgs::Point32> ReactiveSystemTwist::getArcTrajectory(float linear_vel, float angular_vel, float time_inc, int num_incs){
+std::vector<sb_geom_msgs::Point2D> ReactiveSystemTwist::getArcTrajectory(float linear_vel, float angular_vel, float time_inc, int num_incs){
 
-    std::vector<geometry_msgs::Point32> arc_trajectory;
+    std::vector<sb_geom_msgs::Point2D> arc_trajectory;
 
     if (abs(angular_vel) < 0.01){ //essentially a straight trajectory
         for (int i = 1; i <= num_incs; i++){
-            geometry_msgs::Point32 arc_point;
+            sb_geom_msgs::Point2D arc_point;
             arc_point.x = time_inc * i * linear_vel;
             arc_point.y = 0;
             arc_trajectory.push_back(arc_point);
         }
     }
     else{ //use arc formula to obtain trajectory
-        geometry_msgs::Point32 center;
+        sb_geom_msgs::Point2D center;
         center.x = 0;
         center.y = linear_vel/angular_vel;
 
         for (int i = 1; i <= num_incs; i++){
             float angle = time_inc * i * angular_vel;
-            geometry_msgs::Point32 arc_point = ReactiveSystemTwist::getArcPoint(center, angle);
+            sb_geom_msgs::Point2D arc_point = ReactiveSystemTwist::getArcPoint(center, angle);
             arc_trajectory.push_back(arc_point);
         }
 
@@ -57,10 +57,10 @@ std::vector<geometry_msgs::Point32> ReactiveSystemTwist::getArcTrajectory(float 
 }
 
 
-geometry_msgs::Point32 ReactiveSystemTwist::getArcPoint(geometry_msgs::Point32 center, float angle){
+sb_geom_msgs::Point2D ReactiveSystemTwist::getArcPoint(sb_geom_msgs::Point2D center, float angle){
 
     //Calculate the arc point in a given arc trajectory by rotating (0,0) about the center point, by angle
-    geometry_msgs::Point32 arc_point;
+    sb_geom_msgs::Point2D arc_point;
 
     /*
     arc_point.x = center.x - center.x * cos(angle) + center.y * sin(angle);
@@ -75,15 +75,15 @@ geometry_msgs::Point32 ReactiveSystemTwist::getArcPoint(geometry_msgs::Point32 c
 }
 
 
-float ReactiveSystemTwist::getTrajectoryScore(std::vector<geometry_msgs::Point32> trajectory, geometry_msgs::Point32 goal_pos, mapping_msgs_urc::RiskAreaArray risk_areas, float dist_tol_sq){
+float ReactiveSystemTwist::getTrajectoryScore(std::vector<sb_geom_msgs::Point2D> trajectory, sb_geom_msgs::Point2D goal_pos, mapping_msgs_urc::RiskAreaArray risk_areas, float dist_tol_sq){
 
     float risk_score = 0;
 
     for (int i=0; i<trajectory.size(); i++){
-        geometry_msgs::Point32 traj_point = trajectory[i];
+        sb_geom_msgs::Point2D traj_point = trajectory[i];
         float traj_risk = -1; //risk score for a given trajectory point, set to -1 since actual risks should be >= 0
         for (mapping_msgs_urc::RiskArea area : risk_areas.areas){ //Check all points for all risk polygons
-            for (geometry_msgs::Point32 risk_point : area.area.points){
+            for (sb_geom_msgs::Point2D risk_point : area.area.points){
                 if (isWithinDistance(risk_point, traj_point, dist_tol_sq)){
                     if (area.score.data > traj_risk) //Keep track of the highest risk for this trajectory point
                         traj_risk = area.score.data;
@@ -110,7 +110,7 @@ float ReactiveSystemTwist::getTrajectoryScore(std::vector<geometry_msgs::Point32
 }
 
 
-bool ReactiveSystemTwist::isWithinDistance(geometry_msgs::Point32 p1, geometry_msgs::Point32 p2, float dist_tol_sq){
+bool ReactiveSystemTwist::isWithinDistance(sb_geom_msgs::Point2D p1, sb_geom_msgs::Point2D p2, float dist_tol_sq){
 
     return (pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2) < dist_tol_sq);
 }

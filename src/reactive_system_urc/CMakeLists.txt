@@ -42,7 +42,7 @@ add_executable(reactive_system_node
         src/ReactiveSystemNode.cpp
         src/ReactiveSystemTwist.cpp
         include/ReactiveSystemNode.h
-        include/ReactiveSystemTwist.h )
+        include/ReactiveSystemTwist.h)
 
 
 ## Specify libraries to link a library or executable target against
@@ -53,13 +53,6 @@ target_link_libraries(reactive_system_node
         ${catkin_LIBRARIES}
 )
 
-install(
-        TARGETS
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
 
 #############
 ## Testing ##
@@ -67,7 +60,7 @@ install(
 
 if (CATKIN_ENABLE_TESTING)
 
-    catkin_add_gtest(reactive-system-test test/reactive-system-test.cpp src/ReactiveSystemTwist.cpp include/ReactiveSystemTwist.h)
+    catkin_add_gtest(reactive-system-test test/reactive-system-test.cpp src/ReactiveSystemTwist.cpp test/RiskAreaBuilder.h)
     target_link_libraries(reactive-system-test ${catkin_LIBRARIES})
 
     # Adding rostest to the package
