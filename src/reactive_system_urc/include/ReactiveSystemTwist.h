@@ -5,8 +5,8 @@
  */
 
 
-#ifndef PROJECT_REACTIVESYSTEMPATHFINDER_H
-#define PROJECT_REACTIVESYSTEMPATHFINDER_H
+#ifndef PROJECT_ReactiveSystemTwist_H
+#define PROJECT_ReactiveSystemTwist_H
 
 #include <iostream>
 #include <math.h>
@@ -23,7 +23,7 @@
 
 
 
-class ReactiveSystemPathfinder {
+class ReactiveSystemTwist {
 public:
 
     /**
@@ -38,7 +38,7 @@ public:
      * @param risk_dist_tol_sq
      * @return
      */
-    static geometry_msgs::Twist pathFinder(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point32 goal_pos, float traj_time_inc, int traj_num_incs, float linear_vel, float max_angular_vel, int num_angular_vel, float risk_dist_tol_sq);
+    static geometry_msgs::Twist getTwist(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point32 goal_pos, float traj_time_inc, int traj_num_incs, float linear_vel, float max_angular_vel, int num_angular_vel, float risk_dist_tol_sq);
 
     /**
      * Calculates the arc trajectory given some twist command (linear and angular velocity), form of trajectory is point locations of the trajectory
@@ -77,4 +77,4 @@ public:
     static bool isWithinDistance(geometry_msgs::Point32 p1, geometry_msgs::Point32 p2, float dist_tol_sq);
 };
 
-#endif //PROJECT_REACTIVESYSTEMPATHFINDER_H
+#endif //PROJECT_ReactiveSystemTwist_H

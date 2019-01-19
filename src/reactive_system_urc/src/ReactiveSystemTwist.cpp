@@ -3,25 +3,9 @@
  * Implementation for Reactive System Pathfinder
  */
 
-#include <ReactiveSystemPathfinder.h>
+#include <ReactiveSystemTwist.h>
 
-geometry_msgs::Twist ReactiveSystemPathfinder::pathFinder(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point32 goal_pos, float traj_time_inc, int traj_num_incs, float linear_vel, float max_angular_vel, int num_angular_vel, float risk_dist_tol_sq) {
-
-    /*
-     * TODO:
-     * construct a range of angular velocities
-     * for each angular velocity
-     *   getArcTrajectory
-     *   obtain a score for trajectory, given the list of risk_areas, location of curr_pos, goal_pos ???
-     *   put score in a dictionary (angular velocity -> score)
-     * find highest score, choose associated angular velocity
-     *
-     *
-     *
-     * ALTERNATIVELY:
-     * start with angular velocities close to direction of goal_pos, as soon as we find a risk score below threshold we take it,
-     * but otherwise progressively go "further" from the direction goal_pos
-     */
+geometry_msgs::Twist ReactiveSystemTwist::getTwist(mapping_msgs_urc::RiskAreaArray risk_areas, geometry_msgs::Point32 goal_pos, float traj_time_inc, int traj_num_incs, float linear_vel, float max_angular_vel, int num_angular_vel, float risk_dist_tol_sq) {
 
     geometry_msgs::Twist twist;
     twist.linear.x = linear_vel;
@@ -44,7 +28,7 @@ geometry_msgs::Twist ReactiveSystemPathfinder::pathFinder(mapping_msgs_urc::Risk
 }
 
 
-std::vector<geometry_msgs::Point32> ReactiveSystemPathfinder::getArcTrajectory(float linear_vel, float angular_vel, float time_inc, int num_incs){
+std::vector<geometry_msgs::Point32> ReactiveSystemTwist::getArcTrajectory(float linear_vel, float angular_vel, float time_inc, int num_incs){
 
     std::vector<geometry_msgs::Point32> arc_trajectory;
 
@@ -63,7 +47,7 @@ std::vector<geometry_msgs::Point32> ReactiveSystemPathfinder::getArcTrajectory(f
 
         for (int i = 1; i <= num_incs; i++){
             float angle = time_inc * i * angular_vel;
-            geometry_msgs::Point32 arc_point = ReactiveSystemPathfinder::getArcPoint(center, angle);
+            geometry_msgs::Point32 arc_point = ReactiveSystemTwist::getArcPoint(center, angle);
             arc_trajectory.push_back(arc_point);
         }
 
@@ -73,7 +57,7 @@ std::vector<geometry_msgs::Point32> ReactiveSystemPathfinder::getArcTrajectory(f
 }
 
 
-geometry_msgs::Point32 ReactiveSystemPathfinder::getArcPoint(geometry_msgs::Point32 center, float angle){
+geometry_msgs::Point32 ReactiveSystemTwist::getArcPoint(geometry_msgs::Point32 center, float angle){
 
     //Calculate the arc point in a given arc trajectory by rotating (0,0) about the center point, by angle
     geometry_msgs::Point32 arc_point;
@@ -91,7 +75,7 @@ geometry_msgs::Point32 ReactiveSystemPathfinder::getArcPoint(geometry_msgs::Poin
 }
 
 
-float ReactiveSystemPathfinder::getTrajectoryScore(std::vector<geometry_msgs::Point32> trajectory, geometry_msgs::Point32 goal_pos, mapping_msgs_urc::RiskAreaArray risk_areas, float dist_tol_sq){
+float ReactiveSystemTwist::getTrajectoryScore(std::vector<geometry_msgs::Point32> trajectory, geometry_msgs::Point32 goal_pos, mapping_msgs_urc::RiskAreaArray risk_areas, float dist_tol_sq){
 
     float risk_score = 0;
 
@@ -126,7 +110,7 @@ float ReactiveSystemPathfinder::getTrajectoryScore(std::vector<geometry_msgs::Po
 }
 
 
-bool ReactiveSystemPathfinder::isWithinDistance(geometry_msgs::Point32 p1, geometry_msgs::Point32 p2, float dist_tol_sq){
+bool ReactiveSystemTwist::isWithinDistance(geometry_msgs::Point32 p1, geometry_msgs::Point32 p2, float dist_tol_sq){
 
     return (pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2) < dist_tol_sq);
 }
