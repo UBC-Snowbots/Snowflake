@@ -6,7 +6,7 @@ project(mapping_msgs_urc)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED
     std_msgs
-    geometry_msgs
+    sb_geom_msgs
     message_generation
     )
 
@@ -22,13 +22,13 @@ add_message_files(
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-    DEPENDENCIES std_msgs geometry_msgs
+    DEPENDENCIES std_msgs sb_geom_msgs
 )
 
 ###################################
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-        CATKIN_DEPENDS message_runtime std_msgs geometry_msgs
+        CATKIN_DEPENDS message_runtime std_msgs sb_geom_msgs
 )
 

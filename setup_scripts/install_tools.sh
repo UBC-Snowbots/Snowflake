@@ -54,7 +54,7 @@ done
 #################
 # Install CLion #
 #################
-sudo snap install clion
+sudo snap install clion --classic
 
 ###################
 # Install Arduino #
