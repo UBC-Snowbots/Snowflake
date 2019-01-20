@@ -27,10 +27,6 @@
 
 class BallExtractorNode {
   public:
-    /*
-     * @clusters stores the output from DBSCAN
-     */
-    std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters;
 
     BallExtractorNode(int argc, char** argv, std::string node_name);
 
@@ -56,6 +52,11 @@ class BallExtractorNode {
     ros::Publisher publisher;
     ros::Publisher rviz_cluster_publisher;
     ros::Publisher rviz_ball_publisher;
+
+    /*
+     * @clusters stores the output from DBSCAN
+     */
+    std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters;
 
     /*
      * @minNeighbours is a hyperparameter to DBSCAN that determines
