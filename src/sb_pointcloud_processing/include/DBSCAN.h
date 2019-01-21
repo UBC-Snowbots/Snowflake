@@ -17,6 +17,9 @@ using namespace std::tr1;
 
 class DBSCAN {
   public:
+    /**
+     * DBSCAN only works in 2D for now, for XY and YZ planes.
+     */
     enum Plane { XY, YZ };
 
   private:
