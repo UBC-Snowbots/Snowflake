@@ -6,12 +6,12 @@
 
 #include <DBSCAN.h>
 
-DBSCAN::DBSCAN(int min_neighbours, float radius, DBSCAN::Plane plane) {
-    this->_min_neighbors = min_neighbours;
-    this->_radius        = radius;
-    this->_clusters      = vector<pcl::PointCloud<pcl::PointXYZ>>();
-    this->_plane         = plane;
-}
+//DBSCAN::DBSCAN(int min_neighbours, float radius, DBSCAN::Plane plane) {
+//    this->_min_neighbors = min_neighbours;
+//    this->_radius        = radius;
+//    this->_clusters      = vector<pcl::PointCloud<pcl::PointXYZ>>();
+//    this->_plane         = plane;
+//}
 
 void DBSCAN::setMinNeighbours(int new_min_neighour) {
     this->_min_neighbors = new_min_neighour;
@@ -93,11 +93,11 @@ void DBSCAN::findNeighbors() {
 
 //    Run the following loops in parallel if the size of the point cloud is
 //    bigger than
-//    this->_sequential_cut_off. If there aren't enough points in the point
+//    SEQUENTIAL_CUTOFF. If there aren't enough points in the point
 //    cloud, then
 //    the overhead in creating multiple threads can overpower time gained from
 //    multi threading.
-#pragma omp parallel for if (this->_pcl.size() > this->_sequential_cut_off)
+#pragma omp parallel for if (this->_pcl.size() > SEQUENTIAL_CUTOFF)
     for (unsigned int i = 0; i < this->_pcl.size(); i++) {
         vector<unsigned int> neighbors;
         pcl::PointXYZ current_point = this->_pcl[i];

@@ -7,6 +7,8 @@
 #ifndef LINE_EXTRACTOR_IGVC_DBSCAN_H
 #define LINE_EXTRACTOR_IGVC_DBSCAN_H
 
+#define SEQUENTIAL_CUTOFF 1000
+
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/conversions.h>
 #include <pcl/point_types.h>
@@ -53,9 +55,8 @@ class DBSCAN {
      */
     vector<unsigned int>* _neighbors;
 
-    int _min_neighbors               = 5;
-    float _radius                    = 5;
-    unsigned int _sequential_cut_off = 1000;
+    int _min_neighbors;
+    float _radius;
     Plane _plane;
 
     /*
@@ -63,7 +64,10 @@ class DBSCAN {
      * Takes in minimum number of neighbours and radius as parameters
      * as well as plane (XY or YZ)
      */
-    DBSCAN(int min_neighbours = 5, float radius = 5, Plane plane = XY);
+    DBSCAN(int min_neighbors, float radius, Plane plane) :
+            _min_neighbors(min_neighbors),
+            _radius(radius),
+            _plane(plane) {};
     ~DBSCAN() { delete[] this->_neighbors; }
 
   public:
