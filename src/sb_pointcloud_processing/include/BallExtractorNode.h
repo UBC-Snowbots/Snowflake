@@ -131,11 +131,6 @@ class BallExtractorNode {
      * params being checked: degree_polynomial, lambda, min_neighbours, radius
      */
     bool areParamsInvalid();
-
-    /*
-     * Number of point clouds processed so far
-     */
-    int _execution_count = 0;
 };
 
 #endif // PROJECT_BALL_EXTRACTOR_H
