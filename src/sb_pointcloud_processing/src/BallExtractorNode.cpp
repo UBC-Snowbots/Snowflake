@@ -138,9 +138,9 @@ void BallExtractorNode::convertClustersToPointsWithColors(
 std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
 std::vector<geometry_msgs::Point>& cluster_points,
 std::vector<std_msgs::ColorRGBA>& colors) {
-    std::vector<float> color_library_r = {1.0, 0.0, 0.0};
-    std::vector<float> color_library_g = {0.0, 0.0, 1.0};
-    std::vector<float> color_library_b = {0.0, 1.0, 0.0};
+    std::array<float, 3> color_library_r = {1.0, 0.0, 0.0};
+    std::array<float, 3> color_library_g = {0.0, 0.0, 1.0};
+    std::array<float, 3> color_library_b = {0.0, 1.0, 0.0};
 
     for (unsigned int c = 0; c < clusters.size(); c++) {
         pcl::PointCloud<pcl::PointXYZ> cluster = clusters[c];

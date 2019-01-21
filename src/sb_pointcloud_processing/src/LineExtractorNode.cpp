@@ -97,7 +97,7 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 
 void LineExtractorNode::extractLines() {
     this->clusters =
-    DBSCAN::getClusters(this->pclPtr, this->minNeighbours, this->radius);
+    DBSCAN::getClusters(this->pclPtr, this->minNeighbours, this->radius, DBSCAN::XY);
 
     std::vector<Eigen::VectorXf> lines = regression.getLinesOfBestFit(
     this->clusters, this->degreePoly, this->lambda);
