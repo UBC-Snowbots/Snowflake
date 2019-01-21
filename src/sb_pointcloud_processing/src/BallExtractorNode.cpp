@@ -117,7 +117,6 @@ void BallExtractorNode::visualizeBall(geometry_msgs::Point ball) {
     rviz_ball_publisher.publish(marker);
 }
 
-// TODO: duplicate function from LineExtractorNode - refactor this
 void BallExtractorNode::visualizeClusters() {
     std::vector<geometry_msgs::Point> cluster_points;
     std::vector<std_msgs::ColorRGBA> colors;
