@@ -73,9 +73,9 @@ class DBSCAN {
   public:
     static vector<pcl::PointCloud<pcl::PointXYZ>>
     getClusters(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_ptr,
-                int min_neighbours = 5,
-                float radius       = 5,
-                Plane plane        = XY);
+                int min_neighbours,
+                float radius,
+                Plane plane);
 
     /*
      * Main entry function:
