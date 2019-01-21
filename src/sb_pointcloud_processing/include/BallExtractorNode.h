@@ -27,7 +27,6 @@
 
 class BallExtractorNode {
   public:
-
     BallExtractorNode(int argc, char** argv, std::string node_name);
 
     // main entry function
@@ -123,7 +122,8 @@ class BallExtractorNode {
      *
      * @param cluster The cluster for which to calculate the center.
      */
-    geometry_msgs::Point getCenterOfCluster(const pcl::PointCloud<pcl::PointXYZ>& cluster);
+    geometry_msgs::Point
+    getCenterOfCluster(const pcl::PointCloud<pcl::PointXYZ>& cluster);
 
     /*
      * Checks whether or not all the params we are getting from NodeHandler are

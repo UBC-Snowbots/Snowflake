@@ -81,12 +81,13 @@ const sensor_msgs::PointCloud2ConstPtr processed_pcl) {
 }
 
 void BallExtractorNode::extractBall() {
-    this->clusters =
-    DBSCAN::getClusters(this->pclPtr, this->minNeighbours, this->radius, DBSCAN::YZ);
+    this->clusters = DBSCAN::getClusters(
+    this->pclPtr, this->minNeighbours, this->radius, DBSCAN::YZ);
 
     if (this->clusters.size() < 1) { return; }
 
-    geometry_msgs::Point center_of_ball = this->getCenterOfCluster(this->clusters[0]);
+    geometry_msgs::Point center_of_ball =
+    this->getCenterOfCluster(this->clusters[0]);
 
     this->publisher.publish(center_of_ball);
 
@@ -171,8 +172,8 @@ bool BallExtractorNode::areParamsInvalid() {
     return this->minNeighbours < 0 || this->radius < 0;
 }
 
-geometry_msgs::Point
-BallExtractorNode::getCenterOfCluster(const pcl::PointCloud<pcl::PointXYZ>& cluster) {
+geometry_msgs::Point BallExtractorNode::getCenterOfCluster(
+const pcl::PointCloud<pcl::PointXYZ>& cluster) {
     struct {
         bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const {
             return a.y < b.y;

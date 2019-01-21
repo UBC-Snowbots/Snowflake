@@ -6,7 +6,7 @@
 
 #include <DBSCAN.h>
 
-//DBSCAN::DBSCAN(int min_neighbours, float radius, DBSCAN::Plane plane) {
+// DBSCAN::DBSCAN(int min_neighbours, float radius, DBSCAN::Plane plane) {
 //    this->_min_neighbors = min_neighbours;
 //    this->_radius        = radius;
 //    this->_clusters      = vector<pcl::PointCloud<pcl::PointXYZ>>();

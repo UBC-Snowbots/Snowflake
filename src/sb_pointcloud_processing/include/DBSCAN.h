@@ -64,10 +64,8 @@ class DBSCAN {
      * Takes in minimum number of neighbours and radius as parameters
      * as well as plane
      */
-    DBSCAN(int min_neighbors, float radius, Plane plane) :
-            _min_neighbors(min_neighbors),
-            _radius(radius),
-            _plane(plane) {};
+    DBSCAN(int min_neighbors, float radius, Plane plane)
+      : _min_neighbors(min_neighbors), _radius(radius), _plane(plane){};
     ~DBSCAN() { delete[] this->_neighbors; }
 
   public:
