@@ -20,7 +20,7 @@ using namespace std::tr1;
 class DBSCAN {
   public:
     /**
-     * DBSCAN only works in 2D for now, for XY and YZ planes.
+     * DBSCAN only works in 2D for now
      */
     enum Plane { XY, YZ };
 
@@ -62,7 +62,7 @@ class DBSCAN {
     /*
      * Constructor:
      * Takes in minimum number of neighbours and radius as parameters
-     * as well as plane (XY or YZ)
+     * as well as plane
      */
     DBSCAN(int min_neighbors, float radius, Plane plane) :
             _min_neighbors(min_neighbors),
