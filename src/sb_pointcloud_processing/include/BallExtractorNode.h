@@ -34,13 +34,15 @@ class BallExtractorNode {
     void extractBall();
 
     /*
-     * @clusters: input clusters
-     * @cluster_points: vector to store converted cluster points
-     * @colors: vector to store color for each cluster point
      * This function takes in @clusters, assigns a different color
      * for each cluster, and converts each point to geometry_msgs::Point.
+     *
      * It pushes the points and colors to the back of @cluster_points
      * and @colors.
+     *
+     * @param clusters input clusters
+     * @param cluster_points vector to store converted cluster points
+     * @param colors vector to store color for each cluster point
      */
     static void convertClustersToPointsWithColors(
     std::vector<pcl::PointCloud<pcl::PointXYZ>> clusters,
@@ -90,8 +92,12 @@ class BallExtractorNode {
 
     /*
      * The callback function is called whenever the node receives a
-     * PointCloud message. It converts sensor_msgs PointCloud2 pointer
+     * PointCloud message.
+     *
+     * It converts sensor_msgs PointCloud2 pointer
      * to PCL PointCloud pointer and then extracts lines from the PointCloud
+     *
+     * @param processed_pcl Point cloud received from subscriber
      */
     void pclCallBack(const sensor_msgs::PointCloud2ConstPtr processed_pcl);
 
@@ -110,12 +116,14 @@ class BallExtractorNode {
 
     /*
      * Get the center of the cluster
+     *
      * The z value of the center is min and max / 2
      * The y value of the center is min and max / 2
      * The x value of the center is the min
-     * @cluster_index: the index of cluster of interest in @clusters
+     *
+     * @param cluster The cluster for which to calculate the center.
      */
-    geometry_msgs::Point getCenterOfCluster(unsigned int cluster_index);
+    geometry_msgs::Point getCenterOfCluster(const pcl::PointCloud<pcl::PointXYZ>& cluster);
 
     /*
      * Checks whether or not all the params we are getting from NodeHandler are

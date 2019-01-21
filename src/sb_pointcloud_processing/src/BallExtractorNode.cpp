@@ -96,7 +96,7 @@ void BallExtractorNode::extractBall() {
 
     if (this->clusters.size() < 1) { return; }
 
-    geometry_msgs::Point center_of_ball = this->getCenterOfCluster(0);
+    geometry_msgs::Point center_of_ball = this->getCenterOfCluster(this->clusters[0]);
 
     this->publisher.publish(center_of_ball);
 
@@ -183,9 +183,7 @@ bool BallExtractorNode::areParamsInvalid() {
 }
 
 geometry_msgs::Point
-BallExtractorNode::getCenterOfCluster(unsigned int cluster_index) {
-    pcl::PointCloud<pcl::PointXYZ> cluster = this->clusters[cluster_index];
-
+BallExtractorNode::getCenterOfCluster(const pcl::PointCloud<pcl::PointXYZ>& cluster) {
     struct {
         bool operator()(pcl::PointXYZ a, pcl::PointXYZ b) const {
             return a.y < b.y;
