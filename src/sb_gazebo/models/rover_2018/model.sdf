@@ -6,17 +6,18 @@
       <inertial>
         <mass>10</mass>
         <inertia>
-          <ixx>0.155433</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.0644567</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>0.210206</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -102,17 +103,18 @@
       <inertial>
         <mass>0.0046174</mass>
         <inertia>
-          <ixx>1.542e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.542e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2.037e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -144,17 +146,18 @@
       <inertial>
         <mass>0.00110726</mass>
         <inertia>
-          <ixx>3.74e-06</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>3.74e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>7.1e-07</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -186,17 +189,19 @@
       <inertial>
         <mass>0.00541225</mass>
         <inertia>
-          <ixx>0.000124182</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>9.6995e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>0.000122364</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
+      <gravity>1</gravity>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -214,7 +219,9 @@
           <diffuse>0.7 0.7 0.7 1</diffuse>
           <specular>0.01 0.01 0.01 1</specular>
           <emissive>0 0 0 1</emissive>
-          <shader type='pixel'/>
+          <shader type='pixel'>
+            <normal_map>__default__</normal_map>
+          </shader>
         </material>
         <cast_shadows>1</cast_shadows>
         <transparency>0</transparency>
@@ -280,17 +287,18 @@
       <inertial>
         <mass>0.00955178</mass>
         <inertia>
-          <ixx>0.00066113</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.712e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>0.00065792</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -376,17 +384,19 @@
       <inertial>
         <mass>0.00158531</mass>
         <inertia>
-          <ixx>2.62e-06</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>2.62e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>3.14e-06</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
+      <gravity>1</gravity>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -418,23 +428,24 @@
       <inertial>
         <mass>0.00016166</mass>
         <inertia>
-          <ixx>2.7e-07</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>2.7e-07</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2e-08</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
       <gravity>1</gravity>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
           <cylinder>
-            <radius>0.0588079</radius>
+            <radius>0.0152481</radius>
             <length>0.138038</length>
           </cylinder>
         </geometry>
@@ -461,17 +472,18 @@
       <inertial>
         <mass>0.0019482</mass>
         <inertia>
-          <ixx>2.94803e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.52585e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2.92424e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -555,17 +567,18 @@
       <inertial>
         <mass>0.00190054</mass>
         <inertia>
-          <ixx>2.741e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.49e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2.718e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -651,17 +664,18 @@
       <inertial>
         <mass>1</mass>
         <inertia>
-          <ixx>3.119e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>3.119e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>4.655e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -749,17 +763,18 @@
       <inertial>
         <mass>1</mass>
         <inertia>
-          <ixx>3.119e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>3.119e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>4.655e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -847,17 +862,18 @@
       <inertial>
         <mass>1</mass>
         <inertia>
-          <ixx>3.119e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>3.119e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>4.655e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -945,17 +961,18 @@
       <inertial>
         <mass>0.00016166</mass>
         <inertia>
-          <ixx>2.7e-07</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>2.7e-07</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2e-08</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -987,17 +1004,18 @@
       <inertial>
         <mass>0.00016166</mass>
         <inertia>
-          <ixx>2.7e-07</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>2.7e-07</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2e-08</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1029,17 +1047,18 @@
       <inertial>
         <mass>0.0001415</mass>
         <inertia>
-          <ixx>1.8e-07</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.8e-07</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2e-08</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1071,17 +1090,18 @@
       <inertial>
         <mass>0.0046174</mass>
         <inertia>
-          <ixx>1.542e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.542e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2.037e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1113,17 +1133,18 @@
       <inertial>
         <mass>0.00110726</mass>
         <inertia>
-          <ixx>3.74e-06</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>3.74e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>7.1e-07</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1155,17 +1176,18 @@
       <inertial>
         <mass>0.00541225</mass>
         <inertia>
-          <ixx>0.000124182</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>9.6995e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>0.000122364</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1249,17 +1271,18 @@
       <inertial>
         <mass>0.00955178</mass>
         <inertia>
-          <ixx>0.00066113</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.712e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>0.00065792</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1345,17 +1368,18 @@
       <inertial>
         <mass>0.00158531</mass>
         <inertia>
-          <ixx>2.62e-06</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>2.62e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>3.14e-06</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1387,17 +1411,18 @@
       <inertial>
         <mass>0.00016166</mass>
         <inertia>
-          <ixx>2.7e-07</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>2.7e-07</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2e-08</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1429,17 +1454,18 @@
       <inertial>
         <mass>0.0019482</mass>
         <inertia>
-          <ixx>2.948e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.53e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2.924e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1525,17 +1551,18 @@
       <inertial>
         <mass>0.00190054</mass>
         <inertia>
-          <ixx>2.741e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.49e-06</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2.718e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1621,17 +1648,18 @@
       <inertial>
         <mass>1</mass>
         <inertia>
-          <ixx>3.119e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>3.119e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>4.655e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1719,17 +1747,18 @@
       <inertial>
         <mass>1</mass>
         <inertia>
-          <ixx>3.119e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>3.119e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>4.655e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1817,17 +1846,18 @@
       <inertial>
         <mass>1</mass>
         <inertia>
-          <ixx>3.119e-05</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>3.119e-05</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>4.655e-05</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1915,17 +1945,18 @@
       <inertial>
         <mass>0.00016166</mass>
         <inertia>
-          <ixx>2.7e-07</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>2.7e-07</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2e-08</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1957,17 +1988,18 @@
       <inertial>
         <mass>0.00016166</mass>
         <inertia>
-          <ixx>2.7e-07</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>2.7e-07</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2e-08</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
@@ -1999,17 +2031,18 @@
       <inertial>
         <mass>0.0001415</mass>
         <inertia>
-          <ixx>1.8e-07</ixx>
+          <ixx>0.01</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>1.8e-07</iyy>
+          <iyy>0.01</iyy>
           <iyz>0</iyz>
-          <izz>2e-08</izz>
+          <izz>0.01</izz>
         </inertia>
         <pose frame=''>0 0 0 0 -0 0</pose>
       </inertial>
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
+      <enable_wind>0</enable_wind>
       <visual name='visual'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
