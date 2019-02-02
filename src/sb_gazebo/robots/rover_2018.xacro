@@ -10,18 +10,26 @@
 -->
 
 <robot name="rover_2018" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Footprint of the robot (because gazebo's base_link can't have interia) -->
+    <link name='base_link'/>
+    <joint name="base_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="main_chassis"/>
+    </joint>
+
     <link name='main_chassis'>
         <pose frame=''>-0.495954 0.481744 0.172621 0 -0 0</pose>
         <inertial>
-            <mass>10</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="10"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -30,11 +38,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>1.09569 1.7415 0.312322</size>
-                </box>
+                <box
+                    size="1.09569 1.7415 0.312322"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -56,9 +64,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>1.09569 1.7415 0.312322</size>
-                </box>
+                <box
+                    size="1.09569 1.7415 0.312322"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -110,15 +118,15 @@
     <link name='L_primary_rocker'>
         <pose frame=''>0.120732 0.480291 0.210888 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.0046174</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.0046174"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -127,12 +135,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0992866</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0992866"
+                    length="0.116478"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -153,15 +161,15 @@
     <link name='L_primary_rocker_hinge'>
         <pose frame=''>0.045335 0.475634 0.210685 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00110726</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00110726"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -170,12 +178,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0379471</radius>
-                    <length>0.191181</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0379471"
+                    length="0.191181"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -196,15 +204,15 @@
     <link name='L_primary_wheel_arm_backwards'>
         <pose frame=''>0.120732 0.773902 0.074463 -0.422885 0 0</pose>
         <inertial>
-            <mass>0.00541225</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00541225"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -214,11 +222,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.093481 0.512407 0.11302</size>
-                </box>
+                <box
+                    size="0.093481 0.512407 0.11302"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -240,9 +248,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.093481 0.512407 0.11302</size>
-                </box>
+                <box
+                    size="0.093481 0.512407 0.11302"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -294,15 +302,15 @@
     <link name='L_primary_wheel_arm_forwards'>
         <pose frame=''>0.120732 0.030921 0.003788 0.410827 -0 0</pose>
         <inertial>
-            <mass>0.00955178</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00955178"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -311,11 +319,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.093481 0.904318 0.11302</size>
-                </box>
+                <box
+                    size="0.093481 0.904318 0.11302"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -337,9 +345,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.093481 0.904318 0.11302</size>
-                </box>
+                <box
+                    size="0.093481 0.904318 0.11302"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -391,15 +399,15 @@
     <link name='L_secondary_rocker'>
         <pose frame=''>0.227534 0.930061 -0.012476 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00158531</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00158531"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -409,12 +417,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0665773</radius>
-                    <length>0.088915</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0665773"
+                    length="0.088915"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -435,15 +443,15 @@
     <link name='L_secondary_rocker_hinge'>
         <pose frame=''>0.173471 0.937461 -0.010085 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00016166</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00016166"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -453,12 +461,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0152481</radius>
-                    <length>0.138038</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0152481"
+                    length="0.138038"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -479,15 +487,15 @@
     <link name='L_secondary_wheel_arm_backwards'>
         <pose frame=''>0.227534 1.14505 -0.096467 -0.359364 0 0</pose>
         <inertial>
-            <mass>0.0019482</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.0019482"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -496,11 +504,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.062968 0.419703 0.073703</size>
-                </box>
+                <box
+                    size="0.062968 0.419703 0.073703"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -520,9 +528,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.062968 0.419703 0.073703</size>
-                </box>
+                <box
+                    size="0.062968 0.419703 0.073703"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -574,15 +582,15 @@
     <link name='L_secondary_wheel_arm_forward'>
         <pose frame=''>0.227534 0.747337 -0.096816 0.366679 -0 0</pose>
         <inertial>
-            <mass>0.00190054</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00190054"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -591,11 +599,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.062968 0.40946 0.073703</size>
-                </box>
+                <box
+                    size="0.062968 0.40946 0.073703"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -617,9 +625,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.062968 0.40946 0.073703</size>
-                </box>
+                <box
+                    size="0.062968 0.40946 0.073703"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -671,15 +679,15 @@
     <link name='L_wheel_1'>
         <pose frame=''>0.231981 -0.300898 -0.152796 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>1</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="1"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -688,12 +696,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -715,10 +723,10 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -770,15 +778,15 @@
     <link name='L_wheel_2'>
         <pose frame=''>0.327595 0.588491 -0.15151 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>1</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="1"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -787,12 +795,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -814,10 +822,10 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -869,15 +877,15 @@
     <link name='L_wheel_3'>
         <pose frame=''>0.327595 1.29129 -0.152082 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>1</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="1"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -886,12 +894,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -913,10 +921,10 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -968,15 +976,15 @@
     <link name='L_wheel_hinge_1'>
         <pose frame=''>0.157404 -0.319861 -0.15619 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00016166</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00016166"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -985,12 +993,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0170673</radius>
-                    <length>0.138038</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0170673"
+                    length="0.138038"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1011,15 +1019,15 @@
     <link name='L_wheel_hinge_2'>
         <pose frame=''>0.266627 0.591116 -0.159992 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00016166</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00016166"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1028,12 +1036,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0170673</radius>
-                    <length>0.138038</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0170673"
+                    length="0.138038"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1054,15 +1062,15 @@
     <link name='L_wheel_hinge_3'>
         <pose frame=''>0.283732 1.29534 -0.157563 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.0001415</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.0001415"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1071,12 +1079,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0170673</radius>
-                    <length>0.120823</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0170673"
+                    length="0.120823"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1097,15 +1105,15 @@
     <link name='R_primary_rocker'>
         <pose frame=''>-1.11994 0.480291 0.2099 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.0046174</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.0046174"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1114,12 +1122,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0992866</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0992866"
+                    length="0.116478"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1140,15 +1148,15 @@
     <link name='R_primary_rocker_hinge'>
         <pose frame=''>-1.03751 0.475634 0.209823 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00110726</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00110726"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1157,12 +1165,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0379471</radius>
-                    <length>0.191181</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0379471"
+                    length="0.191181"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1183,15 +1191,15 @@
     <link name='R_primary_wheel_arm_backwards'>
         <pose frame=''>-1.11994 0.773902 0.074463 -0.422885 0 0</pose>
         <inertial>
-            <mass>0.00541225</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00541225"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1200,11 +1208,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.093481 0.512407 0.11302</size>
-                </box>
+                <box
+                    size="0.093481 0.512407 0.11302"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1224,9 +1232,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.093481 0.512407 0.11302</size>
-                </box>
+                <box
+                    size="0.093481 0.512407 0.11302"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -1278,15 +1286,15 @@
     <link name='R_primary_wheel_arm_forwards'>
         <pose frame=''>-1.11994 0.030921 0.003788 0.410827 -0 0</pose>
         <inertial>
-            <mass>0.00955178</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00955178"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1295,11 +1303,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.093481 0.904318 0.11302</size>
-                </box>
+                <box
+                    size="0.093481 0.904318 0.11302"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1321,9 +1329,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.093481 0.904318 0.11302</size>
-                </box>
+                <box
+                    size="0.093481 0.904318 0.11302"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -1375,15 +1383,15 @@
     <link name='R_secondary_rocker'>
         <pose frame=''>-1.22452 0.930061 -0.013632 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00158531</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00158531"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1392,12 +1400,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0665773</radius>
-                    <length>0.088915</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0665773"
+                    length="0.088915"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1418,15 +1426,15 @@
     <link name='R_secondary_rocker_hinge'>
         <pose frame=''>-1.16913 0.937461 -0.011154 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00016166</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00016166"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1435,12 +1443,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0170673</radius>
-                    <length>0.138038</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0170673"
+                    length="0.138038"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1461,15 +1469,15 @@
     <link name='R_secondary_wheel_arm_backwards'>
         <pose frame=''>-1.22452 1.14505 -0.096467 -0.359364 0 0</pose>
         <inertial>
-            <mass>0.0019482</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.0019482"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1478,11 +1486,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.062968 0.419703 0.073703</size>
-                </box>
+                <box
+                    size="0.062968 0.419703 0.073703"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1504,9 +1512,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.062968 0.419703 0.073703</size>
-                </box>
+                <box
+                    size="0.062968 0.419703 0.073703"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -1558,15 +1566,15 @@
     <link name='R_secondary_wheel_arm_forward'>
         <pose frame=''>-1.22452 0.747337 -0.096816 0.366679 -0 0</pose>
         <inertial>
-            <mass>0.00190054</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00190054"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1575,11 +1583,11 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.062968 0.40946 0.073703</size>
-                </box>
+                <box
+                    size="0.062968 0.40946 0.073703"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1601,9 +1609,9 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <box>
-                    <size>0.062968 0.40946 0.073703</size>
-                </box>
+                <box
+                    size="0.062968 0.40946 0.073703"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -1655,15 +1663,15 @@
     <link name='R_wheel_1'>
         <pose frame=''>-1.23345 -0.300898 -0.153963 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>1</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="1"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1672,12 +1680,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1699,10 +1707,10 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -1754,15 +1762,15 @@
     <link name='R_wheel_2'>
         <pose frame=''>-1.31728 0.588299 -0.152822 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>1</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="1"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1771,12 +1779,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1798,10 +1806,10 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -1853,15 +1861,15 @@
     <link name='R_wheel_3'>
         <pose frame=''>-1.31997 1.29129 -0.1534 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>1</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="1"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1870,12 +1878,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1897,10 +1905,10 @@
             <max_contacts>10</max_contacts>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.122078</radius>
-                    <length>0.116478</length>
-                </cylinder>
+                <cylinder
+                    radius="0.122078"
+                    length="0.116478"
+                />
             </geometry>
             <surface>
                 <friction>
@@ -1952,15 +1960,15 @@
     <link name='R_wheel_hinge_1'>
         <pose frame=''>-1.17844 -0.319861 -0.157254 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00016166</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00016166"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -1969,12 +1977,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0170673</radius>
-                    <length>0.138038</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0170673"
+                    length="0.138038"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -1995,15 +2003,15 @@
     <link name='R_wheel_hinge_2'>
         <pose frame=''>-1.26851 0.591116 -0.161214 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.00016166</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.00016166"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -2012,12 +2020,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0170673</radius>
-                    <length>0.138038</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0170673"
+                    length="0.138038"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -2038,15 +2046,15 @@
     <link name='R_wheel_hinge_3'>
         <pose frame=''>-1.26643 1.29534 -0.158797 3.14159 -1.57 -3.14159</pose>
         <inertial>
-            <mass>0.0001415</mass>
-            <inertia>
-                <ixx>0.01</ixx>
-                <ixy>0</ixy>
-                <ixz>0</ixz>
-                <iyy>0.01</iyy>
-                <iyz>0</iyz>
-                <izz>0.01</izz>
-            </inertia>
+            <mass value="0.0001415"/>
+            <inertia
+                ixx="0.01"
+                ixy="0"
+                ixz="0"
+                iyy="0.01"
+                iyz="0"
+                izz="0.01"
+            />
             <pose frame=''>0 0 0 0 -0 0</pose>
         </inertial>
         <self_collide>0</self_collide>
@@ -2055,12 +2063,12 @@
         <visual name='visual'>
             <pose frame=''>0 0 0 0 -0 0</pose>
             <geometry>
-                <cylinder>
-                    <radius>0.0170673</radius>
-                    <length>0.120823</length>
-                </cylinder>
+                <cylinder
+                    radius="0.0170673"
+                    length="0.120823"
+                />
             </geometry>
-            <material>
+            <material name="grey">
                 <lighting>1</lighting>
                 <script>
                     <uri>file://media/materials/scripts/gazebo.material</uri>
@@ -2079,52 +2087,58 @@
         </visual>
     </link>
     <joint name='L_primary_rocker_JOINT_4' type='fixed'>
-        <parent>L_primary_rocker</parent>
-        <child>L_primary_wheel_arm_forwards</child>
+        <parent link="L_primary_rocker" />
+        <child link="L_primary_wheel_arm_forwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_primary_rocker_JOINT_6' type='fixed'>
-        <parent>L_primary_rocker</parent>
-        <child>L_primary_wheel_arm_backwards</child>
+        <parent link="L_primary_rocker" />
+        <child link="L_primary_wheel_arm_backwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_primary_rocker_hinge_JOINT_2' type='revolute'>
-        <parent>L_primary_rocker_hinge</parent>
-        <child>L_primary_rocker</child>
+        <parent link="L_primary_rocker_hinge" />
+        <child link="L_primary_rocker" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2134,98 +2148,104 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_primary_rocker_hinge_JOINT_3' type='fixed'>
-        <parent>L_primary_rocker_hinge</parent>
-        <child>main_chassis</child>
+        <parent link="L_primary_rocker_hinge" />
+        <child link="main_chassis" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_primary_wheel_arm_backwards_JOINT_1' type='fixed'>
-        <parent>L_secondary_rocker_hinge</parent>
-        <child>L_primary_wheel_arm_backwards</child>
+        <parent link="L_secondary_rocker_hinge" />
+        <child link="L_primary_wheel_arm_backwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_secondary_rocker_JOINT_10' type='fixed'>
-        <parent>L_secondary_rocker</parent>
-        <child>L_secondary_wheel_arm_forward</child>
+        <parent link="L_secondary_rocker" />
+        <child link="L_secondary_wheel_arm_forward" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_secondary_rocker_JOINT_8' type='fixed'>
-        <parent>L_secondary_rocker</parent>
-        <child>L_secondary_wheel_arm_backwards</child>
+        <parent link="L_secondary_rocker" />
+        <child link="L_secondary_wheel_arm_backwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_secondary_rocker_hinge_JOINT_9' type='revolute'>
-        <parent>L_secondary_rocker_hinge</parent>
-        <child>L_secondary_rocker</child>
+        <parent link="L_secondary_rocker_hinge" />
+        <child link="L_secondary_rocker" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2235,47 +2255,53 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0</erp>
+                    cfm="0"
+                    erp="0"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_wheel_hinge_1_JOINT_1' type='fixed'>
-        <parent>L_wheel_hinge_1</parent>
-        <child>L_primary_wheel_arm_forwards</child>
+        <parent link="L_wheel_hinge_1" />
+        <child link="L_primary_wheel_arm_forwards" />
         <pose frame=''>0 -0.4 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_wheel_hinge_1_JOINT_2' type='revolute'>
-        <parent>L_wheel_hinge_1</parent>
-        <child>L_wheel_1</child>
+        <parent link="L_wheel_hinge_1" />
+        <child link="L_wheel_1" />
         <pose frame=''>0 0 -0.02 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2285,47 +2311,53 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_wheel_hinge_2_JOINT_11' type='fixed'>
-        <parent>L_wheel_hinge_2</parent>
-        <child>L_secondary_wheel_arm_forward</child>
+        <parent link="L_wheel_hinge_2" />
+        <child link="L_secondary_wheel_arm_forward" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_wheel_hinge_2_JOINT_12' type='revolute'>
-        <parent>L_wheel_hinge_2</parent>
-        <child>L_wheel_2</child>
+        <parent link="L_wheel_hinge_2" />
+        <child link="L_wheel_2" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2335,47 +2367,53 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_wheel_hinge_3_JOINT_13' type='fixed'>
-        <parent>L_wheel_hinge_3</parent>
-        <child>L_secondary_wheel_arm_backwards</child>
+        <parent link="L_wheel_hinge_3" />
+        <child link="L_secondary_wheel_arm_backwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='L_wheel_hinge_3_JOINT_14' type='revolute'>
-        <parent>L_wheel_hinge_3</parent>
-        <child>L_wheel_3</child>
+        <parent link="L_wheel_hinge_3" />
+        <child link="L_wheel_3" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2385,64 +2423,70 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_primary_rocker_JOINT_4' type='fixed'>
-        <parent>R_primary_rocker</parent>
-        <child>R_primary_wheel_arm_forwards</child>
+        <parent link="R_primary_rocker" />
+        <child link="R_primary_wheel_arm_forwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_primary_rocker_JOINT_6' type='fixed'>
-        <parent>R_primary_rocker</parent>
-        <child>R_primary_wheel_arm_backwards</child>
+        <parent link="R_primary_rocker" />
+        <child link="R_primary_wheel_arm_backwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_primary_rocker_hinge_JOINT_2' type='revolute'>
-        <parent>R_primary_rocker_hinge</parent>
-        <child>R_primary_rocker</child>
+        <parent link="R_primary_rocker_hinge" />
+        <child link="R_primary_rocker" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2452,98 +2496,104 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_primary_rocker_hinge_JOINT_3' type='fixed'>
-        <parent>R_primary_rocker_hinge</parent>
-        <child>main_chassis</child>
+        <parent link="R_primary_rocker_hinge" />
+        <child link="main_chassis" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_primary_wheel_arm_backwards_JOINT_1' type='fixed'>
-        <parent>R_secondary_rocker_hinge</parent>
-        <child>R_primary_wheel_arm_backwards</child>
+        <parent link="R_secondary_rocker_hinge" />
+        <child link="R_primary_wheel_arm_backwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_secondary_rocker_JOINT_10' type='fixed'>
-        <parent>R_secondary_rocker</parent>
-        <child>R_secondary_wheel_arm_forward</child>
+        <parent link="R_secondary_rocker" />
+        <child link="R_secondary_wheel_arm_forward" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_secondary_rocker_JOINT_8' type='fixed'>
-        <parent>R_secondary_rocker</parent>
-        <child>R_secondary_wheel_arm_backwards</child>
+        <parent link="R_secondary_rocker" />
+        <child link="R_secondary_wheel_arm_backwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_secondary_rocker_hinge_JOINT_9' type='revolute'>
-        <parent>R_secondary_rocker_hinge</parent>
-        <child>R_secondary_rocker</child>
+        <parent link="R_secondary_rocker_hinge" />
+        <child link="R_secondary_rocker" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2553,47 +2603,53 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_wheel_hinge_1_JOINT_1' type='fixed'>
-        <parent>R_wheel_hinge_1</parent>
-        <child>R_primary_wheel_arm_forwards</child>
+        <parent link="R_wheel_hinge_1" />
+        <child link="R_primary_wheel_arm_forwards" />
         <pose frame=''>0 -0.4 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_wheel_hinge_1_JOINT_2' type='revolute'>
-        <parent>R_wheel_hinge_1</parent>
-        <child>R_wheel_1</child>
+        <parent link="R_wheel_hinge_1" />
+        <child link="R_wheel_1" />
         <pose frame=''>0 0 -0.02 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2603,47 +2659,53 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_wheel_hinge_2_JOINT_11' type='fixed'>
-        <parent>R_wheel_hinge_2</parent>
-        <child>R_secondary_wheel_arm_forward</child>
+        <parent link="R_wheel_hinge_2" />
+        <child link="R_secondary_wheel_arm_forward" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_wheel_hinge_2_JOINT_12' type='revolute'>
-        <parent>R_wheel_hinge_2</parent>
-        <child>R_wheel_2</child>
+        <parent link="R_wheel_hinge_2" />
+        <child link="R_wheel_2" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2653,47 +2715,53 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_wheel_hinge_3_JOINT_13' type='fixed'>
-        <parent>R_wheel_hinge_3</parent>
-        <child>R_secondary_wheel_arm_backwards</child>
+        <parent link="R_wheel_hinge_3" />
+        <child link="R_secondary_wheel_arm_backwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='R_wheel_hinge_3_JOINT_14' type='revolute'>
-        <parent>R_wheel_hinge_3</parent>
-        <child>R_wheel_3</child>
+        <parent link="R_wheel_hinge_3" />
+        <child link="R_wheel_3" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>0 0 1</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2703,30 +2771,36 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='main_chassis_JOINT_3' type='prismatic'>
-        <parent>main_chassis</parent>
-        <child>L_primary_wheel_arm_forwards</child>
+        <parent link="main_chassis" />
+        <child link="L_primary_wheel_arm_forwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>1 0 0</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2736,30 +2810,36 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
     </joint>
     <joint name='main_chassis_JOINT_4' type='prismatic'>
-        <parent>main_chassis</parent>
-        <child>R_primary_wheel_arm_forwards</child>
+        <parent link="main_chassis" />
+        <child link="R_primary_wheel_arm_forwards" />
         <pose frame=''>0 0 0 0 -0 0</pose>
+        <limit
+            lower="-1.79769e+308"
+            upper="1.79769e+308"
+            effort="-1"
+            velocity="-1"
+        />
         <axis>
             <xyz>1 0 0</xyz>
             <use_parent_model_frame>0</use_parent_model_frame>
-            <limit>
-                <lower>-1.79769e+308</lower>
-                <upper>1.79769e+308</upper>
-                <effort>-1</effort>
-                <velocity>-1</velocity>
-            </limit>
+            <limit
+                lower="-1.79769e+308"
+                upper="1.79769e+308"
+                effort="-1"
+                velocity="-1"
+            />
             <dynamics>
                 <spring_reference>0</spring_reference>
                 <spring_stiffness>0</spring_stiffness>
@@ -2769,13 +2849,13 @@
         </axis>
         <physics>
             <ode>
-                <limit>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
-                </limit>
+                <limit
+                    cfm="0"
+                    erp="0.2"
+                />
                 <suspension>
-                    <cfm>0</cfm>
-                    <erp>0.2</erp>
+                    cfm="0"
+                    erp="0.2"
                 </suspension>
             </ode>
         </physics>
