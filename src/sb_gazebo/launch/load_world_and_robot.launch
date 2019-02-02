@@ -14,7 +14,7 @@
 
     <!-- Start up the world -->
     <include file="$(find sb_gazebo)/launch/load_world.launch">       
-        <arg name="world_path" value="$(find sb_gazebo)/worlds/$(arg world_name)"/> 
+        <arg name="world_name" value="$(arg world_name)"/> 
     </include>
 
     <!-- Load the robot -->
