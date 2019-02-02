@@ -1,0 +1,15 @@
+<launch>      
+
+    <!-- Path to the folder containing the world that we want to launch -->
+    <arg name="world_path"/>
+    
+    <!-- Start up the world -->
+    <include file="$(find sb_gazebo)/launch/gazebo_open_world.launch">       
+        <arg name="world_name" value="$(arg world_path)"/> 
+        <arg name="gui" value="true"/>
+        <!-- Remap the tf topic to another topic, so that we can test out things
+            that create tf's, like robot_pose_ekf -->
+        <arg name="tf_topic" value="gazebo_tf"/>
+    </include>  
+    
+</launch>

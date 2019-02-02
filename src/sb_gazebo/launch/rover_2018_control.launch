@@ -1,0 +1,18 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find sb_gazebo)/config/rover_2018_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner"
+    pkg="controller_manager"
+    type="spawner" respawn="false"
+    output="screen" ns="/"
+    args="
+        joint_state_controller
+        L_wheel_1_controller
+        R_wheel_1_controller
+      "
+  />
+
+</launch>

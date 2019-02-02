@@ -13,11 +13,6 @@
       right_centre_wheel_controller"
   />
 
-
-  <include file="$(find sb_gazebo)/launch/general_robot_control.launch">
-    <arg name="robot" value="elsax"/>
-  </include>
-
   <!-- This is for jfrost's depthcamera/kinect/zed plugin -->
   <node name="zed_transform" pkg="sb_gazebo" type="zed_transform" output="screen">
     <rosparam param="output_frame"> "zed_pointcloud" </rosparam>
