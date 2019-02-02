@@ -22,15 +22,6 @@
         <arg name="x_start_coordinate" value="$(arg x_start_coordinate)"/>
         <arg name="y_start_coordinate" value="$(arg y_start_coordinate)"/>
         <arg name="initial_rotation" value="$(arg initial_rotation)"/>
-        <arg name="xacro_path" 
-             value="$(find sb_gazebo)/robots/$(arg robot_name).xacro"
-        />
-        <arg name="gazebo_path" 
-             value="$(find sb_gazebo)/robots/$(arg robot_name).gazebo"
-        />
-        <arg name="controller_launch_file_path" 
-             value="$(find sb_gazebo)/launch/$(arg robot_name)_control.launch"
-        />
         <arg name="robot_name" value="$(arg robot_name)"/>
     </include>
 
