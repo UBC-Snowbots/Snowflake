@@ -27,21 +27,23 @@
     <xacro:property name="primary_rocker_arm_length" value="0.4"/>
     <xacro:property name="primary_rocker_arm_radius" value="0.03"/>
     <xacro:property name="primary_rocker_arm_pitch" value="${pi*2.7/4}"/>
-    <xacro:property name="primary_rocker_arm_x_pos" value="${primary_rocker_x_pos}"/>
-    <xacro:property name="primary_rocker_arm_y_pos" value="${primary_rocker_radius - cos(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
-    <xacro:property name="primary_rocker_arm_z_pos" value="${chassis_z_size + chassis_elevation - sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+    <xacro:property name="primary_rocker_arm_x_offset" value="0"/>
+    <xacro:property name="primary_rocker_arm_y_offset" value="${primary_rocker_radius - cos(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+    <xacro:property name="primary_rocker_arm_z_offset" value="${- sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
 
     <xacro:property name="primary_wheel_axle_length" value="0.1"/>
     <xacro:property name="primary_wheel_axle_radius" value="0.015"/>
-    <xacro:property name="primary_wheel_axle_x_pos" value="${primary_rocker_x_pos}"/>
-    <xacro:property name="primary_wheel_axle_y_pos" value="${primary_rocker_y_pos + cos(primary_rocker_arm_pitch)*primary_rocker_arm_length*2}"/>
-    <xacro:property name="primary_wheel_axle_z_pos" value="${primary_rocker_arm_z_pos - sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+    <xacro:property name="primary_wheel_axle_x_offset" value="${primary_wheel_axle_length/2}"/>
+    <xacro:property name="primary_wheel_axle_y_offset" 
+        value="${sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+    <xacro:property name="primary_wheel_axle_z_offset" 
+        value="${cos(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
 
     <xacro:property name="primary_wheel_length" value="0.15"/>
     <xacro:property name="primary_wheel_radius" value="0.17"/>
-    <xacro:property name="primary_wheel_x_pos" value="${primary_wheel_axle_x_pos + primary_wheel_axle_length/2 + primary_wheel_length/2}"/>
-    <xacro:property name="primary_wheel_y_pos" value="${primary_wheel_axle_y_pos}"/>
-    <xacro:property name="primary_wheel_z_pos" value="${primary_wheel_axle_z_pos}"/>
+    <xacro:property name="primary_wheel_x_offset" value="${primary_wheel_length/2}"/>
+    <xacro:property name="primary_wheel_y_offset" value="0"/>
+    <xacro:property name="primary_wheel_z_offset" value="0"/>
 
     <!-- Footprint of the robot (because gazebo's base_link can't have interia) -->
     <link name='base_link'/>
@@ -65,15 +67,21 @@
         />
 
     <xacro:macro name="primary_rocker" params="lr_prefix reflect">
-        <joint name="${lr_prefix}_primary_rocker_to_chassis" type="fixed">
+        <!-- TODO: Make this revolute model with a spring to resist rotation (but allow it) instead of just being fixed like it currently is -->
+        <joint name="${lr_prefix}_primary_rocker_to_chassis" type="revolute">
             <parent link="chassis"/>
             <child link="${lr_prefix}_primary_rocker"/>
+            <origin xyz="${primary_rocker_x_pos*reflect} ${primary_rocker_y_pos} ${primary_rocker_z_pos}" rpy="0 0 0" />
+            <axis xyz="1 0 0" rpy="0 0 0" />
+            <limit effort="100" velocity="100"/>
+            <joint_properties damping="0.0" friction="0.0"/>
+            <limit lower="-20" upper="20" effort="100" velocity="100"/>
         </joint>
         <cylinder_link 
             name="${lr_prefix}_primary_rocker"
-            x_pos="${primary_rocker_x_pos*reflect}" 
-            y_pos="${primary_rocker_y_pos}" 
-            z_pos="${primary_rocker_z_pos}" 
+            x_pos="0" 
+            y_pos="0" 
+            z_pos="0" 
             radius="${primary_rocker_radius}"
             length="${primary_rocker_length}"
             roll="0" 
@@ -90,12 +98,19 @@
         <joint name="${lr_prefix}_${fb_prefix}_primary_rocker_to_primary_rocker_arm" type="fixed">
             <parent link="${lr_prefix}_primary_rocker"/>
             <child link="${lr_prefix}_${fb_prefix}_primary_rocker_arm"/>
+            <origin xyz="
+                ${primary_rocker_arm_x_offset*x_reflect}
+                ${primary_rocker_arm_y_offset*y_reflect}
+                ${primary_rocker_arm_z_offset}
+                " 
+                rpy="0 0 0"
+            />
         </joint>
         <cylinder_link 
             name="${lr_prefix}_${fb_prefix}_primary_rocker_arm"
-            x_pos="${primary_rocker_arm_x_pos*x_reflect}" 
-            y_pos="${primary_rocker_arm_y_pos*y_reflect}" 
-            z_pos="${primary_rocker_arm_z_pos}" 
+            x_pos="0"
+            y_pos="0"
+            z_pos="0"
             radius="${primary_rocker_arm_radius}"
             length="${primary_rocker_arm_length}"
             roll="0" 
@@ -114,12 +129,19 @@
         <joint name="${lr_prefix}_${fb_prefix}_primary_rocker_arm_to_primary_wheel_axle" type="fixed">
             <parent link="${lr_prefix}_${fb_prefix}_primary_rocker_arm"/>
             <child link="${lr_prefix}_${fb_prefix}_primary_wheel_axle"/>
+            <origin xyz="
+                ${primary_wheel_axle_x_offset*x_reflect}
+                ${primary_wheel_axle_y_offset*y_reflect}
+                ${primary_wheel_axle_z_offset}
+                " 
+                rpy="0 0 0"
+            />
         </joint>
         <cylinder_link 
             name="${lr_prefix}_${fb_prefix}_primary_wheel_axle"
-            x_pos="${(primary_wheel_axle_x_pos + primary_wheel_axle_length/2)*x_reflect}" 
-            y_pos="${primary_wheel_axle_y_pos*y_reflect}" 
-            z_pos="${primary_wheel_axle_z_pos}" 
+            x_pos="0"
+            y_pos="0"
+            z_pos="0"
             radius="${primary_wheel_axle_radius}"
             length="${primary_wheel_axle_length}"
             roll="0" 
@@ -136,9 +158,15 @@
 
     <xacro:macro name="primary_wheel" params="lr_prefix fb_prefix x_reflect y_reflect">
         <joint name="${lr_prefix}_${fb_prefix}_primary_rocker_arm_to_primary_wheel" type="continuous">
-            <parent link="${lr_prefix}_${fb_prefix}_primary_rocker_arm"/>
+            <parent link="${lr_prefix}_${fb_prefix}_primary_wheel_axle"/>
             <child link="${lr_prefix}_${fb_prefix}_primary_wheel"/>
-            <origin xyz="${primary_wheel_x_pos*x_reflect} ${primary_wheel_y_pos*y_reflect} ${primary_wheel_z_pos}" rpy="0 0 0" />
+            <origin xyz="
+                ${primary_wheel_x_offset*x_reflect}
+                ${primary_wheel_y_offset*y_reflect}
+                ${primary_wheel_z_offset}
+                " 
+                rpy="0 0 0"
+                />
             <axis xyz="1 0 0" rpy="0 0 0" />
             <limit effort="100" velocity="100"/>
             <joint_properties damping="0.0" friction="0.0"/>
