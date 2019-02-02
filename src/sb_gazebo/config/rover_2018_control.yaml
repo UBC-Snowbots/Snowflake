@@ -1,0 +1,15 @@
+robot:
+    # Publish all joint states
+    joint_state_controller:
+        type: joint_state_controller/JointStateController
+        publish_rate: 50
+
+    # Wheel Controllers
+    L_wheel_1_controller:
+        type: effort_controllers/JointEffortController
+        joint: L_wheel_hinge_1_JOINT_2
+        pid: {p: 100.0, i: 0.1, d: 10.0}
+    R_wheel_1_controller:
+        type: effort_controllers/JointEffortController
+        joint: R_wheel_hinge_1_JOINT_2
+        pid: {p: 100.0, i: 0.1, d: 10.0}
