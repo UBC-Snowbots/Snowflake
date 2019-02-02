@@ -1,0 +1,14 @@
+<launch>
+
+    <!-- Runs a rough approximation of the IGVC Basic Course in Gazebo -->    
+
+    <!-- Start the world -->
+    <include file="$(find sb_gazebo)/launch/load_world_and_robot.launch">
+        <arg name="world_name" value="empty.world"/>
+        <arg name="x_start_coordinate" value="0"/>
+        <arg name="y_start_coordinate" value="0"/>
+        <arg name="initial_rotation" value="0"/>
+        <arg name="robot_name" value="rover_2018"/>
+    </include>
+     
+</launch>
