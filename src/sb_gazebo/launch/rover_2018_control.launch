@@ -10,8 +10,6 @@
     output="screen" ns="/"
     args="
         joint_state_controller
-        L_wheel_1_controller
-        R_wheel_1_controller
       "
   />
 
