@@ -12,8 +12,8 @@
     <xacro:include filename="$(find sb_gazebo)/robots/materials.xacro"/>
     <xacro:include filename="$(find sb_gazebo)/robots/rover_2018.gazebo"/>
 
+    <xacro:property name="chassis_x_size" value="0.7"/>
     <xacro:property name="chassis_y_size" value="0.94"/>
-    <xacro:property name="chassis_x_size" value="0.75"/>
     <xacro:property name="chassis_z_size" value="0.4"/>
     <xacro:property name="chassis_mass" value="10"/>
     <xacro:property name="chassis_elevation" value="0.5"/>
@@ -23,41 +23,44 @@
 
     <xacro:property name="primary_rocker_radius" value="0.15"/>
     <xacro:property name="primary_rocker_length" value="0.1"/>
-    <xacro:property name="primary_rocker_chassis_clearance" value="0.1"/>
-    <xacro:property name="primary_rocker_x_offset" value="${chassis_x_size/2 + primary_rocker_length/2 + primary_rocker_chassis_clearance}"/>
-    <xacro:property name="primary_rocker_y_offset" value="0"/>
+    <xacro:property name="primary_rocker_chassis_clearance" value="0.02"/>
+    <xacro:property name="primary_rocker_x_offset" value="0"/>
+    <xacro:property name="primary_rocker_y_offset" value="${chassis_x_size/2 + primary_rocker_length/2 + primary_rocker_chassis_clearance}"/>
     <xacro:property name="primary_rocker_z_offset" value="0"/>
 
     <xacro:property name="primary_rocker_arm_length" value="0.4"/>
     <xacro:property name="primary_rocker_arm_radius" value="0.03"/>
     <xacro:property name="primary_rocker_arm_pitch" value="${pi*2.7/4}"/>
-    <xacro:property name="primary_rocker_arm_x_offset" value="0"/>
-    <xacro:property name="primary_rocker_arm_y_offset" value="${primary_rocker_radius - cos(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
-    <xacro:property name="primary_rocker_arm_z_offset" value="${- sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+    <xacro:property name="primary_rocker_arm_x_offset" 
+        value="${primary_rocker_radius - cos(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"
+        />
+    <xacro:property name="primary_rocker_arm_y_offset" value="0"/>
+    <xacro:property name="primary_rocker_arm_z_offset" 
+        value="${- sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
 
     <xacro:property name="primary_wheel_axle_length" value="0.1"/>
     <xacro:property name="primary_wheel_axle_radius" value="0.015"/>
-    <xacro:property name="primary_wheel_axle_x_offset" value="${primary_wheel_axle_length/2}"/>
-    <xacro:property name="primary_wheel_axle_y_offset" 
+    <xacro:property name="primary_wheel_axle_x_offset" 
         value="${sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+    <xacro:property name="primary_wheel_axle_y_offset" value="${primary_wheel_axle_length/2}"/>
     <xacro:property name="primary_wheel_axle_z_offset" 
         value="${cos(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
 
     <xacro:property name="primary_wheel_length" value="0.15"/>
     <xacro:property name="primary_wheel_radius" value="0.17"/>
-    <xacro:property name="primary_wheel_x_offset" value="${primary_wheel_length/2}"/>
-    <xacro:property name="primary_wheel_y_offset" value="0"/>
+    <xacro:property name="primary_wheel_x_offset" value="0"/>
+    <xacro:property name="primary_wheel_y_offset" value="${primary_wheel_length/2}"/>
     <xacro:property name="primary_wheel_z_offset" value="0"/>
 
-    <xacro:property name="tower_upright_y_offset" value="${chassis_y_size/2}"/>
+    <xacro:property name="tower_upright_x_offset" value="${chassis_y_size/2}"/>
     <xacro:property name="tower_upright_height" value="0.5"/>
     <xacro:property name="tower_upright_x_size" value="0.02"/>
     <xacro:property name="tower_upright_y_size" value="0.02"/>
     <xacro:property name="tower_upright_z_offset" value="${tower_upright_height/2 + chassis_z_size/2}"/>
 
     <xacro:property name="camera_size" value="0.05"/>
-    <xacro:property name="camera_roll" value="${pi/4}"/>
-    <xacro:property name="camera_y_offset" value="0.03"/>
+    <xacro:property name="camera_pitch" value="${pi/4}"/>
+    <xacro:property name="camera_x_offset" value="0.03"/>
     <xacro:property name="camera_z_offset" value="${tower_upright_height/2}"/>
 
     <!-- JOINTS AND LINKS
@@ -83,8 +86,8 @@
         x_pos="0"
         y_pos="0"
         z_pos="0"
-        x_size="${chassis_y_size}"
-        y_size="${chassis_x_size}"
+        x_size="${chassis_x_size}"
+        y_size="${chassis_y_size}"
         z_size="${chassis_z_size}"
         roll="0" 
         pitch="0" 
@@ -93,19 +96,23 @@
         material_name="grey"
         />
 
-    <xacro:macro name="primary_rocker" params="lr_prefix reflect">
+    <xacro:macro name="primary_rocker" params="lr_prefix y_reflect">
         <!-- TODO: Make this revolute model with a spring to resist rotation (but allow it) instead of just being fixed like it currently is -->
         <joint name="${lr_prefix}_primary_rocker_to_chassis" type="revolute">
             <parent link="chassis"/>
             <child link="${lr_prefix}_primary_rocker"/>
             <origin xyz="
-                ${primary_rocker_x_offset*reflect} 
-                ${primary_rocker_y_offset} 
+                ${primary_rocker_x_offset} 
+                ${primary_rocker_y_offset*y_reflect} 
                 ${primary_rocker_z_offset}
                 " 
-                rpy="0 0 0" 
+                rpy="
+                0
+                0
+                0
+                " 
                 />
-            <axis xyz="1 0 0" rpy="0 0 0" />
+            <axis xyz="0 1 0" rpy="0 0 0" />
             <limit effort="100" velocity="100"/>
             <joint_properties damping="0.0" friction="0.0"/>
             <limit lower="-20" upper="20" effort="100" velocity="100"/>
@@ -117,15 +124,15 @@
             z_pos="0" 
             radius="${primary_rocker_radius}"
             length="${primary_rocker_length}"
-            roll="0" 
+            roll="${pi/2}" 
             pitch="${pi/2}" 
             yaw="0"
             mass="1"
             material_name="grey"
             />
     </xacro:macro>
-    <primary_rocker lr_prefix="L" reflect="1"/>
-    <primary_rocker lr_prefix="R" reflect="-1"/>
+    <primary_rocker lr_prefix="L" y_reflect="1"/>
+    <primary_rocker lr_prefix="R" y_reflect="-1"/>
 
     <xacro:macro name="primary_rocker_arm" params="lr_prefix fb_prefix x_reflect y_reflect">
         <joint name="${lr_prefix}_${fb_prefix}_primary_rocker_to_primary_rocker_arm" type="fixed">
@@ -147,15 +154,15 @@
             radius="${primary_rocker_arm_radius}"
             length="${primary_rocker_arm_length}"
             roll="0" 
-            pitch="${primary_rocker_arm_pitch*y_reflect}" 
-            yaw="${pi/2}"
+            pitch="${primary_rocker_arm_pitch*x_reflect}" 
+            yaw="0"
             mass="1"
             material_name="grey"
             />
     </xacro:macro>
     <primary_rocker_arm lr_prefix="L" fb_prefix="FRONT" x_reflect="1" y_reflect="1"/>
-    <primary_rocker_arm lr_prefix="R" fb_prefix="FRONT" x_reflect="-1" y_reflect="1"/>
-    <primary_rocker_arm lr_prefix="L" fb_prefix="BACK" x_reflect="1" y_reflect="-1"/>
+    <primary_rocker_arm lr_prefix="R" fb_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_rocker_arm lr_prefix="L" fb_prefix="BACK" x_reflect="-1" y_reflect="1"/>
     <primary_rocker_arm lr_prefix="R" fb_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
 
     <xacro:macro name="primary_wheel_axle" params="lr_prefix fb_prefix x_reflect y_reflect">
@@ -177,7 +184,7 @@
             z_pos="0"
             radius="${primary_wheel_axle_radius}"
             length="${primary_wheel_axle_length}"
-            roll="0" 
+            roll="${pi/2}" 
             pitch="${pi/2}" 
             yaw="0"
             mass="0.05"
@@ -185,12 +192,12 @@
             />
     </xacro:macro>
     <primary_wheel_axle lr_prefix="L" fb_prefix="FRONT" x_reflect="1" y_reflect="1"/>
-    <primary_wheel_axle lr_prefix="R" fb_prefix="FRONT" x_reflect="-1" y_reflect="1"/>
-    <primary_wheel_axle lr_prefix="L" fb_prefix="BACK" x_reflect="1" y_reflect="-1"/>
+    <primary_wheel_axle lr_prefix="R" fb_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_wheel_axle lr_prefix="L" fb_prefix="BACK" x_reflect="-1" y_reflect="1"/>
     <primary_wheel_axle lr_prefix="R" fb_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
 
     <xacro:macro name="primary_wheel" params="lr_prefix fb_prefix x_reflect y_reflect">
-        <joint name="${lr_prefix}_${fb_prefix}_primary_rocker_arm_to_primary_wheel" type="continuous">
+        <joint name="${lr_prefix}_${fb_prefix}_primary_wheel_axle_to_primary_wheel" type="continuous">
             <parent link="${lr_prefix}_${fb_prefix}_primary_wheel_axle"/>
             <child link="${lr_prefix}_${fb_prefix}_primary_wheel"/>
             <origin xyz="
@@ -200,7 +207,7 @@
                 " 
                 rpy="0 0 0"
                 />
-            <axis xyz="1 0 0" rpy="0 0 0" />
+            <axis xyz="0 1 0" rpy="0 0 0" />
             <limit effort="100" velocity="100"/>
             <joint_properties damping="0.0" friction="0.0"/>
             <hardwareInterface>EffortJointInterface</hardwareInterface>
@@ -212,7 +219,7 @@
             z_pos="0" 
             radius="${primary_wheel_radius}"
             length="${primary_wheel_length}"
-            roll="0" 
+            roll="${pi/2}" 
             pitch="${pi/2}" 
             yaw="0"
             mass="1"
@@ -220,16 +227,16 @@
             />
     </xacro:macro>
     <primary_wheel lr_prefix="L" fb_prefix="FRONT" x_reflect="1" y_reflect="1"/>
-    <primary_wheel lr_prefix="R" fb_prefix="FRONT" x_reflect="-1" y_reflect="1"/>
-    <primary_wheel lr_prefix="L" fb_prefix="BACK" x_reflect="1" y_reflect="-1"/>
+    <primary_wheel lr_prefix="R" fb_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_wheel lr_prefix="L" fb_prefix="BACK" x_reflect="-1" y_reflect="1"/>
     <primary_wheel lr_prefix="R" fb_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
 
     <joint name="chassis_to_tower" type="fixed">
         <parent link="chassis"/>
         <child link="tower_upright"/>
         <origin xyz="
+            ${tower_upright_x_offset}
             0
-            ${tower_upright_y_offset}
             ${tower_upright_z_offset}
             " 
             rpy="0 0 0"
@@ -254,11 +261,11 @@
         <parent link="tower_upright"/>
         <child link="camera"/>
         <origin xyz="
+            ${camera_x_offset}
             0
-            ${camera_y_offset}
             ${camera_z_offset}
             " 
-            rpy="${camera_roll} 0 0"
+            rpy="0 ${camera_pitch} 0"
             />
     </joint>
     <box_link 
