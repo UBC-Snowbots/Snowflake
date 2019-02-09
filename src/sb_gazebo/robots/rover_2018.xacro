@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <!--
-     The Model for elsa-x, a 2-wheel drive robot with front and back caster wheels
+     The model for the 2018 rover
 -->
 <robot name="rover_2018" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+    <!-- CALCULATIONS
+         This section holds all the math to calculate the offset (both linear
+         and angular) for various components. 
+    -->
     <xacro:include filename="$(find sb_gazebo)/robots/macros.xacro"/>
     <xacro:include filename="$(find sb_gazebo)/robots/materials.xacro"/>
     <xacro:include filename="$(find sb_gazebo)/robots/rover_2018.gazebo"/>
@@ -20,9 +24,9 @@
     <xacro:property name="primary_rocker_radius" value="0.15"/>
     <xacro:property name="primary_rocker_length" value="0.1"/>
     <xacro:property name="primary_rocker_chassis_clearance" value="0.1"/>
-    <xacro:property name="primary_rocker_x_pos" value="${chassis_x_size/2 + primary_rocker_length/2 + primary_rocker_chassis_clearance}"/>
-    <xacro:property name="primary_rocker_y_pos" value="0"/>
-    <xacro:property name="primary_rocker_z_pos" value="${chassis_z_size + chassis_elevation}"/>
+    <xacro:property name="primary_rocker_x_offset" value="${chassis_x_size/2 + primary_rocker_length/2 + primary_rocker_chassis_clearance}"/>
+    <xacro:property name="primary_rocker_y_offset" value="0"/>
+    <xacro:property name="primary_rocker_z_offset" value="0"/>
 
     <xacro:property name="primary_rocker_arm_length" value="0.4"/>
     <xacro:property name="primary_rocker_arm_radius" value="0.03"/>
@@ -45,17 +49,40 @@
     <xacro:property name="primary_wheel_y_offset" value="0"/>
     <xacro:property name="primary_wheel_z_offset" value="0"/>
 
+    <xacro:property name="tower_upright_y_offset" value="${chassis_y_size/2}"/>
+    <xacro:property name="tower_upright_height" value="0.5"/>
+    <xacro:property name="tower_upright_x_size" value="0.02"/>
+    <xacro:property name="tower_upright_y_size" value="0.02"/>
+    <xacro:property name="tower_upright_z_offset" value="${tower_upright_height/2 + chassis_z_size/2}"/>
+
+    <xacro:property name="camera_size" value="0.05"/>
+    <xacro:property name="camera_roll" value="${pi/4}"/>
+    <xacro:property name="camera_y_offset" value="0.03"/>
+    <xacro:property name="camera_z_offset" value="${tower_upright_height/2}"/>
+
+    <!-- JOINTS AND LINKS
+         This section uses all the values calculated above to actually create
+         all the links and joints of the robot
+    -->
+
     <!-- Footprint of the robot (because gazebo's base_link can't have interia) -->
     <link name='base_link'/>
     <joint name="base_joint" type="fixed">
         <parent link="base_link"/>
         <child link="chassis"/>
+        <origin xyz="
+            ${chassis_x_pos}
+            ${chassis_y_pos}
+            ${chassis_z_pos}
+            " 
+            rpy="0 0 0"
+            />
     </joint>
     <box_link 
         name="chassis"
-        x_pos="${chassis_x_pos}"
-        y_pos="${chassis_y_pos}"
-        z_pos="${chassis_z_pos}"
+        x_pos="0"
+        y_pos="0"
+        z_pos="0"
         x_size="${chassis_y_size}"
         y_size="${chassis_x_size}"
         z_size="${chassis_z_size}"
@@ -71,7 +98,13 @@
         <joint name="${lr_prefix}_primary_rocker_to_chassis" type="revolute">
             <parent link="chassis"/>
             <child link="${lr_prefix}_primary_rocker"/>
-            <origin xyz="${primary_rocker_x_pos*reflect} ${primary_rocker_y_pos} ${primary_rocker_z_pos}" rpy="0 0 0" />
+            <origin xyz="
+                ${primary_rocker_x_offset*reflect} 
+                ${primary_rocker_y_offset} 
+                ${primary_rocker_z_offset}
+                " 
+                rpy="0 0 0" 
+                />
             <axis xyz="1 0 0" rpy="0 0 0" />
             <limit effort="100" velocity="100"/>
             <joint_properties damping="0.0" friction="0.0"/>
@@ -190,5 +223,58 @@
     <primary_wheel lr_prefix="R" fb_prefix="FRONT" x_reflect="-1" y_reflect="1"/>
     <primary_wheel lr_prefix="L" fb_prefix="BACK" x_reflect="1" y_reflect="-1"/>
     <primary_wheel lr_prefix="R" fb_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
+
+    <joint name="chassis_to_tower" type="fixed">
+        <parent link="chassis"/>
+        <child link="tower_upright"/>
+        <origin xyz="
+            0
+            ${tower_upright_y_offset}
+            ${tower_upright_z_offset}
+            " 
+            rpy="0 0 0"
+            />
+    </joint>
+    <box_link 
+        name="tower_upright"
+        x_pos="0"
+        y_pos="0"
+        z_pos="0"
+        x_size="${tower_upright_x_size}"
+        y_size="${tower_upright_y_size}"
+        z_size="${tower_upright_height}"
+        roll="0" 
+        pitch="0" 
+        yaw="0"
+        mass="10"
+        material_name="grey"
+        />
+
+    <joint name="tower_upright_to_camera" type="fixed">
+        <parent link="tower_upright"/>
+        <child link="camera"/>
+        <origin xyz="
+            0
+            ${camera_y_offset}
+            ${camera_z_offset}
+            " 
+            rpy="${camera_roll} 0 0"
+            />
+    </joint>
+    <box_link 
+        name="camera"
+        x_pos="0"
+        y_pos="0"
+        z_pos="0"
+        x_size="${camera_size}"
+        y_size="${camera_size}"
+        z_size="${camera_size}"
+        roll="0" 
+        pitch="0" 
+        yaw="0"
+        mass="10"
+        material_name="grey"
+        />
+
 
 </robot>
