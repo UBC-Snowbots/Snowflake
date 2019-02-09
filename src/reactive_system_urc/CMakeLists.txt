@@ -40,9 +40,9 @@ include_directories(
 add_executable(reactive_system_node
         src/reactive_system_node.cpp
         src/ReactiveSystemNode.cpp
-        src/ReactiveSystemTwist.cpp
+        src/ReactiveSystemPath.cpp
         include/ReactiveSystemNode.h
-        include/ReactiveSystemTwist.h)
+        include/ReactiveSystemPath.h)
 
 
 ## Specify libraries to link a library or executable target against
@@ -60,7 +60,7 @@ target_link_libraries(reactive_system_node
 
 if (CATKIN_ENABLE_TESTING)
 
-    catkin_add_gtest(reactive-system-test test/reactive-system-test.cpp src/ReactiveSystemTwist.cpp test/RiskAreaBuilder.h)
+    catkin_add_gtest(reactive-system-test test/reactive-system-test.cpp src/ReactiveSystemPath.cpp test/RiskAreaBuilder.h)
     target_link_libraries(reactive-system-test ${catkin_LIBRARIES})
 
     # Adding rostest to the package

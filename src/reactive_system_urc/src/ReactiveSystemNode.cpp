@@ -65,8 +65,8 @@ ReactiveSystemNode::ReactiveSystemNode(int argc,
     goal_subscriber = nh.subscribe(
             goal_topic, queue_size, &ReactiveSystemNode::goalCallBack, this);
 
-    std::string twist_topic = "twist"; // TODO: update placeholder
-    twist_publisher = private_nh.advertise<geometry_msgs::Twist>(
+    std::string twist_topic = "path"; // TODO: update placeholder
+    path_publisher = private_nh.advertise<nav_msgs::Path>(
             twist_topic, queue_size);
 
 
@@ -75,11 +75,11 @@ ReactiveSystemNode::ReactiveSystemNode(int argc,
 void ReactiveSystemNode::riskCallBack(const mapping_msgs_urc::RiskAreaArray::ConstPtr& ptr) {
     mapping_msgs_urc::RiskAreaArray risk_areas = *ptr;
 
-    geometry_msgs::Twist twist_msg = ReactiveSystemTwist::getTwist(risk_areas,
+    nav_msgs::Path path_msg = ReactiveSystemPath::getPath(risk_areas,
             goal_pos, traj_time_inc, traj_num_incs, linear_vel, max_angular_vel,
             num_angular_vel, risk_dist_tol_sq);
 
-    twist_publisher.publish(twist_msg);
+    path_publisher.publish(path_msg);
 }
 
 void ReactiveSystemNode::goalCallBack(const sb_geom_msgs::Point2D::ConstPtr& ptr) {

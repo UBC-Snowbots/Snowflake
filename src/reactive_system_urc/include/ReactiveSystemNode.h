@@ -12,7 +12,7 @@
 #include <mapping_msgs_urc/RiskArea.h>
 #include <mapping_msgs_urc/RiskAreaArray.h>
 #include <mapping_msgs_urc/RiskAreaStamped.h>
-#include "ReactiveSystemTwist.h"
+#include "ReactiveSystemPath.h"
 
 class ReactiveSystemNode {
 public:
@@ -21,7 +21,7 @@ public:
 private:
     ros::Subscriber risk_subscriber;
     ros::Subscriber goal_subscriber;
-    ros::Publisher twist_publisher;
+    ros::Publisher path_publisher;
 
     /**
     * Callback function for receiving an array of risks
@@ -30,6 +30,10 @@ private:
     */
     void riskCallBack(const mapping_msgs_urc::RiskAreaArray::ConstPtr& ptr);
 
+    /**
+     * Callback for updating goal position
+     * @param ptr
+     */
     void goalCallBack(const sb_geom_msgs::Point2D::ConstPtr& ptr);
 
     /* ros params */

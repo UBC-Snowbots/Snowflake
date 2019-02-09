@@ -19,6 +19,8 @@ namespace RiskAreaBuilder {
          */
         RiskAreaBuilder(sb_geom_msgs::Point2D corner1, sb_geom_msgs::Point2D corner2, float risk_length){
 
+            mapping_msgs_urc::RiskAreaArray risk_areas;
+
             for (float i = corner1.x; i <= corner2.x; i += risk_length){
                 for (float j = corner1.y; j <= corner2.x; j += risk_length){
                     mapping_msgs_urc::RiskArea area;
@@ -42,6 +44,7 @@ namespace RiskAreaBuilder {
                     risk_areas.areas.push_back(area);
                 }
             }
+            risk_areas_ = risk_areas;
 
         }
 
@@ -52,21 +55,22 @@ namespace RiskAreaBuilder {
          * @param score: score to assign each risk area near risk center
          */
         void addRiskZone(sb_geom_msgs::Point2D risk_center, float radius, float score){
-            for (mapping_msgs_urc::RiskArea area: risk_areas.areas){
-                if (isWithinRadius(area, risk_center, radius)){
-                    area.score.data = score;
+
+            for (int i=0; i<risk_areas_.areas.size(); i++){
+                if (isWithinRadius(risk_areas_.areas[i], risk_center, radius)){
+                    risk_areas_.areas[i].score.data = score;
                 }
+
             }
         }
 
 
-
         mapping_msgs_urc::RiskAreaArray getRiskArray(){
-            return risk_areas;
+            return risk_areas_;
         }
 
     private:
-        mapping_msgs_urc::RiskAreaArray risk_areas;
+        mapping_msgs_urc::RiskAreaArray risk_areas_;
 
         bool isWithinRadius(mapping_msgs_urc::RiskArea area, sb_geom_msgs::Point2D risk_center, float radius){
             for (sb_geom_msgs::Point2D point : area.area.points){

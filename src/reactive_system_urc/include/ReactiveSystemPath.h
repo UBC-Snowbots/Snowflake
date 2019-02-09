@@ -22,13 +22,16 @@
 #include <std_msgs/Float64.h>
 #include <sb_geom_msgs/Point2D.h>
 
+#define MAX_RISK 100
 
 
-class ReactiveSystemTwist {
+
+class ReactiveSystemPath {
 public:
 
     /**
-     * Entry point for pathfinding algorithm, which produces an immediate twist message
+     * Entry point for pathfinding algorithm, produces a path message by generating multiple possible trajectories in a given range, assigning each a risk score,
+     * and choosing the trajectory with the lowest risk score
      * @param risk_areas
      * @param goal_pos
      * @param traj_time_inc
@@ -39,7 +42,7 @@ public:
      * @param risk_dist_tol_sq
      * @return
      */
-    static geometry_msgs::Twist getTwist(mapping_msgs_urc::RiskAreaArray risk_areas, sb_geom_msgs::Point2D goal_pos, float traj_time_inc, int traj_num_incs, float linear_vel, float max_angular_vel, int num_angular_vel, float risk_dist_tol_sq);
+    static nav_msgs::Path getPath(mapping_msgs_urc::RiskAreaArray risk_areas, sb_geom_msgs::Point2D goal_pos, float traj_time_inc, int traj_num_incs, float linear_vel, float max_angular_vel, int num_angular_vel, float risk_dist_tol_sq);
 
     /**
      * Calculates the arc trajectory given some twist command (linear and angular velocity), form of trajectory is point locations of the trajectory
