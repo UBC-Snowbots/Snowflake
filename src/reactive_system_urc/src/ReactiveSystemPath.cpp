@@ -116,7 +116,7 @@ float dist_tol_sq) {
         // Multiplier applied to points based on proximity to current position
         // (closer = higher multiplier)
         traj_risk *=
-        (trajectory.size() - i); // TODO: Don't know if we should keep this
+        (trajectory.size() - i);
         risk_score += traj_risk;
     }
 
@@ -130,7 +130,7 @@ float dist_tol_sq) {
                                                 // in the trajectory and origin
     float ang_diff = abs(goal_ang - traj_ang);
     float goal_adder =
-    ang_diff * 100; // TODO: may need to tweak this scaling factor
+    ang_diff * 100;
     risk_score += goal_adder;
 
     return risk_score;
