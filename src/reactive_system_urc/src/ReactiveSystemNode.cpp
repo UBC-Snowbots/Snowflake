@@ -90,5 +90,5 @@ const mapping_msgs_urc::RiskAreaArray::ConstPtr& ptr) {
 void ReactiveSystemNode::goalCallBack(
 const sb_geom_msgs::Point2D::ConstPtr& ptr) {
     sb_geom_msgs::Point2D goal = *ptr;
-    goal_pos = goal; // update current goal
+    goal_pos                   = goal; // update current goal
 }

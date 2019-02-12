@@ -1,7 +1,8 @@
 /*
  * Created By: William Gu
  * Created On: Jan 19 2019
- * Description: Helper class for unit testing, to create fake risk area ROS messages
+ * Description: Helper class for unit testing, to create fake risk area ROS
+ * messages
  */
 
 #ifndef PROJECT_RISKAREABUILDER_H
