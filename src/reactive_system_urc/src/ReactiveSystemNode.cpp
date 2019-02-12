@@ -58,15 +58,15 @@ ReactiveSystemNode::ReactiveSystemNode(int argc,
 
     /* Setup subscribers and publishers */
 
-    std::string risk_topic = "risk_areas"; // TODO: update topic
+    std::string risk_topic = "risk_areas";
     risk_subscriber        = nh.subscribe(
     risk_topic, queue_size, &ReactiveSystemNode::riskCallBack, this);
 
-    std::string goal_topic = "goal"; // TODO: update topic
+    std::string goal_topic = "goal";
     goal_subscriber        = nh.subscribe(
     goal_topic, queue_size, &ReactiveSystemNode::goalCallBack, this);
 
-    std::string twist_topic = "path"; // TODO: update placeholder
+    std::string twist_topic = "path";
     path_publisher =
     private_nh.advertise<nav_msgs::Path>(twist_topic, queue_size);
 }

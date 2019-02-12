@@ -63,10 +63,4 @@ if (CATKIN_ENABLE_TESTING)
     catkin_add_gtest(reactive-system-test test/reactive-system-test.cpp src/ReactiveSystemPath.cpp test/RiskAreaBuilder.h)
     target_link_libraries(reactive-system-test ${catkin_LIBRARIES})
 
-    # Adding rostest to the package
-    #find_package(rostest REQUIRED)
-    # name the test and link it to the .test file and the .cpp file itself, this will allow
-    # "catkin_make run_tests" to be able to find and run this rostest
-    #add_rostest_gtest(laserscan_cone_manager_rostest test/sb_laserscan_processing_test.test test/laserscan_cone_manager_rostest.cpp)
-    #target_link_libraries(laserscan_cone_manager_rostest ${catkin_LIBRARIES})
 endif()

@@ -38,15 +38,21 @@ class ReactiveSystemNode {
     void goalCallBack(const sb_geom_msgs::Point2D::ConstPtr& ptr);
 
     /* ros params */
-    float traj_time_inc; // size of unit increments in a trajectory calculation
-    int
-    traj_num_incs; // number of total increments used in trajectory calculation
-    float linear_vel; // current linear vel of robot (needs to be set iniitally)
-    float max_angular_vel;  // max turning velocity
-    int num_angular_vel;    // number of possible turning velocities to consider
-    float risk_dist_tol_sq; // squared "radius" of the robot
+    // size of unit increments in a trajectory calculation
+    float traj_time_inc;
+    // number of total increments used in trajectory calculation
+    int traj_num_incs;
+    // current linear vel of robot (needs to be set initally)
+    float linear_vel;
+    // max turning velocity
+    float max_angular_vel;
+    // number of possible turning velocities to consider
+    int num_angular_vel;
+    // squared "radius" of the robot
+    float risk_dist_tol_sq;
 
-    sb_geom_msgs::Point2D goal_pos; // current goal position to head towards
+    // current goal position to head towards
+    sb_geom_msgs::Point2D goal_pos;
 };
 
 #endif // REACTIVE_SYSTEM_NODE

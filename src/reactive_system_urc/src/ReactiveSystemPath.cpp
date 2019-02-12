@@ -16,17 +16,15 @@ ReactiveSystemPath::getPath(mapping_msgs_urc::RiskAreaArray risk_areas,
                             float risk_dist_tol_sq) {
     nav_msgs::Path path;
 
-    // Find lowest trajectory score given the range of angular velocities we
-    // search
     float min_traj_score = std::numeric_limits<float>::max();
     std::vector<sb_geom_msgs::Point2D> best_traj;
 
+    // Find lowest trajectory score in the range of [-max_angular_vel, max_angular_vel],
+    // out of a total of "num_angular_vel" trajectories
     for (int i = -num_angular_vel; i <= num_angular_vel; i++) {
         float angular_vel = i * (max_angular_vel / num_angular_vel);
-        std::vector<sb_geom_msgs::Point2D> trajectory =
-        getArcTrajectory(linear_vel, angular_vel, traj_time_inc, traj_num_incs);
-        float traj_score =
-        getTrajectoryScore(trajectory, goal_pos, risk_areas, risk_dist_tol_sq);
+        std::vector<sb_geom_msgs::Point2D> trajectory = getArcTrajectory(linear_vel, angular_vel, traj_time_inc, traj_num_incs);
+        float traj_score = getTrajectoryScore(trajectory, goal_pos, risk_areas, risk_dist_tol_sq);
 
         if (traj_score < min_traj_score) {
             min_traj_score = traj_score;

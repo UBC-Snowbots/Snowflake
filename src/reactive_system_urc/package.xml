@@ -27,5 +27,4 @@
   <exec_depend>sb_utils</exec_depend>
   <exec_depend>mapping_msgs_urc</exec_depend>
 
-
 </package>

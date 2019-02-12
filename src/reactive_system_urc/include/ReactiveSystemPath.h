@@ -31,15 +31,15 @@ class ReactiveSystemPath {
      * generating multiple possible trajectories in a given range, assigning
      * each a risk score,
      * and choosing the trajectory with the lowest risk score
-     * @param risk_areas
-     * @param goal_pos
-     * @param traj_time_inc
-     * @param traj_num_incs
-     * @param linear_vel
-     * @param max_angular_vel
-     * @param num_angular_vel
-     * @param risk_dist_tol_sq
-     * @return
+     * @param risk_areas: risk area ros msg produced by risk assessment system
+     * @param goal_pos: current goal position
+     * @param traj_time_inc: // size of unit increments in a trajectory calculation
+     * @param traj_num_incs: // number of unit increments in a trajectory calculation
+     * @param linear_vel: // current linear velocity of robot
+     * @param max_angular_vel: // max turning velocity of robot
+     * @param num_angular_vel: // number of turning velocities to test (each corresponds to different trajectory)
+     * @param risk_dist_tol_sq: // squared "radius" of robot
+     * @return path of trajectory that minimizes trajectory score i.e. overall risk
      */
     static nav_msgs::Path getPath(mapping_msgs_urc::RiskAreaArray risk_areas,
                                   sb_geom_msgs::Point2D goal_pos,
@@ -97,7 +97,7 @@ class ReactiveSystemPath {
      * Helper for calcTrajectoryScore, calculates if two points are within some
      * distance of another and returns true if so
      * @param dist_tol_sq: distance tolerance, squared
-     * @return
+     * @return true if points are within dist_tol_sq
      */
     static bool isWithinDistance(sb_geom_msgs::Point2D p1,
                                  sb_geom_msgs::Point2D p2,
