@@ -128,7 +128,7 @@ TEST(ReactiveSystem, riskAreaBuilder) {
 
 // Test the given twist, for a scenario where an object is directly between our
 // position and the goal
-TEST(ReactiveSystem, getArcPath1) {
+TEST(ReactiveSystem, objectInDirectPath) {
     // object parameters
     float risk_score  = MAX_RISK;
     float risk_radius = 1;
@@ -179,7 +179,7 @@ TEST(ReactiveSystem, getArcPath1) {
 
 // Test the given twist, for a scenario where 3 objects are directly between our
 // position and the goal (covering a greater "width)
-TEST(ReactiveSystem, getArcPath2) {
+TEST(ReactiveSystem, threeObjectsInDirectPath) {
     // object parameters
     float risk_score  = MAX_RISK;
     float risk_radius = 1;
@@ -240,7 +240,7 @@ TEST(ReactiveSystem, getArcPath2) {
 }
 
 // Test the given twist, for a scenario where no objects are in the way at all
-TEST(ReactiveSystem, getArcPath3) {
+TEST(ReactiveSystem, noObjectsInDirectPath) {
     sb_geom_msgs::Point2D corner1;
     corner1.x = 0;
     corner1.y = -2;
@@ -281,7 +281,7 @@ TEST(ReactiveSystem, getArcPath3) {
 
 // Test the given twist, for a scenario where there are two objects but a gap
 // exists in the center
-TEST(ReactiveSystem, getArcPath4) {
+TEST(ReactiveSystem, twoObjectsOnSides) {
     // object parameters
     float risk_score  = MAX_RISK;
     float risk_radius = 1;
@@ -337,7 +337,7 @@ TEST(ReactiveSystem, getArcPath4) {
 
 // Test the given twist, for a scenario where there are two objects but a space
 // exists to the "right"
-TEST(ReactiveSystem, getArcPath5) {
+TEST(ReactiveSystem, openingToRight) {
     // object parameters
     float risk_score  = MAX_RISK;
     float risk_radius = 1;
@@ -393,7 +393,7 @@ TEST(ReactiveSystem, getArcPath5) {
 
 // Test the given twist, for a scenario where there are three objects but a gap
 // exists between two objects to the "right"
-TEST(ReactiveSystem, getArcPath6) {
+TEST(ReactiveSystem, gapToRight) {
     // object parameters
     float risk_score  = MAX_RISK;
     float risk_radius = 0.5;
@@ -455,7 +455,7 @@ TEST(ReactiveSystem, getArcPath6) {
 
 // Test the given twist, for a scenario where no objects are in the way at all,
 // but goal is not directly straight
-TEST(ReactiveSystem, getArcPath7) {
+TEST(ReactiveSystem, goalToLeft) {
     sb_geom_msgs::Point2D corner1;
     corner1.x = 0;
     corner1.y = -2;
@@ -497,7 +497,7 @@ TEST(ReactiveSystem, getArcPath7) {
 // Test the given twist, for a scenario where there are three objects but a gap
 // exists between two objects to the "right", BUT goal is to the left behind the
 // objects
-TEST(ReactiveSystem, getArcPath8) {
+TEST(ReactiveSystem, goalToLeftAndGapToRight) {
     // object parameters
     float risk_score  = MAX_RISK;
     float risk_radius = 0.5;

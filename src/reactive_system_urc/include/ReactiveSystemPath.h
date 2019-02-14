@@ -33,15 +33,15 @@ class ReactiveSystemPath {
      * and choosing the trajectory with the lowest risk score
      * @param risk_areas: risk area ros msg produced by risk assessment system
      * @param goal_pos: current goal position
-     * @param traj_time_inc: // size of unit increments in a trajectory
+     * @param traj_time_inc: size of unit increments in a trajectory
      * calculation
-     * @param traj_num_incs: // number of unit increments in a trajectory
+     * @param traj_num_incs: number of unit increments in a trajectory
      * calculation
-     * @param linear_vel: // current linear velocity of robot
-     * @param max_angular_vel: // max turning velocity of robot
-     * @param num_angular_vel: // number of turning velocities to test (each
+     * @param linear_vel: current linear velocity of robot
+     * @param max_angular_vel: max turning velocity of robot
+     * @param num_angular_vel: number of turning velocities to test (each
      * corresponds to different trajectory)
-     * @param risk_dist_tol_sq: // squared "radius" of robot
+     * @param risk_dist_tol_sq: squared "radius" of robot
      * @return path of trajectory that minimizes trajectory score i.e. overall
      * risk
      */
