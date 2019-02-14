@@ -22,7 +22,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <std_msgs/Float64.h>
 
-#define MAX_RISK 100
+#define MAX_RISK 1
 
 class ReactiveSystemPath {
   public:
