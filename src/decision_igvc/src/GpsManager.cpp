@@ -113,7 +113,7 @@ geometry_msgs::TransformStamped global_to_local_transform) {
     rviz_marker_publisher.publish(snowbots::RvizUtils::createMarker(
     output.point,
     colors,
-    snowbots::RvizUtils::createrMarkerScale(0.5, 0.5, 0.5),
+    snowbots::RvizUtils::createMarkerScale(0.5, 0.5, 0.5),
     base_frame,
     "debug",
     visualization_msgs::Marker::POINTS));
