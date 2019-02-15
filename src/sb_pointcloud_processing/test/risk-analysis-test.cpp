@@ -38,25 +38,30 @@ TEST(RegionCreation, DivisionsEqualToDimensions) {
                                               num_horizontal_cell_divs,
                                               min_points_in_region);
 
-    geometry_msgs::Polygon top_left_region =
+    sb_geom_msgs::Polygon2D top_left_region =
     risk_analysis.getRegionAreaFromIndices(0, 0);
     EXPECT_FLOAT_EQ(region_height, top_left_region.points[0].x);
     EXPECT_FLOAT_EQ(region_width / 2, top_left_region.points[0].y);
 
-    geometry_msgs::Polygon top_right_region =
+    sb_geom_msgs::Polygon2D top_right_region =
     risk_analysis.getRegionAreaFromIndices(0, 9);
     EXPECT_FLOAT_EQ(region_height, top_right_region.points[1].x);
     EXPECT_FLOAT_EQ(-region_width / 2, top_right_region.points[1].y);
 
-    geometry_msgs::Polygon bottom_right_region =
+    sb_geom_msgs::Polygon2D bottom_right_region =
     risk_analysis.getRegionAreaFromIndices(9, 9);
     EXPECT_FLOAT_EQ(0, bottom_right_region.points[2].x);
     EXPECT_FLOAT_EQ(-region_width / 2, bottom_right_region.points[2].y);
 
-    geometry_msgs::Polygon bottom_left_region =
+    sb_geom_msgs::Polygon2D bottom_left_region =
     risk_analysis.getRegionAreaFromIndices(9, 0);
     EXPECT_FLOAT_EQ(0, bottom_left_region.points[3].x);
     EXPECT_FLOAT_EQ(region_width / 2, bottom_left_region.points[3].y);
+
+    sb_geom_msgs::Polygon2D test_region =
+            risk_analysis.getRegionAreaFromIndices(2, 9);
+
+    std::cout << risk_analysis.determineColumn(-4.5) << std::endl;
 }
 
 TEST(RegionInitialisation, DivisionsEqualToDimensions) {
@@ -113,25 +118,29 @@ TEST(RegionCreation, NonIntegerCellDimensions) {
                                               num_horizontal_cell_divs,
                                               min_points_in_region);
 
-    geometry_msgs::Polygon top_left_region =
+    sb_geom_msgs::Polygon2D top_left_region =
     risk_analysis.getRegionAreaFromIndices(0, 0);
     EXPECT_FLOAT_EQ(region_height, top_left_region.points[0].x);
     EXPECT_FLOAT_EQ(region_width / 2, top_left_region.points[0].y);
 
-    geometry_msgs::Polygon top_right_region =
+    sb_geom_msgs::Polygon2D top_right_region =
     risk_analysis.getRegionAreaFromIndices(0, 99);
     EXPECT_FLOAT_EQ(region_height, top_right_region.points[1].x);
     EXPECT_FLOAT_EQ(-region_width / 2, top_right_region.points[1].y);
 
-    geometry_msgs::Polygon bottom_right_region =
+    sb_geom_msgs::Polygon2D bottom_right_region =
     risk_analysis.getRegionAreaFromIndices(99, 99);
     EXPECT_NEAR(0, bottom_right_region.points[2].x, 0.001);
     EXPECT_FLOAT_EQ(-region_width / 2, bottom_right_region.points[2].y);
 
-    geometry_msgs::Polygon bottom_left_region =
+    sb_geom_msgs::Polygon2D bottom_left_region =
     risk_analysis.getRegionAreaFromIndices(99, 0);
     EXPECT_FLOAT_EQ(0, bottom_left_region.points[3].x);
     EXPECT_FLOAT_EQ(region_width / 2, bottom_left_region.points[3].y);
+
+    int row = risk_analysis.determineRow(2.8);
+    int col = risk_analysis.determineColumn(0);
+
 }
 
 TEST(RegionAnalysis, NonIntegerCellDimensions) {
@@ -150,6 +159,22 @@ TEST(RegionAnalysis, NonIntegerCellDimensions) {
     risk_analysis.assessPointCloudRisk(empty_cloud);
 }
 
+TEST(RegionAnalysis, OneDiv) {
+    float region_width           = 2;
+    float region_height          = 2;
+    int num_vertical_cell_divs   = 2;
+    int num_horizontal_cell_divs = 1;
+    int min_points_in_region     = -1;
+    RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
+                                                region_height,
+                                                num_vertical_cell_divs,
+                                                num_horizontal_cell_divs,
+                                                min_points_in_region);
+
+    mapping_msgs_urc::RiskAreaArray pcl_risk =
+            risk_analysis.assessPointCloudRisk(empty_cloud);
+}
+
 void testRegionDimensions(std::vector<std::vector<RegionOfPoints>> point_region,
                           float region_width,
                           float region_height,
@@ -160,7 +185,7 @@ void testRegionDimensions(std::vector<std::vector<RegionOfPoints>> point_region,
 
     for (int i = 0; i < point_region.size(); i++) {
         for (int j = 0; j < point_region[0].size(); j++) {
-            geometry_msgs::Polygon cur_cell = point_region[i][j].region_area;
+            sb_geom_msgs::Polygon2D cur_cell = point_region[i][j].region_area;
 
             // Top Left Point vs Bottom Left Point
             EXPECT_FLOAT_EQ(cell_height,

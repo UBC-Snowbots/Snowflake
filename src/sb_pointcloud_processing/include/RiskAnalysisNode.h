@@ -21,6 +21,7 @@
 // Point Cloud
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/point_types.h>
+#include <pcl_ros/transforms.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <tr1/unordered_map>
 
@@ -53,6 +54,7 @@ class RiskAnalysisNode {
 
     float area_of_interest_width;
     float area_of_interest_height;
+    float risk_multiplier;
 
     int num_vertical_cell_div;
     int num_horizontal_cell_div;

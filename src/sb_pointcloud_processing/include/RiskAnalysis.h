@@ -24,6 +24,7 @@
 #include <pcl/point_types.h>
 #include <tr1/unordered_map>
 
+
 // Standard Libraries
 #include <numeric>
 
@@ -41,7 +42,8 @@ class RiskAnalysis {
                  float region_height,
                  int num_vertical_cell_div,
                  int num_horizontal_cell_div,
-                 int region_min_points);
+                 int region_min_points,
+                 float risk_multiplier);
 
     /**
      * Required empty constructor
@@ -74,6 +76,7 @@ class RiskAnalysis {
   private:
     float region_width;
     float region_height;
+    float risk_multiplier;
 
     int num_vertical_cell_div;
     int num_horizontal_cell_div;

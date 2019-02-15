@@ -36,13 +36,16 @@ RiskAnalysisNode::RiskAnalysisNode(int argc,
 
     int default_horizontal_divisions = 30;
     SB_getParam(private_nh,
-                "area_of_interest_width",
+                "num_horizontal_cell_div",
                 num_horizontal_cell_div,
                 default_horizontal_divisions);
 
     int default_min_points = 100;
     SB_getParam(
     private_nh, "region_min_points", region_min_points, default_min_points);
+
+    float default_risk_multiplier = 1;
+    SB_getParam(private_nh, "risk_multiplier", risk_multiplier, default_risk_multiplier);
 
     // In the beginning we have not published any markers
     seq_count = 0;
@@ -82,7 +85,9 @@ RiskAnalysisNode::RiskAnalysisNode(int argc,
                                  area_of_interest_height,
                                  num_vertical_cell_div,
                                  num_horizontal_cell_div,
-                                 region_min_points);
+                                 region_min_points,
+                                 risk_multiplier
+                                 );
 }
 
 void RiskAnalysisNode::pclCallBack(
@@ -106,9 +111,12 @@ const sensor_msgs::PointCloud2ConstPtr point_cloud) {
         snowbots::RvizUtils::createPolygonMarker2D(
         pcl_risk.areas[i].area,
         convertRiskToColor(pcl_risk.areas[i].score.data),
-        snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
+        snowbots::RvizUtils::createMarkerScale(0.01, 0, 0),
         frame_id,
-        ns);
+        ns,
+        visualization_msgs::Marker::LINE_STRIP,
+        i
+        );
 
         risk_area_markers.markers.push_back(risk_area_marker);
     }
@@ -131,6 +139,8 @@ mapping_msgs_urc::RiskAreaArray risk_areas) {
 
 visualization_msgs::Marker::_color_type
 RiskAnalysisNode::convertRiskToColor(float risk) {
+    if (risk > 10)
+        risk = 10;
     // Round down to the nearest integer to get risk color
     return gradient[(int) risk];
 }

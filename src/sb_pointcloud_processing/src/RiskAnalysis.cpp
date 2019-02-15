@@ -11,13 +11,16 @@ RiskAnalysis::RiskAnalysis(float region_width,
                            float region_height,
                            int num_vertical_cell_div,
                            int num_horizontal_cell_div,
-                           int region_min_points)
+                           int region_min_points,
+                           float risk_multiplier)
   : region_width(region_width),
     region_height(region_height),
+    region_min_points(region_min_points),
     num_vertical_cell_div(num_vertical_cell_div),
-    num_horizontal_cell_div(num_horizontal_cell_div) {
-    cell_width  = region_width / num_horizontal_cell_div;
-    cell_height = region_height / num_vertical_cell_div;
+    num_horizontal_cell_div(num_horizontal_cell_div),
+    risk_multiplier(risk_multiplier){
+    cell_width  = region_width / (double) num_horizontal_cell_div;
+    cell_height = region_height / (double) num_vertical_cell_div;
     total_cells = num_horizontal_cell_div * num_vertical_cell_div;
 }
 
@@ -53,6 +56,8 @@ RiskAnalysis::initialisePointRegions(pcl::PCLPointCloud2 point_cloud) {
         std::vector<RegionOfPoints> new_region_row;
         for (int j = 0; j < num_horizontal_cell_div; j++) {
             RegionOfPoints new_region;
+            std::vector<geometry_msgs::Point> points;
+            new_region.points = points;
 
             sb_geom_msgs::Polygon2D region_area;
             region_area            = getRegionAreaFromIndices(i, j);
@@ -69,22 +74,34 @@ RiskAnalysis::initialisePointRegions(pcl::PCLPointCloud2 point_cloud) {
 void RiskAnalysis::fillPointRegions(
 pcl::PointCloud<pcl::PointXYZ>::Ptr pcl,
 std::vector<std::vector<RegionOfPoints>>& regions) {
+    pcl::PointXYZ origin_point;
+    origin_point.x = 0;
+    origin_point.y = 0;
+
     for (size_t i = 0; i < pcl->size(); i++) {
-        // Convert PCLPointXYZ to geometry_msgs::Point
-        geometry_msgs::Point cur_point;
-        cur_point.x = pcl->points[i].x;
-        cur_point.y = pcl->points[i].y;
-        cur_point.z = pcl->points[i].z;
+        // Has to be a valid point
+        if (!isnan(pcl->points[i].x) && pcl->points[i].x > 0 && pcl->points[i].x < region_height) {
+            // Convert PCLPointXYZ to geometry_msgs::Point
+            geometry_msgs::Point cur_point;
+            cur_point.x = pcl->points[i].x;
+            cur_point.y = pcl->points[i].y;
+            cur_point.z = pcl->points[i].z;
 
-        // Determine which cell the point belongs to
-        int col = determineRow(pcl->points[i].x);
-        int row = determineColumn(pcl->points[i].y);
+            // Determine which cell the point belongs to
+            int row = determineRow(pcl->points[i].x);
+            int col = determineColumn(pcl->points[i].y);
 
-        bool validColumn = col >= 0 && col < regions[0].size();
-        bool validRow    = row >= 0 && row < regions.size();
+            bool validColumn = col >= 0 && col < regions[0].size();
+            bool validRow = row >= 0 && row < regions.size();
 
-        if (validColumn && validRow) {
-            regions[row][col].points.push_back(cur_point);
+            if (validColumn && validRow) {
+//                std::cout << cur_point.x << ", ";
+//                std::cout << cur_point.y << "= ";
+//
+//                std::cout << row << ",";
+//                std::cout << col << std::endl;
+                regions[row][col].points.push_back(cur_point);
+            }
         }
     }
 }
@@ -103,7 +120,7 @@ std::vector<std::vector<RegionOfPoints>> regions) {
 
                 // Determine risk of the area
                 std_msgs::Float64 risk;
-                risk.data = calculateStandardDeviation(z_values);
+                risk.data = risk_multiplier*calculateStandardDeviation(z_values);
 
                 // Add risk area onto the array
                 mapping_msgs_urc::RiskArea risk_area;
@@ -161,11 +178,12 @@ sb_geom_msgs::Polygon2D RiskAnalysis::getRegionAreaFromIndices(int row,
 }
 
 int RiskAnalysis::determineRow(float x) {
-    int row = x / cell_height;
+    int row = floor((region_height - x) / cell_height);
     return row;
 }
 
 int RiskAnalysis::determineColumn(float y) {
-    int col = (y + region_width / 2) / cell_width;
+    int col = (region_width / 2.0 - y) / cell_width;
+
     return col;
 }
