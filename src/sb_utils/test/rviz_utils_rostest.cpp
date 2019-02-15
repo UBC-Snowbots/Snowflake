@@ -62,7 +62,7 @@ TEST_F(RvizUtilsRosTest, boxPolygonMarker) {
     snowbots::RvizUtils::createPolygonMarker(
     polygon,
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
-    snowbots::RvizUtils::createrMarkerScale(0.1, 0, 0),
+    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
     ns);
 
@@ -86,7 +86,7 @@ TEST_F(RvizUtilsRosTest, trianglePolygonMarker) {
     snowbots::RvizUtils::createPolygonMarker(
     polygon,
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
-    snowbots::RvizUtils::createrMarkerScale(0.1, 0, 0),
+    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
     ns);
 
@@ -107,7 +107,7 @@ TEST_F(RvizUtilsRosTest, singlePointMarker) {
     snowbots::RvizUtils::createMarker(
     initialisePoint(0, 0, 1),
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
-    snowbots::RvizUtils::createrMarkerScale(0.1, 0, 0),
+    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
     ns);
 
@@ -131,7 +131,7 @@ TEST_F(RvizUtilsRosTest, singlePointMarkerInArray) {
     snowbots::RvizUtils::createMarker(
     points,
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
-    snowbots::RvizUtils::createrMarkerScale(0.1, 0, 0),
+    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
     ns);
 
@@ -156,7 +156,7 @@ TEST_F(RvizUtilsRosTest, multiplePointMarkersInArray) {
     snowbots::RvizUtils::createMarker(
     points,
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
-    snowbots::RvizUtils::createrMarkerScale(0.1, 0, 0),
+    snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
     ns);
 
@@ -173,7 +173,7 @@ TEST_F(RvizUtilsRosTest, createMarkerScale) {
     float z = 1;
 
     visualization_msgs::Marker::_scale_type scale;
-    scale = snowbots::RvizUtils::createrMarkerScale(x, y, z);
+    scale = snowbots::RvizUtils::createMarkerScale(x, y, z);
 
     EXPECT_FLOAT_EQ(x, scale.x);
     EXPECT_FLOAT_EQ(y, scale.y);
