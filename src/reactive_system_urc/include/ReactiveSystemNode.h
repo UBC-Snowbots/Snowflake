@@ -28,11 +28,11 @@ class ReactiveSystemNode {
     ros::Publisher path_publisher;
 
     /**
-    * Callback function for receiving an array of risks
-    * Publishes an optimal twist command for the robot, avoiding risky areas
-    * while tending towards the goal
-    * @param ptr
-    */
+     * Callback function for receiving an array of risks
+     * Publishes an optimal twist command for the robot, avoiding risky areas
+     * while tending towards the goal
+     * @param ptr
+     */
     void riskCallBack(const mapping_msgs_urc::RiskAreaArray::ConstPtr& ptr);
 
     /**

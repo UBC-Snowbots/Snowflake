@@ -87,6 +87,6 @@ class RiskAreaBuilder {
         return false;
     }
 };
-}
+} // namespace RiskAreaBuilder
 
 #endif // PROJECT_RISKAREABUILDER_H
