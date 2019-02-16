@@ -135,6 +135,11 @@ int id) {
         point.z = polygon.points[i].z;
         marker.points.push_back(point);
     }
+    geometry_msgs::Point point;
+    point.x = polygon.points[0].x;
+    point.y = polygon.points[0].y;
+    point.z = polygon.points[0].z;
+    marker.points.push_back(point);
 
     return marker;
 }

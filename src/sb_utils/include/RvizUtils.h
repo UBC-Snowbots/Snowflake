@@ -141,6 +141,12 @@ namespace RvizUtils {
             marker.points.push_back(point);
         }
 
+        geometry_msgs::Point point;
+        point.x = polygon.points[0].x;
+        point.y = polygon.points[0].y;
+        point.z = 0;
+        marker.points.push_back(point);
+
         return marker;
     }
     /**
@@ -174,7 +180,9 @@ namespace RvizUtils {
      * @return an rviz marker array
      */
     visualization_msgs::MarkerArray createMarkerArray(
-    std::vector<std::vector<geometry_msgs::Point>> points_arary,
+
+    std::vector<std::vector<geometry_msgs::Point>> points_array,
+
     visualization_msgs::Marker::_color_type color,
     visualization_msgs::Marker::_scale_type scale,
     std::string frame_id,

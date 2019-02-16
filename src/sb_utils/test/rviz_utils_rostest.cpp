@@ -59,7 +59,8 @@ TEST_F(RvizUtilsRosTest, boxPolygonMarker) {
     polygon.points.push_back(initialisePoint32(1, 1, 0));
 
     visualization_msgs::Marker risk_area_marker =
-    snowbots::RvizUtils::createPolygonMarker3D(
+
+    snowbots::RvizUtils::createPolygonMarker2D(
     polygon,
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
     snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
@@ -70,6 +71,11 @@ TEST_F(RvizUtilsRosTest, boxPolygonMarker) {
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
     EXPECT_EQ(ns, risk_area_marker.ns);
 
+    // Risk area marker should be a cycle.
+    risk_area_marker.points.front() = risk_area_marker.points.back();
+
+    // All other points should be equal.
+    risk_area_marker.points.erase(risk_area_marker.points.end());
     EXPECT_POINT_EQ(polygon.points, risk_area_marker.points);
 }
 
@@ -83,7 +89,8 @@ TEST_F(RvizUtilsRosTest, trianglePolygonMarker) {
     polygon.points.push_back(initialisePoint32(0, 1, 0));
 
     visualization_msgs::Marker risk_area_marker =
-    snowbots::RvizUtils::createPolygonMarker3D(
+
+    snowbots::RvizUtils::createPolygonMarker2D(
     polygon,
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
     snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
@@ -94,6 +101,11 @@ TEST_F(RvizUtilsRosTest, trianglePolygonMarker) {
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
     EXPECT_EQ(ns, risk_area_marker.ns);
 
+    // Risk area marker should be a cycle.
+    risk_area_marker.points.front() = risk_area_marker.points.back();
+
+    // All other points should be equal.
+    risk_area_marker.points.erase(risk_area_marker.points.end());
     EXPECT_POINT_EQ(polygon.points, risk_area_marker.points);
 }
 
