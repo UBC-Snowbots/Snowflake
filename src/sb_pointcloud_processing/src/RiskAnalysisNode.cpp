@@ -103,7 +103,7 @@ const sensor_msgs::PointCloud2ConstPtr point_cloud) {
     publishMarkers(pcl_risk);
 
     visualization_msgs::MarkerArray risk_area_markers;
-    std::string frame_id = "camera_color_optical_frame";
+    std::string frame_id = "base_link";
     std::string ns       = "debug";
 
     for (int i = 0; i < pcl_risk.areas.size(); i++) {

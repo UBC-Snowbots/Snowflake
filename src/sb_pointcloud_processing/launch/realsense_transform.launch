@@ -1,11 +1,11 @@
 <launch>
 
-  <node name="zed_transform" pkg="sb_gazebo" type="zed_transform" output="screen">
+  <node name="zed_transform" pkg="sb_pointcloud_processing" type="pcl_transform" output="screen">
       <rosparam param="output_frame"> "base_link" </rosparam>
 
       <remap from="/input_pointcloud" to="/camera/depth_registered/points"/>
       <remap from="/output_pointcloud" to="/camera/base_link_transform/points"/>
   </node>
 
-  <node pkg="tf2_ros" type="static_transform_publisher" name="camera_to_base_link_tf" args="0 0 0 -1.57 0 -1.7 camera_color_optical_frame base_link" />
+  <node pkg="tf2_ros" type="static_transform_publisher" name="camera_to_base_link_tf" args="0 0 0 -1.57 0 -1.57 base_link camera_link" />
 </launch>
