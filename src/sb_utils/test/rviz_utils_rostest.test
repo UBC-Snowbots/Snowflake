@@ -1,0 +1,3 @@
+<launch>
+    <test test-name="rviz_utils_rostest" pkg="sb_utils" type="rviz_utils_rostest" />
+</launch>
