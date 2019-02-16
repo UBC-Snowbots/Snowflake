@@ -29,7 +29,12 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_msgs
   sensor_msgs
   mapping_igvc
-        mapping_msgs_urc
+  mapping_msgs_urc
+  geometry_msgs
+  tf2
+  tf2_ros
+  tf2_msgs
+  tf2_sensor_msgs
   )
 find_package(PCL 1.3 REQUIRED COMPONENTS
   common
@@ -70,16 +75,10 @@ add_executable(line_extractor_node
 )
 
 add_library(sb_pointcloud_processing
-    include/rgb_to_hsv.h
-    src/rgb_to_hsv.cpp
-    include/ColourspaceConverter.h
-    src/ColourspaceConverter.cpp
-)
-
-target_link_libraries(sb_pointcloud_processing
-    ${catkin_LIBRARIES}
-    ${sb_utils_LIBRARIES}
-    ${PCL_LIBRARIES}
+  include/rgb_to_hsv.h
+  src/rgb_to_hsv.cpp
+  include/ColourspaceConverter.h
+  src/ColourspaceConverter.cpp
 )
 
 add_executable(risk_analysis
@@ -92,38 +91,52 @@ add_executable(risk_analysis
 add_executable(test_pcl_generator_node
   src/test_pcl_generator_node.cpp
   test/TestUtils.h
-  )
+)
+
+add_executable(pcl_transform src/pcl_transform.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(line_extractor_node
-    ${catkin_LIBRARIES}
-    ${PCL_COMMON_LIBRARIES}
-    ${PCL_IO_LIBRARIES}
+  ${catkin_LIBRARIES}
+  ${PCL_COMMON_LIBRARIES}
+  ${PCL_IO_LIBRARIES}
 )
 
 add_dependencies(line_extractor_node
-    ${mapping_igvc_EXPORTED_TARGETS}
+  ${mapping_igvc_EXPORTED_TARGETS}
 )
 
 target_link_libraries(risk_analysis
-        ${catkin_LIBRARIES}
-        ${PCL_COMMON_LIBRARIES}
-        ${PCL_IO_LIBRARIES}
-        )
+  ${catkin_LIBRARIES}
+  ${PCL_COMMON_LIBRARIES}
+  ${PCL_IO_LIBRARIES}
+)
+
+target_link_libraries(sb_pointcloud_processing
+  ${catkin_LIBRARIES}
+  ${sb_utils_LIBRARIES}
+  ${PCL_LIBRARIES}
+)
+
 
 install(
-    TARGETS
-        sb_pointcloud_processing
-    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  TARGETS
+      sb_pointcloud_processing
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 target_link_libraries(test_pcl_generator_node
   ${catkin_LIBRARIES}
   ${PCL_COMMON_LIBRARIES}
   ${PCL_IO_LIBRARIES}
-  )
+)
+
+target_link_libraries(pcl_transform
+  ${catkin_LIBRARIES}
+  ${sb_utils_LIBRARIES}
+)
 
 #############
 ## Testing ##
