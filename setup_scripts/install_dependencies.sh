@@ -54,7 +54,7 @@ echo "================================================================"
 echo "Installing other dependencies specified by our packages"
 echo "================================================================"
 cd $CURR_DIR
-./setup_realsense.sh
+sudo ./setup_realsense_manual.sh
 
 echo "================================================================"
 echo "Installing Misc. Utilities"
