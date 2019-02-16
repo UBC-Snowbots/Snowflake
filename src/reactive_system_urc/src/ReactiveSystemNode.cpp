@@ -1,8 +1,10 @@
 /**
  * Created by William Gu on Sept 29 2018
  * Implementation for Reactive System Node
- * This node is a wrapper for ReactiveSystemPath logic, which subscribes to twist, current GPS goal, and risk area
- * nodes, and publishes a path message to head towards the goal while avoiding risky areas
+ * This node is a wrapper for ReactiveSystemPath logic, which subscribes to
+ * twist, current GPS goal, and risk area
+ * nodes, and publishes a path message to head towards the goal while avoiding
+ * risky areas
  */
 
 #include <ReactiveSystemNode.h>

@@ -92,7 +92,7 @@ TEST(ReactiveSystem, curvedTrajOpposite) {
 }
 
 TEST(ReactiveSystem, riskAreaBuilder) {
-    float risk_score  = 5;
+    float risk_score  = MAX_RISK;
     float risk_radius = 1;
     sb_geom_msgs::Point2D risk_center;
     risk_center.x = 2;
