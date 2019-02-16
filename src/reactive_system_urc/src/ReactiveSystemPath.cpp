@@ -97,9 +97,9 @@ float dist_tol_sq) {
     // Add all the risks for each point for a risk sum for the trajectory
     for (int i = 0; i < trajectory.size(); i++) {
         sb_geom_msgs::Point2D traj_point = trajectory[i];
-        float traj_point_risk =
-        -1; // risk score for a given trajectory point, set to
-            // -1 since actual risks should be >= 0
+        // risk score for a given trajectory point, set to
+        // -1 since actual risks should be >= 0
+        float traj_point_risk = -1;
         for (mapping_msgs_urc::RiskArea area :
              risk_areas.areas) { // Check all points for all risk polygons
             for (sb_geom_msgs::Point2D risk_point : area.area.points) {
