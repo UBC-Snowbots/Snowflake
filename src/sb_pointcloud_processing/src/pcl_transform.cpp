@@ -18,7 +18,7 @@ tf2_ros::Buffer tf_buffer;
 
 std::string output_frame;
 
-// The amount of time (s) for a new pointcloud transform to be published.
+// The amount of time(s) for a new pointcloud transform to be published.
 double transform_period;
 
 void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
