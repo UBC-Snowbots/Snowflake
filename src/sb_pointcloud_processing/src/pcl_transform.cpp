@@ -31,6 +31,8 @@ void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
 
         tf2::doTransform(*msg, output, tf_stamped);
 
+        output.header.frame_id = output_frame;
+
         // Publish the transformed pointcloud
         pub.publish(output);
 
