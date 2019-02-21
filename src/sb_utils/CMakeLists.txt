@@ -70,7 +70,7 @@ if (CATKIN_ENABLE_TESTING)
 
     # Adding gtests to the package
     catkin_add_gtest(rviz_utils_rostest
-            test/rviz_utils_test.test
+            test/rviz_utils_rostest.test
             test/rviz_utils_rostest.cpp
             src/RvizUtils.cpp
             include/RvizUtils.h
