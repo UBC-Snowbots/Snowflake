@@ -52,6 +52,7 @@ std::vector<std::vector<RegionOfPoints>>
 RiskAnalysis::initialisePointRegions(pcl::PCLPointCloud2 point_cloud) {
     std::vector<std::vector<RegionOfPoints>> regions;
 
+    // Create the empty cells that fit the specified parameters
     for (int i = 0; i < num_vertical_cell_div; i++) {
         std::vector<RegionOfPoints> new_region_row;
         for (int j = 0; j < num_horizontal_cell_div; j++) {
@@ -74,10 +75,8 @@ RiskAnalysis::initialisePointRegions(pcl::PCLPointCloud2 point_cloud) {
 void RiskAnalysis::fillPointRegions(
 pcl::PointCloud<pcl::PointXYZ>::Ptr pcl,
 std::vector<std::vector<RegionOfPoints>>& regions) {
-    pcl::PointXYZ origin_point;
-    origin_point.x = 0;
-    origin_point.y = 0;
 
+    // Add all valid points to their respective regions
     for (size_t i = 0; i < pcl->size(); i++) {
         // Has to be a valid point
         if (!isnan(pcl->points[i].x) && pcl->points[i].x > 0 && pcl->points[i].x < region_height) {
@@ -91,15 +90,10 @@ std::vector<std::vector<RegionOfPoints>>& regions) {
             int row = determineRow(pcl->points[i].x);
             int col = determineColumn(pcl->points[i].y);
 
+            // Only add in the point if it's in a valid region.
             bool validColumn = col >= 0 && col < regions[0].size();
             bool validRow = row >= 0 && row < regions.size();
-
             if (validColumn && validRow) {
-//                std::cout << cur_point.x << ", ";
-//                std::cout << cur_point.y << "= ";
-//
-//                std::cout << row << ",";
-//                std::cout << col << std::endl;
                 regions[row][col].points.push_back(cur_point);
             }
         }
@@ -121,6 +115,9 @@ std::vector<std::vector<RegionOfPoints>> regions) {
                 // Determine risk of the area
                 std_msgs::Float64 risk;
                 risk.data = risk_multiplier*calculateStandardDeviation(z_values);
+
+                // Cap the risk score to RISK_MAX
+                risk.data = std::min(risk.data, MAX_RISK);
 
                 // Add risk area onto the array
                 mapping_msgs_urc::RiskArea risk_area;
@@ -152,6 +149,13 @@ float RiskAnalysis::calculateStandardDeviation(std::vector<float> values) {
 
 sb_geom_msgs::Polygon2D RiskAnalysis::getRegionAreaFromIndices(int row,
                                                                int column) {
+    // Height corresponds to the x-axis, width corresponds to the y-axis
+    // +X = UP, +Y = LEFT (ROS Coordinates)
+
+    // Left most region has a column index of 0 and increases as it moves along the y-axis in the negative direction
+
+    // Top most region has a row index of 0 and increases as you moves along the x-axis in the negative direction
+
     sb_geom_msgs::Point2D top_left_point;
     top_left_point.x = region_height - row * cell_height;
     top_left_point.y = region_width / 2.0 - column * cell_width;
@@ -184,6 +188,5 @@ int RiskAnalysis::determineRow(float x) {
 
 int RiskAnalysis::determineColumn(float y) {
     int col = (region_width / 2.0 - y) / cell_width;
-
     return col;
 }

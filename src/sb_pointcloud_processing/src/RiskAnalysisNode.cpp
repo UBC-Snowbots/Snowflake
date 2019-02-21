@@ -106,6 +106,7 @@ const sensor_msgs::PointCloud2ConstPtr point_cloud) {
     std::string frame_id = "base_link";
     std::string ns       = "debug";
 
+    // Create the rviz markers
     for (int i = 0; i < pcl_risk.areas.size(); i++) {
         visualization_msgs::Marker risk_area_marker =
         snowbots::RvizUtils::createPolygonMarker2D(
@@ -139,8 +140,6 @@ mapping_msgs_urc::RiskAreaArray risk_areas) {
 
 visualization_msgs::Marker::_color_type
 RiskAnalysisNode::convertRiskToColor(float risk) {
-    if (risk > 10)
-        risk = 10;
     // Round down to the nearest integer to get risk color
-    return gradient[(int) risk];
+    return gradient[(int) risk*10.0];
 }

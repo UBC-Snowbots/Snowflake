@@ -74,6 +74,8 @@ class RiskAnalysis {
     int determineColumn(float y);
 
   private:
+    double MAX_RISK = 1;
+
     float region_width;
     float region_height;
     float risk_multiplier;
