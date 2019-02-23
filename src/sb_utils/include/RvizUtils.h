@@ -17,6 +17,9 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 
+#include "sb_geom_msgs/Point2D.h"
+#include "sb_geom_msgs/Polygon2D.h"
+
 namespace snowbots {
 namespace RvizUtils {
     /**
@@ -35,8 +38,8 @@ namespace RvizUtils {
                  visualization_msgs::Marker::_scale_type scale,
                  std::string frame_id,
                  std::string ns,
-                 int type = visualization_msgs::Marker::POINTS,
-                 int id   = 0);
+                 int marker_id,
+                 int type = visualization_msgs::Marker::POINTS);
 
     /**
      *  Turn points into a marker for rviz
@@ -55,8 +58,8 @@ namespace RvizUtils {
                  visualization_msgs::Marker::_scale_type scale,
                  std::string frame_id,
                  std::string ns,
-                 int type = visualization_msgs::Marker::POINTS,
-                 int id   = 0);
+                 int marker_id,
+                 int type = visualization_msgs::Marker::POINTS);
 
     /**
      *  Turn a point into a marker for rviz
@@ -93,8 +96,8 @@ namespace RvizUtils {
                  visualization_msgs::Marker::_scale_type scale,
                  std::string frame_id,
                  std::string ns,
-                 int type = visualization_msgs::Marker::POINTS,
-                 int id   = 0);
+                 int marker_id,
+                 int type = visualization_msgs::Marker::POINTS );
 
     /**
      *  Turn a polygon into a marker for rviz
@@ -106,49 +109,14 @@ namespace RvizUtils {
      *
      *  @return an rviz marker
      */
-    template <typename T>
     visualization_msgs::Marker
-    createPolygonMarker2D(T polygon,
+    createPolygonMarker2D(sb_geom_msgs::Polygon2D polygon,
                           visualization_msgs::Marker::_color_type color,
                           visualization_msgs::Marker::_scale_type scale,
                           std::string frame_id,
                           std::string ns,
-                          int type = visualization_msgs::Marker::LINE_STRIP,
-                          int id   = 1) {
-        visualization_msgs::Marker marker;
-
-        marker.header.stamp       = ros::Time::now();
-        marker.action             = visualization_msgs::Marker::ADD;
-        marker.pose.orientation.w = 1.0;
-
-        marker.type = type;
-        marker.id   = id;
-
-        marker.header.frame_id = frame_id;
-        marker.ns              = ns;
-
-        marker.scale = scale;
-
-        // Set the color
-        marker.color = color;
-
-        // Setup the line strip
-        for (int i = 0; i < polygon.points.size(); i++) {
-            geometry_msgs::Point point;
-            point.x = polygon.points[i].x;
-            point.y = polygon.points[i].y;
-            point.z = 0;
-            marker.points.push_back(point);
-        }
-
-        geometry_msgs::Point point;
-        point.x = polygon.points[0].x;
-        point.y = polygon.points[0].y;
-        point.z = 0;
-        marker.points.push_back(point);
-
-        return marker;
-    }
+                          int marker_id,
+                          int type = visualization_msgs::Marker::LINE_STRIP);
     /**
      *  Turn a polygon into a marker for rviz
      *
@@ -165,8 +133,8 @@ namespace RvizUtils {
                           visualization_msgs::Marker::_scale_type scale,
                           std::string frame_id,
                           std::string ns,
-                          int type = visualization_msgs::Marker::LINE_STRIP,
-                          int id   = 1);
+                          int marker_id,
+                          int type = visualization_msgs::Marker::LINE_STRIP);
 
     /**
      * Creates a Marker Array (array of Markers)

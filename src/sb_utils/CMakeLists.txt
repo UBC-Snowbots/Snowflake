@@ -14,6 +14,7 @@ add_definitions(-std=c++14)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  mapping_msgs_urc
 )
 
 

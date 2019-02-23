@@ -24,8 +24,8 @@ namespace RvizUtils {
                      visualization_msgs::Marker::_scale_type scale,
                      std::string frame_id,
                      std::string ns,
-                     int type = visualization_msgs::Marker::POINTS,
-                     int id   = 0);
+                     int marker_id,
+                     int type = visualization_msgs::Marker::POINTS) ;
 }
 }
 
@@ -35,11 +35,11 @@ snowbots::RvizUtils::createMarker(std::vector<geometry_msgs::Point> points,
                                   Marker::_scale_type scale,
                                   std::string frame_id,
                                   std::string ns,
-                                  int type,
-                                  int id) {
+                                  int marker_id,
+                                  int type) {
     Marker marker;
 
-    setupMarker(marker, scale, frame_id, ns, type, id);
+    setupMarker(marker, scale, frame_id, ns, marker_id, type);
 
     // Set the color
     marker.color = color;
@@ -56,11 +56,11 @@ snowbots::RvizUtils::createMarker(std::vector<geometry_msgs::Point> points,
                                   Marker::_scale_type scale,
                                   std::string frame_id,
                                   std::string ns,
-                                  int type,
-                                  int id) {
+                                  int marker_id,
+                                  int type) {
     Marker marker;
 
-    setupMarker(marker, scale, frame_id, ns, type, id);
+    setupMarker(marker, scale, frame_id, ns, marker_id, type);
 
     // Set the colors
     marker.colors = colors;
@@ -77,11 +77,11 @@ snowbots::RvizUtils::createMarker(geometry_msgs::Point point,
                                   Marker::_scale_type scale,
                                   std::string frame_id,
                                   std::string ns,
-                                  int type,
-                                  int id) {
+                                  int marker_id,
+                                  int type) {
     Marker marker;
 
-    setupMarker(marker, scale, frame_id, ns, type, id);
+    setupMarker(marker, scale, frame_id, ns, marker_id, type);
 
     // Set the color
     marker.colors = colors;
@@ -97,11 +97,11 @@ Marker snowbots::RvizUtils::createMarker(geometry_msgs::Point point,
                                          Marker::_scale_type scale,
                                          std::string frame_id,
                                          std::string ns,
-                                         int type,
-                                         int id) {
+                                         int marker_id,
+                                         int type) {
     Marker marker;
 
-    setupMarker(marker, scale, frame_id, ns, type, id);
+    setupMarker(marker, scale, frame_id, ns, marker_id, type);
 
     // Set the color
     marker.color = color;
@@ -112,17 +112,50 @@ Marker snowbots::RvizUtils::createMarker(geometry_msgs::Point point,
     return marker;
 }
 
+visualization_msgs::Marker
+snowbots::RvizUtils::createPolygonMarker2D(sb_geom_msgs::Polygon2D polygon,
+                      visualization_msgs::Marker::_color_type color,
+                      visualization_msgs::Marker::_scale_type scale,
+                      std::string frame_id,
+                      std::string ns,
+                      int marker_id,
+                      int type) {
+    visualization_msgs::Marker marker;
+
+    setupMarker(marker, scale, frame_id, ns, marker_id, type);
+    
+    // Set the color
+    marker.color = color;
+    
+    // Setup the line strip
+    for (int i = 0; i < polygon.points.size(); i++) {
+    geometry_msgs::Point point;
+    point.x = polygon.points[i].x;
+    point.y = polygon.points[i].y;
+    point.z = 0;
+    marker.points.push_back(point);
+    }
+    
+    geometry_msgs::Point point;
+    point.x = polygon.points[0].x;
+    point.y = polygon.points[0].y;
+    point.z = 0;
+    marker.points.push_back(point);
+    
+    return marker;
+}
+
 Marker snowbots::RvizUtils::createPolygonMarker3D(
 geometry_msgs::Polygon polygon,
 visualization_msgs::Marker::_color_type color,
 visualization_msgs::Marker::_scale_type scale,
 std::string frame_id,
 std::string ns,
-int type,
-int id) {
+int marker_id,
+int type) {
     Marker marker;
 
-    setupMarker(marker, scale, frame_id, ns, type, id);
+    setupMarker(marker, scale, frame_id, ns, marker_id, type);
 
     // Set the color
     marker.color = color;

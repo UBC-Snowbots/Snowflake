@@ -127,7 +127,7 @@ void LineExtractorNode::visualizeClusters() {
     std::string ns = "debug";
 
     visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
-    cluster_points, colors, scale, this->frame_id, ns);
+    cluster_points, colors, scale, this->frame_id, ns, 0);
 
     rviz_cluster_publisher.publish(marker);
 }

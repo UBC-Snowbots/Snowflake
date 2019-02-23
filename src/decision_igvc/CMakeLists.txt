@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
         gps_common
         tf2_geometry_msgs
         sb_utils
+        mapping_msgs_urc
         )
 find_package(OpenCV REQUIRED)
 
