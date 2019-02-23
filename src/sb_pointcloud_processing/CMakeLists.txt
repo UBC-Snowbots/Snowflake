@@ -63,65 +63,65 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(line_extractor_node
-  include/LineExtractorNode.h
-  include/DBSCAN.h
-  include/Regression.h
-  src/line_extractor_node.cpp
-  src/LineExtractorNode.cpp
-  src/DBSCAN.cpp
-  src/Regression.cpp
-  include/Regression.h
+    include/LineExtractorNode.h
+    include/DBSCAN.h
+    include/Regression.h
+    src/line_extractor_node.cpp
+    src/LineExtractorNode.cpp
+    src/DBSCAN.cpp
+    src/Regression.cpp
+    include/Regression.h
 )
 
-add_library(sb_pointcloud_processing
-  include/rgb_to_hsv.h
-  src/rgb_to_hsv.cpp
-  include/ColourspaceConverter.h
-  src/ColourspaceConverter.cpp
-)
-
-add_executable(test_pcl_generator_node
-  src/test_pcl_generator_node.cpp
-  test/TestUtils.h
-)
-
-add_executable(pcl_transform src/pcl_transform.cpp)
-
-## Specify libraries to link a library or executable target against
 target_link_libraries(line_extractor_node
-  ${catkin_LIBRARIES}
-  ${PCL_COMMON_LIBRARIES}
-  ${PCL_IO_LIBRARIES}
+    ${catkin_LIBRARIES}
+    ${PCL_COMMON_LIBRARIES}
+    ${PCL_IO_LIBRARIES}
 )
 
 add_dependencies(line_extractor_node
-  ${mapping_igvc_EXPORTED_TARGETS}
+    ${mapping_igvc_EXPORTED_TARGETS}
+)
+
+add_library(sb_pointcloud_processing
+    include/rgb_to_hsv.h
+    src/rgb_to_hsv.cpp
+    include/ColourspaceConverter.h
+    src/ColourspaceConverter.cpp
 )
 
 target_link_libraries(sb_pointcloud_processing
-  ${catkin_LIBRARIES}
-  ${sb_utils_LIBRARIES}
-  ${PCL_LIBRARIES}
+    ${catkin_LIBRARIES}
+    ${sb_utils_LIBRARIES}
+    ${PCL_LIBRARIES}
 )
 
 
 install(
-  TARGETS
-      sb_pointcloud_processing
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    TARGETS
+    sb_pointcloud_processing
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+add_executable(test_pcl_generator_node
+    src/test_pcl_generator_node.cpp
+    test/TestUtils.h
 )
 
 target_link_libraries(test_pcl_generator_node
-  ${catkin_LIBRARIES}
-  ${PCL_COMMON_LIBRARIES}
-  ${PCL_IO_LIBRARIES}
+    ${catkin_LIBRARIES}
+    ${PCL_COMMON_LIBRARIES}
+    ${PCL_IO_LIBRARIES}
 )
 
+
+add_executable(pcl_transform src/pcl_transform.cpp)
+
 target_link_libraries(pcl_transform
-  ${catkin_LIBRARIES}
-  ${sb_utils_LIBRARIES}
+    ${catkin_LIBRARIES}
+    ${sb_utils_LIBRARIES}
 )
 
 #############
