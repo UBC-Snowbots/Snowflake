@@ -34,7 +34,7 @@ RiskAnalysis::assessPointCloudRisk(pcl::PCLPointCloud2 point_cloud) {
 
     // Initialise regions with an area and associated points
     std::vector<std::vector<RegionOfPoints>> regions =
-    initialisePointRegions(point_cloud);
+    initialisePointRegions();
 
     // Convert to PCLPointCloud
     pcl::PointCloud<pcl::PointXYZ>::Ptr pcl(
@@ -49,7 +49,7 @@ RiskAnalysis::assessPointCloudRisk(pcl::PCLPointCloud2 point_cloud) {
 }
 
 std::vector<std::vector<RegionOfPoints>>
-RiskAnalysis::initialisePointRegions(pcl::PCLPointCloud2 point_cloud) {
+RiskAnalysis::initialisePointRegions() {
     std::vector<std::vector<RegionOfPoints>> regions;
 
     // Create the empty cells that fit the specified parameters

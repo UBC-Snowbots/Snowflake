@@ -51,14 +51,35 @@ class RiskAnalysis {
     RiskAnalysis();
 
     /**
-     * Analyses a pointcloud
+     * Assigns risk to regions with enough information (min_points_in_region).
+     * Uses standard deviation of point height to measure risk.
+     *
+     * @param point_cloud the point cloud of the ground
+     * @return regions with associated risk
      */
     mapping_msgs_urc::RiskAreaArray
     assessPointCloudRisk(pcl::PCLPointCloud2 point_cloud);
 
+    /**
+     * Creates a 2D vector of RegionOfPoints where...
+     * # rows = num_vertical_cell_div
+     * # cols = num_horizontal_cell_div
+     *
+     * Each region's height and width correspond to cell_width and
+     * cell_height
+     *
+     * The points are intialised as empty
+     *
+     * @return 2D vector of RegionOfPoints
+     */
     std::vector<std::vector<RegionOfPoints>>
-    initialisePointRegions(pcl::PCLPointCloud2 point_cloud);
+    initialisePointRegions();
 
+    /**
+     * Fills each region's points with the specified 
+     * @param pcl
+     * @param regions
+     */
     void fillPointRegions(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl,
                           std::vector<std::vector<RegionOfPoints>>& regions);
 
