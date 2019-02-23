@@ -25,7 +25,7 @@ namespace RvizUtils {
                      std::string frame_id,
                      std::string ns,
                      int marker_id,
-                     int type = visualization_msgs::Marker::POINTS) ;
+                     int type = visualization_msgs::Marker::POINTS);
 }
 }
 
@@ -112,36 +112,36 @@ Marker snowbots::RvizUtils::createMarker(geometry_msgs::Point point,
     return marker;
 }
 
-visualization_msgs::Marker
-snowbots::RvizUtils::createPolygonMarker2D(sb_geom_msgs::Polygon2D polygon,
-                      visualization_msgs::Marker::_color_type color,
-                      visualization_msgs::Marker::_scale_type scale,
-                      std::string frame_id,
-                      std::string ns,
-                      int marker_id,
-                      int type) {
+visualization_msgs::Marker snowbots::RvizUtils::createPolygonMarker2D(
+sb_geom_msgs::Polygon2D polygon,
+visualization_msgs::Marker::_color_type color,
+visualization_msgs::Marker::_scale_type scale,
+std::string frame_id,
+std::string ns,
+int marker_id,
+int type) {
     visualization_msgs::Marker marker;
 
     setupMarker(marker, scale, frame_id, ns, marker_id, type);
-    
+
     // Set the color
     marker.color = color;
-    
+
     // Setup the line strip
     for (int i = 0; i < polygon.points.size(); i++) {
-    geometry_msgs::Point point;
-    point.x = polygon.points[i].x;
-    point.y = polygon.points[i].y;
-    point.z = 0;
-    marker.points.push_back(point);
+        geometry_msgs::Point point;
+        point.x = polygon.points[i].x;
+        point.y = polygon.points[i].y;
+        point.z = 0;
+        marker.points.push_back(point);
     }
-    
+
     geometry_msgs::Point point;
     point.x = polygon.points[0].x;
     point.y = polygon.points[0].y;
     point.z = 0;
     marker.points.push_back(point);
-    
+
     return marker;
 }
 

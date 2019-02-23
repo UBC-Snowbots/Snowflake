@@ -97,7 +97,7 @@ namespace RvizUtils {
                  std::string frame_id,
                  std::string ns,
                  int marker_id,
-                 int type = visualization_msgs::Marker::POINTS );
+                 int type = visualization_msgs::Marker::POINTS);
 
     /**
      *  Turn a polygon into a marker for rviz
