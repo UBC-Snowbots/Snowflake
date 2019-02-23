@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!-- 
+     The Controllers for rover_2018
+-->
+<robot name="rover_2018" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- General Controller Plugin - This lets ROS Interface with Gazebo -->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/robot</robotNamespace>
+        </plugin>
+    </gazebo>
+
+    <gazebo reference="camera">
+        <sensor type="depth" name="stereo_camera">
+            <always_on>1</always_on>
+            <!-- update rate in Hz -->
+            <update_rate>30.0</update_rate>
+            <visualize>true</visualize>
+            <camera>
+                <horizontal_fov>1.91986</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <depth_camera>
+
+                </depth_camera>
+                <clip>
+                    <near>0.5</near>
+                    <far>20</far>
+                </clip>
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_openni_kinect.so">
+                <baseline>0.2</baseline>
+                <alwaysOn>true</alwaysOn>
+                <updateRate>1.0</updateRate>
+                <cameraName>zed</cameraName>
+                <imageTopicName>/zed/camera/image_raw</imageTopicName>
+                <cameraInfoTopicName>/zed/depth/camera_info</cameraInfoTopicName>
+                <depthImageTopicName>/zed/depth/image_raw</depthImageTopicName>
+                <depthImageInfoTopicName>
+                    /zed/depth/camera_info
+                </depthImageInfoTopicName>
+                <pointCloudTopicName>
+                    /zed/camera/point_cloud/uncorrected_cloud_do_not_use
+                </pointCloudTopicName>
+                <frameName>camera</frameName>
+                <pointCloudCutoff>0.5</pointCloudCutoff>
+
+                <!-- 
+                     For more info on the below coefficients, see 
+                     https://www.mathworks.com/help/vision/ug/camera-calibration.html 
+                -->
+                <!-- 1st, 2nd, and 3rd order image distortion coefficients -->
+                <distortionK1>0.00000001</distortionK1>
+                <distortionK2>0.00000001</distortionK2>
+                <distortionK3>0.00000001</distortionK3>
+                <!-- X and Y translation -->
+                <distortionT1>0.00000001</distortionT1>
+                <distortionT2>0.00000001</distortionT2>
+
+                <CxPrime>0</CxPrime>
+                <Cx>0</Cx>
+                <Cy>0</Cy>
+                <focalLength>0</focalLength>
+                <hackBaseline>0</hackBaseline>
+            </plugin>
+        </sensor>
+
+    </gazebo>
+
+</robot>
