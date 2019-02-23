@@ -46,8 +46,20 @@ class RiskAnalysisNode {
      */
     void pclCallBack(const sensor_msgs::PointCloud2ConstPtr point_cloud);
 
+    /**
+     * Adds in all the header information for the message then publishes
+     * the risk_areas
+     *
+     * @param risk_areas
+     */
     void publishMarkers(mapping_msgs_urc::RiskAreaArray risk_areas);
 
+    /**
+     * Returns a color corresponding to the inputted risk
+     *
+     * @param risk
+     * @return visualization_msgs::Marker::_color_type color corresponding to inputted risk
+     */
     visualization_msgs::Marker::_color_type convertRiskToColor(float risk);
 
     RiskAnalysis risk_analysis;

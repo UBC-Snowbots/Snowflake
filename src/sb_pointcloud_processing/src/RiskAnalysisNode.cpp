@@ -115,8 +115,8 @@ const sensor_msgs::PointCloud2ConstPtr point_cloud) {
         snowbots::RvizUtils::createMarkerScale(0.01, 0, 0),
         frame_id,
         ns,
-        visualization_msgs::Marker::LINE_STRIP,
-        i
+        i,
+        visualization_msgs::Marker::LINE_STRIP
         );
 
         risk_area_markers.markers.push_back(risk_area_marker);

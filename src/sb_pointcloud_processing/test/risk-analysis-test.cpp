@@ -32,11 +32,13 @@ TEST(RegionCreation, DivisionsEqualToDimensions) {
     int num_vertical_cell_divs   = 10;
     int num_horizontal_cell_divs = 10;
     int min_points_in_region     = 1;
+    float risk_multiplier = 1;
     RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
                                               num_horizontal_cell_divs,
-                                              min_points_in_region);
+                                              min_points_in_region,
+                                              risk_multiplier);
 
     sb_geom_msgs::Polygon2D top_left_region =
     risk_analysis.getRegionAreaFromIndices(0, 0);
@@ -70,15 +72,17 @@ TEST(RegionInitialisation, DivisionsEqualToDimensions) {
     int num_vertical_cell_divs   = 10;
     int num_horizontal_cell_divs = 10;
     int min_points_in_region     = 1;
+    float risk_multiplier = 1;
     RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
                                               num_horizontal_cell_divs,
-                                              min_points_in_region);
+                                              min_points_in_region,
+                                              risk_multiplier);
 
     std::vector<std::vector<RegionOfPoints>> point_region;
 
-    point_region = risk_analysis.initialisePointRegions(empty_cloud);
+    point_region = risk_analysis.initialisePointRegions();
 
     EXPECT_EQ(num_vertical_cell_divs, point_region.size());
     EXPECT_EQ(num_horizontal_cell_divs, point_region[0].size());
@@ -96,11 +100,14 @@ TEST(RegionAnalysis, DivisionsEqualToDimensions) {
     int num_vertical_cell_divs   = 10;
     int num_horizontal_cell_divs = 10;
     int min_points_in_region     = 1;
+    float risk_multiplier = 1;
+
     RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
                                               num_horizontal_cell_divs,
-                                              min_points_in_region);
+                                              min_points_in_region,
+                                              risk_multiplier);
 
     mapping_msgs_urc::RiskAreaArray pcl_risk =
     risk_analysis.assessPointCloudRisk(empty_cloud);
@@ -112,11 +119,14 @@ TEST(RegionCreation, NonIntegerCellDimensions) {
     int num_vertical_cell_divs   = 100;
     int num_horizontal_cell_divs = 100;
     int min_points_in_region     = 1;
+    float risk_multiplier = 1;
+
     RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
                                               num_horizontal_cell_divs,
-                                              min_points_in_region);
+                                              min_points_in_region,
+                                              risk_multiplier);
 
     sb_geom_msgs::Polygon2D top_left_region =
     risk_analysis.getRegionAreaFromIndices(0, 0);
@@ -149,11 +159,14 @@ TEST(RegionAnalysis, NonIntegerCellDimensions) {
     int num_vertical_cell_divs   = 100;
     int num_horizontal_cell_divs = 100;
     int min_points_in_region     = 1;
+    float risk_multiplier = 1;
+
     RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
                                               num_horizontal_cell_divs,
-                                              min_points_in_region);
+                                              min_points_in_region,
+                                              risk_multiplier);
 
     mapping_msgs_urc::RiskAreaArray pcl_risk =
     risk_analysis.assessPointCloudRisk(empty_cloud);
@@ -165,11 +178,14 @@ TEST(RegionAnalysis, OneDiv) {
     int num_vertical_cell_divs   = 2;
     int num_horizontal_cell_divs = 1;
     int min_points_in_region     = -1;
+    float risk_multiplier = 1;
+
     RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
                                                 region_height,
                                                 num_vertical_cell_divs,
                                                 num_horizontal_cell_divs,
-                                                min_points_in_region);
+                                                min_points_in_region,
+                                                risk_multiplier);
 
     mapping_msgs_urc::RiskAreaArray pcl_risk =
             risk_analysis.assessPointCloudRisk(empty_cloud);

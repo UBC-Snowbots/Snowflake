@@ -76,27 +76,64 @@ class RiskAnalysis {
     initialisePointRegions();
 
     /**
-     * Fills each region's points with the specified 
+     * Fills each region's vector of points with the input point cloud.
+     * The region chosen is dependent on the point's x and y values.
+     *
      * @param pcl
      * @param regions
      */
     void fillPointRegions(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl,
                           std::vector<std::vector<RegionOfPoints>>& regions);
 
+    /**
+     * Assigns risk to regions with enough information (min_points_in_region).
+     * Uses standard deviation of point height (z-value) to measure risk.
+     *
+     * @param regions 2D vector
+     * @return regions with associated risk
+     */
     mapping_msgs_urc::RiskAreaArray
     analysePointRegions(std::vector<std::vector<RegionOfPoints>> regions);
 
+    /**
+     * Calculates the standard deviation of a given vector of values
+     *
+     * @param values
+     * @return float standard deviation of inputted floats
+     */
     float calculateStandardDeviation(std::vector<float> values);
 
+    /**
+     * Creates a region in a location specified by the inputted row and column.
+     *
+     * The dimensions of the region are equal to cell_height and cell_width.
+     *
+     * @param row
+     * @param column
+     * @return sb_geom_msgs::Polygon2D region
+     */
     sb_geom_msgs::Polygon2D getRegionAreaFromIndices(int row, int column);
 
+    /**
+     * Given an x value, return the correct row that the point should be in.
+     *
+     * @param x the x-value of a point
+     * @return int the row that corresponds to the x-value
+     */
     int determineRow(float x);
 
+    /**
+     * Given a y value, return the correct column that the point should be in.
+     *
+     * @param y the y-value of a point
+     * @return int the column that corresponds to the y-value
+     */
     int determineColumn(float y);
 
   private:
     double MAX_RISK = 1;
 
+    // Dimensions of the region
     float region_width;
     float region_height;
     float risk_multiplier;
@@ -106,6 +143,7 @@ class RiskAnalysis {
 
     int region_min_points;
 
+    // Dimension of cells
     float cell_width;
     float cell_height;
     int total_cells;
