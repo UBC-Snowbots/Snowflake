@@ -32,9 +32,9 @@
   <xacro:property name="gps_size" value="0.05"/>
   <xacro:property name="gps_mass" value="0"/>
 
-  <xacro:include filename="$(find sb_gazebo)/urdf/jfrost.gazebo"/>
-  <xacro:include filename="$(find sb_gazebo)/urdf/materials.xacro"/>
-  <xacro:include filename="$(find sb_gazebo)/urdf/macros.xacro"/>
+  <xacro:include filename="$(find sb_gazebo)/robots/jfrost.gazebo"/>
+  <xacro:include filename="$(find sb_gazebo)/robots/materials.xacro"/>
+  <xacro:include filename="$(find sb_gazebo)/robots/macros.xacro"/>
 
 
   <!-- Footprint of the robot (because gazebo's base_link can't have interia) -->
