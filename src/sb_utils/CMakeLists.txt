@@ -61,6 +61,8 @@ add_library(sb_utils
 
 target_link_libraries(sb_utils ${catkin_LIBRARIES})
 
+add_dependencies(sb_utils ${catkin_EXPORTED_TARGETS})
+
 
 #############
 ## Testing ##
