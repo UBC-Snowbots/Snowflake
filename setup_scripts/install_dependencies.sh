@@ -47,7 +47,6 @@ rosdep update
 rosdep install --from-paths \
     $CURR_DIR/../src \
     $CURR_DIR/../src/external_pkgs \
-    $CURR_DIR/../src/external_pkgs/navigation \
     --ignore-src --rosdistro melodic --skip-keys=librealsense2 -y 
 
 echo "================================================================"
