@@ -14,6 +14,7 @@
     <gazebo reference="camera">
         <sensor type="depth" name="stereo_camera">
             <always_on>1</always_on>
+            <!-- update rate in Hz -->
             <update_rate>30.0</update_rate>
             <visualize>true</visualize>
             <camera>
@@ -47,11 +48,19 @@
                 </pointCloudTopicName>
                 <frameName>camera</frameName>
                 <pointCloudCutoff>0.5</pointCloudCutoff>
+
+                <!-- 
+                     For more info on the below coefficients, see 
+                     https://www.mathworks.com/help/vision/ug/camera-calibration.html 
+                -->
+                <!-- 1st, 2nd, and 3rd order image distortion coefficients -->
                 <distortionK1>0.00000001</distortionK1>
                 <distortionK2>0.00000001</distortionK2>
                 <distortionK3>0.00000001</distortionK3>
+                <!-- X and Y translation -->
                 <distortionT1>0.00000001</distortionT1>
                 <distortionT2>0.00000001</distortionT2>
+
                 <CxPrime>0</CxPrime>
                 <Cx>0</Cx>
                 <Cy>0</Cy>

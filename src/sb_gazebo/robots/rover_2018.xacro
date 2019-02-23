@@ -23,7 +23,9 @@
 
     <xacro:property name="primary_rocker_radius" value="0.15"/>
     <xacro:property name="primary_rocker_length" value="0.1"/>
+    <!-- The size of the gap between the chassis and the primary rocker -->
     <xacro:property name="primary_rocker_chassis_clearance" value="0.02"/>
+    <!-- Primary rocker offset from it's parent joint (the chassis) -->
     <xacro:property name="primary_rocker_x_offset" value="0"/>
     <xacro:property name="primary_rocker_y_offset" value="${chassis_x_size/2 + primary_rocker_length/2 + primary_rocker_chassis_clearance}"/>
     <xacro:property name="primary_rocker_z_offset" value="0"/>
@@ -96,11 +98,19 @@
         material_name="grey"
         />
 
-    <xacro:macro name="primary_rocker" params="lr_prefix y_reflect">
+    <!--
+         This macro generates the primary rocker joint between the rocker 
+         arms and the main chassis
+         @param left_right_prefix A prefix (should be "left" or "right") that
+         is placed in front of the joint and link name 
+         @param y_reflect A value (should be `1` or `-1`) that the y coordinates
+         of the generated joint and link are multiplied by
+    -->
+    <xacro:macro name="primary_rocker" params="left_right_prefix y_reflect">
         <!-- TODO: Make this revolute model with a spring to resist rotation (but allow it) instead of just being fixed like it currently is -->
-        <joint name="${lr_prefix}_primary_rocker_to_chassis" type="revolute">
+        <joint name="${left_right_prefix}_primary_rocker_to_chassis" type="revolute">
             <parent link="chassis"/>
-            <child link="${lr_prefix}_primary_rocker"/>
+            <child link="${left_right_prefix}_primary_rocker"/>
             <origin xyz="
                 ${primary_rocker_x_offset} 
                 ${primary_rocker_y_offset*y_reflect} 
@@ -118,7 +128,7 @@
             <limit lower="-20" upper="20" effort="100" velocity="100"/>
         </joint>
         <cylinder_link 
-            name="${lr_prefix}_primary_rocker"
+            name="${left_right_prefix}_primary_rocker"
             x_pos="0" 
             y_pos="0" 
             z_pos="0" 
@@ -131,13 +141,25 @@
             material_name="grey"
             />
     </xacro:macro>
-    <primary_rocker lr_prefix="L" y_reflect="1"/>
-    <primary_rocker lr_prefix="R" y_reflect="-1"/>
+    <primary_rocker left_right_prefix="left" y_reflect="1"/>
+    <primary_rocker left_right_prefix="right" y_reflect="-1"/>
 
-    <xacro:macro name="primary_rocker_arm" params="lr_prefix fb_prefix x_reflect y_reflect">
-        <joint name="${lr_prefix}_${fb_prefix}_primary_rocker_to_primary_rocker_arm" type="fixed">
-            <parent link="${lr_prefix}_primary_rocker"/>
-            <child link="${lr_prefix}_${fb_prefix}_primary_rocker_arm"/>
+    <!--
+         This macro generates the primary rocker arm between the primary rocker
+         joint and the wheel axles
+         @param left_right_prefix A prefix (should be "left" or "right") that
+         is placed in front of the joint and link name 
+         @param front_back_prefix A prefix (should be "front" or "back") that
+         is placed in front of the joint and link name 
+         @param y_reflect A value (should be `1` or `-1`) that the y coordinates
+         of the generated joint and link are multiplied by
+         @param y_reflect A value (should be `1` or `-1`) that the x coordinates
+         of the generated joint and link are multiplied by
+    -->
+    <xacro:macro name="primary_rocker_arm" params="left_right_prefix front_back_prefix x_reflect y_reflect">
+        <joint name="${left_right_prefix}_${front_back_prefix}_primary_rocker_to_primary_rocker_arm" type="fixed">
+            <parent link="${left_right_prefix}_primary_rocker"/>
+            <child link="${left_right_prefix}_${front_back_prefix}_primary_rocker_arm"/>
             <origin xyz="
                 ${primary_rocker_arm_x_offset*x_reflect}
                 ${primary_rocker_arm_y_offset*y_reflect}
@@ -147,7 +169,7 @@
             />
         </joint>
         <cylinder_link 
-            name="${lr_prefix}_${fb_prefix}_primary_rocker_arm"
+            name="${left_right_prefix}_${front_back_prefix}_primary_rocker_arm"
             x_pos="0"
             y_pos="0"
             z_pos="0"
@@ -160,15 +182,26 @@
             material_name="grey"
             />
     </xacro:macro>
-    <primary_rocker_arm lr_prefix="L" fb_prefix="FRONT" x_reflect="1" y_reflect="1"/>
-    <primary_rocker_arm lr_prefix="R" fb_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
-    <primary_rocker_arm lr_prefix="L" fb_prefix="BACK" x_reflect="-1" y_reflect="1"/>
-    <primary_rocker_arm lr_prefix="R" fb_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
+    <primary_rocker_arm left_right_prefix="left" front_back_prefix="FRONT" x_reflect="1" y_reflect="1"/>
+    <primary_rocker_arm left_right_prefix="right" front_back_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_rocker_arm left_right_prefix="left" front_back_prefix="BACK" x_reflect="-1" y_reflect="1"/>
+    <primary_rocker_arm left_right_prefix="right" front_back_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
 
-    <xacro:macro name="primary_wheel_axle" params="lr_prefix fb_prefix x_reflect y_reflect">
-        <joint name="${lr_prefix}_${fb_prefix}_primary_rocker_arm_to_primary_wheel_axle" type="fixed">
-            <parent link="${lr_prefix}_${fb_prefix}_primary_rocker_arm"/>
-            <child link="${lr_prefix}_${fb_prefix}_primary_wheel_axle"/>
+    <!--
+         This macro generates the axle for the primary wheels
+         @param left_right_prefix A prefix (should be "left" or "right") that
+         is placed in front of the joint and link name 
+         @param front_back_prefix A prefix (should be "front" or "back") that
+         is placed in front of the joint and link name 
+         @param y_reflect A value (should be `1` or `-1`) that the y coordinates
+         of the generated joint and link are multiplied by
+         @param y_reflect A value (should be `1` or `-1`) that the x coordinates
+         of the generated joint and link are multiplied by
+    -->
+    <xacro:macro name="primary_wheel_axle" params="left_right_prefix front_back_prefix x_reflect y_reflect">
+        <joint name="${left_right_prefix}_${front_back_prefix}_primary_rocker_arm_to_primary_wheel_axle" type="fixed">
+            <parent link="${left_right_prefix}_${front_back_prefix}_primary_rocker_arm"/>
+            <child link="${left_right_prefix}_${front_back_prefix}_primary_wheel_axle"/>
             <origin xyz="
                 ${primary_wheel_axle_x_offset*x_reflect}
                 ${primary_wheel_axle_y_offset*y_reflect}
@@ -178,7 +211,7 @@
             />
         </joint>
         <cylinder_link 
-            name="${lr_prefix}_${fb_prefix}_primary_wheel_axle"
+            name="${left_right_prefix}_${front_back_prefix}_primary_wheel_axle"
             x_pos="0"
             y_pos="0"
             z_pos="0"
@@ -191,15 +224,26 @@
             material_name="grey"
             />
     </xacro:macro>
-    <primary_wheel_axle lr_prefix="L" fb_prefix="FRONT" x_reflect="1" y_reflect="1"/>
-    <primary_wheel_axle lr_prefix="R" fb_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
-    <primary_wheel_axle lr_prefix="L" fb_prefix="BACK" x_reflect="-1" y_reflect="1"/>
-    <primary_wheel_axle lr_prefix="R" fb_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
+    <primary_wheel_axle left_right_prefix="left" front_back_prefix="FRONT" x_reflect="1" y_reflect="1"/>
+    <primary_wheel_axle left_right_prefix="right" front_back_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_wheel_axle left_right_prefix="left" front_back_prefix="BACK" x_reflect="-1" y_reflect="1"/>
+    <primary_wheel_axle left_right_prefix="right" front_back_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
 
-    <xacro:macro name="primary_wheel" params="lr_prefix fb_prefix x_reflect y_reflect">
-        <joint name="${lr_prefix}_${fb_prefix}_primary_wheel_axle_to_primary_wheel" type="continuous">
-            <parent link="${lr_prefix}_${fb_prefix}_primary_wheel_axle"/>
-            <child link="${lr_prefix}_${fb_prefix}_primary_wheel"/>
+    <!--
+         This macro generates the primary wheels
+         @param left_right_prefix A prefix (should be "left" or "right") that
+         is placed in front of the joint and link name 
+         @param front_back_prefix A prefix (should be "front" or "back") that
+         is placed in front of the joint and link name 
+         @param y_reflect A value (should be `1` or `-1`) that the y coordinates
+         of the generated joint and link are multiplied by
+         @param y_reflect A value (should be `1` or `-1`) that the x coordinates
+         of the generated joint and link are multiplied by
+    -->
+    <xacro:macro name="primary_wheel" params="left_right_prefix front_back_prefix x_reflect y_reflect">
+        <joint name="${left_right_prefix}_${front_back_prefix}_primary_wheel_axle_to_primary_wheel" type="continuous">
+            <parent link="${left_right_prefix}_${front_back_prefix}_primary_wheel_axle"/>
+            <child link="${left_right_prefix}_${front_back_prefix}_primary_wheel"/>
             <origin xyz="
                 ${primary_wheel_x_offset*x_reflect}
                 ${primary_wheel_y_offset*y_reflect}
@@ -213,7 +257,7 @@
             <hardwareInterface>EffortJointInterface</hardwareInterface>
         </joint>
         <cylinder_link 
-            name="${lr_prefix}_${fb_prefix}_primary_wheel"
+            name="${left_right_prefix}_${front_back_prefix}_primary_wheel"
             x_pos="0" 
             y_pos="0" 
             z_pos="0" 
@@ -226,10 +270,10 @@
             material_name="grey"
             />
     </xacro:macro>
-    <primary_wheel lr_prefix="L" fb_prefix="FRONT" x_reflect="1" y_reflect="1"/>
-    <primary_wheel lr_prefix="R" fb_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
-    <primary_wheel lr_prefix="L" fb_prefix="BACK" x_reflect="-1" y_reflect="1"/>
-    <primary_wheel lr_prefix="R" fb_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
+    <primary_wheel left_right_prefix="left" front_back_prefix="FRONT" x_reflect="1" y_reflect="1"/>
+    <primary_wheel left_right_prefix="right" front_back_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_wheel left_right_prefix="left" front_back_prefix="BACK" x_reflect="-1" y_reflect="1"/>
+    <primary_wheel left_right_prefix="right" front_back_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
 
     <joint name="chassis_to_tower" type="fixed">
         <parent link="chassis"/>

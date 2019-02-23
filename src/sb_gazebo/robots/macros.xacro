@@ -12,7 +12,7 @@
   />
 </xacro:macro>
 
-<!-- Calculate the intertia settings for a box with given mass, radius, height -->
+<!-- Calculate the intertia settings for a box with given mass, x size, y size, z size -->
 <xacro:macro name="box_inertia" params="m x y z">
   <inertia  ixx="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0"
     iyy="${m*(x*x+z*z)/12}" iyz = "0"
@@ -20,7 +20,7 @@
   />
 </xacro:macro>
 
-<!-- Calculate the intertia settings for a sphere with given mass, radius, height -->
+<!-- Calculate the intertia settings for a sphere with given mass, radius -->
 <xacro:macro name="sphere_inertia" params="m r">
   <inertia  ixx="${2*m*r*r/5}" ixy = "0" ixz = "0"
     iyy="${2*m*r*r/5}" iyz = "0"
