@@ -19,14 +19,17 @@
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>sb_utils</build_depend>
-  <!-- <build_depend>mapping_msgs_urc</build_depend> -->
-  <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>sb_utils</build_export_depend>
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>sb_utils</exec_depend>
-  <exec_depend>mapping_msgs_urc</exec_depend>
 
+  <build_depend>rospy</build_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <exec_depend>rospy</exec_depend>
+
+  <build_depend>smach</build_depend>
+  <build_export_depend>smach</build_export_depend>
+  <exec_depend>smach</exec_depend>
+
+  <build_depend>smach_ros</build_depend>
+  <build_export_depend>smach_ros</build_export_depend>
+  <exec_depend>smach_ros</exec_depend>
 
 </package>
