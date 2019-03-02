@@ -18,7 +18,9 @@ tf2_ros::Buffer tf_buffer;
 
 std::string output_frame;
 
-// The amount of time (s) for a new pointcloud transform to be published.
+ros::Time last_exception_time;
+
+// The amount of time(s) for a new pointcloud transform to be published.
 double transform_period;
 
 void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
@@ -38,8 +40,10 @@ void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
 
         ros::Duration(transform_period).sleep();
     } catch (tf2::TransformException ex) {
-        ROS_WARN("%s", ex.what());
-        ros::Duration(1.0).sleep();
+        if (ros::Time::now().toSec() - last_exception_time.toSec() > 1.0)
+            ROS_WARN("%s", ex.what());
+
+        last_exception_time = ros::Time::now();
     }
 }
 

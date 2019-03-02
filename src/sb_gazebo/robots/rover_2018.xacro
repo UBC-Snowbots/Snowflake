@@ -1,0 +1,331 @@
+<?xml version="1.0"?>
+<!--
+     The model for the 2018 rover
+-->
+<robot name="rover_2018" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- CALCULATIONS
+         This section holds all the math to calculate the offset (both linear
+         and angular) for various components. 
+    -->
+    <xacro:include filename="$(find sb_gazebo)/robots/macros.xacro"/>
+    <xacro:include filename="$(find sb_gazebo)/robots/materials.xacro"/>
+    <xacro:include filename="$(find sb_gazebo)/robots/rover_2018.gazebo"/>
+
+    <xacro:property name="chassis_x_size" value="0.7"/>
+    <xacro:property name="chassis_y_size" value="0.94"/>
+    <xacro:property name="chassis_z_size" value="0.4"/>
+    <xacro:property name="chassis_mass" value="10"/>
+    <xacro:property name="chassis_elevation" value="0.5"/>
+    <xacro:property name="chassis_x_pos" value="0"/>
+    <xacro:property name="chassis_y_pos" value="0"/>
+    <xacro:property name="chassis_z_pos" value="${chassis_z_size + chassis_elevation}"/>
+
+    <xacro:property name="primary_rocker_radius" value="0.15"/>
+    <xacro:property name="primary_rocker_length" value="0.1"/>
+    <!-- The size of the gap between the chassis and the primary rocker -->
+    <xacro:property name="primary_rocker_chassis_clearance" value="0.02"/>
+    <!-- Primary rocker offset from it's parent joint (the chassis) -->
+    <xacro:property name="primary_rocker_x_offset" value="0"/>
+    <xacro:property name="primary_rocker_y_offset" value="${chassis_x_size/2 + primary_rocker_length/2 + primary_rocker_chassis_clearance}"/>
+    <xacro:property name="primary_rocker_z_offset" value="0"/>
+
+    <xacro:property name="primary_rocker_arm_length" value="0.4"/>
+    <xacro:property name="primary_rocker_arm_radius" value="0.03"/>
+    <xacro:property name="primary_rocker_arm_pitch" value="${pi*2.7/4}"/>
+    <xacro:property name="primary_rocker_arm_x_offset" 
+        value="${primary_rocker_radius - cos(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"
+        />
+    <xacro:property name="primary_rocker_arm_y_offset" value="0"/>
+    <xacro:property name="primary_rocker_arm_z_offset" 
+        value="${- sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+
+    <xacro:property name="primary_wheel_axle_length" value="0.1"/>
+    <xacro:property name="primary_wheel_axle_radius" value="0.015"/>
+    <xacro:property name="primary_wheel_axle_x_offset" 
+        value="${sin(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+    <xacro:property name="primary_wheel_axle_y_offset" value="${primary_wheel_axle_length/2}"/>
+    <xacro:property name="primary_wheel_axle_z_offset" 
+        value="${cos(primary_rocker_arm_pitch)*primary_rocker_arm_length/2}"/>
+
+    <xacro:property name="primary_wheel_length" value="0.15"/>
+    <xacro:property name="primary_wheel_radius" value="0.17"/>
+    <xacro:property name="primary_wheel_x_offset" value="0"/>
+    <xacro:property name="primary_wheel_y_offset" value="${primary_wheel_length/2}"/>
+    <xacro:property name="primary_wheel_z_offset" value="0"/>
+
+    <xacro:property name="tower_upright_x_offset" value="${chassis_y_size/2}"/>
+    <xacro:property name="tower_upright_height" value="0.5"/>
+    <xacro:property name="tower_upright_x_size" value="0.02"/>
+    <xacro:property name="tower_upright_y_size" value="0.02"/>
+    <xacro:property name="tower_upright_z_offset" value="${tower_upright_height/2 + chassis_z_size/2}"/>
+
+    <xacro:property name="camera_size" value="0.05"/>
+    <xacro:property name="camera_pitch" value="${pi/4}"/>
+    <xacro:property name="camera_x_offset" value="0.03"/>
+    <xacro:property name="camera_z_offset" value="${tower_upright_height/2}"/>
+
+    <!-- JOINTS AND LINKS
+         This section uses all the values calculated above to actually create
+         all the links and joints of the robot
+    -->
+
+    <!-- Footprint of the robot (because gazebo's base_link can't have interia) -->
+    <link name='base_link'/>
+    <joint name="base_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis"/>
+        <origin xyz="
+            ${chassis_x_pos}
+            ${chassis_y_pos}
+            ${chassis_z_pos}
+            " 
+            rpy="0 0 0"
+            />
+    </joint>
+    <box_link 
+        name="chassis"
+        x_pos="0"
+        y_pos="0"
+        z_pos="0"
+        x_size="${chassis_x_size}"
+        y_size="${chassis_y_size}"
+        z_size="${chassis_z_size}"
+        roll="0" 
+        pitch="0" 
+        yaw="0"
+        mass="10"
+        material_name="grey"
+        />
+
+    <!--
+         This macro generates the primary rocker joint between the rocker 
+         arms and the main chassis
+         @param left_right_prefix A prefix (should be "left" or "right") that
+         is placed in front of the joint and link name 
+         @param y_reflect A value (should be `1` or `-1`) that the y coordinates
+         of the generated joint and link are multiplied by
+    -->
+    <xacro:macro name="primary_rocker" params="left_right_prefix y_reflect">
+        <!-- TODO: Make this revolute model with a spring to resist rotation (but allow it) instead of just being fixed like it currently is -->
+        <joint name="${left_right_prefix}_primary_rocker_to_chassis" type="revolute">
+            <parent link="chassis"/>
+            <child link="${left_right_prefix}_primary_rocker"/>
+            <origin xyz="
+                ${primary_rocker_x_offset} 
+                ${primary_rocker_y_offset*y_reflect} 
+                ${primary_rocker_z_offset}
+                " 
+                rpy="
+                0
+                0
+                0
+                " 
+                />
+            <axis xyz="0 1 0" rpy="0 0 0" />
+            <limit effort="100" velocity="100"/>
+            <joint_properties damping="0.0" friction="0.0"/>
+            <limit lower="-20" upper="20" effort="100" velocity="100"/>
+        </joint>
+        <cylinder_link 
+            name="${left_right_prefix}_primary_rocker"
+            x_pos="0" 
+            y_pos="0" 
+            z_pos="0" 
+            radius="${primary_rocker_radius}"
+            length="${primary_rocker_length}"
+            roll="${pi/2}" 
+            pitch="${pi/2}" 
+            yaw="0"
+            mass="1"
+            material_name="grey"
+            />
+    </xacro:macro>
+    <primary_rocker left_right_prefix="left" y_reflect="1"/>
+    <primary_rocker left_right_prefix="right" y_reflect="-1"/>
+
+    <!--
+         This macro generates the primary rocker arm between the primary rocker
+         joint and the wheel axles
+         @param left_right_prefix A prefix (should be "left" or "right") that
+         is placed in front of the joint and link name 
+         @param front_back_prefix A prefix (should be "front" or "back") that
+         is placed in front of the joint and link name 
+         @param y_reflect A value (should be `1` or `-1`) that the y coordinates
+         of the generated joint and link are multiplied by
+         @param y_reflect A value (should be `1` or `-1`) that the x coordinates
+         of the generated joint and link are multiplied by
+    -->
+    <xacro:macro name="primary_rocker_arm" params="left_right_prefix front_back_prefix x_reflect y_reflect">
+        <joint name="${left_right_prefix}_${front_back_prefix}_primary_rocker_to_primary_rocker_arm" type="fixed">
+            <parent link="${left_right_prefix}_primary_rocker"/>
+            <child link="${left_right_prefix}_${front_back_prefix}_primary_rocker_arm"/>
+            <origin xyz="
+                ${primary_rocker_arm_x_offset*x_reflect}
+                ${primary_rocker_arm_y_offset*y_reflect}
+                ${primary_rocker_arm_z_offset}
+                " 
+                rpy="0 0 0"
+            />
+        </joint>
+        <cylinder_link 
+            name="${left_right_prefix}_${front_back_prefix}_primary_rocker_arm"
+            x_pos="0"
+            y_pos="0"
+            z_pos="0"
+            radius="${primary_rocker_arm_radius}"
+            length="${primary_rocker_arm_length}"
+            roll="0" 
+            pitch="${primary_rocker_arm_pitch*x_reflect}" 
+            yaw="0"
+            mass="1"
+            material_name="grey"
+            />
+    </xacro:macro>
+    <primary_rocker_arm left_right_prefix="left" front_back_prefix="FRONT" x_reflect="1" y_reflect="1"/>
+    <primary_rocker_arm left_right_prefix="right" front_back_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_rocker_arm left_right_prefix="left" front_back_prefix="BACK" x_reflect="-1" y_reflect="1"/>
+    <primary_rocker_arm left_right_prefix="right" front_back_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
+
+    <!--
+         This macro generates the axle for the primary wheels
+         @param left_right_prefix A prefix (should be "left" or "right") that
+         is placed in front of the joint and link name 
+         @param front_back_prefix A prefix (should be "front" or "back") that
+         is placed in front of the joint and link name 
+         @param y_reflect A value (should be `1` or `-1`) that the y coordinates
+         of the generated joint and link are multiplied by
+         @param y_reflect A value (should be `1` or `-1`) that the x coordinates
+         of the generated joint and link are multiplied by
+    -->
+    <xacro:macro name="primary_wheel_axle" params="left_right_prefix front_back_prefix x_reflect y_reflect">
+        <joint name="${left_right_prefix}_${front_back_prefix}_primary_rocker_arm_to_primary_wheel_axle" type="fixed">
+            <parent link="${left_right_prefix}_${front_back_prefix}_primary_rocker_arm"/>
+            <child link="${left_right_prefix}_${front_back_prefix}_primary_wheel_axle"/>
+            <origin xyz="
+                ${primary_wheel_axle_x_offset*x_reflect}
+                ${primary_wheel_axle_y_offset*y_reflect}
+                ${primary_wheel_axle_z_offset}
+                " 
+                rpy="0 0 0"
+            />
+        </joint>
+        <cylinder_link 
+            name="${left_right_prefix}_${front_back_prefix}_primary_wheel_axle"
+            x_pos="0"
+            y_pos="0"
+            z_pos="0"
+            radius="${primary_wheel_axle_radius}"
+            length="${primary_wheel_axle_length}"
+            roll="${pi/2}" 
+            pitch="${pi/2}" 
+            yaw="0"
+            mass="0.05"
+            material_name="grey"
+            />
+    </xacro:macro>
+    <primary_wheel_axle left_right_prefix="left" front_back_prefix="FRONT" x_reflect="1" y_reflect="1"/>
+    <primary_wheel_axle left_right_prefix="right" front_back_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_wheel_axle left_right_prefix="left" front_back_prefix="BACK" x_reflect="-1" y_reflect="1"/>
+    <primary_wheel_axle left_right_prefix="right" front_back_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
+
+    <!--
+         This macro generates the primary wheels
+         @param left_right_prefix A prefix (should be "left" or "right") that
+         is placed in front of the joint and link name 
+         @param front_back_prefix A prefix (should be "front" or "back") that
+         is placed in front of the joint and link name 
+         @param y_reflect A value (should be `1` or `-1`) that the y coordinates
+         of the generated joint and link are multiplied by
+         @param y_reflect A value (should be `1` or `-1`) that the x coordinates
+         of the generated joint and link are multiplied by
+    -->
+    <xacro:macro name="primary_wheel" params="left_right_prefix front_back_prefix x_reflect y_reflect">
+        <joint name="${left_right_prefix}_${front_back_prefix}_primary_wheel_axle_to_primary_wheel" type="continuous">
+            <parent link="${left_right_prefix}_${front_back_prefix}_primary_wheel_axle"/>
+            <child link="${left_right_prefix}_${front_back_prefix}_primary_wheel"/>
+            <origin xyz="
+                ${primary_wheel_x_offset*x_reflect}
+                ${primary_wheel_y_offset*y_reflect}
+                ${primary_wheel_z_offset}
+                " 
+                rpy="0 0 0"
+                />
+            <axis xyz="0 1 0" rpy="0 0 0" />
+            <limit effort="100" velocity="100"/>
+            <joint_properties damping="0.0" friction="0.0"/>
+            <hardwareInterface>EffortJointInterface</hardwareInterface>
+        </joint>
+        <cylinder_link 
+            name="${left_right_prefix}_${front_back_prefix}_primary_wheel"
+            x_pos="0" 
+            y_pos="0" 
+            z_pos="0" 
+            radius="${primary_wheel_radius}"
+            length="${primary_wheel_length}"
+            roll="${pi/2}" 
+            pitch="${pi/2}" 
+            yaw="0"
+            mass="1"
+            material_name="grey"
+            />
+    </xacro:macro>
+    <primary_wheel left_right_prefix="left" front_back_prefix="FRONT" x_reflect="1" y_reflect="1"/>
+    <primary_wheel left_right_prefix="right" front_back_prefix="FRONT" x_reflect="1" y_reflect="-1"/>
+    <primary_wheel left_right_prefix="left" front_back_prefix="BACK" x_reflect="-1" y_reflect="1"/>
+    <primary_wheel left_right_prefix="right" front_back_prefix="BACK" x_reflect="-1" y_reflect="-1"/>
+
+    <joint name="chassis_to_tower" type="fixed">
+        <parent link="chassis"/>
+        <child link="tower_upright"/>
+        <origin xyz="
+            ${tower_upright_x_offset}
+            0
+            ${tower_upright_z_offset}
+            " 
+            rpy="0 0 0"
+            />
+    </joint>
+    <box_link 
+        name="tower_upright"
+        x_pos="0"
+        y_pos="0"
+        z_pos="0"
+        x_size="${tower_upright_x_size}"
+        y_size="${tower_upright_y_size}"
+        z_size="${tower_upright_height}"
+        roll="0" 
+        pitch="0" 
+        yaw="0"
+        mass="10"
+        material_name="grey"
+        />
+
+    <joint name="tower_upright_to_camera" type="fixed">
+        <parent link="tower_upright"/>
+        <child link="camera"/>
+        <origin xyz="
+            ${camera_x_offset}
+            0
+            ${camera_z_offset}
+            " 
+            rpy="0 ${camera_pitch} 0"
+            />
+    </joint>
+    <box_link 
+        name="camera"
+        x_pos="0"
+        y_pos="0"
+        z_pos="0"
+        x_size="${camera_size}"
+        y_size="${camera_size}"
+        z_size="${camera_size}"
+        roll="0" 
+        pitch="0" 
+        yaw="0"
+        mass="10"
+        material_name="grey"
+        />
+
+
+</robot>
