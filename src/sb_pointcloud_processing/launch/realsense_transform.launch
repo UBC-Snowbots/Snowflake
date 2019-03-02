@@ -1,5 +1,6 @@
 <launch>
 
+  <!-- Transforms from point cloud's frame to the base_link frame -->
   <node name="pcl_transform" pkg="sb_pointcloud_processing" type="pcl_transform" output="screen">
       <rosparam param="output_frame"> "base_link" </rosparam>
       <rosparam param="transform_period"> 1 </rosparam>
@@ -8,5 +9,7 @@
       <remap from="/output_pointcloud" to="/camera/base_link_transform/points"/>
   </node>
 
+  <!-- The args are x y z yaw pitch roll frame_id child_frame_id -->
+  <!-- To convert from realsense's coordinate system to a ROS coordinate system, a rotation of PI/2 in the z-axis and x-axis is needed-->
   <node pkg="tf2_ros" type="static_transform_publisher" name="camera_to_base_link_tf" args="0 0 0 -1.57 0 -1.57 base_link camera_link" />
 </launch>
