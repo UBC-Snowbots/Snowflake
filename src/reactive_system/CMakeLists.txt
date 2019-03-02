@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(reactive_system_urc)
+project(reactive_system)
 
 # Build in "Release" (with lots of compiler optimizations) by default
 # (If built in "Debug", some functions can take orders of magnitude longer)
