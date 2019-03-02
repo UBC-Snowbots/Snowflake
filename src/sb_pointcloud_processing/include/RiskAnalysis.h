@@ -68,9 +68,9 @@ class RiskAnalysis {
     assessPointCloudRisk(pcl::PCLPointCloud2 point_cloud);
 
     /**
-     * Creates a 2D vector of RegionOfPoints where...
-     * # rows = num_vertical_cell_div
-     * # cols = num_horizontal_cell_div
+     * Creates a 2D row-column indexed vector of RegionOfPoints where...
+     * first_index = # rows = num_vertical_cell_div
+     * second_index = # cols = num_horizontal_cell_div
      *
      * Each region's height and width correspond to cell_width and
      * cell_height
@@ -83,11 +83,12 @@ class RiskAnalysis {
     initialisePointRegions();
 
     /**
-     * Fills each region's vector of points with the input point cloud.
-     * The region chosen is dependent on the point's x and y values.
+     * Fills each region's vector of points with the points
+     * from the point cloud that are located inside that region's
+     * area.
      *
-     * @param pcl
-     * @param regions
+     * @param pcl point cloud
+     * @param regions 2D row-column indexed vector of RegionOfPoints
      */
     void fillPointRegions(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl,
                           std::vector<std::vector<RegionOfPoints>>& regions);
