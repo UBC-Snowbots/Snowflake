@@ -136,10 +136,16 @@ float RiskAnalysis::calculateStandardDeviation(std::vector<float> values) {
     float mean = sum / values.size();
 
     std::vector<float> diff(values.size());
+
+    // Calculates the different of each value in values from the mean
+    // and stores it in the diff vector
     std::transform(values.begin(),
                    values.end(),
                    diff.begin(),
                    std::bind2nd(std::minus<float>(), mean));
+
+    // Squares all the differences inside the diff vector, then totals
+    // them all into the sq_sum.
     double sq_sum =
     std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
     double stdev = std::sqrt(sq_sum / values.size());
