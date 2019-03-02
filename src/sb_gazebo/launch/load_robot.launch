@@ -1,0 +1,41 @@
+<!--
+    This file launches a robot and it's associated controller
+-->
+<launch>
+    <!--
+        The name of the robot to load, this will be used to construct filepaths
+        for the files defining the robot
+    -->
+    <arg name="robot_name"/>
+
+    <!--
+        The initial position and rotation to spawn the robot at
+    -->
+    <arg name="x_start_coordinate"  default="0"/>
+    <arg name="y_start_coordinate"  default="0"/>
+    <arg name="initial_rotation"    default="0"/>
+
+    <!-- Setup controllers for robot -->
+    <include file="$(find sb_gazebo)/launch/$(arg robot_name)_control.launch"/>
+
+    <!-- 
+        - Convert the xacro representation of the robot to xml
+        - Load the xml representation of the robot to the paramater server
+    -->
+    <param name="robot_description"
+        command="
+        $(find xacro)/xacro --inorder 
+        '$(find sb_gazebo)/robots/$(arg robot_name).xacro'
+    "/>
+
+    <!-- Push robot_description to factory and spawn robot in gazebo -->
+    <node name="robot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+     args="
+        -urdf -param robot_description 
+        -model $(arg robot_name) 
+        -x $(arg x_start_coordinate) 
+        -y $(arg y_start_coordinate) 
+        -Y $(arg initial_rotation)
+    "/>
+ 
+</launch>

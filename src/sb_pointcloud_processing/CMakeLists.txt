@@ -29,6 +29,11 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_msgs
   sensor_msgs
   mapping_igvc
+  geometry_msgs
+  tf2
+  tf2_ros
+  tf2_msgs
+  tf2_sensor_msgs
   )
 find_package(PCL 1.3 REQUIRED COMPONENTS
   common
@@ -58,14 +63,24 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(line_extractor_node
-  include/LineExtractorNode.h
-  include/DBSCAN.h
-  include/Regression.h
-  src/line_extractor_node.cpp
-  src/LineExtractorNode.cpp
-  src/DBSCAN.cpp
-  src/Regression.cpp
-  include/Regression.h
+    include/LineExtractorNode.h
+    include/DBSCAN.h
+    include/Regression.h
+    src/line_extractor_node.cpp
+    src/LineExtractorNode.cpp
+    src/DBSCAN.cpp
+    src/Regression.cpp
+    include/Regression.h
+)
+
+target_link_libraries(line_extractor_node
+    ${catkin_LIBRARIES}
+    ${PCL_COMMON_LIBRARIES}
+    ${PCL_IO_LIBRARIES}
+)
+
+add_dependencies(line_extractor_node
+    ${mapping_igvc_EXPORTED_TARGETS}
 )
 
 add_library(sb_pointcloud_processing
@@ -81,35 +96,33 @@ target_link_libraries(sb_pointcloud_processing
     ${PCL_LIBRARIES}
 )
 
-add_executable(test_pcl_generator_node
-  src/test_pcl_generator_node.cpp
-  test/TestUtils.h
-  )
-
-## Specify libraries to link a library or executable target against
-target_link_libraries(line_extractor_node
-    ${catkin_LIBRARIES}
-    ${PCL_COMMON_LIBRARIES}
-    ${PCL_IO_LIBRARIES}
-)
-
-add_dependencies(line_extractor_node
-    ${mapping_igvc_EXPORTED_TARGETS}
-)
 
 install(
     TARGETS
-        sb_pointcloud_processing
+    sb_pointcloud_processing
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+add_executable(test_pcl_generator_node
+    src/test_pcl_generator_node.cpp
+    test/TestUtils.h
+)
+
 target_link_libraries(test_pcl_generator_node
-  ${catkin_LIBRARIES}
-  ${PCL_COMMON_LIBRARIES}
-  ${PCL_IO_LIBRARIES}
-  )
+    ${catkin_LIBRARIES}
+    ${PCL_COMMON_LIBRARIES}
+    ${PCL_IO_LIBRARIES}
+)
+
+
+add_executable(pcl_transform src/pcl_transform.cpp)
+
+target_link_libraries(pcl_transform
+    ${catkin_LIBRARIES}
+    ${sb_utils_LIBRARIES}
+)
 
 #############
 ## Testing ##

@@ -26,6 +26,13 @@ function travis_run() {
   let "TRAVIS_FOLD_COUNTER += 1"
 }
 
+# If any command exits with a non-zero value (i.e. it throws an error)
+# then this will cause travis to exit. Commands encapsulated between 
+# conditionals, for example, do not report their return codes. Instread,
+# only the conditional, a command itself, gets polled, so if cmake or 
+# python throws an error, the information is lost. set -ev ensures that
+# this does not happen
+set -ev
 
 # Change to the directory this script is in
 cd $CURR_DIR
