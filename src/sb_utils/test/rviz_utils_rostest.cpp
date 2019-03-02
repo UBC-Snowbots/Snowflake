@@ -20,11 +20,6 @@
 class RvizUtilsRosTest : public testing::Test {
   protected:
     ros::NodeHandle nh;
-
-    // This class doesn't publish or subscribe currently, so no initialisation
-    // necessary.
-    ros::Publisher test_publisher;
-    ros::Subscriber test_subscriber;
 };
 
 template <typename T1, typename T2>

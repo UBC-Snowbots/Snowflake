@@ -223,14 +223,14 @@ Marker& marker,
 visualization_msgs::Marker::_scale_type scale,
 std::string frame_id,
 std::string ns,
-int type,
-int id) {
+int marker_id,
+int type) {
     marker.header.stamp       = ros::Time::now();
     marker.action             = Marker::ADD;
     marker.pose.orientation.w = 1.0;
 
     marker.type = type;
-    marker.id   = id;
+    marker.id   = marker_id;
 
     marker.header.frame_id = frame_id;
     marker.ns              = ns;
