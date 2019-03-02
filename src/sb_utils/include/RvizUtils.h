@@ -29,6 +29,8 @@ namespace RvizUtils {
      *  @param color the color of the points
      *  @param frame_id the frame id
      *  @param ns the namespace
+     *  @param marker_id the marker_id that enables Rviz to differentiate markers.
+     *  @param type the type of marker specified by visualization_msgs::Marker::*
      *
      *  @return an rviz marker
      */
@@ -49,6 +51,8 @@ namespace RvizUtils {
      *  @param colors the color of each point
      *  @param frame_id the frame id
      *  @param ns the namespace
+     *  @param marker_id the marker_id that enables Rviz to differentiate markers.
+     *  @param type the type of marker specified by visualization_msgs::Marker::*
      *
      *  @return an rviz marker
      */
@@ -68,6 +72,8 @@ namespace RvizUtils {
      *  @param color the color of the point
      *  @param frame_id the frame id
      *  @param ns the namespace
+     *  @param marker_id the marker_id that enables Rviz to differentiate markers.
+     *  @param type the type of marker specified by visualization_msgs::Marker::*
      *
      *  @return an rviz marker
      */
@@ -87,6 +93,8 @@ namespace RvizUtils {
      *  @param color the color of the point
      *  @param frame_id the frame id
      *  @param ns the namespace
+     *  @param marker_id the marker_id that enables Rviz to differentiate markers.
+     *  @param type the type of marker specified by visualization_msgs::Marker::*
      *
      *  @return an rviz marker
      */
@@ -106,6 +114,8 @@ namespace RvizUtils {
      *  @param color the color of the polygon
      *  @param frame_id the frame id
      *  @param ns the namespace
+     *  @param marker_id the marker_id that enables Rviz to differentiate markers.
+     *  @param type the type of marker specified by visualization_msgs::Marker::*
      *
      *  @return an rviz marker
      */
@@ -124,6 +134,8 @@ namespace RvizUtils {
      *  @param color the color of the polygon
      *  @param frame_id the frame id
      *  @param ns the namespace
+     *  @param marker_id the marker_id that enables Rviz to differentiate markers.
+     *  @param type the type of marker specified by visualization_msgs::Marker::*
      *
      *  @return an rviz marker
      */
@@ -143,7 +155,7 @@ namespace RvizUtils {
      * @param color color of the points in the array
      * @param frame_id frame id of the markers
      * @param ns namespace of the markers
-     * @param type type of the markers
+     * @param type the type of marker specified by visualization_msgs::Marker::*
      *
      * @return an rviz marker array
      */

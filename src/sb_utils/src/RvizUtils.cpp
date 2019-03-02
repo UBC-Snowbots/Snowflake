@@ -7,7 +7,6 @@
 #include <RvizUtils.h>
 
 using namespace visualization_msgs;
-// using namespace snowbots;
 
 namespace snowbots {
 namespace RvizUtils {
@@ -204,9 +203,6 @@ snowbots::RvizUtils::createMarkerColor(float r, float g, float b, float a) {
 
     return color;
 }
-
-// visualization_msgs::Marker::_scale_type
-// createMarkerScale(float x, float y, float z);
 
 Marker::_scale_type
 snowbots::RvizUtils::createMarkerScale(float x, float y, float z) {
