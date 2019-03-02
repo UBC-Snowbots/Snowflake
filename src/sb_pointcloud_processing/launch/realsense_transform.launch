@@ -1,7 +1,8 @@
 <launch>
 
-  <node name="zed_transform" pkg="sb_pointcloud_processing" type="pcl_transform" output="screen">
+  <node name="pcl_transform" pkg="sb_pointcloud_processing" type="pcl_transform" output="screen">
       <rosparam param="output_frame"> "base_link" </rosparam>
+      <rosparam param="transform_period"> 1 </rosparam>
 
       <remap from="/input_pointcloud" to="/camera/depth_registered/points"/>
       <remap from="/output_pointcloud" to="/camera/base_link_transform/points"/>
