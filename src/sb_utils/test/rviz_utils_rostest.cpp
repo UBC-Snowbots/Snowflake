@@ -30,11 +30,10 @@ class RvizUtilsRosTest : public testing::Test {
 template <typename T1, typename T2>
 void EXPECT_POINT_EQ(std::vector<T1> points1, std::vector<T2> points2);
 
-geometry_msgs::Point32 initialisePoint32(float x, float y, float z) {
-    geometry_msgs::Point32 point;
+sb_geom_msgs::Point2D initialisePoint(float x, float y) {
+    sb_geom_msgs::Point2D point;
     point.x = x;
     point.y = y;
-    point.z = z;
 
     return point;
 }
@@ -52,11 +51,11 @@ TEST_F(RvizUtilsRosTest, boxPolygonMarker) {
     std::string frame_id = "camera_color_optical_frame";
     std::string ns       = "debug";
 
-    geometry_msgs::Polygon polygon;
-    polygon.points.push_back(initialisePoint32(0, 0, 0));
-    polygon.points.push_back(initialisePoint32(1, 0, 0));
-    polygon.points.push_back(initialisePoint32(0, 1, 0));
-    polygon.points.push_back(initialisePoint32(1, 1, 0));
+    sb_geom_msgs::Polygon2D polygon;
+    polygon.points.push_back(initialisePoint(0, 0));
+    polygon.points.push_back(initialisePoint(1, 0));
+    polygon.points.push_back(initialisePoint(0, 1));
+    polygon.points.push_back(initialisePoint(1, 1));
 
     visualization_msgs::Marker risk_area_marker =
 
@@ -65,7 +64,8 @@ TEST_F(RvizUtilsRosTest, boxPolygonMarker) {
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
     snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
-    ns);
+    ns,
+    0);
 
     // Make sure message metadata is correct
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
@@ -83,10 +83,10 @@ TEST_F(RvizUtilsRosTest, trianglePolygonMarker) {
     std::string frame_id = "camera_color_optical_frame";
     std::string ns       = "debug";
 
-    geometry_msgs::Polygon polygon;
-    polygon.points.push_back(initialisePoint32(0, 0, 0));
-    polygon.points.push_back(initialisePoint32(1, 0, 0));
-    polygon.points.push_back(initialisePoint32(0, 1, 0));
+    sb_geom_msgs::Polygon2D polygon;
+    polygon.points.push_back(initialisePoint(0, 0));
+    polygon.points.push_back(initialisePoint(1, 0));
+    polygon.points.push_back(initialisePoint(0, 1));
 
     visualization_msgs::Marker risk_area_marker =
 
@@ -95,7 +95,8 @@ TEST_F(RvizUtilsRosTest, trianglePolygonMarker) {
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
     snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
-    ns);
+    ns,
+    0);
 
     // Make sure message metadata is correct
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
@@ -121,7 +122,8 @@ TEST_F(RvizUtilsRosTest, singlePointMarker) {
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
     snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
-    ns);
+    ns,
+    0);
 
     // Make sure message metadata is correct
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
@@ -145,7 +147,8 @@ TEST_F(RvizUtilsRosTest, singlePointMarkerInArray) {
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
     snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
-    ns);
+    ns,
+    0);
 
     // Make sure message metadata is correct
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
@@ -170,7 +173,8 @@ TEST_F(RvizUtilsRosTest, multiplePointMarkersInArray) {
     snowbots::RvizUtils::createMarkerColor(1.0f, 0, 0, 1.0f),
     snowbots::RvizUtils::createMarkerScale(0.1, 0, 0),
     frame_id,
-    ns);
+    ns,
+    0);
 
     // Make sure message metadata is correct
     EXPECT_EQ(frame_id, risk_area_marker.header.frame_id);
@@ -216,7 +220,6 @@ void EXPECT_POINT_EQ(std::vector<T1> points1, std::vector<T2> points2) {
         for (int i = 0; i < points1.size(); i++) {
             EXPECT_EQ(points1[i].x, points2[i].x);
             EXPECT_EQ(points1[i].y, points2[i].y);
-            EXPECT_EQ(points1[i].z, points2[i].z);
         }
     }
 }
