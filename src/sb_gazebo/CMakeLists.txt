@@ -41,13 +41,12 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(gazebo_node src/gazebo_node.cpp)
-add_executable(zed_transform src/zed_transform.cpp)
+
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(gazebo_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(zed_transform ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 
 #############

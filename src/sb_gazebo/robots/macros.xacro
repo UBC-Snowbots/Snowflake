@@ -4,6 +4,7 @@
 -->
 <robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+<!-- Calculate the intertia settings for a cylinder with given mass, radius, height -->
 <xacro:macro name="cylinder_inertia" params="m r h">
   <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
     iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
@@ -11,6 +12,7 @@
   />
 </xacro:macro>
 
+<!-- Calculate the intertia settings for a box with given mass, x size, y size, z size -->
 <xacro:macro name="box_inertia" params="m x y z">
   <inertia  ixx="${m*(y*y+z*z)/12}" ixy = "0" ixz = "0"
     iyy="${m*(x*x+z*z)/12}" iyz = "0"
@@ -18,6 +20,7 @@
   />
 </xacro:macro>
 
+<!-- Calculate the intertia settings for a sphere with given mass, radius -->
 <xacro:macro name="sphere_inertia" params="m r">
   <inertia  ixx="${2*m*r*r/5}" ixy = "0" ixz = "0"
     iyy="${2*m*r*r/5}" iyz = "0"
@@ -25,6 +28,59 @@
   />
 </xacro:macro>
 
+<!-- 
+     Creates a box link
+-->
+<xacro:macro name="box_link" 
+    params="name x_pos y_pos z_pos x_size y_size z_size roll pitch yaw mass material_name">
+    <link name="${name}">
+        <collision>
+            <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="${roll} ${pitch} ${yaw}"/>
+            <geometry>
+                <box size="${y_size} ${x_size} ${z_size}"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="${roll} ${pitch} ${yaw}"/>
+            <geometry>
+                <box size="${y_size} ${x_size} ${z_size}"/>
+            </geometry>
+            <material name="${material_name}"/>
+        </visual>
+        <inertial>
+            <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="${roll} ${pitch} ${yaw}"/>
+            <mass value="${mass}"/>
+            <box_inertia m="${mass}" x="${x_size}" y="${y_size}" z="${z_size}"/>
+        </inertial>
+    </link>
+</xacro:macro>
+
+<!-- 
+     Creates a cylinder link
+-->
+<xacro:macro name="cylinder_link" 
+    params="name x_pos y_pos z_pos radius length roll pitch yaw mass material_name">
+    <link name="${name}">
+        <collision>
+            <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="${roll} ${pitch} ${yaw}"/>
+            <geometry>
+                <cylinder radius="${radius}" length="${length}"/>
+            </geometry>
+        </collision>
+        <visual>
+            <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="${roll} ${pitch} ${yaw}"/>
+            <geometry>
+                <cylinder radius="${radius}" length="${length}"/>
+            </geometry>
+            <material name="${material_name}"/>
+        </visual>
+        <inertial>
+            <origin xyz="${x_pos} ${y_pos} ${z_pos}" rpy="${roll} ${pitch} ${yaw}"/>
+            <mass value="${mass}"/>
+            <cylinder_inertia m="${mass}" r="${radius}" h="${length}"/>
+        </inertial>
+    </link>
+</xacro:macro>
 
 <!-- Macro to generate wheels -->
 <xacro:macro name="wheel" params="lr tY wheel_displacement fb">

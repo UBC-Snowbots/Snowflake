@@ -1,0 +1,28 @@
+<launch>      
+    
+    <!-- 
+        Opens a give world from "sb_gazebo/worlds" and 
+        places a robot with a given name with ".xacro" and ".gazebo" files
+        in "sb_gazebo/robots" in it at a given x,y and with a given rotation
+    -->
+    
+    <arg name="world_name"/>
+    <arg name="x_start_coordinate"/>
+    <arg name="y_start_coordinate"/>
+    <arg name="initial_rotation"/>
+    <arg name="robot_name"/>
+
+    <!-- Start up the world -->
+    <include file="$(find sb_gazebo)/launch/load_world.launch">       
+        <arg name="world_name" value="$(arg world_name)"/> 
+    </include>
+
+    <!-- Load the robot -->
+    <include file="$(find sb_gazebo)/launch/load_robot.launch">       
+        <arg name="x_start_coordinate" value="$(arg x_start_coordinate)"/>
+        <arg name="y_start_coordinate" value="$(arg y_start_coordinate)"/>
+        <arg name="initial_rotation" value="$(arg initial_rotation)"/>
+        <arg name="robot_name" value="$(arg robot_name)"/>
+    </include>
+
+</launch>
