@@ -21,8 +21,8 @@
 // Point Cloud
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/point_types.h>
-#include <pcl_ros/transforms.h>
 #include <pcl_conversions/pcl_conversions.h>
+#include <pcl_ros/transforms.h>
 #include <tr1/unordered_map>
 
 // Risk Analysis
@@ -58,7 +58,8 @@ class RiskAnalysisNode {
      * Returns a color corresponding to the inputted risk
      *
      * @param risk
-     * @return visualization_msgs::Marker::_color_type color corresponding to inputted risk
+     * @return visualization_msgs::Marker::_color_type color corresponding to
+     * inputted risk
      */
     visualization_msgs::Marker::_color_type convertRiskToColor(float risk);
 

@@ -45,7 +45,8 @@ RiskAnalysisNode::RiskAnalysisNode(int argc,
     private_nh, "region_min_points", region_min_points, default_min_points);
 
     float default_risk_multiplier = 1;
-    SB_getParam(private_nh, "risk_multiplier", risk_multiplier, default_risk_multiplier);
+    SB_getParam(
+    private_nh, "risk_multiplier", risk_multiplier, default_risk_multiplier);
 
     // In the beginning we have not published any markers
     seq_count = 0;
@@ -86,8 +87,7 @@ RiskAnalysisNode::RiskAnalysisNode(int argc,
                                  num_vertical_cell_div,
                                  num_horizontal_cell_div,
                                  region_min_points,
-                                 risk_multiplier
-                                 );
+                                 risk_multiplier);
 }
 
 void RiskAnalysisNode::pclCallBack(
@@ -116,8 +116,7 @@ const sensor_msgs::PointCloud2ConstPtr point_cloud) {
         frame_id,
         ns,
         i,
-        visualization_msgs::Marker::LINE_STRIP
-        );
+        visualization_msgs::Marker::LINE_STRIP);
 
         risk_area_markers.markers.push_back(risk_area_marker);
     }
@@ -141,5 +140,5 @@ mapping_msgs_urc::RiskAreaArray risk_areas) {
 visualization_msgs::Marker::_color_type
 RiskAnalysisNode::convertRiskToColor(float risk) {
     // Round down to the nearest integer to get risk color
-    return gradient[(int) risk*10.0];
+    return gradient[(int) risk * 10.0];
 }

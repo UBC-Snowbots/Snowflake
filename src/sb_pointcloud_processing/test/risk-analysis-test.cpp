@@ -13,7 +13,8 @@
 pcl::PCLPointCloud2 empty_cloud = pcl::PCLPointCloud2();
 
 /**
- * Runs tests to verify the inputted point_region has the proper dimensions specified
+ * Runs tests to verify the inputted point_region has the proper dimensions
+ * specified
  * by all the other inputs
  *
  * @param point_region
@@ -27,7 +28,6 @@ void testRegionDimensions(std::vector<std::vector<RegionOfPoints>> point_region,
                           float region_height,
                           int num_vertical_cell_divs,
                           int num_horizontal_cell_divs);
-
 
 /**
  *
@@ -45,21 +45,22 @@ void testRegionLocations(RiskAnalysis risk_analysis,
 /**
  * Runs tests to determine equality of points
  */
-void EXPECT_POINT_EQ(sb_geom_msgs::Point2D expected_val, sb_geom_msgs::Point2D actual_val) {
+void EXPECT_POINT_EQ(sb_geom_msgs::Point2D expected_val,
+                     sb_geom_msgs::Point2D actual_val) {
     float abs_error = 0.0001;
 
     EXPECT_NEAR(expected_val.x, actual_val.x, abs_error);
     EXPECT_NEAR(expected_val.y, actual_val.y, abs_error);
 }
- 
- /**
-  * Creates a point with specified values
-  */
+
+/**
+ * Creates a point with specified values
+ */
 sb_geom_msgs::Point2D createPoint(float x, float y) {
     sb_geom_msgs::Point2D point;
     point.x = x;
     point.y = y;
-    
+
     return point;
 }
 
@@ -69,7 +70,7 @@ TEST(RegionInitialisation, DivisionsEqualToDimensions) {
     int num_vertical_cell_divs   = 10;
     int num_horizontal_cell_divs = 10;
     int min_points_in_region     = 1;
-    float risk_multiplier = 1;
+    float risk_multiplier        = 1;
     RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
@@ -90,7 +91,11 @@ TEST(RegionInitialisation, DivisionsEqualToDimensions) {
                          num_vertical_cell_divs,
                          num_horizontal_cell_divs);
 
-    testRegionLocations(risk_analysis, region_width, region_height, num_vertical_cell_divs, num_horizontal_cell_divs);
+    testRegionLocations(risk_analysis,
+                        region_width,
+                        region_height,
+                        num_vertical_cell_divs,
+                        num_horizontal_cell_divs);
 }
 
 TEST(RegionAnalysis, DivisionsEqualToDimensions) {
@@ -99,9 +104,9 @@ TEST(RegionAnalysis, DivisionsEqualToDimensions) {
     int num_vertical_cell_divs   = 10;
     int num_horizontal_cell_divs = 10;
     int min_points_in_region     = 1;
-    float risk_multiplier = 1;
+    float risk_multiplier        = 1;
 
-    RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
+    RiskAnalysis risk_analysis = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
                                               num_horizontal_cell_divs,
@@ -118,9 +123,9 @@ TEST(RegionInitialisation, NonIntegerCellDimensions) {
     int num_vertical_cell_divs   = 100;
     int num_horizontal_cell_divs = 100;
     int min_points_in_region     = 1;
-    float risk_multiplier = 1;
+    float risk_multiplier        = 1;
 
-    RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
+    RiskAnalysis risk_analysis = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
                                               num_horizontal_cell_divs,
@@ -140,8 +145,11 @@ TEST(RegionInitialisation, NonIntegerCellDimensions) {
                          num_vertical_cell_divs,
                          num_horizontal_cell_divs);
 
-    testRegionLocations(risk_analysis, region_width, region_height, num_vertical_cell_divs, num_horizontal_cell_divs);
-
+    testRegionLocations(risk_analysis,
+                        region_width,
+                        region_height,
+                        num_vertical_cell_divs,
+                        num_horizontal_cell_divs);
 }
 
 TEST(RegionAnalysis, NonIntegerCellDimensions) {
@@ -150,9 +158,9 @@ TEST(RegionAnalysis, NonIntegerCellDimensions) {
     int num_vertical_cell_divs   = 100;
     int num_horizontal_cell_divs = 100;
     int min_points_in_region     = 1;
-    float risk_multiplier = 1;
+    float risk_multiplier        = 1;
 
-    RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
+    RiskAnalysis risk_analysis = RiskAnalysis(region_width,
                                               region_height,
                                               num_vertical_cell_divs,
                                               num_horizontal_cell_divs,
@@ -169,14 +177,14 @@ TEST(RegionInitialisation, OneDiv) {
     int num_vertical_cell_divs   = 2;
     int num_horizontal_cell_divs = 1;
     int min_points_in_region     = -1;
-    float risk_multiplier = 1;
+    float risk_multiplier        = 1;
 
-    RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
-                                                region_height,
-                                                num_vertical_cell_divs,
-                                                num_horizontal_cell_divs,
-                                                min_points_in_region,
-                                                risk_multiplier);
+    RiskAnalysis risk_analysis = RiskAnalysis(region_width,
+                                              region_height,
+                                              num_vertical_cell_divs,
+                                              num_horizontal_cell_divs,
+                                              min_points_in_region,
+                                              risk_multiplier);
 
     std::vector<std::vector<RegionOfPoints>> point_region;
 
@@ -191,7 +199,11 @@ TEST(RegionInitialisation, OneDiv) {
                          num_vertical_cell_divs,
                          num_horizontal_cell_divs);
 
-    testRegionLocations(risk_analysis, region_width, region_height, num_vertical_cell_divs, num_horizontal_cell_divs);
+    testRegionLocations(risk_analysis,
+                        region_width,
+                        region_height,
+                        num_vertical_cell_divs,
+                        num_horizontal_cell_divs);
 }
 
 TEST(RegionAnalysis, OneDiv) {
@@ -200,17 +212,17 @@ TEST(RegionAnalysis, OneDiv) {
     int num_vertical_cell_divs   = 2;
     int num_horizontal_cell_divs = 1;
     int min_points_in_region     = -1;
-    float risk_multiplier = 1;
+    float risk_multiplier        = 1;
 
-    RiskAnalysis risk_analysis   = RiskAnalysis(region_width,
-                                                region_height,
-                                                num_vertical_cell_divs,
-                                                num_horizontal_cell_divs,
-                                                min_points_in_region,
-                                                risk_multiplier);
+    RiskAnalysis risk_analysis = RiskAnalysis(region_width,
+                                              region_height,
+                                              num_vertical_cell_divs,
+                                              num_horizontal_cell_divs,
+                                              min_points_in_region,
+                                              risk_multiplier);
 
     mapping_msgs_urc::RiskAreaArray pcl_risk =
-            risk_analysis.assessPointCloudRisk(empty_cloud);
+    risk_analysis.assessPointCloudRisk(empty_cloud);
 }
 
 void testRegionDimensions(std::vector<std::vector<RegionOfPoints>> point_region,
@@ -227,16 +239,22 @@ void testRegionDimensions(std::vector<std::vector<RegionOfPoints>> point_region,
             sb_geom_msgs::Polygon2D cur_cell = point_region[i][j].region_area;
 
             // Top Left Point vs Bottom Left Point
-            EXPECT_NEAR(cell_height, cur_cell.points[0].x - cur_cell.points[3].x, abs_error);
+            EXPECT_NEAR(cell_height,
+                        cur_cell.points[0].x - cur_cell.points[3].x,
+                        abs_error);
 
             // Top Right Point vs Bottom Right Point
-            EXPECT_NEAR(cell_height, cur_cell.points[1].x - cur_cell.points[2].x, abs_error);
+            EXPECT_NEAR(cell_height,
+                        cur_cell.points[1].x - cur_cell.points[2].x,
+                        abs_error);
 
             // Top Left Point vs Top Right Point
-            EXPECT_NEAR(cell_width, cur_cell.points[0].y - cur_cell.points[1].y, abs_error);
+            EXPECT_NEAR(
+            cell_width, cur_cell.points[0].y - cur_cell.points[1].y, abs_error);
 
             // Bottom Left Point vs Bottom Right Point
-            EXPECT_NEAR(cell_width, cur_cell.points[3].y - cur_cell.points[2].y, abs_error);
+            EXPECT_NEAR(
+            cell_width, cur_cell.points[3].y - cur_cell.points[2].y, abs_error);
         }
     }
 }
@@ -248,19 +266,23 @@ void testRegionLocations(RiskAnalysis risk_analysis,
                          int num_horizontal_cell_divs) {
     float cell_width  = region_width / num_horizontal_cell_divs;
     float cell_height = region_height / num_vertical_cell_divs;
-    
+
     float cur_cell_top = region_height;
     for (int i = 0; i < num_vertical_cell_divs; i++) {
         float cur_cell_left = region_width / 2;
-        
+
         for (int j = 0; j < num_horizontal_cell_divs; j++) {
             sb_geom_msgs::Polygon2D cur_region =
-                    risk_analysis.getRegionAreaFromIndices(i, j);
-            
-            sb_geom_msgs::Point2D top_left_point = createPoint(cur_cell_top, cur_cell_left);
-            sb_geom_msgs::Point2D top_right_point = createPoint(cur_cell_top, cur_cell_left - cell_width);
-            sb_geom_msgs::Point2D bottom_right_point = createPoint(cur_cell_top - cell_height, cur_cell_left - cell_width);
-            sb_geom_msgs::Point2D bottom_left_point = createPoint(cur_cell_top - cell_height, cur_cell_left);
+            risk_analysis.getRegionAreaFromIndices(i, j);
+
+            sb_geom_msgs::Point2D top_left_point =
+            createPoint(cur_cell_top, cur_cell_left);
+            sb_geom_msgs::Point2D top_right_point =
+            createPoint(cur_cell_top, cur_cell_left - cell_width);
+            sb_geom_msgs::Point2D bottom_right_point =
+            createPoint(cur_cell_top - cell_height, cur_cell_left - cell_width);
+            sb_geom_msgs::Point2D bottom_left_point =
+            createPoint(cur_cell_top - cell_height, cur_cell_left);
 
             EXPECT_POINT_EQ(top_left_point, cur_region.points[0]);
             EXPECT_POINT_EQ(top_right_point, cur_region.points[1]);

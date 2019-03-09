@@ -98,10 +98,6 @@ add_executable(risk_analysis
         include/RiskAnalysis.h
         include/RiskAnalysisNode.h
         )
-add_executable(test_pcl_generator_node
-  src/test_pcl_generator_node.cpp
-  test/TestUtils.h
-)
 
 add_executable(pcl_transform src/pcl_transform.cpp)
 

@@ -18,7 +18,7 @@ RiskAnalysis::RiskAnalysis(float region_width,
     region_min_points(region_min_points),
     num_vertical_cell_div(num_vertical_cell_div),
     num_horizontal_cell_div(num_horizontal_cell_div),
-    risk_multiplier(risk_multiplier){
+    risk_multiplier(risk_multiplier) {
     cell_width  = region_width / (double) num_horizontal_cell_div;
     cell_height = region_height / (double) num_vertical_cell_div;
     total_cells = num_horizontal_cell_div * num_vertical_cell_div;
@@ -33,8 +33,7 @@ RiskAnalysis::assessPointCloudRisk(pcl::PCLPointCloud2 point_cloud) {
     mapping_msgs_urc::RiskAreaArray risk_areas;
 
     // Initialise regions with an area and associated points
-    std::vector<std::vector<RegionOfPoints>> regions =
-    initialisePointRegions();
+    std::vector<std::vector<RegionOfPoints>> regions = initialisePointRegions();
 
     // Convert to PCLPointCloud
     pcl::PointCloud<pcl::PointXYZ>::Ptr pcl(
@@ -75,11 +74,11 @@ RiskAnalysis::initialisePointRegions() {
 void RiskAnalysis::fillPointRegions(
 pcl::PointCloud<pcl::PointXYZ>::Ptr pcl,
 std::vector<std::vector<RegionOfPoints>>& regions) {
-
     // Add all valid points to their respective regions
     for (size_t i = 0; i < pcl->size(); i++) {
         // Has to be a valid point
-        if (!isnan(pcl->points[i].x) && pcl->points[i].x > 0 && pcl->points[i].x < region_height) {
+        if (!isnan(pcl->points[i].x) && pcl->points[i].x > 0 &&
+            pcl->points[i].x < region_height) {
             // Convert PCLPointXYZ to geometry_msgs::Point
             geometry_msgs::Point cur_point;
             cur_point.x = pcl->points[i].x;
@@ -92,7 +91,7 @@ std::vector<std::vector<RegionOfPoints>>& regions) {
 
             // Only add in the point if it's in a valid region.
             bool validColumn = col >= 0 && col < regions[0].size();
-            bool validRow = row >= 0 && row < regions.size();
+            bool validRow    = row >= 0 && row < regions.size();
             if (validColumn && validRow) {
                 regions[row][col].points.push_back(cur_point);
             }
@@ -114,7 +113,8 @@ std::vector<std::vector<RegionOfPoints>> regions) {
 
                 // Determine risk of the area
                 std_msgs::Float64 risk;
-                risk.data = risk_multiplier*calculateStandardDeviation(z_values);
+                risk.data =
+                risk_multiplier * calculateStandardDeviation(z_values);
 
                 // Cap the risk score to RISK_MAX
                 risk.data = std::min(risk.data, MAX_RISK);
@@ -158,9 +158,11 @@ sb_geom_msgs::Polygon2D RiskAnalysis::getRegionAreaFromIndices(int row,
     // Height corresponds to the x-axis, width corresponds to the y-axis
     // +X = UP, +Y = LEFT (ROS Coordinates)
 
-    // Left most region has a column index of 0 and increases as it moves along the y-axis in the negative direction
+    // Left most region has a column index of 0 and increases as it moves along
+    // the y-axis in the negative direction
 
-    // Top most region has a row index of 0 and increases as you moves along the x-axis in the negative direction
+    // Top most region has a row index of 0 and increases as you moves along the
+    // x-axis in the negative direction
 
     sb_geom_msgs::Point2D top_left_point;
     top_left_point.x = region_height - row * cell_height;

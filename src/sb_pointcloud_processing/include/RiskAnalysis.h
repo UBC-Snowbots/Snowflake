@@ -24,7 +24,6 @@
 #include <pcl/point_types.h>
 #include <tr1/unordered_map>
 
-
 // Standard Libraries
 #include <numeric>
 
@@ -38,12 +37,16 @@ class RiskAnalysis {
     /**
      * Constructor for RiskAnalysis
      *
-     * @param region_width determines the range in the y-axis [-region_width/2, region_width/2]
-     * @param region_height determines the range in the x-axis [0, region_height]
+     * @param region_width determines the range in the y-axis [-region_width/2,
+     * region_width/2]
+     * @param region_height determines the range in the x-axis [0,
+     * region_height]
      * @param num_vertical_cell_div determines the number of rows
      * @param num_horizontal_cell_div determines the number of columns
-     * @param region_min_points the minimum amount of points to conclude riskiness of a risk area
-     * @param risk_multiplier a multiplier applied to the risk after calculating the risk of the region
+     * @param region_min_points the minimum amount of points to conclude
+     * riskiness of a risk area
+     * @param risk_multiplier a multiplier applied to the risk after calculating
+     * the risk of the region
      */
     RiskAnalysis(float region_width,
                  float region_height,
@@ -79,8 +82,7 @@ class RiskAnalysis {
      *
      * @return 2D vector of RegionOfPoints
      */
-    std::vector<std::vector<RegionOfPoints>>
-    initialisePointRegions();
+    std::vector<std::vector<RegionOfPoints>> initialisePointRegions();
 
     /**
      * Fills each region's vector of points with the points
