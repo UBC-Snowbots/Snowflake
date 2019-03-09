@@ -71,8 +71,10 @@ add_dependencies(sb_utils ${catkin_EXPORTED_TARGETS})
 ## Add gtest based cpp test target and link libraries
 if (CATKIN_ENABLE_TESTING)
 
-    # Adding gtests to the package
-    catkin_add_gtest(rviz_utils_rostest
+    # Adding rostest to the package
+    find_package(rostest REQUIRED)
+        
+    add_rostest_gtest(rviz_utils_rostest
             test/rviz_utils_rostest.test
             test/rviz_utils_rostest.cpp
             src/RvizUtils.cpp
