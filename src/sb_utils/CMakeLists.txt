@@ -14,6 +14,7 @@ add_definitions(-std=c++14)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  mapping_msgs_urc
 )
 
 
@@ -60,13 +61,26 @@ add_library(sb_utils
 
 target_link_libraries(sb_utils ${catkin_LIBRARIES})
 
+add_dependencies(sb_utils ${catkin_EXPORTED_TARGETS})
+
 
 #############
 ## Testing ##
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_utils_lib.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+if (CATKIN_ENABLE_TESTING)
+
+    # Adding rostest to the package
+    find_package(rostest REQUIRED)
+        
+    add_rostest_gtest(rviz_utils_rostest
+            test/rviz_utils_rostest.test
+            test/rviz_utils_rostest.cpp
+            src/RvizUtils.cpp
+            include/RvizUtils.h
+            )
+
+    target_link_libraries(rviz_utils_rostest ${catkin_LIBRARIES})
+
+endif()

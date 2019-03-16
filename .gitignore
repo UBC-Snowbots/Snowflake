@@ -22,7 +22,9 @@ cmake-build-release
 
 .rosinstall.bak
 
+# 3rd Party Libraries
+external_libs/
+
 # 3rd Party Packages
 src/external_pkgs/
-external_libs/
 src/mapping_urc/multi_resolution_graph

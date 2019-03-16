@@ -121,13 +121,13 @@ void LineExtractorNode::visualizeClusters() {
     convertClustersToPointsWithColors(this->clusters, cluster_points, colors);
 
     visualization_msgs::Marker::_scale_type scale =
-    snowbots::RvizUtils::createrMarkerScale(
+    snowbots::RvizUtils::createMarkerScale(
     this->scale, this->scale, this->scale);
 
     std::string ns = "debug";
 
     visualization_msgs::Marker marker = snowbots::RvizUtils::createMarker(
-    cluster_points, colors, scale, this->frame_id, ns);
+    cluster_points, colors, scale, this->frame_id, ns, 0);
 
     rviz_cluster_publisher.publish(marker);
 }
@@ -173,7 +173,7 @@ std::vector<mapping_igvc::LineObstacle> line_obstacles) {
     visualization_msgs::Marker::_color_type color =
     snowbots::RvizUtils::createMarkerColor(0.0, 1.0, 1.0, 1.0);
     visualization_msgs::Marker::_scale_type scale =
-    snowbots::RvizUtils::createrMarkerScale(
+    snowbots::RvizUtils::createMarkerScale(
     this->scale, this->scale, this->scale);
 
     std::string ns = "debug";
