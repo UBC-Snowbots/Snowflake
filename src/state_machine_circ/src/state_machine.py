@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
     Entry point for state machine
+    Created by William Gu on Feb 23 2019
 """
 import rospy
 import StateMachine
