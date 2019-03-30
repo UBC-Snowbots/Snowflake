@@ -1,0 +1,6 @@
+<!-- A .test file which launches the node and its corresponding rostest -->
+
+<launch>
+    <node name="state_machine" pkg="state_machine_circ" type="state_machine.py" />
+    <test test-name="state_machine_rostest" pkg="state_machine_circ" type="state_machine_rostest.py" />
+</launch>

@@ -13,20 +13,20 @@ class StateMachine:
     """ Static variables """
 
     """ Task status codes: 'idle', 'ongoing', 'done' """
-    movement_status = 'ongoing'
+    move_status = 'ongoing'
     drill_status = 'idle'
 
     state_pub = rospy.Publisher('state', String, queue_size=1)  # State publisher
 
     def __init__(self, node_name):
-        rospy.init_node(node_name)  # Register node
+        rospy.init_node(node_name)
 
         ''' Setup subscribers for state variables '''
-        rospy.Subscriber('/cmd_vel', Twist, self.movementCallBack)  # TODO: change temp subscriber topic
-        rospy.Subscriber('/cmd_vel', Twist, self.drillCallBack)
+        rospy.Subscriber('/cmd_vel', Twist, self.moveCallBack)  # TODO: change temp subscriber topic to move_status
+        rospy.Subscriber('/cmd_vel', Twist, self.drillCallBack)  # TODO: change temp subscriber topic to drill_status
 
         # Create a SMACH state machine
-        sm = smach.StateMachine(outcomes=['course_complete'])  # TODO: Currently unreachable, may need a final state
+        sm = smach.StateMachine(outcomes=[])
 
         # Open the container
         with sm:
@@ -43,8 +43,8 @@ class StateMachine:
 
     """ Call backs """
 
-    def movementCallBack(self, msg):
-        StateMachine.movement_status = 'done'  # TODO: update static variable from msg.status (will be a stream)
+    def moveCallBack(self, msg):
+        StateMachine.move_status = 'done'  # TODO: update static variable from msg.status (will be a stream)
 
     def drillCallBack(self, msg):
         StateMachine.drill_status = 'done'  # TODO: update static variable from msg.status
@@ -58,7 +58,7 @@ class Move(smach.State):
 
     def execute(self, userdata):
         StateMachine.state_pub.publish('MOVE')  # publish current state
-        if StateMachine.movement_status == 'done':
+        if StateMachine.move_status == 'done':
             return 'done'
         else:  # ongoing or idle (should eventually leave idle since current state is being published)
             return 'ongoing'
