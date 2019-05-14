@@ -1,0 +1,5 @@
+<!-- A .launch file which launches the node -->
+
+<launch>
+    <node name="state_machine" pkg="state_machine_circ" type="state_machine.py" output="screen"/>
+</launch>

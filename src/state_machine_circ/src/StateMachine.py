@@ -5,15 +5,14 @@
 
 import rospy
 import smach
-from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 
 
 class StateMachine:
-    """ Static variables """
 
-    """ Task status codes: 'idle', 'ongoing', 'done' """
-    move_status = 'ongoing'
+    """ Task status: ongoing, idle, next """
+    """ Various task nodes should output only ongoing and idle """
+    move_status = 'next'  # indicates next expected state
     drill_status = 'idle'
 
     state_pub = rospy.Publisher('state', String, queue_size=1)  # State publisher
@@ -22,8 +21,8 @@ class StateMachine:
         rospy.init_node(node_name)
 
         ''' Setup subscribers for state variables '''
-        rospy.Subscriber('/cmd_vel', Twist, self.moveCallBack)  # TODO: change temp subscriber topic to move_status
-        rospy.Subscriber('/cmd_vel', Twist, self.drillCallBack)  # TODO: change temp subscriber topic to drill_status
+        rospy.Subscriber('move_status', String, self.moveCallBack)
+        rospy.Subscriber('drill_status', String, self.drillCallBack)
 
         # Create a SMACH state machine
         sm = smach.StateMachine(outcomes=[])
@@ -42,12 +41,17 @@ class StateMachine:
         sm.execute()
 
     """ Call backs """
-
     def moveCallBack(self, msg):
-        StateMachine.move_status = 'done'  # TODO: update static variable from msg.status (will be a stream)
+        if msg.data == 'ongoing':  # Override 'next' status when it starts
+            StateMachine.move_status = msg.data
+        elif StateMachine.move_status != 'next':  # Otherwise do NOT update if next state
+            StateMachine.move_status = msg.data
 
     def drillCallBack(self, msg):
-        StateMachine.drill_status = 'done'  # TODO: update static variable from msg.status
+        if msg.data == 'ongoing':
+            StateMachine.drill_status = msg.data
+        elif StateMachine.drill_status != 'next':
+            StateMachine.drill_status = msg.data
 
 
 # define state Move
@@ -58,9 +62,10 @@ class Move(smach.State):
 
     def execute(self, userdata):
         StateMachine.state_pub.publish('MOVE')  # publish current state
-        if StateMachine.move_status == 'done':
+        if StateMachine.move_status == 'idle':
+            StateMachine.drill_status = 'next'  # Setup next expected status
             return 'done'
-        else:  # ongoing or idle (should eventually leave idle since current state is being published)
+        else:  # ongoing or next
             return 'ongoing'
 
 
@@ -71,8 +76,9 @@ class Drill(smach.State):
                              outcomes=['done', 'ongoing'])
 
     def execute(self, userdata):
-        StateMachine.state_pub.publish('DRILL')  # publish current state
-        if StateMachine.drill_status == 'done':
+        StateMachine.state_pub.publish('DRILL')
+        if StateMachine.drill_status == 'idle':
+            StateMachine.move_status = 'next'
             return 'done'
         else:
             return 'ongoing'
