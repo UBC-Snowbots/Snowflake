@@ -47,7 +47,6 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
     - *Just choose yes and enter your password when the terminal prompts you*
 <<<<<<< HEAD
 9. To build the workspace run `catkin_make`. If everything compiles correctly and you don't get any errors, then you're good to go!
-=======
 10. If catkin_make fails, and mentions missing .cmake files, run `./setup_scripts/install_dependencies.sh`.
 >>>>>>> 50c50b7102aa142eda993a2a88de4e6a75d2134c
 
