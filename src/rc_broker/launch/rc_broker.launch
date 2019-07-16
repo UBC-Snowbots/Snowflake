@@ -1,0 +1,4 @@
+<launch>
+    <node name="rc_broker" pkg="rc_broker" type="rc_broker" output="screen">
+    </node>
+</launch>

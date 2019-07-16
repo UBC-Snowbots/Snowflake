@@ -1,0 +1,6 @@
+<!-- A .test file which launches the node and its corresponding rostest -->
+
+<launch>
+    <node name="rc_broker" pkg="rc_broker" type="rc_broker" output="screen" />
+    <test test-name="rc_broker_rostest" pkg="rc_broker" type="rc_broker_rostest" />
+</launch>
