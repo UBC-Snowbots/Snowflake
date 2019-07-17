@@ -1,22 +1,23 @@
 /**
  * Created by William Gu on Jun 16 2019
- * Contains some simple ROS tests to ensure broker node is forwarding messages correctly
+ * Contains some simple ROS tests to ensure broker node is forwarding messages
+ * correctly
  */
 
 #include <RCBrokerNode.h>
 #include <gtest/gtest.h>
 
 class RCBrokerTest : public testing::Test {
-protected:
+  protected:
     virtual void SetUp() {
         test_publisher_client =
-                nh_.advertise<std_msgs::String>("/client_sub", 1);
+        nh_.advertise<std_msgs::String>("/client_sub", 1);
         test_publisher_server =
-                nh_.advertise<std_msgs::String>("/server_sub", 1);
+        nh_.advertise<std_msgs::String>("/server_sub", 1);
         test_subscriber_client =
-                nh_.subscribe("/client_pub", 1, &RCBrokerTest::callback1, this);
+        nh_.subscribe("/client_pub", 1, &RCBrokerTest::callback1, this);
         test_subscriber_server =
-                nh_.subscribe("/server_pub", 1, &RCBrokerTest::callback2, this);
+        nh_.subscribe("/server_pub", 1, &RCBrokerTest::callback2, this);
 
         // Let the publishers and subscribers set itself up timely
         ros::Rate loop_rate(1);
@@ -32,7 +33,7 @@ protected:
     std_msgs::String rcv_client_msg;
     std_msgs::String rcv_server_msg;
 
-public:
+  public:
     void callback1(const std_msgs::String::ConstPtr& ptr) {
         rcv_client_msg = *ptr;
     }
@@ -87,8 +88,7 @@ TEST_F(RCBrokerTest, testSimMessages) {
 }
 
 TEST_F(RCBrokerTest, testMultiMessages) {
-
-    for (int i = 0; i < 100; i ++){
+    for (int i = 0; i < 100; i++) {
         std_msgs::String msg;
         msg.data = std::to_string(i);
         test_publisher_client.publish(msg);

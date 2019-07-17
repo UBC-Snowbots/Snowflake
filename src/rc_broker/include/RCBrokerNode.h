@@ -14,10 +14,10 @@
 #include <std_msgs/String.h>
 
 class RCBrokerNode {
-public:
+  public:
     RCBrokerNode(int argc, char** argv, std::string node_name);
 
-private:
+  private:
     ros::Subscriber client_subscriber;
     ros::Publisher client_publisher;
     ros::Subscriber server_subscriber;
@@ -26,7 +26,6 @@ private:
     void clientCallBack(const std_msgs::String::ConstPtr& ptr);
 
     void serverCallBack(const std_msgs::String::ConstPtr& ptr);
-
 };
 
 #endif // RC_BROKER_NODE

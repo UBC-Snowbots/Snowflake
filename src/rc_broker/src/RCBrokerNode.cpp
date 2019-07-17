@@ -7,9 +7,7 @@
 
 #include <RCBrokerNode.h>
 
-RCBrokerNode::RCBrokerNode(int argc,
-                           char** argv,
-                           std::string node_name) {
+RCBrokerNode::RCBrokerNode(int argc, char** argv, std::string node_name) {
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
@@ -17,21 +15,20 @@ RCBrokerNode::RCBrokerNode(int argc,
 
     /* Setup subscribers and publishers */
     std::string client_sub_top = "/client_sub";
-    client_subscriber        = nh.subscribe(
-            client_sub_top, queue_size, &RCBrokerNode::clientCallBack, this);
+    client_subscriber          = nh.subscribe(
+    client_sub_top, queue_size, &RCBrokerNode::clientCallBack, this);
 
     std::string client_pub_top = "/client_pub";
     client_publisher =
-            private_nh.advertise<std_msgs::String>(client_pub_top, queue_size);
+    private_nh.advertise<std_msgs::String>(client_pub_top, queue_size);
 
     std::string server_sub_top = "/server_sub";
-    server_subscriber        = nh.subscribe(
-            server_sub_top, queue_size, &RCBrokerNode::serverCallBack, this);
+    server_subscriber          = nh.subscribe(
+    server_sub_top, queue_size, &RCBrokerNode::serverCallBack, this);
 
     std::string server_pub_top = "/server_pub";
     server_publisher =
-            private_nh.advertise<std_msgs::String>(server_pub_top, queue_size);
-
+    private_nh.advertise<std_msgs::String>(server_pub_top, queue_size);
 }
 
 void RCBrokerNode::clientCallBack(const std_msgs::String::ConstPtr& ptr) {
@@ -41,4 +38,3 @@ void RCBrokerNode::clientCallBack(const std_msgs::String::ConstPtr& ptr) {
 void RCBrokerNode::serverCallBack(const std_msgs::String::ConstPtr& ptr) {
     client_publisher.publish(*ptr);
 }
-
