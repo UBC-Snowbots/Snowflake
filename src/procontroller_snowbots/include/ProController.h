@@ -4,62 +4,40 @@
  * Description: Simple header file for switch controller-->ROS Twist message cpp
  */
 
+
 #ifndef PROCONTROLLER_SNOWBOTS_CONTROLLER_H
 #define PROCONTROLLER_SNOWBOTS_CONTROLLER_H
 
 #include <cstdio>
+#include <libevdev-1.0/libevdev/libevdev.h>
+#include <sys/fcntl.h>
 #include <cstdlib>
 #include <cstring>
-#include <geometry_msgs/Twist.h>
 #include <iostream>
-#include <libevdev-1.0/libevdev/libevdev.h>
+#include <geometry_msgs/Twist.h>
 #include <ros/ros.h>
-#include <sys/fcntl.h>
-#include <tuple>
+
 using namespace std;
 
 class ProController {
-  public:
-    ProController(int argc, char** argv, std::string node_name);
+public:
+    ProController(int argc, char **argv, std::string node_name);
 
-  private:
+private:
     void setup();
+
     void readInputs();
-    void leftJoystickX(int value);      // ABS_X
-    void leftJoystickY(int value);      // ABS_Y
-    void rightJoystickX(int value);     // ABS_RX
-    void rightJoystickY(int value);     // ABS_RY
-    void A(int value);                  // BTN_EAST
-    void B(int value);                  // BTN_SOUTH
-    void X(int value);                  // BTN_WEST
-    void Y(int value);                  // BTN_NORTH
-    void leftBumper(int value);         // BTN_TL
-    void rightBumper(int value);        // BTN_TR
-    void select(int value);             // BTN_SELECT
-    void start(int value);              // BTN_START
-    void home(int value);               // BTN_MODE
-    void leftTrigger(int value);        // ABS_Z
-    void rightTrigger(int value);       // ABS_RZ
-    void arrowsRorL(int value);         // ABS_HAT0X
-    void arrowsUorD(int value);         // ABS_HAT0Y
-    void leftJoystickPress(int value);  // BTN_THUMBL
-    void rightJoystickPress(int value); // BTN_THUMBR
-    tuple<double, double>
-    publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
-    void publishArmXZ(double x_new, double z_new, double x_old, double z_old);
-    void printState();
-    void printControllerDebug(int type, int code, int value);
-    // see documentation to changes sensitivities at runtime
-    double X_SENSITIVITY = 1.0;
-    double Z_SENSITIVITY = 1.0;
-    double x;
-    double z;
-    struct libevdev* dev = NULL;
-    enum Mode { wheels = 0, arm = 1 };
-    Mode state;
-    bool debug = false;
-    ros::Publisher pubmove;
-    ros::Publisher pubarm;
+
+    //run "evtest" in terminal to figure out which path leads to your bluetooth connected controller
+    const char *EVTEST_PATH = "/dev/input/event16";
+//This publishes to the turtlesim ROS demo for testing, change this to publish to a different topic
+    const char *ROS_TOPIC = "turtle1/cmd_vel";
+//Change this value (default 1.0) to change the x (forward and backward) sensitivity
+    const int X_SENSITIVITY = 1.0;
+//Change this value (default 1.0) to change the z (turning speed) sensitivty
+    const int Z_SENSITIVITY = 1.0;
+    struct libevdev *dev = NULL;
+    ros::Publisher pub;
 };
 
-#endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H
+#endif //PROCONTROLLER_SNOWBOTS_CONTROLLER_H
