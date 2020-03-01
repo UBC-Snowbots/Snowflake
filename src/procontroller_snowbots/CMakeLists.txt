@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
         )
 
 set(SOURCE_FILES src/ProController.cpp src/pro_controller.cpp)
+link_directories(libraries)
 add_executable(pro_controller ${SOURCE_FILES})
 target_link_libraries(pro_controller evdev)
 target_link_libraries(pro_controller ${catkin_LIBRARIES})
