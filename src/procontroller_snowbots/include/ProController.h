@@ -9,7 +9,7 @@
 #define PROCONTROLLER_SNOWBOTS_CONTROLLER_H
 
 #include <cstdio>
-#include <libevdev-1.0/libevdev/libevdev.h>
+#include "libevdev.h"
 #include <sys/fcntl.h>
 #include <cstdlib>
 #include <cstring>
