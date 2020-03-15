@@ -25,6 +25,7 @@ before_install:
     - ./configure
     - make
     - sudo make install
+    - cd ..
 install:
     # Pull in MoveIt's ROS Docker CI image (piping to `/dev/null` to hide output)
     - DOCKER_IMAGE=moveit/moveit:$ROS_DISTRO-ci
