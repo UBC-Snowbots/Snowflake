@@ -22,7 +22,7 @@ before_install:
     - wget https://www.phidgets.com/downloads/phidget22/libraries/linux/libphidget22.tar.gz
     - tar xvf libphidget22.tar.gz
     - cd libphi*
-    - ./configure
+    - ./configure --prefix=/usr
     - make
     - sudo make install
     - cd ..
