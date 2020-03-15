@@ -18,6 +18,7 @@ MoveMotor::MoveMotor(int argc, char **argv, std::string node_name) {
 
 void MoveMotor::callback(const geometry_msgs::Twist::ConstPtr& msg) {
     ROS_INFO("Received Twist");
+    ROS_INFO("linear.x: %i\nangular.z: %i", msg->linear.x, msg->angular.z;
 
     PhidgetBLDCMotorHandle bldcMotor0;
 
