@@ -18,7 +18,7 @@ notifications:
 
 before_install:
     - sudo apt-get update
-    - sudo apt-get -y install libusb-dev libusb
+    - sudo apt-get -y install libusb-1.0-0-dev
     - wget https://www.phidgets.com/downloads/phidget22/libraries/linux/libphidget22.tar.gz
     - tar xvf libphidget22.tar.gz
     - cd libphi*
