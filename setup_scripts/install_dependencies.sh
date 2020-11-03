@@ -18,7 +18,12 @@ echo "================================================================"
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 sudo apt-get update -y
-sudo apt-get install python-rosdep python-rosinstall-generator ros-melodic-desktop-full -y
+sudo apt-get install python-catkin-pkg python-wstool python-rosdep python-rosinstall-generator ros-melodic-desktop-full -y
+source /opt/ros/melodic/setup.sh
+
+# Prepare resdep to install dependencies
+sudo rosdep init
+rosdep update
 
 echo "================================================================"
 echo "Installing Project Dependent ROS packages."
@@ -28,6 +33,15 @@ echo "================================================================"
 # Setup directory for pulling external pkgs
 # Download packages from merged .rosinstall files
 cd $CURR_DIR/..
+cd ./src
+catkin_init_workspace
+cd ..
+# run catkin_make and set path variables
+catkin_make
+source devel/setup.bash
+# download external packages
+wstool init
+wstool merge $CURR_DIR/../.rosinstall
 wstool update
 
 echo "================================================================"
@@ -35,11 +49,6 @@ echo "Installing other ROS dependencies specified by our packages"
 echo "================================================================"
 
 cd $CURR_DIR
-
-# Init Rosdep
-sudo rosdep init
-# Update Rosdeps
-rosdep update
 
 # Install all required dependencies to build this repo
 # (unfortunately this is not recursive, so we have to manually specify a few
@@ -66,4 +75,5 @@ sudo apt-get install -y\
 echo "================================================================"
 echo "Finished Installing Utilities"
 echo "================================================================"
+
 
