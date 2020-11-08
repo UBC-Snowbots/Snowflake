@@ -11,7 +11,7 @@
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo "================================================================" 
+echo "===============================================================" 
 echo "Installing ROS Melodic"
 echo "================================================================"
 
@@ -32,9 +32,8 @@ echo "================================================================"
 # Setup the workspace
 # Setup directory for pulling external pkgs
 # Download packages from merged .rosinstall files
-# download external packages
+cd $CURR_DIR/..
 wstool init
-wstool merge $CURR_DIR/../.rosinstall
 wstool update
 
 echo "================================================================"
@@ -58,10 +57,10 @@ cd $CURR_DIR
 sudo ./setup_realsense_manual.sh
 
 cd $CURR_DIR
-sudo ./setup_phidgets.sh
+sudo ./install_phidgets.sh
 
 cd $CURR_DIR
-sudo ./setuo_alglib.sh
+sudo ./install_alglib.sh
 
 echo "================================================================"
 echo "Installing Misc. Utilities"

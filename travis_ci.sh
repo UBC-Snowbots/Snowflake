@@ -53,4 +53,3 @@ fi
 
 echo "CI Script has finished successfully!"
 exit 0
-`:wq

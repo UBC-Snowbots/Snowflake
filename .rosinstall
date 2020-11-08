@@ -26,6 +26,6 @@
     uri: 'https://github.com/garethellis0/multi_resolution_graph.git'
     version: 0.0.3
 - git:
-    local_name: src/external_libs/evdev
+    local-name: src/external_libs/evdev
     uri: https://gitlab.freedesktop.org/libevdev/libevdev
 
