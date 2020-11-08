@@ -32,13 +32,6 @@ echo "================================================================"
 # Setup the workspace
 # Setup directory for pulling external pkgs
 # Download packages from merged .rosinstall files
-cd $CURR_DIR/..
-cd ./src
-catkin_init_workspace
-cd ..
-# run catkin_make and set path variables
-catkin_make
-source devel/setup.bash
 # download external packages
 wstool init
 wstool merge $CURR_DIR/../.rosinstall
@@ -64,6 +57,8 @@ echo "================================================================"
 cd $CURR_DIR
 sudo ./setup_realsense_manual.sh
 
+cd $CURR_DIR
+sudo ./setup_phidgets.sh
 echo "================================================================"
 echo "Installing Misc. Utilities"
 echo "================================================================"
