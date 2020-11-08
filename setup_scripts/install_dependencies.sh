@@ -59,6 +59,10 @@ sudo ./setup_realsense_manual.sh
 
 cd $CURR_DIR
 sudo ./setup_phidgets.sh
+
+cd $CURR_DIR
+sudo ./setuo_alglib.sh
+
 echo "================================================================"
 echo "Installing Misc. Utilities"
 echo "================================================================"
