@@ -1,12 +1,14 @@
 #!/bin/bash
 
-#########################################################################
-# STOP: If the dependency you want to add is required for the project   #
-#       to build, it should be added as a rosdep (ie. a dependency      #
-#       specified in one of the packages `package.xml` files).          #
-#       This script should only contain other dependecies, like         #
-#       external packages or utilities                                  #
-#########################################################################
+##########################################################################
+# STOP: If the dependency you want to add is required for the project    #
+#       to build, it should be added as a rosdep (ie. a dependency       #
+#       specified in one of the packages `package.xml` files).           #
+#       Dependencies availble through rosdep are listed at               #
+#       "https://github.com/ros/rosdistro/blob/master/rosdep/base.yaml". #
+#       This script should only contain other dependecies, like          #
+#       external packages or utilities                                   #
+##########################################################################
 
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
