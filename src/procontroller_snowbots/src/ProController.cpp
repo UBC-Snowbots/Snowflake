@@ -7,13 +7,17 @@
 
 #include "../include/ProController.h"
 
-//see header file for changing sensitivity, controller, or ros topic
-
+// see header file for changing sensitivity, evtest path, and to see what every button's event code is.
+//If you get "Failed to init libevdev (Bad file descriptor)", run evtest and see
+//if the path to the controller listed is different from the one in ProController.h
+//and change it if it is. If you run this node and there's no controller output, its likely because the evtest
+//path has changed.
 ProController::ProController(int argc, char **argv, string node_name) {
     setup();
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
-    pub = private_nh.advertise<geometry_msgs::Twist>(ROS_TOPIC, 1000);
+    pubmove = private_nh.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel",1000);
+    printf("Preparing to read inputs...");
     readInputs();
 }
 
@@ -34,10 +38,10 @@ void ProController::setup() {
 }
 
 void ProController::readInputs() {
-    int x = 0;
-    int z = 0;
-    int x_old = 0;
-    int z_old = 0;
+    double x = 0;
+    double z = 0;
+    double x_old = 0;
+    double z_old = 0;
     int rc;
     do {
         geometry_msgs::Twist msg;
@@ -48,30 +52,32 @@ void ProController::readInputs() {
             auto type = libevdev_event_type_get_name(ev.type);
             if (ev.type == EV_ABS) {//ignore SYN_REPORT
                 //uncomment to see the event code printouts to calibrate the z= and x= lines
-                //ROS_INFO("Event: Type: %s Code: %s Value: %d\n",
-                //       type, code, ev.value);
+                ROS_INFO("Event: Type: %s Code: %s Value: %d\n",
+                      type, code, ev.value);
                 if (ev.code == ABS_X) {// if the received event is the X axis of the joystick
                     //Some estimated bounds of what should count as 0 on the x axis
-                    if (ev.value > 32000 && ev.value < 37000) {
+                    if (ev.value > 120 && ev.value < 135) {
                         z = 0;
                     } else {
-                        //2500 is a magic number that reduces the event's value to an input that is smooth in turtlesim
-                        z = -(ev.value - 32500) / 2500.0 * Z_SENSITIVITY;
+                        //my calibration revealed 128 was the center, 255 was the max, so this normalizes the max to be 1
+                        z = -(ev.value - 128) / 128.0 * Z_SENSITIVITY;
                     }
                 } else if (ev.code == ABS_Y) {// if the received event is the Y axis of the joystick
                     //Some estimated bounds of what should count as 0 on the y axis
-                    if (ev.value > 34000 && ev.value < 37000) {
+                    if (ev.value > 120 && ev.value < 135) {
                         x = 0;
                     } else {
-                        //4000 is a magic number that reduces the events value to something that is smooth in turtlesim
-                        x = -(ev.value - 36341) / 4000.0 * X_SENSITIVITY;
+                        //my calibration revealed 128 was the center, 255 was the max, so this normalizes the max to be 1
+                        x = (ev.value - 128) / 128.0* X_SENSITIVITY;
                     }
+                } else if (ev.code == BTN_WEST) {
+
                 }
                 //if this is a new input, publish it
                 if (x_old != x || z_old != z) {
                     msg.linear.x = x;
                     msg.angular.z = z;
-                    pub.publish(msg);
+                    pubmove.publish(msg);
                     //ROS_INFO("X: %d Z: %d", x, z);
                     z_old = z;
                     x_old = x;
