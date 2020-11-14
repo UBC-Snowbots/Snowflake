@@ -9,7 +9,7 @@
 
 // see header file for changing sensitivity, evtest path, and to see what every button's event code is.
 //If you get "Failed to init libevdev (Bad file descriptor)", run evtest and see
-//if the path to the controller listed is different from the one in ProController.h
+//if the path to the controller listed is not between
 //and change it if it is. If you run this node and there's no controller output, its likely because the evtest
 //path has changed.
 ProController::ProController(int argc, char **argv, string node_name) {
@@ -22,19 +22,28 @@ ProController::ProController(int argc, char **argv, string node_name) {
 }
 
 void ProController::setup() {
-
-    int fd;
-    fd = open(EVTEST_PATH, O_RDONLY | O_NONBLOCK);
-    int rc = libevdev_new_from_fd(fd, &dev);
-    if (rc < 0) {
+    int rc = 0;
+    for(auto i=0;i<50;i++){
+        string inttostring = to_string(i);
+        string EVTEST_PATH = "/dev/input/event";
+        string pathstring = EVTEST_PATH + inttostring;
+        const char* path = (pathstring).c_str();
+        int fd = open(path,O_RDONLY | O_NONBLOCK);
+        rc = libevdev_new_from_fd(fd, &dev);
+        if (rc >= 0) {
+            printf("Succesfully set up with path \"%s\n",path);
+            printf("Input device name: \"%s\"\n", libevdev_get_name(dev));
+            printf("Input device ID: bus %#x vendor %#x product %#x\n",
+                   libevdev_get_id_bustype(dev),
+                   libevdev_get_id_vendor(dev),
+                   libevdev_get_id_product(dev));
+            break;
+        }
+    }
+    if (rc < 0){
         ROS_INFO_COND(stderr, "Failed to init libevdev (%s)\n", strerror(-rc));
         exit(1);
     }
-    printf("Input device name: \"%s\"\n", libevdev_get_name(dev));
-    printf("Input device ID: bus %#x vendor %#x product %#x\n",
-           libevdev_get_id_bustype(dev),
-           libevdev_get_id_vendor(dev),
-           libevdev_get_id_product(dev));
 }
 
 void ProController::readInputs() {
@@ -71,7 +80,6 @@ void ProController::readInputs() {
                         x = (ev.value - 128) / 128.0* X_SENSITIVITY;
                     }
                 } else if (ev.code == BTN_WEST) {
-
                 }
                 //if this is a new input, publish it
                 if (x_old != x || z_old != z) {

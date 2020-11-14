@@ -75,8 +75,7 @@ private:
 //    Min       -1
 //    Max        1
 
-    //run "evtest" in terminal to figure out which path leads to your connected controller
-    const char *EVTEST_PATH = "/dev/input/event17";
+
 //Change this value (default 1.0) to change the x (forward and backward) sensitivity
     const int X_SENSITIVITY = 1.0;
 //Change this value (default 1.0) to change the z (turning speed) sensitivty
