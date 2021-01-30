@@ -13,7 +13,6 @@
                 <arg name="gui" value="$(arg gui)" />
                 <arg name="paused" value="$(arg pause)" />
                 <arg name="use_sim_time" value="true" />
-                <arg name ="verbose" value = "true"/>
         </include>
 
         <include file="$(find procontroller_snowbots)/launch/robot.launch">
