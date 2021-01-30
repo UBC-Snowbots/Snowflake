@@ -25,4 +25,3 @@
     local-name: src/mapping_urc/multi_resolution_graph
     uri: 'https://github.com/garethellis0/multi_resolution_graph.git'
     version: 0.0.3
-

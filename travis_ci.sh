@@ -11,21 +11,6 @@
 # The current directory
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# This variable is used to let us show nice folds in travis
-export TRAVIS_FOLD_COUNTER=1
-
-# Display command in Travis console and fold output in dropdown section
-function travis_run() {
-  local command=$@
-
-  echo -e "\e[0Ktravis_fold:start:command$TRAVIS_FOLD_COUNTER \e[34m$ $command\e[0m"
-  # actually run command
-  $command || exit 1 # kill build if error
-  echo -e -n "\e[0Ktravis_fold:end:command$TRAVIS_FOLD_COUNTER\e[0m"
-
-  let "TRAVIS_FOLD_COUNTER += 1"
-}
-
 # If any command exits with a non-zero value (i.e. it throws an error)
 # then this will cause travis to exit. Commands encapsulated between 
 # conditionals, for example, do not report their return codes. Instread,
@@ -37,56 +22,34 @@ set -ev
 # Change to the directory this script is in
 cd $CURR_DIR
 
-# Note that we must build the codebase in order to run tests
-if [ "$RUN_BUILD" == "true" ] || [ "$RUN_TESTS" == "true" ]; then
-    # Install all required dependecies
-    travis_run ./setup_scripts/install_dependencies.sh
-
-    # Build the codebase
-    travis_run catkin_make
+CLANG_VERSION="4.0"
+# Determine what we should compare this branch against to figure out what 
+# files were changed
+if [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
+  # Not in a pull request, so compare against parent commit
+  BASE_COMMIT="HEAD^"
+  echo "Running clang-format against parent commit $(git rev-parse $BASE_COMMIT)"
+  echo "=================================================="
+else
+  # In a pull request so compare against branch we're trying to merge into
+  # (ex. "master")
+  BASE_COMMIT="$TRAVIS_BRANCH"
+  # Make sure we pull the branches we're trying to merge against
+  git fetch origin $BASE_COMMIT:$BASE_COMMIT
+  echo "Running clang-format against branch $BASE_COMMIT, with hash $(git rev-parse $BASE_COMMIT)"
 fi
 
-if [ "$RUN_TESTS" == "true" ]; then
-    # Run all the tests
-    travis_run catkin_make run_tests
-
-    # Report the results of the tests
-    # (which tests failed and why)
-    travis_run catkin_test_results --verbose
+# Check if we need to change any files
+output="$(./clang-format/git-clang-format --binary ./clang-format/clang-format-$CLANG_VERSION --commit $BASE_COMMIT --diff)"
+if [[ $output == *"no modified files to format"* ]] || [[ $output == *"clang-format did not modify any files"* ]] ; then
+    echo "clang-format passed :D"
+    exit 0
+else
+    echo "$output"
+    echo "=================================================="
+    echo "clang-format failed :( - please reformat your code via the \`git clang-format\` tool and resubmit"
+    exit 1
 fi
-
-if [ "$RUN_FORMATTING_CHECKS" == "true" ]; then
-    CLANG_VERSION="4.0"
-    # Determine what we should compare this branch against to figure out what 
-    # files were changed
-    if [ "$TRAVIS_PULL_REQUEST" == "false" ] ; then
-      # Not in a pull request, so compare against parent commit
-      BASE_COMMIT="HEAD^"
-      echo "Running clang-format against parent commit $(git rev-parse $BASE_COMMIT)"
-      echo "=================================================="
-    else
-      # In a pull request so compare against branch we're trying to merge into
-      # (ex. "master")
-      BASE_COMMIT="$TRAVIS_BRANCH"
-      # Make sure we pull the branches we're trying to merge against
-      git fetch origin $BASE_COMMIT:$BASE_COMMIT
-      echo "Running clang-format against branch $BASE_COMMIT, with hash $(git rev-parse $BASE_COMMIT)"
-    fi
-
-    # Check if we need to change any files
-    output="$(./clang-format/git-clang-format --binary ./clang-format/clang-format-$CLANG_VERSION --commit $BASE_COMMIT --diff)"
-    if [[ $output == *"no modified files to format"* ]] || [[ $output == *"clang-format did not modify any files"* ]] ; then
-        echo "clang-format passed :D"
-        exit 0
-    else
-        echo "$output"
-        echo "=================================================="
-        echo "clang-format failed :( - please reformat your code via the \`git clang-format\` tool and resubmit"
-        exit 1
-    fi
-fi
-
 
 echo "CI Script has finished successfully!"
 exit 0
-
