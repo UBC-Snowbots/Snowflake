@@ -13,16 +13,22 @@
 //and change it if it is. If you run this node and there's no controller output, its likely because the evtest
 //path has changed.
 ProController::ProController(int argc, char **argv, string node_name) {
+    bool turtle = false;
+    string publisher = "/cmd_vel";
+    if (turtle) {
+        publisher = "/turtle1/cmd_vel";
+    }
     setup();
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
-    pubmove = private_nh.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel",1000);
+    pubmove = private_nh.advertise<geometry_msgs::Twist>("/cmd_vel",1000);
     printf("Preparing to read inputs...");
     readInputs();
 }
 
 void ProController::setup() {
     int rc = 0;
+#   //check the first 50 event inputs to find the controller.
     for(auto i=0;i<50;i++){
         string inttostring = to_string(i);
         string EVTEST_PATH = "/dev/input/event";
@@ -61,8 +67,7 @@ void ProController::readInputs() {
             auto type = libevdev_event_type_get_name(ev.type);
             if (ev.type == EV_ABS) {//ignore SYN_REPORT
                 //uncomment to see the event code printouts to calibrate the z= and x= lines
-                ROS_INFO("Event: Type: %s Code: %s Value: %d\n",
-                      type, code, ev.value);
+                //ROS_INFO("Event: Type: %s Code: %s Value: %d\n", type, code, ev.value);
                 if (ev.code == ABS_X) {// if the received event is the X axis of the joystick
                     //Some estimated bounds of what should count as 0 on the x axis
                     if (ev.value > 120 && ev.value < 135) {
