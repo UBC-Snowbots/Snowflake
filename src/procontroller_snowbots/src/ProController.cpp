@@ -22,7 +22,9 @@ ProController::ProController(int argc, char **argv, string node_name) {
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
     pubmove = private_nh.advertise<geometry_msgs::Twist>("/cmd_vel",1000);
-    printf("Preparing to read inputs...");
+    printf("Preparing to read inputs...\n");
+    x = 0;
+    z = 0;
     readInputs();
 }
 
@@ -53,49 +55,183 @@ void ProController::setup() {
 }
 
 void ProController::readInputs() {
-    double x = 0;
-    double z = 0;
     double x_old = 0;
     double z_old = 0;
     int rc;
     do {
-        geometry_msgs::Twist msg;
         struct input_event ev;
         rc = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
         if (rc == 0) {
             auto code = libevdev_event_code_get_name(ev.type, ev.code);
             auto type = libevdev_event_type_get_name(ev.type);
-            if (ev.type == EV_ABS) {//ignore SYN_REPORT
-                //uncomment to see the event code printouts to calibrate the z= and x= lines
+            if (ev.type != EV_SYN) {//ignore EV_SYN, keep track of ABS and KEY
+                switch(ev.code) {
+                    case ABS_X:
+                        leftJoystickX(ev.value);
+                        break;
+                    case ABS_Y:
+                        leftJoystickY(ev.value);
+                        break;
+                    case ABS_RX:
+                        rightJoystickX(ev.value);
+                        break;
+                    case ABS_RY:
+                        rightJoystickY(ev.value);
+                        break;
+                    case BTN_EAST:
+                        A(ev.value);
+                        break;
+                    case BTN_SOUTH:
+                        B(ev.value);
+                        break;
+                    case BTN_WEST:
+                        X(ev.value);
+                        break;
+                    case BTN_NORTH:
+                        Y(ev.value);
+                        break;
+                    case BTN_TL:
+                        leftBumper(ev.value);
+                        break;
+                    case BTN_TR:
+                        rightBumper(ev.value);
+                        break;
+                    case BTN_SELECT:
+                        select(ev.value);
+                        break;
+                    case BTN_START:
+                        start(ev.value);
+                        break;
+                    case BTN_MODE:
+                        home(ev.value);
+                        break;
+                    case ABS_Z:
+                        leftTrigger(ev.value);
+                        break;
+                    case ABS_RZ:
+                        rightTrigger(ev.value);
+                        break;
+                    case ABS_HAT0X:
+                        arrowsRorL(ev.value);
+                        break;
+                    case ABS_HAT0Y:
+                        arrowsUorD(ev.value);
+                        break;
+                    case BTN_THUMBL:
+                        leftJoystickPress(ev.value);
+                        break;
+                    case BTN_THUMBR:
+                        rightJoystickPress(ev.value);
+                        break;
+                }
+                //publish move command and update oldx, oldz
+                tie(x_old,z_old) = publishMoveXZ(x, z, x_old, z_old);
+                //uncomment to see all controller event code printouts
                 //ROS_INFO("Event: Type: %s Code: %s Value: %d\n", type, code, ev.value);
-                if (ev.code == ABS_X) {// if the received event is the X axis of the joystick
-                    //Some estimated bounds of what should count as 0 on the x axis
-                    if (ev.value > 120 && ev.value < 135) {
-                        z = 0;
-                    } else {
-                        //my calibration revealed 128 was the center, 255 was the max, so this normalizes the max to be 1
-                        z = -(ev.value - 128) / 128.0 * Z_SENSITIVITY;
-                    }
-                } else if (ev.code == ABS_Y) {// if the received event is the Y axis of the joystick
-                    //Some estimated bounds of what should count as 0 on the y axis
-                    if (ev.value > 120 && ev.value < 135) {
-                        x = 0;
-                    } else {
-                        //my calibration revealed 128 was the center, 255 was the max, so this normalizes the max to be 1
-                        x = (ev.value - 128) / 128.0* X_SENSITIVITY;
-                    }
-                } else if (ev.code == BTN_WEST) {
-                }
-                //if this is a new input, publish it
-                if (x_old != x || z_old != z) {
-                    msg.linear.x = x;
-                    msg.angular.z = z;
-                    pubmove.publish(msg);
-                    //ROS_INFO("X: %d Z: %d", x, z);
-                    z_old = z;
-                    x_old = x;
-                }
+
             }
         }
     } while (rc == 1 || rc == 0 || rc == -EAGAIN);
+}
+
+tuple<double,double> ProController::publishMoveXZ(double x_new, double z_new, double x_old, double z_old){
+    if (x_old != x_new || z_old != z_new) {
+        geometry_msgs::Twist msg;
+        msg.linear.x = x_new;
+        msg.angular.z = z_new;
+        pubmove.publish(msg);
+        //return tuple
+        return make_tuple(x_new,z_new);
+    }
+}
+
+void ProController::leftJoystickX(int value) {
+    if (value > 120 && value < 135) {
+        z = 0;
+    } else {
+        //128 is the center, so this normalizes the result to [-1,1]*Z_SENSITIVITY
+        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+    }
+}
+
+void ProController::leftJoystickY(int value){
+    if (value > 120 && value < 135) {
+        x = 0;
+    } else {
+        //128 is the center, so this normalizes the result to [-1,1]*X_SENSITIVITY
+        x = (value - 128) / 128.0* X_SENSITIVITY;
+    }
+}
+void ProController::rightJoystickX(int value){
+    if (value > 120 && value < 135) {
+        // do nothing
+    } else {ROS_INFO("Right Joystick X event with value: %d\n", value);}
+}
+void ProController::rightJoystickY(int value){
+    if (value > 120 && value < 135) {
+        // do nothing
+    } else {ROS_INFO("Right Joystick Y event with value: %d\n", value);}
+}
+void ProController::A(int value){
+    if (value == 1) { ROS_INFO("A button pressed"); }
+    else if (value == 0) { ROS_INFO("A button released");}
+}
+void ProController::B(int value){
+    if (value == 1) { ROS_INFO("B button pressed"); }
+    else if (value == 0) { ROS_INFO("B button released");}
+}
+void ProController::X(int value){
+    if (value == 1) { ROS_INFO("X button pressed"); }
+    else if (value == 0) { ROS_INFO("X button released");}
+}
+void ProController::Y(int value){
+    if (value == 1) { ROS_INFO("Y button pressed"); }
+    else if (value == 0) { ROS_INFO("Y button released");}
+}
+void ProController::leftBumper(int value){
+    if (value == 1) { ROS_INFO("Left bumper pressed"); }
+    else if (value == 0) { ROS_INFO("Left bumper released");}
+}
+void ProController::rightBumper(int value){
+    if (value == 1) { ROS_INFO("Right bumper pressed"); }
+    else if (value == 0) { ROS_INFO("Right bumper released");}
+}
+void ProController::select(int value){
+    if (value == 1) { ROS_INFO("Select button pressed"); }
+    else if (value == 0) { ROS_INFO("Select button released");}
+}
+void ProController::start(int value){
+    if (value == 1) { ROS_INFO("Start button pressed"); }
+    else if (value == 0) { ROS_INFO("Start button released");}
+}
+
+void ProController::home(int value){
+    if (value == 1) { ROS_INFO("Home button pressed"); }
+    else if (value == 0) { ROS_INFO("Home button released");}
+}
+void ProController::leftTrigger(int value){
+    if (value == 255) { ROS_INFO("Left trigger pressed"); }
+    else if (value == 0) { ROS_INFO("Left trigger released");}
+}
+void ProController::rightTrigger(int value){
+    if (value == 255) { ROS_INFO("Right trigger pressed"); }
+    else if (value == 0) { ROS_INFO("Right trigger released");}
+}
+void ProController::arrowsRorL(int value){
+    if (value == 1) { ROS_INFO("Right button pressed"); }
+    else if (value == 0) { ROS_INFO("Arrow button released");}
+    else { ROS_INFO("Left button pressed"); }
+}
+void ProController::arrowsUorD(int value){
+    if (value == 1) { ROS_INFO("Up button pressed"); }
+    else if (value == 0) { ROS_INFO("Arrow button released");}
+    else { ROS_INFO("Down button pressed"); }
+}
+void ProController::leftJoystickPress(int value){
+    if (value == 1) { ROS_INFO("Left Joystick pressed"); }
+    else if (value == 0) { ROS_INFO("Left Joystick released");}
+}
+void ProController::rightJoystickPress(int value){
+    if (value == 1) { ROS_INFO("Right Joystick pressed"); }
+    else if (value == 0) { ROS_INFO("Right Joystick released");}
 }
