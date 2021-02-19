@@ -45,7 +45,10 @@ private:
     void arrowsUorD(int value); //ABS_HAT0Y
     void leftJoystickPress(int value); //BTN_THUMBL
     void rightJoystickPress(int value); //BTN_THUMBR
-    tuple<double,double> publishMoveXZ(double new_x, double new_z, double old_x, double old_z);
+    tuple<double,double> publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
+    void publishArmXZ(double x_new, double z_new, double x_old, double z_old);
+    void printState();
+    void printControllerDebug(int type,int code,int value);
 //    Supported events (output from running evtest in terminal):
 //    Event type 0 (EV_SYN)
 //    Event type 1 (EV_KEY)
@@ -104,6 +107,8 @@ private:
     double x;
     double z;
     struct libevdev *dev = NULL;
+    int state;
+    enum Mode { wheels = 0, arm = 1};
     ros::Publisher pubmove;
     ros::Publisher pubarm;
 };
