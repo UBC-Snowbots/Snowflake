@@ -9,7 +9,7 @@
 #define PROCONTROLLER_SNOWBOTS_CONTROLLER_H
 
 #include <cstdio>
-#include "libevdev.h"
+#include <libevdev-1.0/libevdev/libevdev.h>
 #include <sys/fcntl.h>
 #include <cstdlib>
 #include <cstring>
@@ -49,66 +49,15 @@ private:
     void publishArmXZ(double x_new, double z_new, double x_old, double z_old);
     void printState();
     void printControllerDebug(int type,int code,int value);
-//    Supported events (output from running evtest in terminal):
-//    Event type 0 (EV_SYN)
-//    Event type 1 (EV_KEY)
-    // the below have value 1 when pressed, 0 when released:
-//    Event code 304 (BTN_SOUTH) B button
-//    Event code 305 (BTN_EAST) A button
-//    Event code 307 (BTN_NORTH) Y button, not X for some reason
-//    Event code 308 (BTN_WEST) X button, not Y for some reason
-//    Event code 310 (BTN_TL) Left bumper (top)
-//    Event code 311 (BTN_TR) Right bumper (top)
-//    Event code 314 (BTN_SELECT) - button
-//    Event code 315 (BTN_START) + button
-//    Event code 316 (BTN_MODE) Home button
-//    Event code 317 (BTN_THUMBL) Left joystick pressed down
-//    Event code 318 (BTN_THUMBR) Right joystick pressed down
-
-//    Event type 3 (EV_ABS)
-//    Event code 0 (ABS_X) Left joystick
-//    Value    135
-//    Min        0
-//    Max      255
-//    Event code 1 (ABS_Y) Left joystick
-//    Value    126
-//    Min        0
-//    Max      255
-//    Event code 2 (ABS_Z) Left bottom trigger
-//    Value      0
-//    Min        0
-//    Max      255
-//    Event code 3 (ABS_RX) Right joystick
-//    Value    129
-//    Min        0
-//    Max      255
-//    Event code 4 (ABS_RY) Right joystick
-//    Value    129
-//    Min        0
-//    Max      255
-//    Event code 5 (ABS_RZ) Right bottom trigger
-//    Value      0
-//    Min        0
-//    Max      255
-//    Event code 16 (ABS_HAT0X) Arrow keys left and right
-//    Value      0
-//    Min       -1
-//    Max        1
-//    Event code 17 (ABS_HAT0Y) Arrow keys up and down
-//    Value      0
-//    Min       -1
-//    Max        1
-
-
-//Change this value (default 1.0) to change the x (forward and backward) sensitivity
-    const int X_SENSITIVITY = 1.0;
-//Change this value (default 1.0) to change the z (turning speed) sensitivty
-    const int Z_SENSITIVITY = 1.0;
+    //see documentation to changes sensitivities at runtime
+    double X_SENSITIVITY = 1.0;
+    double Z_SENSITIVITY = 1.0;
     double x;
     double z;
     struct libevdev *dev = NULL;
-    int state;
     enum Mode { wheels = 0, arm = 1};
+    Mode state;
+    bool debug = false;
     ros::Publisher pubmove;
     ros::Publisher pubarm;
 };

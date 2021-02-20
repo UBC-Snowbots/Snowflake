@@ -7,21 +7,22 @@
 
 #include "../include/ProController.h"
 
-// see header file for changing sensitivity, evtest path, and to see what every button's event code is.
-//If you get "Failed to init libevdev (Bad file descriptor)", run evtest and see
-//if the path to the controller listed is not between
-//and change it if it is. If you run this node and there's no controller output, its likely because the evtest
-//path has changed.
+//Read the master documentation if there's any issues with this package
 ProController::ProController(int argc, char **argv, string node_name) {
-    bool turtle = false;
     string publisher = "/cmd_vel";
-    if (turtle) {
-        publisher = "/turtle1/cmd_vel";
-    }
     setup();
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
-    pubmove = private_nh.advertise<geometry_msgs::Twist>("/cmd_vel",1000);
+    if (private_nh.param<double>("X",X_SENSITIVITY,1.0)){
+        ROS_INFO("X sensitivity set to %f",X_SENSITIVITY);
+    }
+    if (private_nh.param<double>("Z", Z_SENSITIVITY, 1.0)){
+        ROS_INFO("Z sensitivity set to %f",Z_SENSITIVITY);
+    }
+    if (private_nh.param<bool>("debug",debug, false)){
+        ROS_INFO("Debug mode %s", (debug)?"on":"off");
+    }
+    pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher,1000);
     pubarm = private_nh.advertise<geometry_msgs::Twist>("/cmd_arm",1000);
     ROS_INFO("Preparing to read inputs...\n");
     state = Mode::wheels;
@@ -42,12 +43,13 @@ void ProController::setup() {
         int fd = open(path,O_RDONLY | O_NONBLOCK);
         rc = libevdev_new_from_fd(fd, &dev);
         if (rc >= 0) {
-            printf("Succesfully set up with path \"%s\n",path);
-            printf("Input device name: \"%s\"\n", libevdev_get_name(dev));
-            printf("Input device ID: bus %#x vendor %#x product %#x\n",
-                   libevdev_get_id_bustype(dev),
-                   libevdev_get_id_vendor(dev),
-                   libevdev_get_id_product(dev));
+            ROS_INFO("Succesfully set up %s with path \"%s\n",libevdev_get_name(dev),path);
+            if (debug) {
+                ROS_INFO("Input device ID: bus %#x vendor %#x product %#x\n",
+                         libevdev_get_id_bustype(dev),
+                         libevdev_get_id_vendor(dev),
+                         libevdev_get_id_product(dev));
+            }
             break;
         }
     }
@@ -67,75 +69,39 @@ void ProController::readInputs() {
         if (rc == 0) {
             //EV_SYN types are useless, ABS and KEY are useful (see .h file for details)
             if (ev.type != EV_SYN) {
-                //uncomment to see all controller event code printouts
-                //printControllerDebug(ev.type,ev.code, ev.value);
-
-                //handle all controller inputs using API functions
-                switch(ev.code) {
-                    case ABS_X:
-                        leftJoystickX(ev.value);
-                        break;
-                    case ABS_Y:
-                        leftJoystickY(ev.value);
-                        break;
-                    case ABS_RX:
-                        rightJoystickX(ev.value);
-                        break;
-                    case ABS_RY:
-                        rightJoystickY(ev.value);
-                        break;
-                    case BTN_EAST:
-                        A(ev.value);
-                        break;
-                    case BTN_SOUTH:
-                        B(ev.value);
-                        break;
-                    case BTN_WEST:
-                        X(ev.value);
-                        break;
-                    case BTN_NORTH:
-                        Y(ev.value);
-                        break;
-                    case BTN_TL:
-                        leftBumper(ev.value);
-                        break;
-                    case BTN_TR:
-                        rightBumper(ev.value);
-                        break;
-                    case BTN_SELECT:
-                        select(ev.value);
-                        break;
-                    case BTN_START:
-                        start(ev.value);
-                        break;
-                    case BTN_MODE:
-                        home(ev.value);
-                        break;
-                    case ABS_Z:
-                        leftTrigger(ev.value);
-                        break;
-                    case ABS_RZ:
-                        rightTrigger(ev.value);
-                        break;
-                    case ABS_HAT0X:
-                        arrowsRorL(ev.value);
-                        break;
-                    case ABS_HAT0Y:
-                        arrowsUorD(ev.value);
-                        break;
-                    case BTN_THUMBL:
-                        leftJoystickPress(ev.value);
-                        break;
-                    case BTN_THUMBR:
-                        rightJoystickPress(ev.value);
-                        break;
-                }
-                //publish move command and update oldx, oldz
-                if (state == Mode::wheels) {
-                    //Publish motion, update x and z old using tuple
-                    tie(x_old, z_old) = publishMoveXZ(x, z, x_old, z_old);
-                } else if (state == Mode::arm){
-                    publishArmXZ(x,z,x_old,z_old);
+                //use rosrun procontorller_snowbots pro_controller _debug:="true"
+                if (debug) {
+                    printControllerDebug(ev.type, ev.code, ev.value);
+                } else {
+                    // handle all controller inputs using API functions
+                    switch (ev.code) {
+                        case ABS_X: leftJoystickX(ev.value); break;
+                        case ABS_Y: leftJoystickY(ev.value); break;
+                        case ABS_RX: rightJoystickX(ev.value); break;
+                        case ABS_RY: rightJoystickY(ev.value); break;
+                        case BTN_EAST: A(ev.value); break;
+                        case BTN_SOUTH: B(ev.value); break;
+                        case BTN_WEST: X(ev.value); break;
+                        case BTN_NORTH: Y(ev.value); break;
+                        case BTN_TL: leftBumper(ev.value); break;
+                        case BTN_TR: rightBumper(ev.value); break;
+                        case BTN_SELECT: select(ev.value); break;
+                        case BTN_START: start(ev.value); break;
+                        case BTN_MODE: home(ev.value); break;
+                        case ABS_Z: leftTrigger(ev.value); break;
+                        case ABS_RZ: rightTrigger(ev.value); break;
+                        case ABS_HAT0X: arrowsRorL(ev.value); break;
+                        case ABS_HAT0Y: arrowsUorD(ev.value); break;
+                        case BTN_THUMBL: leftJoystickPress(ev.value); break;
+                        case BTN_THUMBR: rightJoystickPress(ev.value); break;
+                    }
+                    // publish move command and update oldx, oldz
+                    if (state == Mode::wheels) {
+                        // Publish motion, update x and z old using tuple
+                        tie(x_old, z_old) = publishMoveXZ(x, z, x_old, z_old);
+                    } else if (state == Mode::arm) {
+                        publishArmXZ(x, z, x_old, z_old);
+                    }
                 }
             }
         }
@@ -165,7 +131,7 @@ void ProController::printState(){
 //If x and z are new commands, this function uses the global pubmove to publish a
 //movement message and return the new or old xz to update readInputs()
 tuple<double,double> ProController::publishMoveXZ(double x_new, double z_new, double x_old, double z_old){
-    if (x_old != x_new || z_old != z_new) {
+    if (abs(x_old - x_new)>0.0001 || abs(z_old - z_new)>0.0001) {
         geometry_msgs::Twist msg;
         msg.linear.x = x_new;
         msg.angular.z = z_new;
@@ -203,14 +169,14 @@ void ProController::leftJoystickY(int value){
 
 //Currently doing nothing
 void ProController::rightJoystickX(int value){
-    if (value > 120 && value < 135) {
+    if (value > 118 && value < 137) {
         // do nothing
     } else {ROS_INFO("Right Joystick X event with value: %d\n", value);}
 }
 
 //Currently doing nothing
 void ProController::rightJoystickY(int value){
-    if (value > 120 && value < 135) {
+    if (value > 118 && value < 137) {
         // do nothing
     } else {ROS_INFO("Right Joystick Y event with value: %d\n", value);}
 }
@@ -265,17 +231,18 @@ void ProController::start(int value){
 
 //Currently switches between wheels and arm mode
 void ProController::home(int value){
-    if (value == 1) { ROS_INFO("Home button pressed"); }
-    else if (value == 0) {
-        if (state == Mode::wheels){
-            state = Mode::arm;
-            printState();
-        } else {
-            state = Mode::wheels;
-            printState();
+    if(!debug) {
+        if (value == 1) {
+            ROS_INFO("Home button pressed");
+        } else if (value == 0) {
+            if (state == Mode::wheels) {
+                state = Mode::arm;
+                printState();
+            } else {
+                state = Mode::wheels;
+                printState();
+            }
         }
-
-
     }
 }
 
