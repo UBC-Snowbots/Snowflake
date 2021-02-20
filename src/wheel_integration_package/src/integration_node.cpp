@@ -12,9 +12,10 @@
 int main(int argc, char **argv){
     // Setup your ROS node
     std::string node_name = "integration_node";
-
+    float max_speed = 1.0;
+    float dist = 0.930;
     // Create an instance of your class
-    MyClass my_class(argc, argv, node_name);
+    MyClass my_class(argc, argv, node_name, dist,  max_speed);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();

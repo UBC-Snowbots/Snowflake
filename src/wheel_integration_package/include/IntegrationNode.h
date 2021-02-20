@@ -22,8 +22,9 @@
 
 class MyClass {
 public:
-    MyClass(int argc, char **argv, std::string node_name);
+    MyClass(int argc, char **argv, std::string node_name, float dist, float max_speed);
     float distBetweenWheels;
+    float maximum_speed;
 
 private:
     /**

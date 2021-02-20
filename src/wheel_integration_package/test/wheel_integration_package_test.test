@@ -1,0 +1,6 @@
+<!-- A .test file which launches the node and its corresponding rostest -->
+
+<launch>
+    <node name="integration_node" pkg="wheel_integration_package" type="integration_node" />
+    <test test-name="integration_node_rostest" pkg="wheel_integration_package" type="integration_node_rostest" />
+</launch>

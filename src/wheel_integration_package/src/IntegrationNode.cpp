@@ -9,16 +9,17 @@
 #include <IntegrationNode.h>
 
 
-MyClass::MyClass(int argc, char **argv, std::string node_name) {
+MyClass::MyClass(int argc, char **argv, std::string node_name, float dist, float max_speed) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
-    distBetweenWheels = 1.0;
+    distBetweenWheels = dist;
+    maximum_speed = max_speed;
 
     // Setup Subscriber(s)
-    std::string topic_to_subscribe_to = "subscribe_topic";
+    std::string topic_to_subscribe_to = "cmd_vel";
     int queue_size = 10;
     my_subscriber = nh.subscribe(topic_to_subscribe_to, queue_size, &MyClass::subscriberCallBack, this);
 
@@ -32,14 +33,20 @@ MyClass::MyClass(int argc, char **argv, std::string node_name) {
     rwheels_publisher = private_nh.advertise<geometry_msgs::Twist>(rwheels_topic, rwheels_queue_size);
 }
 
+/*
+ * Requires:
+ *      -1.0 <= linear.x 1.0
+ *      -Z_SENSITIVITY <= angular.x Z_SENSITIVITY
+ * Returns:
+ *      Publishes the linear velocity of left and right wheel in a Twist message
+ */
 void MyClass::subscriberCallBack(const geometry_msgs::Twist::ConstPtr& msg) {
     ROS_INFO("Received message");
 
-    float linear_vel_coeff = 1.0, angular_vel_coeff = 1.0;
     float zero_threshold = 0.01;
 
-    float linear_vel = linear_vel_coeff * msg->linear.x;
-    float angular_vel = angular_vel_coeff * msg->angular.z;
+    float linear_vel = maximum_speed * msg->linear.x;
+    float angular_vel = msg->angular.z;
 
     float lwheel_vel, rwheel_vel;
 
