@@ -33,6 +33,10 @@ ProController::ProController(int argc, char **argv, string node_name) {
 }
 
 void ProController::setup() {
+    system("gnome-terminal --tab -- bash -c 'cd src/procontroller_snowbots/src; sudo ./procon_driver; read;'");
+    ROS_INFO("Press enter after you've calibrated the Controller in the other terminal...\n ");
+    ROS_INFO("If calibration is done properly, X and Y buttons should correctly print out when pressed");
+    int c = getchar();
     int rc = 0;
 #   //check the first 50 event inputs to find the controller.
     for(auto i=0;i<50;i++){
