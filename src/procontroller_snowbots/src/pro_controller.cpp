@@ -1,14 +1,13 @@
 /*
  * Created By: Kevin Lin
  * Created On: February 29th, 2020
- * Description: The node that listens to switch pro controller and publishes twist messages
+ * Description: The node that listens to switch pro controller and publishes
+ * twist messages
  */
-
 
 #include "../include/ProController.h"
 
-
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     // Setup your ROS node
     std::string node_name = "pro_controller";
 

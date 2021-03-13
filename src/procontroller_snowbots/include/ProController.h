@@ -8,21 +8,21 @@
 #define PROCONTROLLER_SNOWBOTS_CONTROLLER_H
 
 #include <cstdio>
-#include <libevdev-1.0/libevdev/libevdev.h>
-#include <sys/fcntl.h>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <geometry_msgs/Twist.h>
+#include <iostream>
+#include <libevdev-1.0/libevdev/libevdev.h>
 #include <ros/ros.h>
+#include <sys/fcntl.h>
 #include <tuple>
 using namespace std;
 
 class ProController {
-public:
-    ProController(int argc, char **argv, std::string node_name);
+  public:
+    ProController(int argc, char** argv, std::string node_name);
 
-private:
+  private:
     void setup();
     void readInputs();
     void leftJoystickX(int value);      // ABS_X
@@ -54,7 +54,7 @@ private:
     double Z_SENSITIVITY = 1.0;
     double x;
     double z;
-    struct libevdev *dev = NULL;
+    struct libevdev* dev = NULL;
     enum Mode { wheels = 0, arm = 1 };
     Mode state;
     bool debug = false;
@@ -62,4 +62,4 @@ private:
     ros::Publisher pubarm;
 };
 
-#endif //PROCONTROLLER_SNOWBOTS_CONTROLLER_H
+#endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H
