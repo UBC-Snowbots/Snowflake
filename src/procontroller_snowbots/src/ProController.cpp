@@ -1,14 +1,14 @@
 /*
  * Created By: Kevin Lin
  * Created On: December 21st, 2019
- * Description: Uses Libevdev to turn Nintendo Switch Pro Controller left joystick inputs into a ROS Twist message
+ * Description: Uses Libevdev to turn Nintendo Switch Pro Controller left
+ * joystick inputs into a ROS Twist message
  */
-
 
 #include "../include/ProController.h"
 
 // Read the master documentation if there's any issues with this package
-ProController::ProController(int argc, char **argv, string node_name) {
+ProController::ProController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
     setup();
     ros::init(argc, argv, node_name);
