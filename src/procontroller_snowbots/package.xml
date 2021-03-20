@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>procontroller_snowbots</name>
+  <version>0.0.0</version>
+  <description>The procontroller_snowbots package</description>
+  <maintainer email="kevinlinxc@gmail.com">kevinlinxc</maintainer>
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>libevdev-dev</build_depend>
+  <build_depend>sb_utils</build_depend>
+  <build_export_depend>geometry_msgs</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <export>
+  </export>
+</package>

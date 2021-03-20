@@ -3,7 +3,7 @@
     <!-- Runs a rough approximation of the IGVC Basic Course in Gazebo -->    
 
     <!-- Start the world -->
-    <include file="$(find sb_gazebo)/launch/open_world.launch">
+    <include file="$(find sb_gazebo)/launch/gazebo_open_world.launch">
         <arg name="world" value="igvc.world"/>
         <arg name="x_start_coordinate" value="-1.63"/>
         <arg name="y_start_coordinate" value="-32"/>
