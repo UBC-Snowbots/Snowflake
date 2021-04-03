@@ -3,8 +3,8 @@
  * Created On: Oct 30th, 2020
  * Description: This node subscribes to a topic publishing Geometry Twist messages that indicate the direction to move the rover in,
  *              and publishes velocity values to the left and right wheels of the rover.
- *              The velocity of the left wheels is published to the topic ""/integration_node/lwheels_pub_topic""
- *              The velocity of the right wheels is published to the topic ""/integration_node/rwheels_pub_topic""
+ *              The velocity of the left wheels is published to the topic "/integration_node/lwheels_pub_topic"
+ *              The velocity of the right wheels is published to the topic "/integration_node/rwheels_pub_topic"
  */
 
 #include <IntegrationNode.h>
