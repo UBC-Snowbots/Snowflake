@@ -44,20 +44,29 @@ MyClass::MyClass(int argc, char **argv, std::string node_name, float dist, float
 void MyClass::subscriberCallBack(const geometry_msgs::Twist::ConstPtr& msg) {
     ROS_INFO("Received message");
 
+    /* This variable is created to avoid division by 0 error */
     float zero_threshold = 0.01;
 
+    /* Calculate the linear and angular velocities required by the Pro Controller */
     float linear_vel = maximum_speed * msg->linear.x;
     float angular_vel = msg->angular.z;
 
     float lwheel_vel, rwheel_vel;
 
+    /* 
+     * If the angular velocty is 0, then the rover moves straight 
+     * and we set the velocities of both of its wheels equal to the 
+     * linear velocity required by the Pro Controller
+     */
     if(abs(angular_vel) < zero_threshold) {
         lwheel_vel = linear_vel;
         rwheel_vel = linear_vel;
     }
     else {
+        /* Calculate the radius of curvature of required by Pro Controller */
         float radius_of_curvature = linear_vel/angular_vel;
 
+        /* Calculate the velocities of the left and right wheel according to the formula on README.md */
         rwheel_vel = angular_vel * (radius_of_curvature + distBetweenWheels/2);
         lwheel_vel = angular_vel * (radius_of_curvature - distBetweenWheels/2);
     }
@@ -65,11 +74,13 @@ void MyClass::subscriberCallBack(const geometry_msgs::Twist::ConstPtr& msg) {
     geometry_msgs::Twist lwheels_msg;
     geometry_msgs::Twist rwheels_msg;
 
+    /* Create Geometry Twist messages by assigning the velocities of the wheels as the linear.x component */
     lwheels_msg.linear.x = lwheel_vel;
     lwheels_msg.angular.z = 0.0;
     rwheels_msg.linear.x = rwheel_vel;
     rwheels_msg.angular.z = 0.0;
 
+    /* Publish the created Geometry Twist messages to their appropriate topics */
     lwheels_publisher.publish(lwheels_msg);
     rwheels_publisher.publish(rwheels_msg);
 
