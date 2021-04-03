@@ -1,10 +1,20 @@
 # Wheel Integration Package
-- This package is a sample package containing a lot of examples we can point to for basic ROS concepts.
-- This package contains a node which acts as a subscriber and a publisher, a common pattern used in most (if not all) ROS nodes.
+- This package is integrated the Pro Controller with the wheel motors
+-  This package contains a single note called integration_node.
 
 # Nodes
-## my_node
-- This is a sample node which appends an exclamation mark to messages it subscribes to
+## integration_node
+- Subscribes to the topic **"cmd_vel"** from where it reads Geometry Twist message from the Pro Controller
+- Publishes to the following topics:
+	- **"/integration_node/lwheels_pub_topic"** - The velocity of the left wheels is published to this topic as a Geomerty Twist Message
+	- **"/integration_node/rwheels_pub_topic"** - The velocity of the right wheels is published to this topic as a Geomerty Twist Message
+![enter image description here](https://lh6.googleusercontent.com/pqZWT7PUyWB1bvbRkHnybjhOJQO4qzinrbSh8bHsVkkyvRX7XVcmiDUwkOlwLDbqBqsSwCWaYsWGmObUXRMiR6bx4Tc4JB0v9Vz6JWNjg1lIxPyKDZ5OmNSItIDt6QcI7Q=w1280)
 
-### Params
-- character: The character appended to the message, defaults to "!"
+# Velocity Calculation
+![Illustration of Differential Drive](https://lh4.googleusercontent.com/TqfDBFzATE9TtIoKtKU0MUVGNphvDLySSMhwtvjxkst8QvyeYdZe19bDjR-qaVYC2cE42rRqZ-jlg7BV29CooRGWkpI6e7jqck8r2DoL59AfSa0Xr_KfzmqIKNWCurI2Ow=w1280)
+We must find V<sub>l</sub> and V<sub>r</sub> that correspond to the velocities of the left and right wheels of the rover, from &omega;.
+From circular motion, we know the follwing about speed $v$: $$v = \frac{2\pi R}{T}$$We also know that angular velocity $\omega  = \frac{2\pi}{T}$, which makes
+$$v=\omega R$$ So the Radius of Convergence $R$ can be found by $$R = \frac{v}{\omega}$$Since $v$ originates from the center of the rover, we know that $$V_l = \omega \Big(R- \frac{\text{wheel dist}}{2}\Big)$$ $$V_r = \omega \Big(R+ \frac{\text{wheel dist}}{2}\Big)$$The above two equations calculate the speed of the left and right wheels. Since the distance of left wheel from the Instantaneous Center of Curvature $(ICC)$ is $\Big(R-\frac{\text{wheel dist}}{2}\Big)$, the speed of the left wheel is $V_l = \omega \Big(R- \frac{\text{wheel dist}}{2}\Big)$. 
+Similarly, the distance of right wheel from the Instantaneous Center of Curvature $(ICC)$ is $\Big(R+\frac{\text{wheel dist}}{2}\Big)$; therefore its speed is $V_r = \omega \Big(R+ \frac{\text{wheel dist}}{2}\Big)$.
+
+These equations are used in the calculations done in the subscriberCallBack() function. 
