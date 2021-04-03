@@ -1,9 +1,10 @@
 /*
  * Created By: Vijeeth Vijhaipranith
  * Created On: Oct 30th, 2020
- * Description: An example node that subscribes to a topic publishing strings,
- *              and re-publishes everything it receives to another topic with
- *              a "!" at the end
+ * Description: This node subscribes to a topic publishing Geometry Twist messages that indicate the direction to move the rover in,
+ *              and publishes velocity values to the left and right wheels of the rover.
+ *              The velocity of the left wheels is published to the topic "lwheels_pub_topic"
+ *              The velocity of the right wheels is published to the topic "rwheels_pub_topic"
  */
 
 #include <IntegrationNode.h>
@@ -35,8 +36,8 @@ MyClass::MyClass(int argc, char **argv, std::string node_name, float dist, float
 
 /*
  * Requires:
- *      -1.0 <= linear.x 1.0
- *      -Z_SENSITIVITY <= angular.x Z_SENSITIVITY
+ *      -1.0 <= linear.x <= 1.0
+ *      -Z_SENSITIVITY <= angular.x <= Z_SENSITIVITY
  * Returns:
  *      Publishes the linear velocity of left and right wheel in a Twist message
  */
