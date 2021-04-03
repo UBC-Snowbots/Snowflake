@@ -35,6 +35,6 @@ Since <img src="https://render.githubusercontent.com/render/math?math=v"> origin
 
 The above two equations calculate the speed of the left and right wheels. Since the distance of left wheel from the Instantaneous Center of Curvature <img src="https://render.githubusercontent.com/render/math?math=ICC"> is <img src="https://render.githubusercontent.com/render/math?math=\Big(R-\frac{\text{wheel dist}}{2}\Big)">, the speed of the left wheel is <img src="https://render.githubusercontent.com/render/math?math=V_l = \omega \Big(R- \frac{\text{wheel dist}}{2}\Big))">. 
 
-Similarly, the distance of right wheel from the Instantaneous Center of Curvature <img src="https://render.githubusercontent.com/render/math?math=ICC"> is <img src="https://render.githubusercontent.com/render/math?math=\Big(R+\frac{\text{wheel dist}}{2}\Big)">; therefore its speed is <img src="https://render.githubusercontent.com/render/math?math=V_r = \omega \Big(R+ \frac{\text{wheel dist}}{2}\Big))">.
+Similarly, the distance of right wheel from the Instantaneous Center of Curvature <img src="https://render.githubusercontent.com/render/math?math=ICC"> is ![equation](https://latex.codecogs.com/gif.latex?\dpi{80}&space;\Big(R&space;&plus;&space;\frac{\text{wheel&space;dist}}{2}\Big)); therefore its speed is ![equation](https://latex.codecogs.com/gif.latex?\dpi{80}&space;V_r&space;=&space;\omega&space;\Big(R&plus;&space;\frac{\text{wheel&space;dist}}{2}\Big)).
 
 These equations are used in the calculations done in the ``subscriberCallBack()`` function. 
