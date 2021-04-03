@@ -7,11 +7,6 @@
 #include <IntegrationNode.h>
 #include <gtest/gtest.h>
 
-TEST(MyNode, addExclamationPoint){
-//    EXPECT_EQ("!", MyClass::addCharacterToString("", "!"));
-//    EXPECT_EQ("Hello!", MyClass::addCharacterToString("Hello", "!"));
-}
-
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
