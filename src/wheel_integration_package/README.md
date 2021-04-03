@@ -9,7 +9,8 @@
 	- **"/integration_node/lwheels_pub_topic"** - The velocity of the left wheels is published to this topic as a Geomerty Twist Message
 	- **"/integration_node/rwheels_pub_topic"** - The velocity of the right wheels is published to this topic as a Geomerty Twist Message
 
-![Illustration](/images/integration_node.jpg)
+![integration_node](https://user-images.githubusercontent.com/56468618/113475473-91135a00-9493-11eb-923b-db406d3fbfd6.jpg)
+
 
 # Velocity Calculation
 ![Illustration of Differential Drive](https://lh4.googleusercontent.com/TqfDBFzATE9TtIoKtKU0MUVGNphvDLySSMhwtvjxkst8QvyeYdZe19bDjR-qaVYC2cE42rRqZ-jlg7BV29CooRGWkpI6e7jqck8r2DoL59AfSa0Xr_KfzmqIKNWCurI2Ow=w1280)
