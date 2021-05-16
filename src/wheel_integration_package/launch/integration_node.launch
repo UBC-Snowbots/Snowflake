@@ -1,0 +1,4 @@
+<launch>
+    <node name="integration_node" pkg="wheel_integration_package" type="integration_node" output="screen">
+    </node>
+</launch>
