@@ -1,6 +1,6 @@
 # Wheel Integration Package
-- This package is integrated the Pro Controller with the wheel motors
--  This package contains a single note called integration_node.
+- This package integrates the Pro Controller with the wheel motors
+-  This package contains a single node called integration_node.
 
 # Nodes
 ## integration_node
