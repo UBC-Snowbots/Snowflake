@@ -3,7 +3,7 @@
 
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
-
+#include <phidget22.h>
 #include <string>
 
 class MoveMotor {
@@ -14,5 +14,13 @@ class MoveMotor {
 
 	ros::Subscriber my_subscriber;
 	ros::Publisher my_publisher;
+    PhidgetBLDCMotorHandle bldcMotor0;
+    PhidgetReturnCode ret;
+    PhidgetReturnCode errorCode;
+    PhidgetReturnCode res;
+    const char * errorString;
+    char errorDetail[100];
+    size_t errorDetailLen = 100;
+    void close();
 };
 #endif // _MOVE_MOTOR

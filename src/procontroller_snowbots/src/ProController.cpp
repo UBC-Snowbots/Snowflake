@@ -82,7 +82,7 @@ void ProController::readInputs() {
             // EV_SYN types are useless, ABS and KEY are useful (see .h file for
             // details)
             if (ev.type != EV_SYN) {
-                // use rosrun procontorller_snowbots pro_controller
+                // use rosrun procontroller_snowbots pro_controller
                 // _debug:="true"
                 if (debug) {
                     printControllerDebug(ev.type, ev.code, ev.value);
