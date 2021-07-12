@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <include file="./src/external_pkgs/realsense/realsense2_camera/launch/rs_camera.launch" />
+
+</launch>

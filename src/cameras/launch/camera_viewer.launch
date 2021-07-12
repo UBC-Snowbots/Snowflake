@@ -1,0 +1,19 @@
+<!-- This launch file might work for generic USB cameras, but for our zed camera it doesn't work and for our realsense camera there -->
+<!-- is another launch file that comes from the realsense2_camera package that is better. -->
+<!-- Run using "roslaunch cameras camera_viewer.launch videonum:=0" to use your webcam, see using "rosrun rqt_image_view
+rqt_image_view" and selecting /usb_cam/image_raw -->
+<launch>
+  <arg name="videonum" />
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video$(arg videonum)" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+  </node>
+  <node name="image_view" pkg="image_view" type="image_view" respawn="false" output="screen">
+    <remap from="image" to="/usb_cam$(arg videonum)/image_raw"/>
+    <param name="autosize" value="true" />
+  </node>
+</launch>
