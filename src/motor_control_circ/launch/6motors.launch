@@ -1,0 +1,30 @@
+<launch>
+    <!-- file uses left wheels as default, so right wheels need rempaping -->
+    <node name="move_motor_r0" pkg="motor_control" type="move_motor" output="screen"
+        args="0">
+        <remap from="/integration_node/lwheels_pub_topic" to="/integration_node/rwheels_pub_topic"/>
+    </node>
+
+    <node name="move_motor_r1" pkg="motor_control" type="move_motor" output="screen"
+        args="1">
+        <remap from="/integration_node/lwheels_pub_topic" to="/integration_node/rwheels_pub_topic"/>
+    </node>
+
+    <node name="move_motor_r2" pkg="motor_control" type="move_motor" output="screen"
+         args="2">
+         <remap from="/integration_node/lwheels_pub_topic" to="/integration_node/rwheels_pub_topic"/>
+    </node>
+
+    <node name="move_motor_l3" pkg="motor_control" type="move_motor" output="screen"
+        args="3">
+    </node>
+
+    <node name="move_motor_l4" pkg="motor_control" type="move_motor" output="screen"
+         args="4">
+    </node>
+
+    <node name="move_motor_l5" pkg="motor_control" type="move_motor" output="screen"
+         args="5">
+    </node>
+
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+    <node name="move_motor_r2" pkg="motor_control" type="move_motor" output="screen"
+          args="2">
+          <remap from="/integration_node/lwheels_pub_topic" to="/integration_node/rwheels_pub_topic"/>
+    </node>
+
+    <node name="move_motor_l3" pkg="motor_control" type="move_motor" output="screen"
+        args="3">
+    </node>
+</launch>

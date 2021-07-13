@@ -6,6 +6,6 @@ int main(int argc, char **argv) {
     MoveMotor controller(argc, argv, node_name);
 
     ros::spin();
-
+    controller.close()
     return 0;
 }

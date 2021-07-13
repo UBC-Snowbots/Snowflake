@@ -172,6 +172,7 @@ void ProController::leftJoystickX(int value) {
     } else {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
+        ROS_INFO("Left Joystick X event with value: %d\n", value);
         z = -(value - 128) / 128.0 * Z_SENSITIVITY;
     }
 }
@@ -183,6 +184,7 @@ void ProController::leftJoystickY(int value) {
     } else {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*X_SENSITIVITY
+        ROS_INFO("Left Joystick Y event with value: %d\n", value);
         x = (value - 128) / 128.0 * X_SENSITIVITY;
     }
 }
