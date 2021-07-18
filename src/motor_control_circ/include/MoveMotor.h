@@ -9,6 +9,7 @@
 class MoveMotor {
     public:
 	MoveMotor(int argc, char **argv, std::string node_name);
+    void close();
     private:
 	void callback(const geometry_msgs::Twist::ConstPtr& msg);
 
@@ -21,6 +22,6 @@ class MoveMotor {
     const char * errorString;
     char errorDetail[100];
     size_t errorDetailLen = 100;
-    void close();
+
 };
 #endif // _MOVE_MOTOR
