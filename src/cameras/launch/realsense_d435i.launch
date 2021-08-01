@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+      <arg name="camera" value="cam_2"/>
+      <arg name="serial_no" value="116622072291" />
+    </include>
+    <node name="viewer1" pkg="rqt_image_view" type="rqt_image_view" />
+
+</launch>

@@ -2,13 +2,11 @@
     local-name: src/external_pkgs/nmea_navsat_driver
     uri: https://github.com/UBC-Snowbots/nmea_navsat_driver.git
 - git:
-    local-name: src/external_pkgs/realsense
-    uri: https://github.com/intel-ros/realsense.git
-    version: 2.0.4
+    local-name: src/external_pkgs/realsense-ros
+    uri: https://github.com/IntelRealSense/realsense-ros.git
 - git:
     local-name: external_libs/librealsense
     uri: https://github.com/IntelRealsense/librealsense.git
-    version: v2.16.0
 - git:
     local-name: src/external_pkgs/ros_arduino_bridge
     uri: https://github.com/UBC-Snowbots/ros_arduino_bridge.git
