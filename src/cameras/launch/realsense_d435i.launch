@@ -6,6 +6,6 @@
       <arg name="camera" value="cam_2"/>
       <arg name="serial_no" value="116622072291" />
     </include>
-    <node name="viewer1" pkg="rqt_image_view" type="rqt_image_view" />
+    <node name="viewer1" pkg="rqt_image_view" type="rqt_image_view" args="/cam_2/color/image_raw"/>
 
 </launch>

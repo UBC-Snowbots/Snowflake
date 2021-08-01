@@ -15,12 +15,5 @@ find_package(sb_utils REQUIRED)
 
 
 catkin_package(
-        INCLUDE_DIRS include
         CATKIN_DEPENDS roscpp geometry_msgs
-)
-
-include_directories(
-        ${catkin_INCLUDE_DIRS}
-        ${sb_utils_INCLUDE_DIRS}
-        ./include
 )
