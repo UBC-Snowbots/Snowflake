@@ -1,3 +1,12 @@
+/*
+ * Created By: Ihsan Olawale, Kevin Lin
+ * Created On: August 1st, 2021
+ * Description: A node that connects reads input from integration_node and then
+ *              publishes to a Phidgets BLDC motor controller to spin the motor.
+ *              The motor is specified the first arg passed, as seen in the
+ *              launch files.
+ */
+
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 
