@@ -2,9 +2,11 @@
  * Created By: Ihsan Olawale, Kevin Lin
  * Created On: August 1st, 2021
  * Description: A node that connects reads input from integration_node and then
- *              publishes to a Phidgets BLDC motor controller to spin the motor.
- *              The motor is specified the first arg passed, as seen in the
- *              launch files.
+ *              publishes to Phidgets BLDC Motors. Can be tested by connecting
+ *              all motors, running Pro Controller launch file, and then
+ *              motors_and_integration.launch to launch this node and
+ *              wheel_integration_package to translate from the controller to
+ *              this node. Reference master documentation for more details.
  */
 
 #include <geometry_msgs/Twist.h>
@@ -54,17 +56,16 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
 }
 
 void MoveMotor::left_callback(const geometry_msgs::Twist::ConstPtr& msg) {
-    ROS_INFO("Received Left Twist");
-    ROS_INFO("linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
+    ROS_INFO("left: linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
     current_motors = left_motors;
     float velocity = msg->linear.x;
     run_motors(velocity);
 }
 
 void MoveMotor::right_callback(const geometry_msgs::Twist::ConstPtr& msg) {
-    ROS_INFO("Received Right Twist");
-    ROS_INFO("linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
+    ROS_INFO("right: linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
     current_motors = right_motors;
+    // negative because the motors are on the opposite side
     float velocity = -1 * msg->linear.x;
     run_motors(velocity);
 }
