@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
         roscpp
         geometry_msgs
         )
-find_package(sb_utils REQUIRED)
 
 
 catkin_package(
