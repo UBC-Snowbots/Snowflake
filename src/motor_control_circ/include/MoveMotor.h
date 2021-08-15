@@ -30,13 +30,15 @@ class MoveMotor {
 
   private:
     /**
-     * Callback function for when a message intended for the left motors is received
+     * Callback function for when a message intended for the left motors is
+     * received
      *
      * @param msg the Twist message received in the callback
      */
     void left_callback(const geometry_msgs::Twist::ConstPtr& msg);
     /**
-     * Callback function for when a message intended for the right motors is received
+     * Callback function for when a message intended for the right motors is
+     * received
      *
      * @param msg the Twist message received in the callback
      */
