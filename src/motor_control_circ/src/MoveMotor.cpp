@@ -47,7 +47,7 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
             ROS_INFO("Attached successfully for port %d", i);
         }
     }
-    left_subscriber                   = nh.subscribe(
+    left_subscriber = nh.subscribe(
     left_subscribe_topic, queue_size, &MoveMotor::left_callback, this);
     right_subscriber = nh.subscribe(
     right_subscribe_topic, queue_size, &MoveMotor::right_callback, this);
