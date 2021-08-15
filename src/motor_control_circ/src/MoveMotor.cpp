@@ -20,7 +20,7 @@ MoveMotor::MoveMotor(int argc, char **argv, std::string node_name) {
     ros::NodeHandle private_nh("~");
 
     std::string left_subscribe_topic = "/integration_node/lwheels_pub_topic";
-    std::string right_subscribe_topic = "/integration_node/rwheels_pubc_topic";
+    std::string right_subscribe_topic = "/integration_node/rwheels_pub_topic";
     int queue_size = 1000;
     left_subscriber = nh.subscribe(left_subscribe_topic, queue_size, &MoveMotor::left_callback, this);
     right_subscriber = nh.subscribe(right_subscribe_topic, queue_size, &MoveMotor::right_callback, this);
@@ -56,7 +56,7 @@ void MoveMotor::right_callback(const geometry_msgs::Twist::ConstPtr& msg) {
     ROS_INFO("Received Right Twist");
     ROS_INFO("linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
     current_motors = right_motors;
-    float velocity = msg->linear.x;
+    float velocity = -1 * msg->linear.x;
     run_motors(velocity);
 }
 
