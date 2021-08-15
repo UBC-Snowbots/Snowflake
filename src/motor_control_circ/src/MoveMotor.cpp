@@ -26,7 +26,7 @@ MoveMotor::MoveMotor(int argc, char **argv, std::string node_name) {
     right_subscriber = nh.subscribe(right_subscribe_topic, queue_size, &MoveMotor::right_callback, this);
     //Create your Phidget channels
     for (int i = 0; i < NUM_MOTORS; i++){
-        PhidgetBLDC_Motor_create(&motors[i])
+        PhidgetBLDCMotor_create(&motors[i]);
         ret = Phidget_setHubPort((PhidgetHandle)motors[i], i);
         if (ret != EPHIDGET_OK) {
             Phidget_getLastError(&errorCode, &errorString, errorDetail, &errorDetailLen);
@@ -36,10 +36,10 @@ MoveMotor::MoveMotor(int argc, char **argv, std::string node_name) {
         ret = Phidget_openWaitForAttachment((PhidgetHandle)motors[i], 5000);
         if (ret != EPHIDGET_OK) {
             Phidget_getLastError(&errorCode, &errorString, errorDetail, &errorDetailLen);
-            printf("Error at attachment (%d) for port %d: %s, %s ", errorCode, i, errorString);
+            printf("Error at attachment (%d) for port %d:, %s ", errorCode, i, errorString);
             return;
         } else {
-            ROS_INFO("Attached successfully for port %d", hubport);
+            ROS_INFO("Attached successfully for port %d", i);
         }
     }
 }
@@ -47,28 +47,33 @@ MoveMotor::MoveMotor(int argc, char **argv, std::string node_name) {
 void MoveMotor::left_callback(const geometry_msgs::Twist::ConstPtr& msg) {
     ROS_INFO("Received Left Twist");
     ROS_INFO("linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
-    PhidgetLog_enable(PHIDGET_LOG_INFO, "phidgetlog.log");
-
-    ret = PhidgetBLDCMotor_setTargetVelocity(bldcMotor0, msg->linear.x);
-    if (ret != EPHIDGET_OK) {
-        Phidget_getLastError(&errorCode, &errorString, errorDetail, &errorDetailLen);
-        printf("Error at set target (%d): %s", errorCode, errorString);
-        return;
-    }
+    current_motors = left_motors;
+    float velocity = msg->linear.x;
+    run_motors(velocity);
 }
 
 void MoveMotor::right_callback(const geometry_msgs::Twist::ConstPtr& msg) {
-    ROS_INFO("Received Left Twist");
+    ROS_INFO("Received Right Twist");
     ROS_INFO("linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
-    PhidgetLog_enable(PHIDGET_LOG_INFO, "phidgetlog.log");
+    current_motors = right_motors;
+    float velocity = msg->linear.x;
+    run_motors(velocity);
+}
 
-    ret = PhidgetBLDCMotor_setTargetVelocity(bldcMotor0, msg->linear.x);
-    if (ret != EPHIDGET_OK) {
-        Phidget_getLastError(&errorCode, &errorString, errorDetail, &errorDetailLen);
-        printf("Error at set target (%d): %s", errorCode, errorString);
-        return;
+void MoveMotor::run_motors(float velocity){
+    PhidgetLog_enable(PHIDGET_LOG_INFO, "phidgetlog.log");
+    for (int i = 0; i < NUM_MOTORS/2; i++){
+        int motor_index = current_motors[i];
+        ret = PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity);
+        if (ret != EPHIDGET_OK) {
+            Phidget_getLastError(&errorCode, &errorString, errorDetail, &errorDetailLen);
+            printf("Error at set target velocity (%d) for port %d: %s", errorCode, motor_index, errorString);
+            return;
+        }
     }
 }
+
+
 void MoveMotor::close(){
     for (int i = 0; i < NUM_MOTORS; i++){
         ret = Phidget_close((PhidgetHandle)motors[i]);
