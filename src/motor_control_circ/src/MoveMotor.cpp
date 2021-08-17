@@ -32,7 +32,7 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
         if (ret != EPHIDGET_OK) {
             Phidget_getLastError(
             &errorCode, &errorString, errorDetail, &errorDetailLen);
-            printf(
+            ROS_ERROR(
             "Error at set hub (%d) for port %d: %s", errorCode, i, errorString);
             return;
         }
@@ -40,7 +40,7 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
         if (ret != EPHIDGET_OK) {
             Phidget_getLastError(
             &errorCode, &errorString, errorDetail, &errorDetailLen);
-            printf("Error at attachment (%d) for port %d:, %s ",
+            ROS_ERROR("Error at attachment (%d) for port %d:, %s ",
                    errorCode,
                    i,
                    errorString);
@@ -60,7 +60,7 @@ void MoveMotor::left_callback(const geometry_msgs::Twist::ConstPtr& msg) {
     "left: linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
     current_motors = left_motors;
     float velocity = msg->linear.x;
-    run_motors(velocity);
+    run_motors(left_motors, velocity);
 }
 
 void MoveMotor::right_callback(const geometry_msgs::Twist::ConstPtr& msg) {
@@ -69,18 +69,18 @@ void MoveMotor::right_callback(const geometry_msgs::Twist::ConstPtr& msg) {
     current_motors = right_motors;
     // negative because the motors are on the opposite side
     float velocity = -1 * msg->linear.x;
-    run_motors(velocity);
+    run_motors(right_motors, velocity);
 }
 
-void MoveMotor::run_motors(float velocity) {
+void MoveMotor::run_motors(vector<int> selected_motors, float velocity) {
     PhidgetLog_enable(PHIDGET_LOG_INFO, "phidgetlog.log");
     for (int i = 0; i < NUM_MOTORS / 2; i++) {
-        int motor_index = current_motors[i];
+        int motor_index = selected_motors[i];
         ret = PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity);
         if (ret != EPHIDGET_OK) {
             Phidget_getLastError(
             &errorCode, &errorString, errorDetail, &errorDetailLen);
-            printf("Error at set target velocity (%d) for port %d: %s",
+            ROS_ERROR("Error at set target velocity (%d) for port %d: %s",
                    errorCode,
                    motor_index,
                    errorString);
@@ -95,7 +95,7 @@ void MoveMotor::close() {
         if (ret != EPHIDGET_OK) {
             Phidget_getLastError(
             &errorCode, &errorString, errorDetail, &errorDetailLen);
-            printf(
+            ROS_ERROR(
             "Error on close (%d) for port %d: %s", errorCode, i, errorString);
             return;
         }

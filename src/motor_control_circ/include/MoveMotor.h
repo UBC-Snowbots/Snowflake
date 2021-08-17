@@ -50,23 +50,17 @@ class MoveMotor {
      *
      * @param velocity the desired speed, which will be passed from a callback
      */
-    void run_motors(float velocity);
+    void run_motors(vector<int> selected_motors, float velocity);
 
     ros::Subscriber left_subscriber;
     ros::Subscriber right_subscriber;
     ros::Publisher my_publisher;
     const int static NUM_MOTORS = 6;
-    PhidgetBLDCMotorHandle bldcMotor0;
-    PhidgetBLDCMotorHandle bldcMotor1;
-    PhidgetBLDCMotorHandle bldcMotor2;
-    PhidgetBLDCMotorHandle bldcMotor3;
-    PhidgetBLDCMotorHandle bldcMotor4;
-    PhidgetBLDCMotorHandle bldcMotor5;
+    PhidgetBLDCMotorHandle bldcMotor0, bldcMotor1, bldcMotor2, bldcMotor3, bldcMotor4, bldcMotor5;
     std::vector<PhidgetBLDCMotorHandle> motors{
     bldcMotor0, bldcMotor1, bldcMotor2, bldcMotor3, bldcMotor4, bldcMotor5};
-    std::vector<int> right_motors{0, 1, 2};
-    std::vector<int> left_motors{3, 4, 5};
-    std::vector<int> current_motors = right_motors;
+    const std::vector<int> right_motors{0, 1, 2};
+    const std::vector<int> left_motors{3, 4, 5};
     PhidgetReturnCode ret;
     PhidgetReturnCode errorCode;
     PhidgetReturnCode res;
