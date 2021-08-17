@@ -41,9 +41,9 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
             Phidget_getLastError(
             &errorCode, &errorString, errorDetail, &errorDetailLen);
             ROS_ERROR("Error at attachment (%d) for port %d:, %s ",
-                   errorCode,
-                   i,
-                   errorString);
+                      errorCode,
+                      i,
+                      errorString);
             return;
         } else {
             ROS_INFO("Attached successfully for port %d", i);
@@ -81,9 +81,9 @@ void MoveMotor::run_motors(vector<int> selected_motors, float velocity) {
             Phidget_getLastError(
             &errorCode, &errorString, errorDetail, &errorDetailLen);
             ROS_ERROR("Error at set target velocity (%d) for port %d: %s",
-                   errorCode,
-                   motor_index,
-                   errorString);
+                      errorCode,
+                      motor_index,
+                      errorString);
             return;
         }
     }

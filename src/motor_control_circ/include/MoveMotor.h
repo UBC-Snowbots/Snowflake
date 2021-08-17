@@ -56,7 +56,8 @@ class MoveMotor {
     ros::Subscriber right_subscriber;
     ros::Publisher my_publisher;
     const int static NUM_MOTORS = 6;
-    PhidgetBLDCMotorHandle bldcMotor0, bldcMotor1, bldcMotor2, bldcMotor3, bldcMotor4, bldcMotor5;
+    PhidgetBLDCMotorHandle bldcMotor0, bldcMotor1, bldcMotor2, bldcMotor3,
+    bldcMotor4, bldcMotor5;
     std::vector<PhidgetBLDCMotorHandle> motors{
     bldcMotor0, bldcMotor1, bldcMotor2, bldcMotor3, bldcMotor4, bldcMotor5};
     const std::vector<int> right_motors{0, 1, 2};
