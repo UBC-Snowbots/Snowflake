@@ -1,7 +1,7 @@
 /*
  * Created By: Adam Nguyen
  * Created On: August 21st, 2021
- * Snowbot UI
+ * Snowbots UI
  */
 
 #include <QtGui>

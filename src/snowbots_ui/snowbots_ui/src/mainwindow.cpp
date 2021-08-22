@@ -1,7 +1,7 @@
 /*
  * Created By: Adam Nguyen
  * Created On: August 21st, 2021
- * Snowbot UI
+ * Snowbots UI
  */
 
 #include "mainwindow.h"
@@ -32,12 +32,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //UI
 
-    //Snowbot Logo
-    QPixmap pixmap("./src/snowbot_ui/resources/snowbot2.png");
+    //Snowbots Logo
+    QPixmap pixmap("./src/snowbots_ui/resources/snowbot2.png");
     ui->label_5->setPixmap(pixmap);
     ui->label_5->show();
     ui->label_5->setScaledContents(true);
-    //qDebug() << "Current dir:" << QDir::currentPath();
+    qDebug() << "Current dir:" << QDir::currentPath();
 
 }
 MainWindow::~MainWindow()
@@ -48,8 +48,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::twist_values()
 {
-    ui->left_lcd->display(twist_message.linear.x);
-    ui->right_lcd->display(twist_message.angular.z);
+    ui->left_lcd->display(twist_message_left.linear.x);
+    ui->right_lcd->display(twist_message_right.linear.x);
+    ui->angular_lcd->display(twist_message_controller.angular.z);
+    ui->linear_lcd->display(twist_message_controller.linear.x);
     ros_f->twist_subscriber();
 }
 

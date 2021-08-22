@@ -3,7 +3,7 @@
 ##############################################################################
 
 cmake_minimum_required(VERSION 2.8.0)
-project(snowbot_ui)
+project(snowbots_ui)
 
 set(CMAKE_AUTOUIC ON)
 ##############################################################################
@@ -63,8 +63,8 @@ set(QT_SOURCES
 ##############################################################################
 # Binaries
 ##############################################################################
-add_executable(snowbot_ui ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
-target_link_libraries(snowbot_ui ${QT_LIBRARIES} ${catkin_LIBRARIES}
+add_executable(snowbots_ui ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+target_link_libraries(snowbots_ui ${QT_LIBRARIES} ${catkin_LIBRARIES}
         Qt5::Core     Qt5::Widgets)
-install(TARGETS snowbot_ui RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+install(TARGETS snowbots_ui RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
