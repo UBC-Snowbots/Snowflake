@@ -13,10 +13,10 @@
 #include <ros/ros.h>
 
 #include <MoveMotor.h>
+#include <boost/bind.hpp>
+#include <cmath>
 #include <string>
 #include <unistd.h>
-#include <cmath>
-#include <boost/bind.hpp>
 
 MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
     ros::init(argc, argv, node_name);
@@ -51,10 +51,15 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
             ROS_INFO("Attached successfully for port %d", i);
         }
     }
-    left_subscriber = nh.subscribe<geometry_msgs::Twist>(left_subscribe_topic, queue_size, boost::bind(&MoveMotor::callback, this, _1, true));
-    right_subscriber = nh.subscribe<geometry_msgs::Twist>(right_subscribe_topic, queue_size, boost::bind(&MoveMotor::callback, this, _1, false));
+    left_subscriber = nh.subscribe<geometry_msgs::Twist>(
+    left_subscribe_topic,
+    queue_size,
+    boost::bind(&MoveMotor::callback, this, _1, true));
+    right_subscriber = nh.subscribe<geometry_msgs::Twist>(
+    right_subscribe_topic,
+    queue_size,
+    boost::bind(&MoveMotor::callback, this, _1, false));
 }
-
 
 void MoveMotor::callback(const geometry_msgs::Twist::ConstPtr& msg, bool left) {
     float velocity = msg->linear.x;
@@ -67,8 +72,9 @@ void MoveMotor::callback(const geometry_msgs::Twist::ConstPtr& msg, bool left) {
 
 void MoveMotor::run_motors(std::vector<int> selected_motors, float velocity) {
     PhidgetLog_enable(PHIDGET_LOG_INFO, "phidgetlog.log");
-    if (velocity > 1) { velocity = 1.0; }
-    else if (velocity < -1) {
+    if (velocity > 1) {
+        velocity = 1.0;
+    } else if (velocity < -1) {
         velocity = -1.0;
     }
     for (int i = 0; i < NUM_MOTORS / 2; i++) {

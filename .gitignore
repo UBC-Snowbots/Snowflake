@@ -29,3 +29,4 @@ external_libs/
 src/external_pkgs/
 src/mapping_urc/multi_resolution_graph
 /.project
+phidgetlog.log
