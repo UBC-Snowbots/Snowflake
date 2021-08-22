@@ -50,7 +50,7 @@ class MoveMotor {
      *
      * @param velocity the desired speed, which will be passed from a callback
      */
-    void run_motors(vector<int> selected_motors, float velocity);
+    void run_motors(std::vector<int> selected_motors, float velocity);
 
     ros::Subscriber left_subscriber;
     ros::Subscriber right_subscriber;

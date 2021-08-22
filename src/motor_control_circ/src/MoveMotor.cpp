@@ -58,7 +58,6 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
 void MoveMotor::left_callback(const geometry_msgs::Twist::ConstPtr& msg) {
     ROS_INFO(
     "left: linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
-    current_motors = left_motors;
     float velocity = msg->linear.x;
     run_motors(left_motors, velocity);
 }
@@ -66,13 +65,12 @@ void MoveMotor::left_callback(const geometry_msgs::Twist::ConstPtr& msg) {
 void MoveMotor::right_callback(const geometry_msgs::Twist::ConstPtr& msg) {
     ROS_INFO(
     "right: linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
-    current_motors = right_motors;
     // negative because the motors are on the opposite side
     float velocity = -1 * msg->linear.x;
     run_motors(right_motors, velocity);
 }
 
-void MoveMotor::run_motors(vector<int> selected_motors, float velocity) {
+void MoveMotor::run_motors(std::vector<int> selected_motors, float velocity) {
     PhidgetLog_enable(PHIDGET_LOG_INFO, "phidgetlog.log");
     for (int i = 0; i < NUM_MOTORS / 2; i++) {
         int motor_index = selected_motors[i];
