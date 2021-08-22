@@ -7,19 +7,19 @@ dist: bionic
 
 # install all dependencies necessary to build our project
 install:
-  # $TRAVIS_BUILD_DIR is where our repo is cloned
-  - cd $TRAVIS_BUILD_DIR
-  - ./setup_scripts/install_dependencies.sh
+        # $TRAVIS_BUILD_DIR is where our repo is cloned
+        - cd $TRAVIS_BUILD_DIR
+        - ./setup_scripts/install_dependencies.sh
 
 # compile and run tests  
 script:
-  # setup ROS
-  - source /opt/ros/melodic/setup.bash
-  # create workspace
-  - catkin_make
-  # setup catkin path variables
-  - source devel/setup.bash
-  # run tests and aggregate it to catkin_test_results as run_tests returns 0 (successful) even when tests fail
-  - catkin_make run_tests && catkin_test_results --verbose
-  # run clag format test
-  - ./travis_ci.sh
+        # setup ROS
+        - source /opt/ros/melodic/setup.bash
+        # create workspace
+        - catkin_make
+        # setup catkin path variables
+        - source devel/setup.bash
+        # run tests and aggregate it to catkin_test_results as run_tests returns 0 (successful) even when tests fail
+        - catkin_make run_tests && catkin_test_results --verbose
+        # run clag format test
+        - ./travis_ci.sh
