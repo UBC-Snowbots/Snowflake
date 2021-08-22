@@ -1,6 +1,8 @@
 # Snowbot_UI
 This is a UI package built for the UBC Snowbot Team
 
+![alt text](https://github.com/adamsnguyen/Snowflake/blob/master/src/snowbot_ui/resources/demo.png?raw=true)
+
 
 ## Installation
 ### Install qt build for ROS Melodic.
