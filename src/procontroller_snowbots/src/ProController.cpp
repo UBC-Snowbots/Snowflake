@@ -22,8 +22,8 @@ ProController::ProController(int argc, char** argv, string node_name) {
     if (private_nh.param<bool>("debug", debug, false)) {
         ROS_INFO("Debug mode %s", (debug) ? "on" : "off");
     }
-    pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1000);
-    pubarm  = private_nh.advertise<geometry_msgs::Twist>("/cmd_arm", 1000);
+    pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
+    pubarm  = private_nh.advertise<geometry_msgs::Twist>("/cmd_arm", 1);
     ROS_INFO("Preparing to read inputs...\n");
     state = Mode::wheels;
     printState();
@@ -167,7 +167,7 @@ void ProController::publishArmXZ(double x_new,
 
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
-    if (value > 120 && value < 135) {
+    if (value > 115 && value < 135) {
         z = 0;
     } else {
         // 128 is the center, so this normalizes the result to
@@ -179,7 +179,7 @@ void ProController::leftJoystickX(int value) {
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
-    if (value > 120 && value < 135) {
+    if (value > 115 && value < 135) {
         x = 0;
     } else {
         // 128 is the center, so this normalizes the result to

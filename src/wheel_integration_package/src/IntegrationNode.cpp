@@ -25,7 +25,7 @@ int argc, char** argv, std::string node_name, float dist, float max_speed) {
 
     // Setup Subscriber(s)
     std::string topic_to_subscribe_to = "cmd_vel";
-    int queue_size                    = 10;
+    int queue_size                    = 1;
     my_subscriber                     = nh.subscribe(
     topic_to_subscribe_to, queue_size, &MyClass::subscriberCallBack, this);
 

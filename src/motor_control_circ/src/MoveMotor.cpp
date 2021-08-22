@@ -15,6 +15,8 @@
 #include <MoveMotor.h>
 #include <string>
 #include <unistd.h>
+#include <cmath>
+#include <boost/bind.hpp>
 
 MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
     ros::init(argc, argv, node_name);
@@ -23,7 +25,7 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
 
     std::string left_subscribe_topic  = "/integration_node/lwheels_pub_topic";
     std::string right_subscribe_topic = "/integration_node/rwheels_pub_topic";
-    int queue_size                    = 1000;
+    int queue_size                    = 1;
 
     // Create your Phidget channels
     for (int i = 0; i < NUM_MOTORS; i++) {
@@ -49,29 +51,26 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
             ROS_INFO("Attached successfully for port %d", i);
         }
     }
-    left_subscriber = nh.subscribe(
-    left_subscribe_topic, queue_size, &MoveMotor::left_callback, this);
-    right_subscriber = nh.subscribe(
-    right_subscribe_topic, queue_size, &MoveMotor::right_callback, this);
+    left_subscriber = nh.subscribe<geometry_msgs::Twist>(left_subscribe_topic, queue_size, boost::bind(&MoveMotor::callback, this, _1, true));
+    right_subscriber = nh.subscribe<geometry_msgs::Twist>(right_subscribe_topic, queue_size, boost::bind(&MoveMotor::callback, this, _1, false));
 }
 
-void MoveMotor::left_callback(const geometry_msgs::Twist::ConstPtr& msg) {
-    ROS_INFO(
-    "left: linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
+
+void MoveMotor::callback(const geometry_msgs::Twist::ConstPtr& msg, bool left) {
     float velocity = msg->linear.x;
-    run_motors(left_motors, velocity);
-}
-
-void MoveMotor::right_callback(const geometry_msgs::Twist::ConstPtr& msg) {
-    ROS_INFO(
-    "right: linear.x: %.2f\nangular.z: %.2f", msg->linear.x, msg->angular.z);
-    // negative because the motors are on the opposite side
-    float velocity = -1 * msg->linear.x;
-    run_motors(right_motors, velocity);
+    if (left) {
+        run_motors(left_motors, velocity);
+    } else {
+        run_motors(right_motors, velocity);
+    }
 }
 
 void MoveMotor::run_motors(std::vector<int> selected_motors, float velocity) {
     PhidgetLog_enable(PHIDGET_LOG_INFO, "phidgetlog.log");
+    if (velocity > 1) { velocity = 1.0; }
+    else if (velocity < -1) {
+        velocity = -1.0;
+    }
     for (int i = 0; i < NUM_MOTORS / 2; i++) {
         int motor_index = selected_motors[i];
         ret = PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity);

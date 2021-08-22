@@ -23,6 +23,7 @@ class MoveMotor {
      * @param node_name the name of the node
      */
     MoveMotor(int argc, char** argv, std::string node_name);
+
     /**
      * Function to close all Phidgets motors
      */
@@ -30,19 +31,12 @@ class MoveMotor {
 
   private:
     /**
-     * Callback function for when a message intended for the left motors is
+     * Callback function for when a message intended for the motors is
      * received
      *
      * @param msg the Twist message received in the callback
      */
-    void left_callback(const geometry_msgs::Twist::ConstPtr& msg);
-    /**
-     * Callback function for when a message intended for the right motors is
-     * received
-     *
-     * @param msg the Twist message received in the callback
-     */
-    void right_callback(const geometry_msgs::Twist::ConstPtr& msg);
+    void callback(const geometry_msgs::Twist::ConstPtr& msg, bool left);
 
     /**
      * Helper functions to run multiple motors on the same side at once with
