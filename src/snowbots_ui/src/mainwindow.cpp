@@ -4,7 +4,7 @@
  * Snowbots UI
  */
 
-#include "mainwindow.h"
+#include "../include/mainwindow.h"
 #include "ui_mainwindow.h"
 
 //QT
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     timer->start(500);
 
     //ROS
-    ros_f = new _Ros();
+    ros_f = new RosIntegration();
     qDebug() << "Constructor OK";
 
     //UI

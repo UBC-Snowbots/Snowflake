@@ -12,7 +12,7 @@
 
 //ros
 #include "ros/ros.h"
-#include "../src/ROS_src/_ros.h"
+#include "RosIntegration.h"
 namespace Ui {
 class MainWindow;
 }
@@ -34,7 +34,7 @@ public Q_SLOTS:
 
 private:
     Ui::MainWindow *ui;
-    _Ros* ros_f;
+    RosIntegration* ros_f;
     QTimer* timer;
 
 

@@ -7,7 +7,7 @@
 #include <QtGui>
 #include <QApplication>
 #include "ros/ros.h"
-#include "mainwindow.h"
+#include "../include/mainwindow.h"
 
 
 int main(int argc, char **argv) {

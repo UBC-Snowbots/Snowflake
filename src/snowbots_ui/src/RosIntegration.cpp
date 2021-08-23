@@ -4,14 +4,13 @@
  * Snowbots UI
  */
 
-#include "_ros.h"
-#include "std_msgs/UInt16.h"
+#include "../include/RosIntegration.h"
 
-_Ros::_Ros()
+RosIntegration::RosIntegration()
 {
     n = new ros::NodeHandle();
 }
-_Ros::~_Ros()
+RosIntegration::~RosIntegration()
 {
     ros::Duration(0.1).sleep();
     ros::spinOnce();

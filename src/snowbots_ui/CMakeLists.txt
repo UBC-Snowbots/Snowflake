@@ -48,15 +48,15 @@ set(QT_SOURCES
 #Main Window
     src/main.cpp
     src/mainwindow.cpp
-    src/mainwindow.h
+    include/mainwindow.h
     src/mainwindow.ui
 #Dialog Window
     #src/Manual_Window/manual_window.cpp
     #src/Manual_Window/manual_window.h
     #src/Manual_Window/manual_window.ui
  #ROS SRC
-    src/ROS_src/_ros.h
-    src/ROS_src/_ros.cpp
+    include/RosIntegration.h
+    src/RosIntegration.cpp
 
     )
 

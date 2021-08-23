@@ -1,27 +1,25 @@
 /*
  * Created By: Adam Nguyen
  * Created On: August 21st, 2021
- * Snowbot UI
+ * Snowbots UI
  */
 
-#ifndef _ROS_H
-#define _ROS_H
+#ifndef RosIntegration_H
+#define RosIntegration_H
 #include <string>
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
-#include "QDebug"
-#include "std_msgs/Int32.h"
 
 
 static geometry_msgs::Twist twist_message_controller;
 static geometry_msgs::Twist twist_message_left;
 static geometry_msgs::Twist twist_message_right;
 
-class _Ros
+class RosIntegration
 {
 public:
-    _Ros();
-    ~_Ros();
+    RosIntegration();
+    ~RosIntegration();
 
     //twist topic
 
@@ -53,13 +51,10 @@ private:
 
     ros::NodeHandle *n;
 
-    //cmd_vel topic
-    double linear_x;
-
     //twist topics
     ros::Subscriber twist_controller_sub;
     ros::Subscriber twist_left_sub;
     ros::Subscriber twist_right_sub;
 };
 
-#endif // _ROS_H
+#endif // RosIntegration_H
