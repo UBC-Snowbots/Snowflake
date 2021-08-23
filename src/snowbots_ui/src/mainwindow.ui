@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>709</width>
+    <width>746</width>
     <height>688</height>
    </rect>
   </property>
@@ -27,7 +27,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../resources/snowbot2.png</pixmap>
+     <pixmap>../resources/snowbot2.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -111,10 +111,10 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>100</x>
       <y>350</y>
       <width>408</width>
       <height>214</height>
@@ -205,7 +205,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>709</width>
+     <width>746</width>
      <height>22</height>
     </rect>
    </property>

@@ -11,7 +11,7 @@ set(CMAKE_AUTOUIC ON)
 ##############################################################################
 
 # qt_build provides the qt cmake glue, roscpp the comms for a default talker
-find_package(catkin REQUIRED COMPONENTS qt_build roscpp) 
+find_package(catkin REQUIRED COMPONENTS qt_build roscpp std_msgs geometry_msgs) 
 
 include_directories(${catkin_INCLUDE_DIRS})
 # Use this to define what the package will export (e.g. libs, headers).
@@ -42,6 +42,7 @@ include_directories(
     ${Qt5Core_INCLUDE_DIRS}
     ${Qt5Gui_INCLUDE_DIRS}
     ${Qt5Widgets_INCLUDE_DIRS}
+    ${catkin_INCLUDE_DIRS}
     )
 
 set(QT_SOURCES
@@ -64,7 +65,11 @@ set(QT_SOURCES
 # Binaries
 ##############################################################################
 add_executable(snowbots_ui ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+add_executable(ui_tester src/ui_tester.cpp)
 target_link_libraries(snowbots_ui ${QT_LIBRARIES} ${catkin_LIBRARIES}
         Qt5::Core     Qt5::Widgets)
+target_link_libraries(ui_tester
+   ${catkin_LIBRARIES}
+ )
 install(TARGETS snowbots_ui RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 

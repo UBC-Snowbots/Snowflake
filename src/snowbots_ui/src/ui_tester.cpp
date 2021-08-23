@@ -33,12 +33,13 @@ int main(int argc, char **argv)
 	//Random x value between -2 and 2
 	msg.linear.x= 4*double(rand())/double(RAND_MAX)-2;
 
-	//Random y value between -3 and 3
+	//Random z value between -3 and 3
 	msg.angular.z=6*double(rand())/double(RAND_MAX)-3;
+
 	//Publish the message
 	pub.publish(msg);
 
-	//Delays untill it is time to send another message
+	//Delays until it is time to send another message
 	rate.sleep();
   }
 
