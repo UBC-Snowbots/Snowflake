@@ -10,35 +10,30 @@
 #include <QMainWindow>
 #include <QTimer>
 
-//ros
-#include "ros/ros.h"
+// ros
 #include "RosIntegration.h"
+#include "ros/ros.h"
 namespace Ui {
 class MainWindow;
 }
-class MainWindow : public QMainWindow
-{
-Q_OBJECT
-public:
-
-    explicit MainWindow(QWidget *parent = nullptr);
+class MainWindow : public QMainWindow {
+    Q_OBJECT
+  public:
+    explicit MainWindow(QWidget* parent = nullptr);
     virtual ~MainWindow();
 
-public Q_SLOTS:
+  public Q_SLOTS:
     void twist_values();
 
-/*/private slots: Note if you want to create function from mainwindow.ui delete
- * private slots and put them with public QSLOTS
- * */
+    /*/private slots: Note if you want to create function from mainwindow.ui
+     * delete
+     * private slots and put them with public QSLOTS
+     * */
 
-
-private:
-    Ui::MainWindow *ui;
+  private:
+    Ui::MainWindow* ui;
     RosIntegration* ros_f;
     QTimer* timer;
-
-
-
 };
 
 #endif // MAINWINDOW_H

@@ -7,52 +7,48 @@
 #include "../include/mainwindow.h"
 #include "ui_mainwindow.h"
 
-//QT
-#include "QMessageBox"
+// QT
 #include "QDebug"
-#include "QProcess"
-#include "QLabel"
-#include "QPixmap"
 #include "QDir"
+#include "QLabel"
+#include "QMessageBox"
+#include "QPixmap"
+#include "QProcess"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget* parent)
+  :
 
     QMainWindow(parent),
-    ui (new Ui::MainWindow)
-{
+    ui(new Ui::MainWindow) {
     ui->setupUi(this);
     this->setWindowTitle("Snowbots Interface");
     timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()),this,SLOT(twist_values()));;
+    connect(timer, SIGNAL(timeout()), this, SLOT(twist_values()));
+    ;
     timer->start(500);
 
-    //ROS
+    // ROS
     ros_f = new RosIntegration();
     qDebug() << "Constructor OK";
 
-    //UI
+    // UI
 
-    //Snowbots Logo
+    // Snowbots Logo
     QPixmap pixmap("./src/snowbots_ui/resources/snowbot2.png");
     ui->label_5->setPixmap(pixmap);
     ui->label_5->show();
     ui->label_5->setScaledContents(true);
     qDebug() << "Current dir:" << QDir::currentPath();
-
 }
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
     qDebug() << "Destructor OK";
 }
 
-void MainWindow::twist_values()
-{
+void MainWindow::twist_values() {
     ui->left_lcd->display(twist_message_left.linear.x);
     ui->right_lcd->display(twist_message_right.linear.x);
     ui->angular_lcd->display(twist_message_controller.angular.z);
     ui->linear_lcd->display(twist_message_controller.linear.x);
     ros_f->twist_subscriber();
 }
-
-

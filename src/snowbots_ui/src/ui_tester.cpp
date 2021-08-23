@@ -7,43 +7,35 @@
 
 #include "ros/ros.h"
 #include <geometry_msgs/Twist.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 
+int main(int argc, char** argv) {
+    ros::init(argc, argv, "ui_tester");
 
-int main(int argc, char **argv)
-{
+    ros::NodeHandle n;
 
-  ros::init(argc, argv, "ui_tester");
+    ros::Publisher pub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
 
-  ros::NodeHandle n;
+    ros::Rate rate(10);
 
-  ros::Publisher pub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
+    srand(time(0));
 
-  ros::Rate rate(10);
+    while (ros::ok()) {
+        // Declares the message to be sent
+        geometry_msgs::Twist msg;
 
-  srand(time(0));
+        // Random x value between -2 and 2
+        msg.linear.x = 4 * double(rand()) / double(RAND_MAX) - 2;
 
+        // Random z value between -3 and 3
+        msg.angular.z = 6 * double(rand()) / double(RAND_MAX) - 3;
 
-  while (ros::ok())
-  {
+        // Publish the message
+        pub.publish(msg);
 
-	//Declares the message to be sent
-	geometry_msgs::Twist msg;
+        // Delays until it is time to send another message
+        rate.sleep();
+    }
 
-	//Random x value between -2 and 2
-	msg.linear.x= 4*double(rand())/double(RAND_MAX)-2;
-
-	//Random z value between -3 and 3
-	msg.angular.z=6*double(rand())/double(RAND_MAX)-3;
-
-	//Publish the message
-	pub.publish(msg);
-
-	//Delays until it is time to send another message
-	rate.sleep();
-  }
-
-
-  return 0;
+    return 0;
 }
-

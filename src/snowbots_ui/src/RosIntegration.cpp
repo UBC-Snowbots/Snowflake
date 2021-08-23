@@ -6,15 +6,11 @@
 
 #include "../include/RosIntegration.h"
 
-RosIntegration::RosIntegration()
-{
+RosIntegration::RosIntegration() {
     n = new ros::NodeHandle();
 }
-RosIntegration::~RosIntegration()
-{
+RosIntegration::~RosIntegration() {
     ros::Duration(0.1).sleep();
     ros::spinOnce();
     delete n;
 }
-
-

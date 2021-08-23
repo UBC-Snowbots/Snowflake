@@ -4,13 +4,12 @@
  * Snowbots UI
  */
 
-#include <QtGui>
-#include <QApplication>
-#include "ros/ros.h"
 #include "../include/mainwindow.h"
+#include "ros/ros.h"
+#include <QApplication>
+#include <QtGui>
 
-
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     QApplication a(argc, argv);
     ros::init(argc, argv, "snowbot_ui");
 
@@ -20,6 +19,4 @@ int main(int argc, char **argv) {
     qDebug() << "main";
 
     return a.exec();
-
 }
-
