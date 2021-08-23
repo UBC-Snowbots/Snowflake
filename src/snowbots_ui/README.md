@@ -1,5 +1,5 @@
 ## Snowbots_UI
-This is a UI package built for the UBC Snowbot Team
+This is a UI package built for the UBC Snowbots Team
 
 ![alt text](https://github.com/adamsnguyen/Snowflake/blob/master/src/snowbots_ui/resources/demo.png)
 
