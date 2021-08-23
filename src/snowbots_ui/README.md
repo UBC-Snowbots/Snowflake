@@ -17,7 +17,7 @@ sudo apt-get install ros-melodic-qt-build
 roscore
 ```
 
-### Open another terminal, source your bashrc file and RUN GUI
+### Open another terminal, source your setup.bash file and RUN GUI
 ```bash
 source devel/setup.bash
 rosrun snowbots_ui snowbots_ui 
