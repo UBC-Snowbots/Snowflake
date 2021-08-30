@@ -37,7 +37,7 @@ class RosIntegration {
     }
 
     void twist_subscriber() {
-        ros::Rate loop_rate(5);
+        ros::Rate loop_rate(10);
         twist_controller_sub =
         n->subscribe("/cmd_vel", 1000, twist_controller_callback);
         twist_left_sub = n->subscribe(
