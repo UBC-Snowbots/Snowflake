@@ -1,0 +1,6 @@
+<launch>
+
+    <include file="$(find wheel_integration_package)/launch/integration_node.launch"/>
+    <include file="$(find motor_control)/launch/6motors.launch"/>
+
+</launch>

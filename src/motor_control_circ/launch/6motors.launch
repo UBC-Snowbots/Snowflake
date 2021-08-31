@@ -1,0 +1,7 @@
+<launch>
+
+    <node
+        name="move_motor" pkg="motor_control" type="move_motor" output="screen">
+    </node>
+
+</launch>
