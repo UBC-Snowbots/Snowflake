@@ -1,4 +1,4 @@
-cache: 
+cache:
         - apt
 language: generic
 # currently running on ubuntu 18.04

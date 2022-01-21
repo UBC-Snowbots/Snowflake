@@ -22,8 +22,8 @@ ProController::ProController(int argc, char** argv, string node_name) {
     if (private_nh.param<bool>("debug", debug, false)) {
         ROS_INFO("Debug mode %s", (debug) ? "on" : "off");
     }
-    pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1000);
-    pubarm  = private_nh.advertise<geometry_msgs::Twist>("/cmd_arm", 1000);
+    pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
+    pubarm  = private_nh.advertise<geometry_msgs::Twist>("/cmd_arm", 1);
     ROS_INFO("Preparing to read inputs...\n");
     state = Mode::wheels;
     printState();
@@ -82,7 +82,7 @@ void ProController::readInputs() {
             // EV_SYN types are useless, ABS and KEY are useful (see .h file for
             // details)
             if (ev.type != EV_SYN) {
-                // use rosrun procontorller_snowbots pro_controller
+                // use rosrun procontroller_snowbots pro_controller
                 // _debug:="true"
                 if (debug) {
                     printControllerDebug(ev.type, ev.code, ev.value);
@@ -167,22 +167,24 @@ void ProController::publishArmXZ(double x_new,
 
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
-    if (value > 120 && value < 135) {
+    if (value > 115 && value < 135) {
         z = 0;
     } else {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
+        ROS_INFO("Left Joystick X event with value: %d\n", value);
         z = -(value - 128) / 128.0 * Z_SENSITIVITY;
     }
 }
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
-    if (value > 120 && value < 135) {
+    if (value > 115 && value < 135) {
         x = 0;
     } else {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*X_SENSITIVITY
+        ROS_INFO("Left Joystick Y event with value: %d\n", value);
         x = (value - 128) / 128.0 * X_SENSITIVITY;
     }
 }
