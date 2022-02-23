@@ -294,7 +294,7 @@ void CN0398_disable_channel(int channel) {
 
 void CN0398_enable_current_source0(int current_source_channel) {
     enum ad7124_registers regNr = AD7124_IOCon1; // Select _ADC_Control register
-    uint32_t setValue = AD7124_ReadDeviceRegister(regNr);
+    uint32_t setValue           = AD7124_ReadDeviceRegister(regNr);
     setValue &= ~(AD7124_IO_CTRL1_REG_IOUT_CH0(0xF));
     setValue |= AD7124_IO_CTRL1_REG_IOUT_CH0(2 * current_source_channel +
                                              1); // set IOUT0 current
@@ -305,7 +305,7 @@ void CN0398_enable_current_source0(int current_source_channel) {
 
 void CN0398_enable_current_source1(int current_source_channel) {
     enum ad7124_registers regNr = AD7124_IOCon1; // Select _ADC_Control register
-    uint32_t setValue = AD7124_ReadDeviceRegister(regNr);
+    uint32_t setValue           = AD7124_ReadDeviceRegister(regNr);
     setValue &= ~(AD7124_IO_CTRL1_REG_IOUT_CH1(0xF));
     setValue |= AD7124_IO_CTRL1_REG_IOUT_CH1(2 * current_source_channel +
                                              1); // set IOUT0 current
@@ -330,14 +330,15 @@ void CN0398_setup() {
 }
 
 void CN0398_init() {
+    pinMode(ADP7118_PIN, OUTPUT);
+    digitalWrite(ADP7118_PIN, LOW);
+
     uint32_t setValue;
     int i;
     enum ad7124_registers regNr;
 
-    delay(ms_delay);
-
     // Set Config_0 0x19
-    regNr = AD7124_Config_0; // Select Config_0 register
+    regNr    = AD7124_Config_0; // Select Config_0 register
     setValue = AD7124_ReadDeviceRegister(regNr);
     setValue |= AD7124_CFG_REG_BIPOLAR;    // Select bipolar operation
     setValue |= AD7124_CFG_REG_BURNOUT(0); // Burnout current source off
@@ -385,7 +386,7 @@ void CN0398_init() {
     }
 
     // Set IO_Control_1 0x03
-    regNr = AD7124_IOCon1; // Select IO_Control_1 register
+    regNr    = AD7124_IOCon1; // Select IO_Control_1 register
     setValue = 0 setValue |=
     AD7124_8_IO_CTRL1_REG_GPIO_CTRL2; // enable AIN3 as digital output
     setValue |=
@@ -397,7 +398,7 @@ void CN0398_init() {
     setValue &= 0xFFFFFF;
     AD7124_WriteDeviceRegister(regNr, setValue); // Write data to _ADC
 
-    regNr = AD7124_IOCon2; // Select IO_Control_2 register
+    regNr    = AD7124_IOCon2; // Select IO_Control_2 register
     setValue = 0 setValue |=
     AD7124_8_IO_CTRL1_REG_GPIO_VBIAS7; // enable bias voltage on AIN7
     setValue &= 0xFFFFFF;

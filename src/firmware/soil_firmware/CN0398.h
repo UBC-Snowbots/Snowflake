@@ -81,7 +81,6 @@ const char solutions[NUMBER_OF_SOLUTIONS][20] = {"ACETATE",
 
 #define NUMBER_OF_TEMPERATURE_ENTRIES 31
 
-// *INDENT-OFF*
 const uint8_t ph_temperatures[NUMBER_OF_TEMPERATURE_ENTRIES] = {
 0,  5,  10, 15, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
 30, 35, 37, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95,
@@ -146,7 +145,14 @@ const float ph_temp_lut[NUMBER_OF_SOLUTIONS][NUMBER_OF_TEMPERATURE_ENTRIES]{
                   10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
                   10, 10, 10, 10, 10, 10, 10, 10, 10},
 };
-// *INDENT-ON*
+
+bool use_nernst = false;
+const float default_offset_voltage = 0;
+const uint16_t SENSOR_SETTLING_TIME = 400; /*in ms*/
+float offset_voltage;
+float default_calibration_ph[2][2] = {{4, 0.169534}, {10,  -0.134135}};
+float calibration_ph[2][2];
+uint8_t solution0,solution1;
 
 float read_rtd();
 float read_ph(float temperature = 25.0);
