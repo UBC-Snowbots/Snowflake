@@ -37,27 +37,30 @@
 #ifndef _COMMUNICATION_H
 #define _COMMUNICATION_H
 
-#include <SPI.h>
 #include "Arduino.h"
+#include <SPI.h>
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
-/********************************* Internal defines ****************************/
+/********************************* Internal defines
+ * ****************************/
 //* CSAD7798 - output */
-#define CS_PIN       10
-
+#define CS_PIN 10
 
 extern uint8_t convFlag;
 
-/****************************** Internal types *********************************/
+/****************************** Internal types
+ * *********************************/
 
+void SPI_Write(unsigned char slaveDeviceId,
+               unsigned char* data,
+               unsigned char bytesNumber);
+void SPI_Read(unsigned char slaveDeviceId,
+              unsigned char* data,
+              unsigned char bytesNumber);
 
-
-void SPI_Write(unsigned char slaveDeviceId, unsigned char* data, unsigned char bytesNumber);
-void SPI_Read(unsigned char slaveDeviceId, unsigned char* data, unsigned char bytesNumber);
-
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif // __cplusplus
 

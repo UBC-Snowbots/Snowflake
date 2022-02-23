@@ -37,24 +37,27 @@
 #ifndef RTD_H_
 #define RTD_H_
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-#define R0     1000.0
+#define R0 1000.0
 
-#define COEFF_A                 3.9083e-3f
-#define COEFF_B                 -5.775e-7f
-#define COEFF_A_A               (COEFF_A*COEFF_A)
-#define COEFF_4B_R0             (4*COEFF_B/R0)
-#define COEFF_2B                (2*COEFF_B)
+#define COEFF_A 3.9083e-3f
+#define COEFF_B -5.775e-7f
+#define COEFF_A_A (COEFF_A * COEFF_A)
+#define COEFF_4B_R0 (4 * COEFF_B / R0)
+#define COEFF_2B (2 * COEFF_B)
 
-const float cjPolyCoeff[7] =
-{
-    -242.02f, 2.2228f, 0.00259f, -0.00000483f, -0.0000000282f, 0.000000000152f, 1.0f
-};
+const float cjPolyCoeff[7] = {-242.02f,
+                              2.2228f,
+                              0.00259f,
+                              -0.00000483f,
+                              -0.0000000282f,
+                              0.000000000152f,
+                              1.0f};
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 }
 #endif // __cplusplus
 

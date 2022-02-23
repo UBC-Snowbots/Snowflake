@@ -43,64 +43,54 @@
 
 uint8_t convFlag = 0, readConv;
 
+void SPI_Write(unsigned char slaveDeviceId,
+               unsigned char* data,
+               unsigned char bytesNumber) {
+    byte count;
 
-void SPI_Write(unsigned char slaveDeviceId, unsigned char* data, unsigned char bytesNumber)
-{
+    if (slaveDeviceId == 0) digitalWrite(CS_PIN, LOW);
 
-  byte count;
-  
-    if(slaveDeviceId == 0)
-       digitalWrite(CS_PIN, LOW);
+    for (count = 0; count < bytesNumber; count++) {
+        SPI.transfer(data[count]); // write instruction
+    }
 
-       for(count = 0;count < bytesNumber;count++)
-       {
-                SPI.transfer(data[count]);  // write instruction
-       }
-
-    if(slaveDeviceId == 0)
-       digitalWrite(CS_PIN, HIGH);
+    if (slaveDeviceId == 0) digitalWrite(CS_PIN, HIGH);
 }
 
-/***************************************************************************//**
- * @brief Reads data from SPI.
- *
- * @param data - As an input parameter, data represents the write buffer:
- *               - first byte is the chip select number;
- *               - from the second byte onwards are located data bytes to write.
- *               As an output parameter, data represents the read buffer:
- *               - from the first byte onwards are located the read data bytes.
- * @param bytesNumber - Number of bytes to write.
- *
- * @return Number of written bytes.
-*******************************************************************************/
-void SPI_Read(unsigned char slaveDeviceId, unsigned char* data, unsigned char bytesNumber)
-{
-   unsigned char writeData[4]  = {0, 0, 0, 0};
-   unsigned char count          = 0;
-   uint16_t ui16fifo_status;
+/***************************************************************************/ /**
+  * @brief Reads data from SPI.
+  *
+  * @param data - As an input parameter, data represents the write buffer:
+  *               - first byte is the chip select number;
+  *               - from the second byte onwards are located data bytes to
+ *write.
+  *               As an output parameter, data represents the read buffer:
+  *               - from the first byte onwards are located the read data bytes.
+  * @param bytesNumber - Number of bytes to write.
+  *
+  * @return Number of written bytes.
+ *******************************************************************************/
+void SPI_Read(unsigned char slaveDeviceId,
+              unsigned char* data,
+              unsigned char bytesNumber) {
+    unsigned char writeData[4] = {0, 0, 0, 0};
+    unsigned char count        = 0;
+    uint16_t ui16fifo_status;
 
-   ui16fifo_status = ((bytesNumber) << 8);             /* Set FIFO status correct value */
+    ui16fifo_status = ((bytesNumber) << 8); /* Set FIFO status correct value */
 
-    for(count = 0;count < bytesNumber;count++)
-    {
-        if(count == 0)
-           writeData[count] = data[count];
+    for (count = 0; count < bytesNumber; count++) {
+        if (count == 0)
+            writeData[count] = data[count];
         else
-           writeData[count] = 0xAA;    /* dummy value */
+            writeData[count] = 0xAA; /* dummy value */
     }
 
-    if(slaveDeviceId == 0)
-       digitalWrite(CS_PIN, LOW);
+    if (slaveDeviceId == 0) digitalWrite(CS_PIN, LOW);
 
-    for(count = 0;count < bytesNumber;count++)
-    {
-      data[count] =  SPI.transfer(writeData[count]);
+    for (count = 0; count < bytesNumber; count++) {
+        data[count] = SPI.transfer(writeData[count]);
     }
 
-    if(slaveDeviceId == 0)
-       digitalWrite(CS_PIN, HIGH);
+    if (slaveDeviceId == 0) digitalWrite(CS_PIN, HIGH);
 }
-
-
-
-
