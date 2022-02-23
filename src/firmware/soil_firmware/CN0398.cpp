@@ -44,7 +44,6 @@
 #include "AD7124.h"
 
 #include "Communication.h"
-#include "Timer.h"
 
 #include <math.h>
 #include <stdbool.h>
