@@ -146,13 +146,13 @@ const float ph_temp_lut[NUMBER_OF_SOLUTIONS][NUMBER_OF_TEMPERATURE_ENTRIES]{
                   10, 10, 10, 10, 10, 10, 10, 10, 10},
 };
 
-bool use_nernst = false;
-const float default_offset_voltage = 0;
+bool use_nernst                     = false;
+const float default_offset_voltage  = 0;
 const uint16_t SENSOR_SETTLING_TIME = 400; /*in ms*/
 float offset_voltage;
-float default_calibration_ph[2][2] = {{4, 0.169534}, {10,  -0.134135}};
+float default_calibration_ph[2][2] = {{4, 0.169534}, {10, -0.134135}};
 float calibration_ph[2][2];
-uint8_t solution0,solution1;
+uint8_t solution0, solution1;
 
 float read_rtd();
 float read_ph(float temperature = 25.0);

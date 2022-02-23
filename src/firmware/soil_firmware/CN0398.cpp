@@ -387,7 +387,8 @@ void CN0398_init() {
 
     // Set IO_Control_1 0x03
     regNr    = AD7124_IOCon1; // Select IO_Control_1 register
-    setValue = 0 setValue |=
+    setValue = 0;
+    setValue |=
     AD7124_8_IO_CTRL1_REG_GPIO_CTRL2; // enable AIN3 as digital output
     setValue |=
     AD7124_8_IO_CTRL1_REG_GPIO_CTRL3; // enable AIN4 as digital output
@@ -518,7 +519,7 @@ void CN0398_calibrate_ph(void) {
 
 void CN0398_print_calibration_solutions(void) {
     Serial.println(
-    "Calibration solutions available for two point calibration:");
+    F("Calibration solutions available for two point calibration:"));
     for (int i = 0; i < NUMBER_OF_SOLUTIONS; ++i) {
         Serial.print(i, HEX);
         Serial.println(solutions[i]);
