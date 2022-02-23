@@ -59,8 +59,14 @@
 int32_t adcValue[3];
 float temperature, pH, voltage[2], moisture;
 
+bool use_nernst = false;
+float offset_voltage;
+float default_calibration_ph[2][2] = {{4, 0.169534}, {10, -0.134135}};
+float calibration_ph[2][2];
+uint8_t solution0, solution1;
+
 void CN0398_calibrate_ph_pt0(float temperature) {
-    CN0398_set_digital_output(P2, true);
+    CN0398_set_digital_output(CHANNEL_P2, true);
     int32_t data = CN0398_read_channel(PH_CHANNEL);
 
     float volt = CN0398_data_to_voltage_bipolar(data, 1, 3.3);
@@ -78,7 +84,7 @@ void CN0398_calibrate_ph_pt0(float temperature) {
     }
 
     calibration_ph[0][1] = volt;
-    CN0398_set_digital_output(P2, false);
+    CN0398_set_digital_output(CHANNEL_P2, false);
 
     printf("\tCalibration solution1 pH = %.3f with sensor voltage of %fV\n",
            calibration_ph[0][0],
@@ -87,7 +93,7 @@ void CN0398_calibrate_ph_pt0(float temperature) {
 }
 
 void CN0398_calibrate_ph_pt1(float temperature) {
-    CN0398_set_digital_output(P2, true);
+    CN0398_set_digital_output(CHANNEL_P2, true);
     int32_t data = CN0398_read_channel(PH_CHANNEL);
 
     float volt = CN0398_data_to_voltage_bipolar(data, 1, 3.3);
@@ -105,7 +111,7 @@ void CN0398_calibrate_ph_pt1(float temperature) {
     }
 
     calibration_ph[1][1] = volt;
-    CN0398_set_digital_output(P2, false);
+    CN0398_set_digital_output(CHANNEL_P2, false);
 
     printf("\tCalibration solution2 pH = %.3f with sensor voltage of %fV\n",
            calibration_ph[1][0],
@@ -114,7 +120,7 @@ void CN0398_calibrate_ph_pt1(float temperature) {
 }
 
 void CN0398_calibrate_ph_offset() {
-    CN0398_set_digital_output(P2, true);
+    CN0398_set_digital_output(CHANNEL_P2, true);
 
     int32_t data = CN0398_read_channel(PH_CHANNEL);
 
@@ -123,7 +129,7 @@ void CN0398_calibrate_ph_offset() {
     printf("\tOffset voltage is %fV\n", volt);
     printf("\n");
 
-    CN0398_set_digital_output(P2, false);
+    CN0398_set_digital_output(CHANNEL_P2, false);
 }
 
 float CN0398_read_rtd() {
@@ -161,7 +167,7 @@ float CN0398_read_ph(float temperature) {
 #ifdef PH_SENSOR_PRESENT
     int32_t data;
 
-    CN0398_set_digital_output(P2, true);
+    CN0398_set_digital_output(CHANNEL_P2, true);
 
     adcValue[PH_CHANNEL] = data = CN0398_read_channel(PH_CHANNEL);
 
@@ -179,7 +185,7 @@ float CN0398_read_ph(float temperature) {
              calibration_ph[1][0];
     }
 
-    CN0398_set_digital_output(P2, false);
+    CN0398_set_digital_output(CHANNEL_P2, false);
 
 #endif
     return ph;
@@ -190,9 +196,9 @@ float CN0398_read_moisture() {
 #ifdef MOISTURE_SENSOR_PRESENT
 
     digitalWrite(ADP7118_PIN, HIGH);
-    CN0398_set_digital_output(P3, true);
+    CN0398_set_digital_output(CHANNEL_P3, true);
 
-    timer.sleep(SENSOR_SETTLING_TIME);
+    delay(SENSOR_SETTLING_TIME);
     int32_t data = adcValue[MOISTURE_CHANNEL] =
     CN0398_read_channel(MOISTURE_CHANNEL);
 
@@ -221,14 +227,14 @@ float CN0398_read_moisture() {
     if (moisture < 0) moisture   = 0;
 #endif
 
-    CN0398_set_digital_output(P3, false);
+    CN0398_set_digital_output(CHANNEL_P3, false);
 
     return moisture;
 }
 
 void CN0398_set_digital_output(uint8_t p, bool state) {
     enum ad7124_registers regNr = static_cast<enum ad7124_registers>(
-    AD7124_Channel_0 + channel); // Select _ADC_Control register
+    AD7124_Channel_0); // Select _ADC_Control register
     uint32_t setValue = AD7124_ReadDeviceRegister(regNr);
     if (state)
         setValue |= ((AD7124_8_IO_CTRL1_REG_GPIO_DAT1) << p);
@@ -365,9 +371,9 @@ void CN0398_init() {
     setValue &= 0xFFFF;
     AD7124_WriteDeviceRegister(regNr, setValue); // Write data to _ADC
 
-    int[] ainp_map                    = {9, 6, 8};
-    int[] ainm_map                    = {10, 7, 19};
-    enum ad7124_registers[] registers = {
+    int ainp_map[]                    = {9, 6, 8};
+    int ainm_map[]                    = {10, 7, 19};
+    enum ad7124_registers registers[] = {
     static_cast<enum ad7124_registers>(AD7124_Channel_0),
     static_cast<enum ad7124_registers>(AD7124_Channel_1),
     static_cast<enum ad7124_registers>(AD7124_Channel_2)};
@@ -400,8 +406,9 @@ void CN0398_init() {
     AD7124_WriteDeviceRegister(regNr, setValue); // Write data to _ADC
 
     regNr    = AD7124_IOCon2; // Select IO_Control_2 register
-    setValue = 0 setValue |=
-    AD7124_8_IO_CTRL1_REG_GPIO_VBIAS7; // enable bias voltage on AIN7
+    setValue = 0;
+    setValue |=
+    AD7124_8_IO_CTRL2_REG_GPIO_VBIAS7; // enable bias voltage on AIN7
     setValue &= 0xFFFFFF;
     AD7124_WriteDeviceRegister(regNr, setValue); // Write data to _ADC
 
@@ -419,9 +426,9 @@ void CN0398_init() {
 }
 
 void CN0398_set_data(void) {
-    temperature = read_rtd();
-    pH          = read_ph(temperature);
-    moisture    = read_moisture();
+    temperature = CN0398_read_rtd();
+    pH          = CN0398_read_ph(temperature);
+    moisture    = CN0398_read_moisture();
 }
 void CN0398_display_data(void) {
     Serial.print(F("Temperature = "));
@@ -477,7 +484,7 @@ void CN0398_calibrate_ph(void) {
     Serial.println(ph_temp_lut[solution0][11], 3);
     Serial.println();
 
-    float temperature = read_rtd();
+    float temperature = CN0398_read_rtd();
     Serial.println(F(
     "Calibration step 1. Place pH probe in first calibration solution and "
     "press any key to start calibration."));
@@ -491,13 +498,13 @@ void CN0398_calibrate_ph(void) {
         response = Serial.read();
         if (isDigit(response)) {
             response_ok = true;
-            solution0   = response - '0';
+            solution1   = response - '0';
         } else if (response >= 'A' && response <= 'E') {
             response_ok = true;
-            solution0   = response - 'A' + 10;
+            solution1   = response - 'A' + 10;
         } else if (response >= 'a' && response <= 'e') {
             response_ok = true;
-            solution0   = response - 'a' + 10;
+            solution1   = response - 'a' + 10;
         } else {
             response_ok = false;
         }
@@ -525,4 +532,8 @@ void CN0398_print_calibration_solutions(void) {
         Serial.println(solutions[i]);
     }
     Serial.println();
+}
+
+void CN0398_set_use_nernst(bool state) {
+    use_nernst = state;
 }

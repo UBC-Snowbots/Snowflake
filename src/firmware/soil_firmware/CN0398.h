@@ -146,17 +146,12 @@ const float ph_temp_lut[NUMBER_OF_SOLUTIONS][NUMBER_OF_TEMPERATURE_ENTRIES]{
                   10, 10, 10, 10, 10, 10, 10, 10, 10},
 };
 
-bool use_nernst                     = false;
 const float default_offset_voltage  = 0;
 const uint16_t SENSOR_SETTLING_TIME = 400; /*in ms*/
-float offset_voltage;
-float default_calibration_ph[2][2] = {{4, 0.169534}, {10, -0.134135}};
-float calibration_ph[2][2];
-uint8_t solution0, solution1;
 
-float read_rtd();
-float read_ph(float temperature = 25.0);
-float read_moisture();
+float CN0398_read_rtd();
+float CN0398_read_ph(float temperature = 25.0);
+float CN0398_read_moisture();
 
 int32_t CN0398_read_channel(int ch);
 
@@ -184,6 +179,8 @@ void CN0398_display_data(void);
 
 void CN0398_calibrate_ph(void);
 void CN0398_print_calibration_solutions(void);
+
+void CN0398_set_use_nernst(bool state);
 
 #define YES 1
 #define NO 0

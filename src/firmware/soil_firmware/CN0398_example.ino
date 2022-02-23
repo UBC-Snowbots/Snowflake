@@ -21,11 +21,11 @@ void setup() {
   if (response == 'y' || response == 'Y') {
     CN0398_calibrate_ph();
   } else {
-    use_nernst = true;
+    CN0398_set_use_nernst(true);
     Serial.println("Do you want to load default calibration?[y/N]. If not[N], the Nernst equation will be used.");
     response = Serial.read();
     if (response == 'y' || response == 'Y') {
-      use_nernst = false;
+      CN0398_set_use_nernst(false);
     }
   }
   Serial.println();

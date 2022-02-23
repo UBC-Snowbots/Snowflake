@@ -48,6 +48,7 @@ extern "C" {
 //* CSAD7798 - output */
 #define CS_PIN 10
 
+#define ADP7118_PIN 0x04
 extern uint8_t convFlag;
 
 /****************************** Internal types
