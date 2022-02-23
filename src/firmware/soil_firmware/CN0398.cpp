@@ -344,8 +344,6 @@ void CN0398_init() {
 
 	delay(ms_delay);
 
-	//Setup 0 -> RTD
-
 	// Set Config_0 0x19
 	regNr = AD7124_Config_0;               //Select Config_0 register
 	setValue = AD7124_ReadDeviceRegister(regNr);
@@ -356,49 +354,9 @@ void CN0398_init() {
 	setValue |= AD7124_CFG_REG_AIN_BUFP;
 	setValue |= AD7124_CFG_REG_AINN_BUFM;
 	setValue |= AD7124_CFG_REG_REF_SEL(1); //Select REFIN2(+)/REFIN2(-)
-	setValue |= AD7124_CFG_REG_PGA(0);  //GAIN1
+	setValue |= AD7124_CFG_REG_PGA(4);
 	setValue &= 0xFFFF;
 	AD7124_WriteDeviceRegister(regNr, setValue);   // Write data to _ADC
-
-   // Set AD7124_Filter_0 0x21
-   regNr = AD7124_Filter_0;
-   setValue = AD7124_ReadDeviceRegister(regNr);
-   setValue |= AD7124_FILT_REG_FILTER(2);                     // set SINC3
-   setValue |= AD7124_FILT_REG_FS(384);                     //FS = 48 => 50 SPS LOW power
-   setValue &= 0xFFFFFF;
-   AD7124_WriteDeviceRegister(regNr, setValue);// Write data to _ADC
-
-
-   for(i = 0; i < 4; i++){
-      // Set Channel_0 register 0x09
-      regNr = static_cast<enum ad7124_registers>(AD7124_Channel_0 + i);
-      setValue = AD7124_ReadDeviceRegister(regNr);
-      setValue &= (~(uint32_t)AD7124_CH_MAP_REG_CH_ENABLE); //Disable channel
-      setValue |= AD7124_CH_MAP_REG_SETUP(0);             // Select setup0
-      setValue |= AD7124_CH_MAP_REG_AINP(2*i + 1);         // Set AIN1+, AIN3+, AIN5+, AIN7+
-
-      if(i == 3){
-            setValue |= AD7124_CH_MAP_REG_AINM(2*i - 1);   //AIN5-
-      } else{
-            setValue |= AD7124_CH_MAP_REG_AINM(2*i + 3);  //AIN3-, AIN5-, AIN7-
-      }
-
-      setValue &= 0xFFFF;
-      AD7124_WriteDeviceRegister(regNr, setValue);   // Write data to _ADC
-      delay(ms_delay);
-
-      }
-
-
-   // Set IO_Control_1 0x03
-   regNr = AD7124_IOCon1;               //Select IO_Control_1 register
-   setValue = AD7124_ReadDeviceRegister(regNr);
-   setValue |= AD7124_IO_CTRL1_REG_IOUT0(5);// set IOUT0 current to 750uA
-   setValue &= 0xFFFFFF;
-   AD7124_WriteDeviceRegister(regNr, setValue);// Write data to _ADC
-
-
-   //Setup 1 -> Thermocouple
 
   // Set Config_1
    regNr = AD7124_Config_1;
@@ -409,33 +367,48 @@ void CN0398_init() {
    setValue |= AD7124_CFG_REG_REF_BUFM;
    setValue |= AD7124_CFG_REG_AIN_BUFP;
    setValue |= AD7124_CFG_REG_AINN_BUFM;
-   setValue |= AD7124_CFG_REG_REF_SEL(2); //internal reference
-   setValue |= AD7124_CFG_REG_PGA(5);  //GAIN32
+   setValue |= AD7124_CFG_REG_REF_SEL(0);
+   setValue |= AD7124_CFG_REG_PGA(0);
    setValue &= 0xFFFF;
    AD7124_WriteDeviceRegister(regNr, setValue);   // Write data to _ADC
 
-   // Set AD7124_Filter_0 0x21
-   regNr = AD7124_Filter_1;
-   setValue = AD7124_ReadDeviceRegister(regNr);
-   setValue |= AD7124_FILT_REG_FILTER(2);                     // set SINC3
-   setValue |= AD7124_FILT_REG_FS(384);                     //FS = 48 => 50 SPS
-   setValue &= 0xFFFFFF;
-   AD7124_WriteDeviceRegister(regNr, setValue);// Write data to _ADC
-
-
-   for(i = 0; i < 4; i++){
-
-      regNr = static_cast<enum ad7124_registers>(AD7124_Channel_4 + i);
-      setValue = AD7124_ReadDeviceRegister(regNr);
+   int[] ainp_map = {9, 6, 8};
+   int[] ainm_map = {10, 7, 19};
+   enum ad7124_registers[] registers = {
+	   static_cast<enum ad7124_registers>(AD7124_Channel_0),
+	   static_cast<enum ad7124_registers>(AD7124_Channel_1),
+	   static_cast<enum ad7124_registers>(AD7124_Channel_2)
+   };
+   for(i = 0; i < 3; i++){
+      regNr = registers[i];
+      setValue = 0;
+      setValue |= AD7124_CH_MAP_REG_SETUP(i > 0);             // Select setup0 if i == 0 and setup1 otherwise
+      setValue |= AD7124_CH_MAP_REG_AINP(ainp_map[i]);
+      setValue |= AD7124_CH_MAP_REG_AINM(ainm_map[i]);
       setValue &= (~(uint32_t)AD7124_CH_MAP_REG_CH_ENABLE); //Disable channel
-      setValue |= AD7124_CH_MAP_REG_SETUP(1);             // Select setup0
-      setValue |= AD7124_CH_MAP_REG_AINP(2*i);         // Set AIN0+, AIN2+, AIN4+, AIN6+
-      setValue |= AD7124_CH_MAP_REG_AINM(15);         // Set AIN15 as negative
       setValue &= 0xFFFF;
       AD7124_WriteDeviceRegister(regNr, setValue);   // Write data to _ADC
       delay(ms_delay);
 
-   }
+      }
+
+   // Set IO_Control_1 0x03
+   regNr = AD7124_IOCon1;               //Select IO_Control_1 register
+   setValue = 0
+   setValue |= AD7124_8_IO_CTRL1_REG_GPIO_CTRL2;// enable AIN3 as digital output
+   setValue |= AD7124_8_IO_CTRL1_REG_GPIO_CTRL3;// enable AIN4 as digital output
+   setValue |= AD7124_IO_CTRL1_REG_IOUT_CH0(11);// source ain11
+   setValue |= AD7124_IO_CTRL1_REG_IOUT_CH1(12);// source ain12
+   setValue |= AD7124_IO_CTRL1_REG_IOUT0(0x4);// set IOUT0 current to 500uA
+   setValue |= AD7124_IO_CTRL1_REG_IOUT1(0x4);// set IOUT1 current to 500uA
+   setValue &= 0xFFFFFF;
+   AD7124_WriteDeviceRegister(regNr, setValue);// Write data to _ADC
+
+   regNr = AD7124_IOCon2;               //Select IO_Control_2 register
+   setValue = 0
+   setValue |= AD7124_8_IO_CTRL1_REG_GPIO_VBIAS7;// enable bias voltage on AIN7
+   setValue &= 0xFFFFFF;
+   AD7124_WriteDeviceRegister(regNr, setValue);// Write data to _ADC
 
 	// Set _ADC_Control 0x01
 	regNr = AD7124_ADC_Control;            //Select _ADC_Control register
@@ -446,201 +419,112 @@ void CN0398_init() {
 	setValue &= 0xFFFF;
 	AD7124_WriteDeviceRegister(regNr, setValue);    // Write data to _ADC
 	delay(ms_delay);
-
-   th_types[CHANNEL_P1] = P1_TYPE;
-   th_types[CHANNEL_P2] = P2_TYPE;
-   th_types[CHANNEL_P3] = P3_TYPE;
-   th_types[CHANNEL_P4] = P4_TYPE;
 }
 
 
 void CN0398_set_data(void)
 {
 
-  temperature = reaed_rtd();
+  temperature = read_rtd();
   pH = read_ph(temperature);
   moisture = read_moisture();
 
 }
 void CN0398_display_data(void)
 {
-   channel_t i;
+	Serial.print(F("Temperature = "));
+	Serial.print(temperature);
+	Serial.println(F("°C"));
 
-   for(i = CHANNEL_P1; i <= CHANNEL_P4; i = static_cast<channel_t>(i+1)){
+	Serial.print(F("pH = "));
+	Serial.print(pH);
+	Serial.println();
 
-         Serial.print(F("P")); Serial.print(i+1); Serial.print(F("channel (Type ")); Serial.print(thermocouple_type[th_types[i]]); Serial.println(F(")"));
-         Serial.print(F("\t_ADC CJ code = ")); Serial.println((int)_ADCValue0[i]);
-         Serial.print(F("\tR_rtd = ")); Serial.print(rRtdValue[i]); Serial.println(F(" ohmi"));
-         Serial.print(F("\tcj_Temp = ")); Serial.println(temp0[i]);
-         Serial.print(F("\tcj_Voltage = ")); Serial.print(cj_Voltage[i]); Serial.println(F(" mV"));
-         Serial.print(F("\t_ADC TC code = ")); Serial.println((int)_ADCValue1[i]);
-         Serial.print(F("\tth_Voltage_read = ")); Serial.print(th_Voltage_read[i]); Serial.println(F(" mV"));
-         Serial.print(F("\tth_Voltage = ")); Serial.print(th_Voltage[i]); Serial.println(F(" mV"));
-
-
-         if(errFlag[i] == ERR_UNDER_RANGE){
-            Serial.println("");
-            Serial.println(F("\tWARNING: Linearized temperature value is not available -> exceeds lower limit!!!"));
-            Serial.print(F("\t\t Supported temperature range for thermocouple Type ")); Serial.print(thermocouple_type[th_types[i]]); Serial.print(F(" [")); Serial.print(PROGMEM_getAnything(&thTempRange[th_types[i]][0])); Serial.println(PROGMEM_getAnything(&thTempRange[th_types[i]][1])); Serial.println(F("]."));
-            errFlag[i] = NO_ERR;
-          } else{
-
-                if(errFlag[i] == ERR_OVER_RANGE){
-                  Serial.println("");
-                  Serial.println(F("\tWARNING: Linearized temperature value is not available -> exceeds upper limit!!!"));
-                  Serial.print(F("\t\t Supported temperature range for thermocouple Type ")); Serial.print(thermocouple_type[th_types[i]]); Serial.print(F("is [")); Serial.print(PROGMEM_getAnything(&thTempRange[th_types[i]][0])); Serial.println(PROGMEM_getAnything(&thTempRange[th_types[i]][1])); Serial.println(F("]."));
-                  errFlag[i] = NO_ERR;
-                }
-                else{
-                  Serial.print(F("\tth_temp = ")); Serial.print(temp1[i]); Serial.println(F(" °C"));
-                }
-          }
-
-   }
+	Serial.print(F("Moisture = "));
+	Serial.print(moisture);
+	Serial.println(F("%"));
    Serial.println("");
    Serial.println("");
 
 }
 
-void CN0398_calc_rtd_temperature(channel_t ch, float *temp)
- {
-     float rRtd;
-
-     rRtd = (R5*(_ADCValue0[ch] - _2_23))/(_2_23 *GAIN_RTD);
-
-      if(rRtd > R0) {
-
-        *temp = (-COEFF_A + sqrt(COEFF_A_A - COEFF_4B_R0*(R0 - rRtd)))/COEFF_2B;
-
-
-      } else {
-
-         POLY_CALC(*temp, rRtd/10.0, &cjPolyCoeff[0]);
-     }
-
- }
-
-
-void CN0398_calc_th_temperature(channel_t ch, float cjTemp, float *_buffer)
+void CN0398_calibrate_ph(void)
 {
-    float cjVoltage, thVoltage;
-    const temp_range thCoeff = PROGMEM_getAnything(&thPolyCoeff[th_types[ch]]);
+	Serial.println(F("Do you want to calibrate offset voltage [y/N]?"));
+	char response = Serial.read();
+	Serial.println();
 
-    thVoltage = ((VREF_INT*(_ADCValue1[ch] - _2_23))/(_2_23*GAIN_TH)) + TC_OFFSET_VOLTAGE;
+	if (response == 'y' || response == 'Y') {
+		Serial.println(F("Calibration step 0. Short the pH probe and press any key to calibrate."));
+		response = Serial.read();
+		CN0398_calibrate_ph_offset();
+	}
+	CN0398_print_calibration_solutions();
 
-    th_Voltage_read[ch]= thVoltage;
+	bool response_ok = false;
+	while (!response_ok) {
+		Serial.println(F("Input calibration solution used for first step [1-9][a-e]:"));
+		response = Serial.read();
+		if (isDigit(response)) {
+			response_ok = true;
+			solution0 = response - '0';
+		} else if (response >= 'A' && response <= 'E') {
+			response_ok = true;
+			solution0 = response - 'A' + 10;
+		} else if (response >= 'a' && response <= 'e') {
+			response_ok = true;
+			solution0 = response - 'a' + 10;
+		} else {
+			response_ok = false;
+		}
+	}
+	Serial.print(F("\t"));
+	Serial.print(solutions[solution0]);
+	Serial.print(F(" solution selected. Solution pH at 25°C = "));
+	Serial.println(ph_temp_lut[solution0][11], 3);
+	Serial.println();
 
-      if(cjTemp <  PROGMEM_getAnything(&cjTempRange[th_types[ch]][1])) {
-         POLY_CALC(cjVoltage, cjTemp, thCoeff.neg_temp);
-      } else {
+	float temperature = read_rtd();
+	Serial.println(F("Calibration step 1. Place pH probe in first calibration solution and press any key to start calibration."));
+	response = Serial.read();
+	CN0398_calibrate_ph_pt0(temperature);
 
-        if(cjTemp <=  PROGMEM_getAnything(&cjTempRange[th_types[ch]][2])){
+	response_ok = false;
+	while (!response_ok) {
+		Serial.println(F("Input calibration solution used for second step [1-9][a-e]:"));
+		response = Serial.read();
+		if (isDigit(response)) {
+			response_ok = true;
+			solution0 = response - '0';
+		} else if (response >= 'A' && response <= 'E') {
+			response_ok = true;
+			solution0 = response - 'A' + 10;
+		} else if (response >= 'a' && response <= 'e') {
+			response_ok = true;
+			solution0 = response - 'a' + 10;
+		} else {
+			response_ok = false;
+		}
+	}
+	Serial.print(F("\t"));
+	Serial.print(solutions[solution1]);
+	Serial.print(F(" solution selected. Solution pH at 25°C = "));
+	Serial.println(ph_temp_lut[solution1][11], 3);
+	Serial.println();
 
-          POLY_CALC(cjVoltage, cjTemp, thCoeff.pos_temp1);
-          if(th_types[ch] == TYPE_K){
-             cjVoltage += COEFF_K_A0*exp(COEFF_K_A1*(cjTemp - COEFF_K_A2)*(cjTemp - COEFF_K_A2));
-           }
-        } else{
-          POLY_CALC(cjVoltage, cjTemp, thCoeff.pos_temp2);
-        }
-      }
-      cj_Voltage[ch] = cjVoltage;
-
-      thVoltage += cjVoltage;
-
-      th_Voltage[ch] = thVoltage;
-
-
-      if(thVoltage < PROGMEM_getAnything(&thVoltageRange[th_types[ch]][0])) {
-            errFlag[ch] = ERR_UNDER_RANGE;
-      } else{
-            if(thVoltage < PROGMEM_getAnything(&thVoltageRange[th_types[ch]][1])) {
-              POLY_CALC(*_buffer, thVoltage, thCoeff.neg_voltage);
-            } else {
-                if(thVoltage <= PROGMEM_getAnything(&thVoltageRange[th_types[ch]][2])) {
-                  POLY_CALC(*_buffer, thVoltage, thCoeff.pos_voltage1);
-                }else{
-
-                   if((thVoltage <= PROGMEM_getAnything(&thVoltageRange[th_types[ch]][3])) && (thCoeff.pos_voltage2[0] != 1.0f)) {
-                    POLY_CALC(*_buffer, thVoltage, thCoeff.pos_voltage2);
-                  }else{
-                        if(thCoeff.pos_voltage3[0] != 1.0f){
-                           if(thVoltage <= PROGMEM_getAnything(&thVoltageRange[th_types[ch]][4])){
-                                 POLY_CALC(*_buffer, thVoltage, thCoeff.pos_voltage3);
-                           }
-                           else{
-                                 errFlag[ch] = ERR_OVER_RANGE;
-                           }
-                        }
-                        else{
-                              errFlag[ch] = ERR_OVER_RANGE;
-                        }
-                  }
-                }
-             }
-      }
-
+	Serial.println(F("Calibration step 2. Place pH probe in second calibration solution and press any key to start calibration."));
+	response = Serial.read();
+	CN0398_calibrate_ph_pt1(temperature);
+	Serial.println();
+	Serial.println();
 }
 
-void CN0398_calibration(uint8_t channel)
+void CN0398_print_calibration_solutions(void)
 {
-
-      if(channel == RTD_CHANNEL){
-
-                 CN0398_enable_current_source(1);
-                 CN0398_enable_channel(0);
-                 CN0398_set_calibration_mode(0x514);
-                 while(AD7124_ReadDeviceRegister(AD7124_ADC_Control) != 0x0510);  //wait for idle mode
-                 CN0398_disable_channel(0);
-      } else{
-
-                  CN0398_enable_channel(4);
-                  AD7124_WriteDeviceRegister(AD7124_Offset_1, 0x800000);
-                  CN0398_set_calibration_mode(0x518);
-                  while(AD7124_ReadDeviceRegister(AD7124_ADC_Control) != 0x0510);  //wait for idle mode
-                  CN0398_set_calibration_mode(0x514);
-                  while(AD7124_ReadDeviceRegister(AD7124_ADC_Control) != 0x0510);  //wait for idle mode
-                  CN0398_disable_channel(4);
-      }
-
-      AD7124_WriteDeviceRegister(AD7124_ADC_Control, 0x588);
-}
-
-void CN0398_read_reg(void)
-{
-   enum ad7124_registers regNr;
-
-   for(regNr = AD7124_Status; regNr < AD7124_REG_NO;regNr = static_cast<enum ad7124_registers>(regNr + 1)) {
-
-         AD7124_ReadDeviceRegister(regNr);
-
-   }
-
-}
-
-void CN0398_set_calibration_mode(uint16_t mode)
-{
-   convFlag = 1;
-   digitalWrite(CS_PIN, LOW);
-
-   AD7124_WriteDeviceRegister(AD7124_ADC_Control, mode);
-
-   if (AD7124_WaitForConvReady(100000) == -3) {
-        Serial.println("TIMEOUT");
-
-     }
-   convFlag = 0;
-   digitalWrite(CS_PIN, HIGH);
-
-}
-
-
-void CN0398_set_power_mode(int mode)
-{
-   enum ad7124_registers regNr = AD7124_ADC_Control;            //Select ADC_Control register
-   uint32_t setValue = AD7124_ReadDeviceRegister(regNr);
-   setValue |= AD7124_ADC_CTRL_REG_POWER_MODE(mode);  //set low power mode
-   setValue &= 0xFFFF;
-   AD7124_WriteDeviceRegister(regNr, setValue);    // Write data to ADC
-   delay(ms_delay);
+	Serial.println("Calibration solutions available for two point calibration:");
+	for (int i = 0; i < NUMBER_OF_SOLUTIONS; ++i) {
+		Serial.print(i, HEX);
+		Serial.println(solutions[i]);
+	}
+	Serial.println();
 }
