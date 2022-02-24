@@ -45,8 +45,9 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 7. Clone your server-side repository from the terminal by running `git clone --recursive https://github.com/YOUR_USERNAME/Snowflake.git` (`YOUR_USERNAME` is your github username)
 8. To start the setup run `cd ~/Snowflake && ./setup_scripts/install_tools.sh` (Do not run this script as root).
     - *Just choose yes and enter your password when the terminal prompts you*
-9. To build the workspace run `catkin_make`. If everything compiles correctly and you don't get any errors, then you're good to go!
-10. If catkin_make fails, and mentions missing .cmake files, run `./setup_scripts/install_dependencies.sh`.
+9. Run `source /opt/ros/melodic/setup.sh`.
+10. To build the workspace run `catkin_make`. If everything compiles correctly and you don't get any errors, then you're good to go!
+11. If catkin_make fails, and mentions missing .cmake files, run `./setup_scripts/install_dependencies.sh`.
 
 ### Important Notes:
 - To run CLion with ROS, you must first go in to terminal, navigate to your project (`cd ~/Snowflake`), run `source devel/setup.sh` and then **from the same terminal** run `clion`
