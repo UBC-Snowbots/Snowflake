@@ -1,0 +1,36 @@
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\obj\Debug\SerialCom.csproj.AssemblyReference.cache
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\obj\Debug\SerialCom.Form1.resources
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\obj\Debug\SerialCom.Properties.Resources.resources
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\obj\Debug\SerialCom.csproj.GenerateResource.cache
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\obj\Debug\SerialCom.csproj.CoreCompileInputs.cache
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\bin\Debug\SerialCom.exe
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\bin\Debug\SerialCom.pdb
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\obj\Debug\SerialCom.exe
+C:\Users\tatek\OneDrive\Desktop\SerialCom\SerialCom\obj\Debug\SerialCom.pdb
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\bin\Debug\SerialCom.exe
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\bin\Debug\SerialCom.pdb
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.csprojAssemblyReference.cache
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.Form1.resources
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.Properties.Resources.resources
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.csproj.GenerateResource.cache
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.csproj.CoreCompileInputs.cache
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.exe
+C:\Users\zawad\Desktop\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.pdb
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\bin\Debug\SerialCom.exe
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\bin\Debug\SerialCom.pdb
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.csproj.AssemblyReference.cache
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.Form1.resources
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.Properties.Resources.resources
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.csproj.GenerateResource.cache
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.csproj.CoreCompileInputs.cache
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.exe
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\SerialCom\SerialCom\obj\Debug\SerialCom.pdb
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\bin\Debug\SerialCom.exe
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\bin\Debug\SerialCom.pdb
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\obj\Debug\SerialCom.csproj.AssemblyReference.cache
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\obj\Debug\SerialCom.Form1.resources
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\obj\Debug\SerialCom.Properties.Resources.resources
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\obj\Debug\SerialCom.csproj.GenerateResource.cache
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\obj\Debug\SerialCom.csproj.CoreCompileInputs.cache
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\obj\Debug\SerialCom.exe
+C:\Users\tatek\OneDrive\Desktop\Serial Communication\Serial Communication\Serial Communication\SerialCom1\SerialCom\obj\Debug\SerialCom.pdb
