@@ -162,7 +162,7 @@ void setup() {
     // initializing max speeds and accelerations for motors
     initializeMotion();
     // homes all axes of arm upon powerup
-    //home_arm();
+    home_arm();
 
 }
 
