@@ -170,7 +170,7 @@ void setup() {
 
 void loop() {
 
-    if (Serial.available() > 0) {
+    if (Serial.available() > 0) { // parsing of incoming serial data
         char first = Serial.read();
 
         if (first == 'H') {
@@ -496,6 +496,7 @@ void initializeHomingMotion() {
     a6.setAcceleration(a6_home_ACC); 
 }
 
+// sets speeds for each axis 
 void initializeMotion() {
 
   a1.setMaxSpeed(a1_SPEED);
@@ -512,7 +513,8 @@ void initializeMotion() {
   a6.setAcceleration(a6_ACC);
 }
 
-void zeroAxes() { // sets current position of all axes to 0
+// sets current position of all axes to 0
+void zeroAxes() { 
 
   a1.setCurrentPosition(0);
   a2.setCurrentPosition(0);
@@ -747,6 +749,7 @@ void sendAngles() {
    }
 }
 
+// Sending zero angles through serial port
 void sendZeroAngles() {
   
   Serial.println('r');
