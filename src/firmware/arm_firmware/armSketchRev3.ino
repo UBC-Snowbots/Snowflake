@@ -298,11 +298,6 @@ void step_angle(int axis, char mode, long ang, int stp, int dir, int sw, int spd
    sendAngles();
 }
 
-
-
-
-
-
 // function for homing full arm 
 void home_arm() {
 
