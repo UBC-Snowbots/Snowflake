@@ -178,10 +178,6 @@ namespace SerialCom
                 A6 = serialPort1.ReadLine();
 
             }
-
-
-
-
         }
 
         private void timer1_Tick(object sender, EventArgs e)
