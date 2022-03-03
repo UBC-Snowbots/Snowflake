@@ -176,7 +176,6 @@ namespace SerialCom
                 A4 = serialPort1.ReadLine();
                 A5 = serialPort1.ReadLine();
                 A6 = serialPort1.ReadLine();
-
             }
         }
 
