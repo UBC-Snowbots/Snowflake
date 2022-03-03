@@ -135,7 +135,7 @@ namespace SerialCom
                 }
                 
                 serialPort1.WriteLine(inc+dataOUT);
-               tBoxDATAOUT.Text = "";
+                tBoxDATAOUT.Text = "";
             }    
         }
 
