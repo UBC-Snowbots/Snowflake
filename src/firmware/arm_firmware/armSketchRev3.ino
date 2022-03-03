@@ -99,12 +99,7 @@ long a6_PPR = 400;
 #define SW_OFF 1
 
 // stepper motor objects for AccelStepper library
-AccelStepper a1(1, a1_step, a1_dir);
-AccelStepper a2(1, a2_step, a2_dir);
-AccelStepper a3(1, a3_step, a3_dir);
-AccelStepper a4(1, a4_step, a4_dir);
-AccelStepper a5(1, a5_step, a5_dir);
-AccelStepper a6(1, a6_step, a6_dir);
+AccelStepper accelSteppers[] = {AccelStepper(1, a1_step, a1_dir), AccelStepper(1, a2_step, a2_dir), AccelStepper(1, a3_step, a3_dir), AccelStepper(1, a5_step, a5_dir), AccelStepper(1, a6_step, a6_dir)}
 
 // variable declarations
 int i, count, axis, temp, flag, sign,int_ang;
