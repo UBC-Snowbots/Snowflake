@@ -101,7 +101,6 @@ namespace SerialCom
                 serialPort1.Open();
                 progressBar1.Value = 100;
             }
-
             catch (Exception err)
             {
                 MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
