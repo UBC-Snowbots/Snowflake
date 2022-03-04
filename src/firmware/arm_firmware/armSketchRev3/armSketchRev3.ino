@@ -43,7 +43,6 @@ long maxAngles[6] = {180, 120, 120, 120, 120, 120};
 // stepper motor objects for AccelStepper library
 AccelStepper steppers[6];
 
-
 // variable declarations
 int i, count, axis, temp, flag, sign,int_ang;
 long angle;
@@ -79,12 +78,12 @@ void setup() {
 
   // initializing step pins
   for(i = 0; i<NUM_AXES; i++) {
-    pinMode(stepPins[i], INPUT_PULLUP);
+    pinMode(stepPins[i], OUTPUT);
   }
 
   // initializing direction pins
   for(i = 0; i<NUM_AXES; i++) {
-    pinMode(dirPins[i], INPUT_PULLUP);
+    pinMode(dirPins[i], OUTPUT);
   }
 
   // initializing max speeds and accelerations for motors
@@ -92,7 +91,6 @@ void setup() {
   
   // homes all axes of arm upon powerup
     home_arm();
-
 }
 
 // main loop where motion functions are called and serial communication occurs
