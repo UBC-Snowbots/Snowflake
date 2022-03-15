@@ -150,6 +150,11 @@ void controllerParse() {
 
 void runAxes(int dir, int axis) { // assigns run flags to indicate forward / reverse motion and sets target position
 
+  if(currentAxis == 5) {
+    runWrist(dir, axis);
+    return;
+  }
+
   if(runFlags[axis-1] == 1 && dir == FWD) {
   }
 
@@ -162,9 +167,52 @@ void runAxes(int dir, int axis) { // assigns run flags to indicate forward / rev
   }
 
   else {
-    steppers[axis-1].moveTo(axisDir[axis-1]*max_steps[axis-1]);
+    steppers[axis-1].moveTo(0);
     runFlags[axis-1] = -1;
   }
+}
+
+void runWrist(int dir, int axis) {
+
+  if(axis == 5) { // axis 5 motion -> both wrist motors spin in opposite directions
+    if(runFlags[4] == 1 && dir == FWD) {
+    }
+
+    else if(runFlags[4] == -1 && dir == REV) {
+    }
+    
+    else if(dir == FWD) {
+      steppers[4].moveTo(axisDir[4]*max_steps[4]);
+      steppers[5].moveTo(0);
+      runFlags[4] = 1;
+    }
+
+    else {
+      steppers[4].moveTo(0);
+      steppers[5].moveTo(axisDir[5]*max_steps[5]);
+      runFlags[4] = -1;
+    } 
+  }
+
+  else if(axis ==6) { // axis 6 motion -> both wrist motors spin in same direction
+    if(runFlags[5] == 1 && dir == FWD) {
+    }
+
+    else if(runFlags[5] == -1 && dir == REV) {
+    }
+    
+    else if(dir == FWD) {
+      steppers[4].moveTo(axisDir[4]*max_steps[4]);
+      steppers[5].moveTo(axisDir[5]*max_steps[5]);
+      runFlags[5] = 1;
+    }
+
+    else {
+      steppers[4].moveTo(0);
+      steppers[5].moveTo(0);
+      runFlags[5] = -1;
+    }
+  } 
 }
 
 char changeAxis(char value, int axis) { // when user hits specified button, axis targets change
@@ -189,6 +237,15 @@ char releaseEvent(char value) { // when user releases a joystick serial sends a 
   for(i=currentAxis-1; i<=currentAxis; i++) {
     if(releaseChars[i] == value) {
       steppers[i].stop();
+
+      if(i == 4) { // if wrist joints are moving, treat differently, must stop both motors
+        steppers[5].stop();
+      }
+
+      else if(i == 5) { // same as above
+        steppers[4].stop();
+      }
+  
       runFlags[i] = 0;
       return value;
     }
@@ -310,18 +367,6 @@ void limTrig(int axis) {
     steppers[axis-1].setMaxSpeed(maxSpeed[axis-1]);
     steppers[axis-1].setAcceleration(maxAccel[axis-1]);
     angles[axis-1] = 0;
-  }
-}
-
-// Sending angles through serial port
-void sendAngles() {
-
-  Serial.println('r');
-  delay(10);
-
-  for (int i = 0; i < NUM_AXES; i++) {
-    Serial.println(angles[i]);
-    delay(10);
   }
 }
 
