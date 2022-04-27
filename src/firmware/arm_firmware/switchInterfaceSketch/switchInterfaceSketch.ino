@@ -127,27 +127,35 @@ void loop() {
 
 void controllerParse(char data) { // parses incoming serial data to control arm motion based on user input
   
+  // left joystick forward
   if(data == 'a') {
     runAxes(FWD, currentAxis);
   }
+  // left joystick reverse
   else if(data == 'b') {
     runAxes(REV, currentAxis);
   }
+  // right joystick forward
   else if(data == 'c') {
     runAxes(FWD, currentAxis+1);
   }
+  // right joystick reverse
   else if(data == 'd') {
     runAxes(REV, currentAxis+1);
   }
+  // wrist pitch forward
   else if(data == 'f') {
     runWrist(FWD, 5);
   }
+  // wrist pitch reverse
   else if(data == 'h') {
     runWrist(REV, 5);
   }
+  // wrist roll forward
   else if(data == 'g') {
     runWrist(FWD, 6);
   }
+  // wrist roll reverse
   else if(data == 'i') {
     runWrist(REV, 6);
   }
