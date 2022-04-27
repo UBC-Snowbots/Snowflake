@@ -29,8 +29,14 @@ int limPins[6] = {23, 22, 20, 21, 18, 19};
 // pulses per revolution for motors
 long ppr[6] = {400, 400, 400, 400, 400, 400};
 
+// pulses per revolution for end effector motors;
+long ppr_EE[2] = {400, 400};
+
 // Gear Reduction Ratios
 float red[6] = {30.0, 161.0, 44.8, 100, 57.34, 57.34};
+
+// Gear Reduction Ratios for end effector motors;
+float red_EE[2] = {5.0, 10.0};
 
 // Encoder pulses per revolution
 long pprEnc = 512;
@@ -76,6 +82,14 @@ long homeCompConst[] = {2000, 2000, 1000, 500, 500, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
 long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
 char value;
+
+// end effector variables
+int runFlag_EE = 0;
+int axisDir_EE[2] = {1, 1};
+long maxAngles_EE[2] = {720, 50000}
+long minAngles_EE[2] = {0, -50000}
+long max_steps_EE[] = {red_EE[0]*maxAngles_EE[0]/360.0*ppr_EE[0], red_EE[1]*maxAngles_EE[1]/360.0*ppr_EE[1]};
+long min_steps_EE[] = {red_EE[0]*minAngles_EE[0]/360.0*ppr_EE[0], red_EE[1]*minAngles_EE[1]/360.0*ppr_EE[1]};
 
 // values for changing speed
 const int maxSpeedIndex = 2;
@@ -152,7 +166,29 @@ void controllerParse(char data) { // parses incoming serial data to control arm 
   else if(data == 'i') {
     runWrist(REV, 6);
   }
- else if(data == 'z') {
+  // end effector close
+  else if(data == 'w') {
+    runEndEffector(CLOSE);
+  }
+  // end effector open
+  else if(data == 'x') {
+    runEndEffector(OPEN)
+  }
+  // orient soil sampler tool orthoganal to ground
+  else if(data == 'y') {
+    prepareDrill();
+  }
+  // orient soil sampler parallel to ground for carrying sample away
+  else if(data == 'e') {
+    orientSample();
+  }
+
+  // deposits sample based on current arm orientation
+  else if(data == 'l') {
+    depositSample();
+  }
+
+  else if(data == 'z') {
     homeWrist();
   }
   else {
