@@ -168,8 +168,7 @@ void controllerParse(char data) {
     runWrist(REV, 6);
   }
  else if(data == 'z') {
-    homeWrist();
-    home_arm();
+    homeArm();
   }
   else {
     releaseEvent(data);
@@ -293,13 +292,20 @@ void zeroRunFlags() { // when user changes axis to control on switch, slow curre
   }
 }
 
-void home_arm() {
+void homeArm() { // main function for full arm homing
+  initializeWristHomingMotion();
+  homeWrist();
+  initializeHomingMotion();
+  homeBase();
+  initializeMotion();
+}
+
+void homeBase() { // homes axes 1-4
   
   bool stopFlags[4] = {false, false, false, false};
   bool finishFlags[4] = {false, false, false, false};
   bool completeFlag = false;
   int count = 0;
-  initializeHomingMotion();
   
   while(!completeFlag) {
 
@@ -337,9 +343,7 @@ void home_arm() {
   initializeMotion();
 }
 
-void homeWrist() {
-
-initializeWristHomingMotion();
+void homeWrist() { // homes axes 5-6
 
   bool stopFlags[2] = {false, false};
   bool calibFlags[2] = {false, false};
