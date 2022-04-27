@@ -96,13 +96,6 @@ void setup() { // setup function to initialize pins and provide initial homing t
     steppers[i] = AccelStepper(1, stepPins[i], dirPins[i]);
     steppers[i].setMinPulseWidth(200);
   }
-
-  // initializes encoder pins for use as interrupts
-  for(i=0; i<NUM_AXES; i++) {
-    pinMode(encoderPinA[i], INPUT_PULLUP);
-    pinMOde(encoderPinB[i], INPUT_PULLUP);
-  }
-
   // waits for user to press "home" button before rest of functions are available
   waitForHome();
 }
