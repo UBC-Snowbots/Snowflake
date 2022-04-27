@@ -83,44 +83,28 @@ int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 105
 int speedIndex = maxSpeedIndex;
 char faster = 'l';
 char slower = 's';
-// setup function to initialize pins and provide initial homing to the arm
-void setup() {
+
+void setup() { // setup function to initialize pins and provide initial homing to the arm
 
   Serial.begin(9600);
 
-  // initializing steppers
-  for(int i=0; i<NUM_AXES_EFF; i++) {
+  // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
+  for(i = 0; i<NUM_AXES_EFF; i++) {
+    pinMode(dirPins[i], OUTPUT);
+    pinMode(stepPins[i], OUTPUT);
+    pinMode(limPins[i], INPUT_PULLUP);
     steppers[i] = AccelStepper(1, stepPins[i], dirPins[i]);
     steppers[i].setMinPulseWidth(200);
   }
 
-  // initializing limit switches
-  for(i = 0; i<NUM_AXES_EFF; i++) {
-    pinMode(limPins[i], INPUT_PULLUP);
+  // initializes encoder pins for use as interrupts
+  for(i=0; i<NUM_AXES; i++) {
+    pinMode(encoderPinA[i], INPUT_PULLUP);
+    pinMOde(encoderPinB[i], INPUT_PULLUP);
   }
 
-  // initializing step pins
-  for(i = 0; i<NUM_AXES_EFF; i++) {
-    pinMode(stepPins[i], OUTPUT);
-  }
-
-  // initializing direction pins
-  for(i = 0; i<NUM_AXES_EFF; i++) {
-    pinMode(dirPins[i], OUTPUT);
-  }
-
-  // initializing max speeds and accelerations for motors
-
-  Serial.println("HOME ARM TO UNLOCK MOTION");
-  while(!initFlag) {
-    if(Serial.available()>0){
-      char init = Serial.read();
-      if(init == 'z') {
-        initFlag = true;
-      }
-    }
-    delay(readInterval);
-  }
+  // waits for user to press "home" button before rest of functions are available
+  waitForHome();
 }
 
 // main loop where motion functions are called and serial communication occurs
@@ -141,7 +125,7 @@ void loop() {
   runSteppers();
 }
 
-void controllerParse(char data) {
+void controllerParse(char data) { // parses incoming serial data to control arm motion based on user input
   
   if(data == 'a') {
     runAxes(FWD, currentAxis);
@@ -168,7 +152,7 @@ void controllerParse(char data) {
     runWrist(REV, 6);
   }
  else if(data == 'z') {
-    homeArm();
+    homeWrist();
   }
   else {
     releaseEvent(data);
@@ -200,7 +184,7 @@ void runAxes(int dir, int axis) { // assigns run flags to indicate forward / rev
   }
 }
 
-void runWrist(int dir, int axis) {
+void runWrist(int dir, int axis) { // assigns target position for selected axis based on user input. 
 
   if(axis == 5) { // axis 5 motion -> both wrist motors spin in opposite directions
     if(runFlags[5] == 1 && dir == FWD) {
@@ -410,8 +394,7 @@ void homeWrist() { // homes axes 5-6
   }
 }
 
-// sets initial speed and acceleration, and sets target position
-void initializeHomingMotion() {
+void initializeHomingMotion() { // sets homing speed and acceleration for axes 1-4 and sets target homing position
 
   for(i = 0; i<NUM_AXES_EX_WRIST; i++) {
 
@@ -422,7 +405,7 @@ void initializeHomingMotion() {
   }
 }
 
-void initializeWristHomingMotion() {
+void initializeWristHomingMotion() { // sets homing speed and acceleration for axes 5-6 and sets target homing position
 
   for(i = 4; i<NUM_AXES_EFF; i++) {
 
@@ -433,8 +416,7 @@ void initializeWristHomingMotion() {
   }
 }
 
-// sets speeds for each axis
-void initializeMotion() {
+void initializeMotion() { // sets main program speeds for each axis
 
   for(i = 0; i<NUM_AXES_EFF; i++) {
     steppers[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
@@ -442,23 +424,21 @@ void initializeMotion() {
   }
 }
 
-// sets current position of all axes to 0
-void zeroAxes() {
+void zeroAxes() { // sets current position of all axes to 0
 
   for(i = 0; i<NUM_AXES_EFF; i++) {
     steppers[i].setCurrentPosition(0);
   }
 }
 
-// Runs steppers on all axes
-void runSteppers() {
+void runSteppers() { // runs all stepper motors (if no target position has been assigned, stepper will not move)
     
   for(i = 0; i<NUM_AXES_EFF; i++) {
     steppers[i].run();
   }
 }
 
-void changeSpeed(char speedVal) {
+void changeSpeed(char speedVal) { // changes speed of all axes based on user input
   
   if(speedVal == faster){
     if(speedIndex < maxSpeedIndex) {
@@ -478,3 +458,23 @@ void changeSpeed(char speedVal) {
     }
   }
 }
+
+void waitForHome() { // stops arm motion until user homes arm after firmware is flashed
+
+  bool initFlag = false;
+  Serial.println("HOME ARM TO UNLOCK MOTION");
+  while(!initFlag) {
+    if(Serial.available()>0){
+      char init = Serial.read();
+      if(init == 'z') {
+        initFlag = true;
+        homeArm();
+      }
+    }
+    delay(readInterval);
+  }
+}
+
+
+
+
