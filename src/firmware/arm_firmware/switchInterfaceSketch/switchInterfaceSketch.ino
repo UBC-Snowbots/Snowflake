@@ -22,6 +22,8 @@ Description: Main code for driving 6 axis robotic arm using Nintendo Switch pro 
 // **NOTE** axis 3 and 4 are switched and axis 5 and 6 are switched. i.e. stepPins[3] is not axis 4, it is axis 3
 int stepPins[8] =   {11, 9, 5, 7, 1, 3, 1, 3};
 int dirPins[8] =    {10, 8, 4, 6, 0, 2, 0, 2};
+int stepPin_EE = 14;
+int dirPin_EE = 13;
 
 // limit switch pins
 int limPins[6] = {23, 22, 20, 21, 18, 19};
@@ -46,6 +48,8 @@ int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200};
 int maxAccel[8] = {900, 3000, 4000, 3000, 5000, 5000, 5000, 5000};
 int homeSpeed[8] = {500, 1200, 600, 400, 2000, 2000, 2000, 2000}; // {500, 1500, 700, 1200, 1200, 1200, 1200, 1200};
 int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000, 1000, 1500, 1500, 1500, 1500, 1500};
+int maxSpeed_EE = 1000;
+int maxAccel_EE = 500;
 
 // Range of motion (degrees) for each axis
 int maxAngles[6] = {180, 70, 180, 120, 140, 100};
@@ -300,6 +304,11 @@ void releaseEvent(char value) { // when user releases a joystick serial sends a 
     steppers[5].stop();
     runFlags[4] = 0;
   }
+
+  else if(value == EE_Release) {
+    steppers_EE.stop();
+    runFlag_EE = 0;
+  }
 }
 
 void zeroRunFlags() { // when user changes axis to control on switch, slow current moving axes to a stop and reset run flags (all motors stagnant)
@@ -473,6 +482,7 @@ void runSteppers() { // runs all stepper motors (if no target position has been 
   for(i = 0; i<NUM_AXES_EFF; i++) {
     steppers[i].run();
   }
+  stepper_EE.run();
 }
 
 void changeSpeed(char speedVal) { // changes speed of all axes based on user input
@@ -510,6 +520,32 @@ void waitForHome() { // stops arm motion until user homes arm after firmware is 
     }
     delay(readInterval);
   }
+}
+
+// sets target position for end effector motor
+void runEndEffector(bool dir, int mode) {
+
+  if(dir==OPEN) {
+    stepper_EE.moveTo(max_steps_EE[mode]);
+  }
+
+  else {
+    stepper_EE.moveTo(min_steps_EE[mode]);
+  }
+
+  runFlag_EE = 1;
+}
+
+void prepareDrill() {
+
+}
+
+void orientSample() {
+
+}
+
+void depositSample() {
+
 }
 
 
