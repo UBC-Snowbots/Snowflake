@@ -334,14 +334,12 @@ void home_arm() {
       completeFlag = true;
     }
   }
-
   initializeMotion();
 }
 
 void homeWrist() {
 
 initializeWristHomingMotion();
-initializeHomingMotion();
 
   bool stopFlags[2] = {false, false};
   bool calibFlags[2] = {false, false};
@@ -406,7 +404,6 @@ initializeHomingMotion();
       completeFlag = true;
     }
   }
-  zeroRunFlags();
 }
 
 // sets initial speed and acceleration, and sets target position
