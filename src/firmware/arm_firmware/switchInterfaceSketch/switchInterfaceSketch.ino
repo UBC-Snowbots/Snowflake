@@ -154,7 +154,7 @@ void controllerParse(char data) { // parses incoming serial data to control arm 
     runWrist(REV, 6);
   }
  else if(data == 'z') {
-    homeWrist();
+    homeArm();
   }
   else {
     releaseEvent(data);
