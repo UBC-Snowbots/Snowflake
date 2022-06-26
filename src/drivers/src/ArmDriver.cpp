@@ -32,6 +32,11 @@ ArmDriver::ArmDriver(int argc, char **argv, std::string node_name) {
     my_subscriber                     = nh.subscribe(
     topic_to_subscribe_to, queue_size, &ArmDriver::subscriberCallBack, this);
 
+    xbox_mode = false;
+    int queue_size                    = 10;
+    my_subscriber                     = nh.subscribe(
+    "xbox_mode", queue_size, &ArmDriver::controllerModeCallBack, this);
+
     // Setup Publisher(s)
     std::string topic = private_nh.resolveName("publish_topic");
     queue_size        = 1;
@@ -43,6 +48,14 @@ void ArmDriver::subscriberCallBack(const std_msgs::String::ConstPtr& msg) {
     std::string input_string = msg->data.c_str();
     std::string new_msg = addCharacterToString(input_string, suffix);
     republishMsg(new_msg);
+}
+
+void ArmDriver::controllerModeCallBack(const std_msgs::Bool::ConstPtr& msg) {
+    xbox_mode = msg->data;
+    if (xbox_mode)
+        ROS_INFO("Enabling Xbox Mode");
+    else
+        ROS_INFO("Enabling Pro Controller Mode");
 }
 
 std::string ArmDriver::addCharacterToString(std::string input_string, std::string suffix) {
