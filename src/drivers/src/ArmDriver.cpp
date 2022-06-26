@@ -19,6 +19,13 @@ ArmDriver::ArmDriver(int argc, char **argv, std::string node_name) {
     std::string default_character = "!";
     SB_getParam(private_nh, parameter_name, suffix, default_character);
 
+    // Get Params
+    SB_getParam(private_nh, "port", port, (std::string) "/dev/ttyACM0");
+    // Open the given serial port
+    teensy.Open(port);
+    teensy.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600); // adjust
+    teensy.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8); // adjust
+
     // Setup Subscriber(s)
     std::string topic_to_subscribe_to = "subscribe_topic";
     int queue_size                    = 10;
