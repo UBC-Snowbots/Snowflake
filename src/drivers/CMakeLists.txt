@@ -48,6 +48,14 @@ target_link_libraries(encoder_odometry_node
         ${catkin_LIBRARIES}
         )
 
+add_executable(arm_driver
+        src/ArmDriver.cpp
+        src/arm_driver.cpp
+        include/ArmDriver.h
+        )
+target_link_libraries(arm_driver
+        ${catkin_LIBRARIES}
+        )
 
 #############
 ## Testing ##
