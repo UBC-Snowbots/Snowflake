@@ -67,7 +67,7 @@ private:
 
     // True if we are accepting commands from Xbox controller
     // false if we are accepting commands from Pro Controller
-    bool xbox_mode;
+    bool xbox_mode = false;
 
     ros::Subscriber my_subscriber;
     ros::Publisher my_publisher;

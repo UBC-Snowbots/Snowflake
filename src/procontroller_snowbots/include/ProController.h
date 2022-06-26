@@ -55,7 +55,7 @@ class ProController {
     double x;
     double z;
     struct libevdev* dev = NULL;
-    enum Mode { wheels = 0, arm = 1 };
+    enum Mode { wheels = 0, arm_joint_space = 1, arm_cartesian = 2, drilling = 3 };
     Mode state;
     bool debug = false;
     ros::Publisher pubmove;

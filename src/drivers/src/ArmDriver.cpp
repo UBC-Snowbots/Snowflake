@@ -32,7 +32,6 @@ ArmDriver::ArmDriver(int argc, char **argv, std::string node_name) {
     my_subscriber                     = nh.subscribe(
     topic_to_subscribe_to, queue_size, &ArmDriver::subscriberCallBack, this);
 
-    xbox_mode = false;
     int queue_size                    = 10;
     my_subscriber                     = nh.subscribe(
     "xbox_mode", queue_size, &ArmDriver::controllerModeCallBack, this);

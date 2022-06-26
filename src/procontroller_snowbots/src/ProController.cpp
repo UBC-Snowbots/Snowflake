@@ -113,7 +113,7 @@ void ProController::readInputs() {
                     if (state == Mode::wheels) {
                         // Publish motion, update x and z old using tuple
                         tie(x_old, z_old) = publishMoveXZ(x, z, x_old, z_old);
-                    } else if (state == Mode::arm) {
+                    } else if (state == Mode::arm_joint_space) {
                         publishArmXZ(x, z, x_old, z_old);
                     }
                 }
@@ -133,8 +133,12 @@ void ProController::printControllerDebug(int type, int code, int value) {
 void ProController::printState() {
     if (state == Mode::wheels) {
         ROS_INFO("Current mode: controlling wheels");
-    } else if (state == Mode::arm) {
-        ROS_INFO("Current mode: controlling arm");
+    } else if (state == Mode::arm_joint_space) {
+        ROS_INFO("Current mode: controlling arm in the joint space");
+    } else if (state == Mode::arm_cartesian) {
+        ROS_INFO("Current mode: controlling arm in the cartesian space");
+    } else if (state == Mode::drilling) {
+        ROS_INFO("Current mode: drilling with the arm");
     } else {
         ROS_INFO("There is no current mode, which is a problem");
     }
