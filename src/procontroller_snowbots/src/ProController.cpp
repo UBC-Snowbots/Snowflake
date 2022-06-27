@@ -289,13 +289,8 @@ void ProController::home(int value) {
         if (value == 1) {
             ROS_INFO("Home button pressed");
         } else if (value == 0) {
-            if (state == Mode::wheels) {
-                state = Mode::arm;
-                printState();
-            } else {
-                state = Mode::wheels;
-                printState();
-            }
+            state = static_cast<Mode>((state + 1) % (Mode::drilling + 1));
+            printState();
         }
     }
 }

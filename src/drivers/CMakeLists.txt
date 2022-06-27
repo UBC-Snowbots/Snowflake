@@ -55,6 +55,7 @@ add_executable(arm_driver
         )
 target_link_libraries(arm_driver
         ${catkin_LIBRARIES}
+        ${libserial_LIBRARIES}
         )
 
 #############
