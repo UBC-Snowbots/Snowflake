@@ -54,6 +54,40 @@ class ProController {
     double Z_SENSITIVITY = 1.0;
     double x;
     double z;
+    std::string armOutMsg, armOutVal;
+    // character representations of buttons for arm communication
+    const char leftJSL = 'A';
+    const char leftJSR = 'B';
+    const char rightJSU = 'C';
+    const char rightJSD = 'D';
+    const char buttonA = 'E';
+    const char buttonB = 'F';
+    const char buttonX = 'G';
+    const char buttonY = 'H';
+    const char triggerL = 'I';
+    const char triggerR = 'J';
+    const char bumperL = 'K';
+    const char bumperR = 'L';
+    const char buttonARel = 'M';
+    const char buttonBRel = 'N';
+    const char buttonXRel = 'O';
+    const char buttonYRel = 'P';
+    const char triggerLRel = 'Q';
+    const char triggerRRel = 'R';
+    const char bumperLRel = 'S';
+    const char bumperRRel = 'T';
+    const char arrowL = 'U';
+    const char arrowR = 'V';
+    const char arrowU = 'W';
+    const char arrowD = 'X';
+    const char arrowLRRel = 'Y';
+    const char arrowUDRel = 'Z';
+    // arm modes
+    const char jointMode = "1";
+    const char IKMode = "2";
+    const char drillMode = "3";
+
+
     struct libevdev* dev = NULL;
     enum Mode { wheels = 0, arm_joint_space = 1, arm_cartesian = 2, drilling = 3 };
     Mode state;
