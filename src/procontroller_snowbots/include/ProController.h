@@ -58,7 +58,7 @@ class ProController {
     double x;
     double z;
     std::string armOutMsg, armOutVal;
-// character representations of buttons for arm communication
+    // character representations of buttons for arm communication
     const char leftJSL = 'A';
     const char leftJSR = 'B';
     const char rightJSU = 'C';
