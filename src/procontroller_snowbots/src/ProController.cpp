@@ -210,7 +210,19 @@ void ProController::leftJoystickX(int value) {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick X event with value: %d\n", value);
-        x = (value - 128) / 128.0 * X_SENSITIVITY;
+        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+
+        // Left joystick is only used in x direction in arm joint space mode. Drilling / cartesion mode do not use this joystick
+        if(state == Mode::arm_joint_space) {
+
+            if(z > 0) {
+             armOutVal = leftJSL;
+            }
+
+            else {
+             armOutVal = leftJSR;
+            }
+        }
     }
 }
 
@@ -455,7 +467,6 @@ void ProController::arrowsUorD(int value) {
     } else {
         ROS_INFO("Down button pressed");
         armOutVal = arrowD;
-	if (state == Mode::wheels) {
 	    speed = speed > 5 ? speed - 5 : speed;
 	    ROS_INFO("Speed increased to %d%% of max output", speed);
 	}
