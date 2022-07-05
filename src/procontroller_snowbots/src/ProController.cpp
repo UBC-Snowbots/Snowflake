@@ -196,7 +196,7 @@ void ProController::leftJoystickX(int value) {
         }
 
         else if(state == Mode::arm_joint_space){
-            armOutVal += leftJSRelease;
+            armOutVal += leftJSRel;
         }
     } 
     
@@ -246,7 +246,7 @@ void ProController::rightJoystickY(int value) {
 
     if (value > 118 && value < 137) {
 
-     armOutVal += leftJSRelease;
+     armOutVal += leftJSRel;
     } 
     
     else {
@@ -276,7 +276,7 @@ void ProController::A(int value) {
      armOutVal = buttonA;
     } else if (value == 0) {
         ROS_INFO("A button released");
-     armOutVal = buttonARel;
+     armOutVal = buttonRel;
     }
 }
 
@@ -286,7 +286,7 @@ void ProController::B(int value) {
      armOutVal = buttonB;
     } else if (value == 0) {
         ROS_INFO("B button released");
-     armOutVal = buttonBRel;
+     armOutVal = buttonRel;
     }
 }
 
@@ -296,7 +296,7 @@ void ProController::X(int value) {
      armOutVal = buttonX;
     } else if (value == 0) {
         ROS_INFO("X button released");
-     armOutVal = buttonXRel;
+     armOutVal = buttonRel;
     }
 }
 
@@ -306,7 +306,7 @@ void ProController::Y(int value) {
      armOutVal = buttonY;
     } else if (value == 0) {
         ROS_INFO("Y button released");
-     armOutVal = buttonYRel;
+     armOutVal = buttonRel;
     }
 }
 
@@ -343,6 +343,7 @@ void ProController::start(int value) {
         ROS_INFO("Start button pressed");
     } else if (value == 0) {
         ROS_INFO("Start button released");
+        armOutVal = homeVal;
     }
 }
 
