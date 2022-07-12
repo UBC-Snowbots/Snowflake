@@ -1,0 +1,12 @@
+<!-- This launch file is for all the nodes/files running on the laptop:
+     pro_controller
+     realsense_both.launch
+     (rviz to see where our rover is positioned)
+     (We may need to run Gazebo to see how our arm is behaving). -->
+
+<launch>
+<!-- launch pro_controller -->
+<node pkg="procontroller_snowbots" type="pro_controller" name="pro_controller" output="screen"></node>
+<!-- launch realsense_both.launch -->
+<include file="$(find cameras)/launch/realsense_both.launch"/>
+</launch>
