@@ -4,14 +4,14 @@
  * Description: Node for recieving messages from pro controller and relaying them to arm hardware driver module
  */
 
-#include "../include/teensyProInterface.h"
+#include "../include/armHardwareDriver.h"
 
 int main(int argc, char** argv) {
     // Setup your ROS node
-    std::string node_name = "teensy_pro_interface";
+    std::string node_name = "arm_hardware_driver";
 
     // Create an instance of your class
-    TeensyProInterface teensyComm(argc, argv, node_name);
+    ArmHardwareDriver teensyComm(argc, argv, node_name);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();

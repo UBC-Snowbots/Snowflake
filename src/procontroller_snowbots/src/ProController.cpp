@@ -24,7 +24,8 @@ ProController::ProController(int argc, char** argv, string node_name) {
         ROS_INFO("Debug mode %s", (debug) ? "on" : "off");
     }
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
-        pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
+    pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
+
     ROS_INFO("Preparing to read inputs...\n");
     state = Mode::wheels;
     printState();
@@ -182,8 +183,10 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
 
 // If controller recieves new commands and is in an arm mode, send message to arm
 void publishArmMessage(std::string outMsg) {
+    std_msgs::String outMsgWrapper;
     outMsg += '\n';
-    pubarm.publish(outMsg);
+    outMsgWrapper.data = outMsg;
+    pubarm.publish(outMsgWrapper);
 }
 
 // Updates z, which is then published by publish___XZ in readInputs()
@@ -276,7 +279,7 @@ void ProController::A(int value) {
      armOutVal = buttonA;
     } else if (value == 0) {
         ROS_INFO("A button released");
-     armOutVal = buttonRel;
+     armOutVal = buttonARel;
     }
 }
 
@@ -286,7 +289,7 @@ void ProController::B(int value) {
      armOutVal = buttonB;
     } else if (value == 0) {
         ROS_INFO("B button released");
-     armOutVal = buttonRel;
+     armOutVal = buttonBRel;
     }
 }
 
@@ -296,7 +299,7 @@ void ProController::X(int value) {
      armOutVal = buttonX;
     } else if (value == 0) {
         ROS_INFO("X button released");
-     armOutVal = buttonRel;
+     armOutVal = buttonXRel;
     }
 }
 
@@ -306,7 +309,7 @@ void ProController::Y(int value) {
      armOutVal = buttonY;
     } else if (value == 0) {
         ROS_INFO("Y button released");
-     armOutVal = buttonRel;
+     armOutVal = buttonYRel;
     }
 }
 

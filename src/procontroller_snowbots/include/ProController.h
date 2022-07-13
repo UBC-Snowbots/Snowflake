@@ -45,8 +45,8 @@ class ProController {
     void leftJoystickPress(int value);  // BTN_THUMBL
     void rightJoystickPress(int value); // BTN_THUMBR
     tuple<double, double>
-    publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
-    void publishArmXZ(double x_new, double z_new, double x_old, double z_old);
+    void publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
+    void publishArmMessage(std::string outMsg);
     void printState();
     void printControllerDebug(int type, int code, int value);
     // see documentation to changes sensitivities at runtime
@@ -55,7 +55,7 @@ class ProController {
     double x;
     double z;
     std::string armOutMsg, armOutVal;
-    // character representations of buttons for arm communication
+// character representations of buttons for arm communication
     const char leftJSL = 'A';
     const char leftJSR = 'B';
     const char rightJSU = 'C';
@@ -68,18 +68,21 @@ class ProController {
     const char triggerR = 'J';
     const char bumperL = 'K';
     const char bumperR = 'L';
-    const char buttonRel = "M";
-    const char triggerLRel = 'N';
-    const char triggerRRel = 'O';
-    const char bumperLRel = 'P';
-    const char bumperRRel = 'Q';
-    const char arrowL = 'R';
-    const char arrowR = 'S';
-    const char arrowU = 'T';
-    const char arrowD = 'U';
-    const char leftJSRel = "V";
-    const char rightJSRel = "W";
-    const char homeVal = "X";
+    const char buttonARel = "M";
+    const char buttonBRel = "N";
+    const char buttonXRel = "O";
+    const char buttonYRel = "P";
+    const char triggerLRel = 'Q';
+    const char triggerRRel = 'R';
+    const char bumperLRel = 'S';
+    const char bumperRRel = 'T';
+    const char arrowL = 'U';
+    const char arrowR = 'V';
+    const char arrowU = 'W';
+    const char arrowD = 'X';
+    const char leftJSRel = "Y";
+    const char rightJSRel = "Z";
+    const char homeVal = "4";
     // arm modes
     const char jointMode = "1";
     const char IKMode = "2";
