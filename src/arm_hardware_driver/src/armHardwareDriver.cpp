@@ -7,10 +7,9 @@
 
 #include "../include/armHardwareDriver.h"
 
-ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv) {
+ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_name) {
 
     // Setup NodeHandles
-    std::string node_name = "TeensyDriver";
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
@@ -181,7 +180,7 @@ void ArmHardwareDriver::homeArm() {
 
 // ROS SERIAL COMMUNICATION APIs //
 
-void TeensyDriver::cartesian_motion(std::vector<double>& pos_commands, std::vector<double>& joint_positions)
+void ArmHardwareDriver::cartesian_motion(std::vector<double>& pos_commands, std::vector<double>& joint_positions)
 {
     std::string inMsg = "";
     // convert angles to encoder steps for teensy
@@ -209,7 +208,7 @@ void TeensyDriver::cartesian_motion(std::vector<double>& pos_commands, std::vect
 }
 
 
-void TeensyDriver::updateEncoderSteps(std::string msg)
+void ArmHardwareDriver::updateEncoderSteps(std::string msg)
 {
     size_t idx1 = msg.find("A", 2) + 1;
     size_t idx2 = msg.find("B", 2) + 1;
@@ -225,7 +224,7 @@ void TeensyDriver::updateEncoderSteps(std::string msg)
     enc_steps_[5] = std::stoi(msg.substr(idx6));
 }
 
-void TeensyDriver::encStepsToJointPos(std::vector<int>& enc_steps, std::vector<double>& joint_positions)
+void ArmHardwareDriver::encStepsToJointPos(std::vector<int>& enc_steps, std::vector<double>& joint_positions)
 {
     for (int i = 0; i < enc_steps.size(); ++i)
     {
@@ -234,7 +233,7 @@ void TeensyDriver::encStepsToJointPos(std::vector<int>& enc_steps, std::vector<d
     }
 }
 
-void TeensyDriver::jointPosToEncSteps(std::vector<double>& joint_positions, std::vector<int>& enc_steps)
+void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions, std::vector<int>& enc_steps)
 {
     for (int i = 0; i < joint_positions.size(); ++i)
     {
@@ -246,13 +245,13 @@ void TeensyDriver::jointPosToEncSteps(std::vector<double>& joint_positions, std:
 
 // Libserial Implementation
 
-sendMsg(std::string outMsg)
+void ArmHardwareDriver::sendMsg(std::string outMsg)
 {
     // Send everything in outMsg through serial port
     teensy << outMsg;
 }
 
-recieveMsg(std::string& inMsg)
+void ArmHardwareDriver::recieveMsg(std::string& inMsg)
 {
     // fill inMsg string with whatever comes through serial port until \n
     std::stringstream buffer;
