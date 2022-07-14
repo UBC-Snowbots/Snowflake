@@ -9,6 +9,7 @@
 
 // STD Includes
 #include <iostream>
+#include <sstream>
 
 // ROS Includes
 #include <ros/ros.h>
@@ -18,6 +19,9 @@
 
 // Snowbots Includes
 #include <sb_utils.h>
+
+// Other
+#include <SerialStream.h>
 
 class ArmHardwareDriver {
   public:
@@ -87,5 +91,11 @@ class ArmHardwareDriver {
 
   private:
     ros::Subscriber subPro;
+
+    // The SerialStream to/from the teensy
+    LibSerial::SerialStream teensy;
+
+    // The Port the teensy is connected to
+    std::string port;
 };
 #endif // ARM_HARDWARE_DRIVER_MYNODE_H

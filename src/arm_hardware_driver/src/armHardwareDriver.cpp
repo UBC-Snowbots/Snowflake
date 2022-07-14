@@ -17,6 +17,13 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv) {
 
     // Setup Subscriber
     subPro = nh.subscribe("/cmd_arm", 1, ArmHardwareDriver::teensySerialCallback, this);
+
+    // Get Params
+    SB_getParam(private_nh, "port", port, (std::string) "/dev/ttyACM0");
+    // Open the given serial port
+    teensy.Open(port);
+    teensy.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
+    teensy.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
 }
 
 
@@ -242,11 +249,18 @@ void TeensyDriver::jointPosToEncSteps(std::vector<double>& joint_positions, std:
 sendMsg(std::string outMsg)
 {
     // Send everything in outMsg through serial port
+    teensy << outMsg;
 }
 
 recieveMsg(std::string& inMsg)
 {
-    // Ihsan to fill with libserial implementation
     // fill inMsg string with whatever comes through serial port until \n
+    std::stringstream buffer;
+    char next_char;
+    do {
+	teensy >> next_char;
+	buffer << next_char;
+    } while (next_char != '\n');
+    inMsg = buffer.str();
 }
 
