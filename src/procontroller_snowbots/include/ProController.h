@@ -106,6 +106,7 @@ class ProController {
     std_msgs::Bool true_message;
     std_msgs::Bool false_message;
     int speed = 50;
+    ros::Publisher pubmode;
 };
 
 #endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H

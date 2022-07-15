@@ -197,6 +197,12 @@ void ProController::publishArmMessage(std::string outMsg) {
     pubarm.publish(outMsgWrapper);
 }
 
+void publishArmMode(std::Boolean mode) {
+    std_msgs::Bool outMsgWrapper;
+    outMsgWrapper.data = mode; 
+    pubmode.publish(outMsgWrapper);
+}
+
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
 
