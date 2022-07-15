@@ -30,6 +30,9 @@ static const char left = 'L';
 static const char up = 'U';
 static const char down = 'D';
 static const char wrist = 'W';
+static const char garbage = 'G';
+static const char faster = 'U';
+static const char slower = 'D';
 
 int stepPins[8] =   {11, 9, 5, 7, 1, 3, 1, 3};
 int dirPins[8] =    {10, 8, 4, 6, 0, 2, 0, 2};
@@ -68,7 +71,6 @@ int axisDir[8] = {1, -1, 1, -1, 1, 1, -1, 1};
 int currentAxis = 1;
 int runFlags[] = {0, 0, 0, 0, 0, 0};
 int i;
-char garbage;
 bool initFlag = false;
 
 // variables for homing / arm calibration
@@ -84,8 +86,7 @@ char value;
 const int maxSpeedIndex = 2;
 int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 1050, 1050, 1050}, {900, 1200, 2000, 1665, 1460, 1460, 1460, 1460}, {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200}};
 int speedIndex = maxSpeedIndex;
-char faster = 'U';
-char slower = 'D';
+
 
 
 void setup() { // setup function to initialize pins and provide initial homing to the arm
@@ -106,155 +107,170 @@ void setup() { // setup function to initialize pins and provide initial homing t
 
 void loop()
 {
-    currentTime = millis();
+  currentTime = millis();
 
-    if((currentTime - previousTime) > readInterval) {
-        commandArm()
-        previousTime = currentTime;
-    }
+  if((currentTime - previousTime) > readInterval) {
+    recieveCommand();
+    previousTime = currentTime;
+  }
 
-  runSteppers();
+runSteppers();
 }
 
-void commandArm()
+void recieveCommand()
 {
-    String inData = "";
-    char recieved = "";
-    if(Serial.available())
-    {
-        do {
-            recieved = Serial.read();
-            inData += recieved;
-        } while(recieved != '\n');
-    }
+  String inData = "";
+  char recieved = garbage;
+  if(Serial.available()>0)
+  {
+    do {
+      recieved = Serial.read();
+      inData += String(recieved);
+    } while(recieved != '\n');
+  }
 
-    if(recieved == '\n')
-    {
-        parseMessage(inData);
-    }
+  if(recieved == '\n')
+  {
+    parseMessage(inData);
+  }
 }
 
 void parseMessage(String inMsg)
 {
-    String function = inMsg.substring(0, 2);
-    
-    if(function == "MT")
-    {
-        cartesianCommands(inMsg);
-    }
+  String function = inMsg.substring(0, 2);
+  
+  if(function == "MT")
+  {
+    cartesianCommands(inMsg);
+  }
 
-    else if(function == "JM")
-    {
-        jointCommands(inMsg);
-    }
+  else if(function == "JM")
+  {
+    jointCommands(inMsg);
+  }
 
-    else if(function == "EE")
-    {
-        endEffectorCommands(inMsg);
-    }
+  else if(function == "EE")
+  {
+    endEffectorCommands(inMsg);
+  }
 
-    else if(function == "DM")
-    {
-        drillCommands(inMsg);
-    }
+  else if(function == "DM")
+  {
+    drillCommands(inMsg);
+  }
 
-    else if(function == "HM")
-    {
-        homeArm();
-    }
+  else if(function == "HM")
+  {
+    homeArm();
+  }
 }
 
 //****//CARTESIAN MODE FUNCTIONS//****//
 
-void cartesianCommands()
+void cartesianCommands(String inMsg)
 {
-    // read current joint positions
-    readEncPos(curEncSteps);
+  // read current joint positions
+  readEncPos(curEncSteps);
 
-    // update host with joint positions
-    String msg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
-                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("\n");
-    Serial.print(msg);
+  // update host with joint positions
+  sendCurrentPosition();
 
-    // get new position commands
-    int msgIdxJ1 = inData.indexOf('A');
-    int msgIdxJ2 = inData.indexOf('B');
-    int msgIdxJ3 = inData.indexOf('C');
-    int msgIdxJ4 = inData.indexOf('D');
-    int msgIdxJ5 = inData.indexOf('E');
-    int msgIdxJ6 = inData.indexOf('F');
-    cmdEncSteps[0] = inData.substring(msgIdxJ1 + 1, msgIdxJ2).toInt();
-    cmdEncSteps[1] = inData.substring(msgIdxJ2 + 1, msgIdxJ3).toInt();
-    cmdEncSteps[2] = inData.substring(msgIdxJ3 + 1, msgIdxJ4).toInt();
-    cmdEncSteps[3] = inData.substring(msgIdxJ4 + 1, msgIdxJ5).toInt();
-    cmdEncSteps[4] = inData.substring(msgIdxJ5 + 1, msgIdxJ6).toInt();
-    cmdEncSteps[5] = inData.substring(msgIdxJ6 + 1).toInt();
+  // get new position commands
+  int msgIdxJ1 = inMsg.indexOf('A');
+  int msgIdxJ2 = inMsg.indexOf('B');
+  int msgIdxJ3 = inMsg.indexOf('C');
+  int msgIdxJ4 = inMsg.indexOf('D');
+  int msgIdxJ5 = inMsg.indexOf('E');
+  int msgIdxJ6 = inMsg.indexOf('F');
+  cmdEncSteps[0] = inMsg.substring(msgIdxJ1 + 1, msgIdxJ2).toInt();
+  cmdEncSteps[1] = inMsg.substring(msgIdxJ2 + 1, msgIdxJ3).toInt();
+  cmdEncSteps[2] = inMsg.substring(msgIdxJ3 + 1, msgIdxJ4).toInt();
+  cmdEncSteps[3] = inMsg.substring(msgIdxJ4 + 1, msgIdxJ5).toInt();
+  cmdEncSteps[4] = inMsg.substring(msgIdxJ5 + 1, msgIdxJ6).toInt();
+  cmdEncSteps[5] = inMsg.substring(msgIdxJ6 + 1).toInt();
 
-    // update target joint positions
-    readEncPos(curEncSteps);
-    for (int i = 0; i < NUM_AXES; i++)
-    { 
-        int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
-        if (abs(diffEncSteps) > 2)
-        {
-        int diffMotSteps = diffEncSteps / ENC_MULT[i];
-        if (diffMotSteps < MOTOR_STEPS_PER_REV[i])
-        {
-            // for the last rev of motor, introduce artificial decceleration
-            // to help prevent overshoot
-            diffMotSteps = diffMotSteps / 2;
-        }
-        stepperJoints[i].move(diffMotSteps);
-        }
+  // update target joint positions
+  readEncPos(curEncSteps);
+  for (int i = 0; i < NUM_AXES; i++)
+  { 
+    int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
+    if (abs(diffEncSteps) > 2)
+    {
+    int diffMotSteps = diffEncSteps / ENC_MULT[i];
+    if (diffMotSteps < MOTOR_STEPS_PER_REV[i])
+    {
+      // for the last rev of motor, introduce artificial decceleration
+      // to help prevent overshoot
+      diffMotSteps = diffMotSteps / 2;  
     }
+    steppers[i].move(diffMotSteps);
+    }
+  }
 }
 
 // parses which commands to execute when in joint space mode
 void jointCommands(String inMsg)
 {
-    char function = inMsg[2];
-    char detail1 = inMsg[3];
+  char function = inMsg[2];
+  char detail1 = inMsg[3];
 
-    switch(function) 
-    {
-        case release: releaseEvent(detail1, inMsg[4]); break;
-        case speed: changeSpeed(detail1); break;
-        case axis: changeAxis(detail1); break;
-        case move: jointMovement(detail1, inMsg[4]); break;
-    }
+  switch(function) 
+  {
+    case release: releaseEvent(detail1, inMsg[4]); break;
+    case speed: changeSpeed(detail1); break;
+    case axis: changeAxis(detail1); break;
+    case move: jointMovement(detail1, inMsg[4]); break;
+  }
+}
+
+void endEffectorCommands(String inMsg)
+{
+  // fill with end effector commands depending on substring
+}
+
+void drillMotion(String inMsg)
+{
+  // fill with calls to drill functions depending on substring
+}
+
+void sendCurrentPosition() 
+{
+  String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
+                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("\n");
+    Serial.print(outMsg);
 }
 
 // Sets movement target positions when in joint space mode
 void jointMovement(char joystick, char dir)
 {
-    if(joystick == wrist)
+  if(joystick == wrist)
+  {
+    switch(dir)
     {
-        switch(dir)
-        {
-            case up: runWrist(FWD, 5); break;
-            case down: runWrist(REV, 5); break;
-            case left: runWrist(FWD, 6); break;
-            case right: runWrist(REV, 6); break;
-        }
+      case up: runWrist(FWD, 5); break;
+      case down: runWrist(REV, 5); break;
+      case left: runWrist(FWD, 6); break;
+      case right: runWrist(REV, 6); break;
     }
+  }
 
-    else if(joystick == left)
+  else if(joystick == left)
+  {
+    switch(dir)
     {
-        switch(dir)
-        {
-            case left: runAxes(FWD, currentAxis); break;
-            case right: runAxes(REV, currentAxis); break;
-        }
+      case left: runAxes(FWD, currentAxis); break;
+      case right: runAxes(REV, currentAxis); break;
     }
+  }
 
-    else
+  else
+  {
+    switch(dir)
     {
-        switch(dir)
-        {
-            case up: runAxes(FWD, currentAxis+1); break;
-            case down: runAxes(REV, currentAxis+1); break;
-        }
+      case up: runAxes(FWD, currentAxis+1); break;
+      case down: runAxes(REV, currentAxis+1); break;
     }
+  } 
 }
 
 //****//ENCODER RELATED FUNCTIONS//****//
@@ -356,34 +372,34 @@ void changeAxis(int dir) { // when user hits specified button, axis targets chan
 
 void releaseEvent(char joystick, char dir) { // when user releases a joystick serial sends a character
 
-    if(joystick == wrist)
+  if(joystick == wrist)
+  {
+    if ((dir == up) || (dir == down))
     {
-        if ((dir == up) || (dir == down))
-        {
-            steppers[6].stop();
-            steppers[7].stop();
-            runFlags[5] = 0;
-        }
-
-        else
-        {
-            steppers[4].stop();
-            steppers[5].stop();
-            runFlags[4] = 0; 
-        }
+      steppers[6].stop();
+      steppers[7].stop();
+      runFlags[5] = 0;
     }
 
-    else if(joystick == left)
+    else
     {
-        steppers[currentAxis-1].stop();
-        runFlags[currentAxis-1].stop();
+      steppers[4].stop();
+      steppers[5].stop();
+      runFlags[4] = 0; 
     }
+  }
 
-    else 
-    {
-        steppers[currentAxis].stop();
-        runFlags[currentAxis].stop();
-    }
+  else if(joystick == left)
+  {
+    steppers[currentAxis-1].stop();
+    runFlags[currentAxis-1].stop();
+  }
+
+  else 
+  {
+    steppers[currentAxis].stop();
+    runFlags[currentAxis].stop();
+  }
 }
 
 void changeSpeed(char speedVal) { // changes speed of all axes based on user input
@@ -418,13 +434,6 @@ void zeroRunFlags() { // when user changes axis to control on switch, slow curre
   }
 }
 
-
-
-
-
-
-
-
 //****// ARM CALIBRATION FUNCTIONS//****//
 
 void homeArm() { // main function for full arm homing
@@ -433,6 +442,7 @@ void homeArm() { // main function for full arm homing
   initializeHomingMotion();
   homeBase();
   initializeMotion();
+  sendCurrentPosition();
 }
 
 void homeBase() { // homes axes 1-4
@@ -591,27 +601,36 @@ void runSteppers() { // runs all stepper motors (if no target position has been 
 
 void waitForHome() { // stops arm motion until user homes arm after firmware is flashed
 
-    String inData = "";
-    char recieved = "";
-    bool initFlag = false;
-    while(!initFlag) {
-        
-        if(Serial.available())
+  String inData = "";
+  char recieved;
+  bool initFlag = false;
+  bool serialFlag = false;
+
+  while(!initFlag) {
+
+    if(Serial.available() > 0)
+    {
+      recieved = Serial.read();
+      inData += String(recieved)
+      if(recieved == '\n')
+      {
+        serialFlag = true;
+      }
+    }
+
+    if(serialFlag)
+    {
+        if(inData = "HM")
         {
-            do {
-                recieved = Serial.read();
-                inData += recieved;
-            } while(recieved != '\n');
+          homeArm();
+          initFlag = true;
         }
 
-        if(recieved == '\n')
+        else
         {
-            if(inData = "HM")
-            {
-                homeArm();
-                initFlag = true;
-            }
+          inData = "";
+          serialFlag = false;
         }
-        delay(readInterval);
     }
+  }
 }

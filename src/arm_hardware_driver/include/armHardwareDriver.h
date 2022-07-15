@@ -23,6 +23,8 @@
 // Other
 #include <SerialStream.h>
 
+#include <ArmDriver.h>
+
 class ArmHardwareDriver {
   public:
     ArmHardwareDriver(int argc, char** argv, std::string node_name);
@@ -41,7 +43,8 @@ class ArmHardwareDriver {
     void depositSample();
     void manualDrill(const char dir);
     void homeArm();
-    void cartesian_motion(std::vector<double>& pos_commands, std::vector<double>& joint_positions);
+    void cartesian_motion(std::string inMsg);
+    void cartesian_moveit_move(std::vector<double>& pos_commands, std::vector<double>& joint_positions);
     void updateEncoderSteps(std::string msg);
     void encStepsToJointPos(std::vector<int>& enc_steps, std::vector<double>& joint_positions);
     void jointPosToEncSteps(std::vector<double>& joint_positions, std::vector<int>& enc_steps);
@@ -90,6 +93,7 @@ class ArmHardwareDriver {
     const char garbage = 'G';
 
   private:
+
     ros::Subscriber subPro;
 
     // The SerialStream to/from the teensy

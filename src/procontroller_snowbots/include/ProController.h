@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/String.h>
 #include <iostream>
 #include <libevdev-1.0/libevdev/libevdev.h>
 #include <ros/ros.h>
@@ -44,8 +45,7 @@ class ProController {
     void arrowsUorD(int value);         // ABS_HAT0Y
     void leftJoystickPress(int value);  // BTN_THUMBL
     void rightJoystickPress(int value); // BTN_THUMBR
-    tuple<double, double>
-    void publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
+    tuple<double, double> publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
     void publishArmMessage(std::string outMsg);
     void printState();
     void printControllerDebug(int type, int code, int value);
@@ -68,10 +68,10 @@ class ProController {
     const char triggerR = 'J';
     const char bumperL = 'K';
     const char bumperR = 'L';
-    const char buttonARel = "M";
-    const char buttonBRel = "N";
-    const char buttonXRel = "O";
-    const char buttonYRel = "P";
+    const char buttonARel = 'M';
+    const char buttonBRel = 'N';
+    const char buttonXRel = 'O';
+    const char buttonYRel = 'P';
     const char triggerLRel = 'Q';
     const char triggerRRel = 'R';
     const char bumperLRel = 'S';
@@ -80,14 +80,13 @@ class ProController {
     const char arrowR = 'V';
     const char arrowU = 'W';
     const char arrowD = 'X';
-    const char leftJSRel = "Y";
-    const char rightJSRel = "Z";
-    const char homeVal = "4";
+    const char leftJSRel = 'Y';
+    const char rightJSRel = 'Z';
+    const char homeVal = '4';
     // arm modes
-    const char jointMode = "1";
-    const char IKMode = "2";
-    const char drillMode = "3";
-
+    const char jointMode = '1';
+    const char IKMode = '2';
+    const char drillMode = '3';
 
     struct libevdev* dev = NULL;
     enum Mode { wheels = 0, arm_joint_space = 1, arm_cartesian = 2, drilling = 3 };
@@ -95,6 +94,8 @@ class ProController {
     bool debug = false;
     ros::Publisher pubmove;
     ros::Publisher pubarm;
+    ros::Publisher pubmode;
+    
 };
 
 #endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H

@@ -11,6 +11,7 @@
 ProController::ProController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
     string armPublisher = "/cmd_arm";
+    string modePublisher = "xbox_mode";
     setup();
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
@@ -25,6 +26,7 @@ ProController::ProController(int argc, char** argv, string node_name) {
     }
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
+    pubmode  = private_nh.advertise<std_msgs::String>(modePublisher, 1);
 
     ROS_INFO("Preparing to read inputs...\n");
     state = Mode::wheels;
@@ -189,6 +191,12 @@ void publishArmMessage(std::string outMsg) {
     pubarm.publish(outMsgWrapper);
 }
 
+void publishArmMode(std::Boolean mode) {
+    std_msgs::Bool outMsgWrapper;
+    outMsgWrapper.data = mode; 
+    pubmode.publish(outMsgWrapper);
+}
+
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
 
@@ -296,20 +304,24 @@ void ProController::B(int value) {
 void ProController::X(int value) {
     if (value == 1) {
         ROS_INFO("X button pressed");
-     armOutVal = buttonX;
+        armOutVal = buttonX;
     } else if (value == 0) {
         ROS_INFO("X button released");
-     armOutVal = buttonXRel;
+        armOutVal = buttonXRel;
+        if(state == Mode::arm_cartesian)
+        {
+            pubmode.publishArmMode(true);
+        }
     }
 }
 
 void ProController::Y(int value) {
     if (value == 1) {
         ROS_INFO("Y button pressed");
-     armOutVal = buttonY;
+        armOutVal = buttonY;
     } else if (value == 0) {
         ROS_INFO("Y button released");
-     armOutVal = buttonYRel;
+        armOutVal = buttonYRel;
     }
 }
 
@@ -357,6 +369,7 @@ void ProController::home(int value) {
             ROS_INFO("Home button pressed");
         } else if (value == 0) {
             state = static_cast<Mode>((state + 1) % (Mode::drilling + 1));
+            pubmode.publishArmMode(false);
             printState();
         }
     }

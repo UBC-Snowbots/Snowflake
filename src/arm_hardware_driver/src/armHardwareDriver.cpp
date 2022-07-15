@@ -14,8 +14,11 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
-    // Setup Subscriber
-    subPro = nh.subscribe("/cmd_arm", 1, ArmHardwareDriver::teensySerialCallback, this);
+    // Setup Subscribers
+    int queue_size                    = 10;
+
+    subPro                     = nh.subscribe(
+    "/cmd_arm", queue_size, ArmHardwareDriver::teensySerialCallback, this);
 
     // Get Params
     SB_getParam(private_nh, "port", port, (std::string) "/dev/ttyACM0");
@@ -46,7 +49,7 @@ void ArmHardwareDriver::parseInput(std::string inMsg) {
 void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
 
     ROS_INFO("Joint space command recieved");
-    char action = inMsg.at(1);
+    char action = inMsg[1];
     
     switch(action) {
         case leftJSL: jointSpaceMove(left, left); break;
@@ -71,6 +74,17 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
         case arrowR: endEffector(right); break;
         case arrowRLRel: endEffectorRel(); break;
         case homeVal: homeArm(); break;
+    }
+}
+
+void ArmHardwareDriver::cartesian_motion(std::string inMsg)
+{
+    char action = inMsg[1];
+
+    switch(action) {
+        case arrowL: endEffector(left); break;
+        case arrowR: endEffector(right); break;
+        case arrowRLRel: endEffectorRel(); break;
     }
 }
 
@@ -141,7 +155,7 @@ void ArmHardwareDriver::endEffector(const char dir)
 
 void ArmHardwareDriver:: endEffectorRel(const char dir)
 {
-    std::string outmsg = "EEX\n";
+    std::string outmsg = "EER\n";
     sendMsg(outMsg);
 }
 
@@ -180,7 +194,7 @@ void ArmHardwareDriver::homeArm() {
 
 // ROS SERIAL COMMUNICATION APIs //
 
-void ArmHardwareDriver::cartesian_motion(std::vector<double>& pos_commands, std::vector<double>& joint_positions)
+void ArmHardwareDriver::cartesian_moveit_move(std::vector<double>& pos_commands, std::vector<double>& joint_positions)
 {
     std::string inMsg = "";
     // convert angles to encoder steps for teensy
