@@ -168,6 +168,17 @@ void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
     }
 }
 
+void ArmHardwareDriver::cartesian_motion(std::string inMsg)
+{
+    char action = inMsg[1];
+
+    switch(action) {
+        case arrowL: endEffector(left); break;
+        case arrowR: endEffector(right); break;
+        case arrowRLRel: endEffectorRel(); break;
+    }
+}
+
 // Sends drilling mode related commands to teensy
 void ArmHardwareDriver::drill_motion(std::string inMsg) {
     char action = inMsg.at(1);
