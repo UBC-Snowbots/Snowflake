@@ -9,6 +9,18 @@
 #ifndef MARKER_QR_DETECTION_DETECT_QR_CODE_H
 #define MARKER_QR_DETECTION_DETECT_QR_CODE_H
 
+// OpenCV
+#include <opencv2/objdetect.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/videoio.hpp>
+#include <opencv2/imgcodecs.hpp>
+
+// Image Conversion
+#include <cv_bridge/cv_bridge.h>
+#include <image_transport/subscriber.h>
+#include <sensor_msgs/image_encodings.h>
+
 // STD Includes
 #include <iostream>
 
