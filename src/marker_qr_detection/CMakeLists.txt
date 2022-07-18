@@ -15,7 +15,11 @@ add_definitions(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  cv_bridge
+  sensor_msgs
+  image_transport
 )
+find_package(OpenCV REQUIRED)
 find_package(sb_utils REQUIRED)
 
 ## System dependencies are found with CMake's conventions
@@ -124,6 +128,7 @@ catkin_package(
 include_directories(
     ${catkin_INCLUDE_DIRS}
     ${sb_utils_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
     ./include
 )
 
@@ -150,10 +155,10 @@ add_executable(detect_marker src/detect_marker.cpp src/DetectMarker.cpp include/
 # target_link_libraries(marker_qr_detection_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(detect_marker ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(detect_marker ${catkin_LIBRARIES} ${OpenCV_LIBS} ${sb_utils_LIBRARIES})
 
 add_executable(detect_qr_code src/detect_qr_code.cpp src/DetectQRCode.cpp include/DetectQRCode.h)
-target_link_libraries(detect_qr_code ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(detect_qr_code ${catkin_LIBRARIES} ${OpenCV_LIBS} ${sb_utils_LIBRARIES})
 
 #############
 ## Install ##
