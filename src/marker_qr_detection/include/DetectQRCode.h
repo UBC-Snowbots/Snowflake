@@ -41,9 +41,11 @@ private:
      *
      * @param msg the string received in the callback
      */
-    void subscriberCallBack(const std_msgs::String::ConstPtr& msg);
+    void subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg);
 
-    ros::Subscriber my_subscriber;
+    cv::Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
+
+    image_transport::Subscriber my_subscriber;
     ros::Publisher my_publisher;
 };
 #endif //MARKER_QR_DETECTION_DETECT_QR_CODE_H
