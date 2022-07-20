@@ -16,10 +16,12 @@
 // Image Conversion
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/subscriber.h>
+#include <image_transport/image_transport.h>
 #include <sensor_msgs/image_encodings.h>
 
 // STD Includes
 #include <iostream>
+#include <vector>
 
 // ROS Includes
 #include <std_msgs/String.h>
@@ -38,9 +40,16 @@ private:
      *
      * @param msg the string received in the callback
      */
-    void subscriberCallBack(const std_msgs::String::ConstPtr& msg);
+    void subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg);
 
-    ros::Subscriber my_subscriber;
+    std::vector<int> fetchMarkerIds(const cv::Mat& image, bool draw_markers = false);
+
+    cv::Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
+
+    image_transport::Subscriber my_subscriber;
     ros::Publisher my_publisher;
+
+    cv::Ptr<cv::aruco::Dictionary> dictionary;
+    cv::Ptr<cv::aruco::DetectorParameters> parameters;
 };
 #endif //MARKER_QR_DETECTION_DETECT_MARKER_H
