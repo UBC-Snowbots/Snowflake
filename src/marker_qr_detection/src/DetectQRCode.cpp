@@ -14,10 +14,13 @@ DetectQRCode::DetectQRCode(int argc, char **argv, std::string node_name) {
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
+    // Setup image transport
+    image_transport::ImageTransport it(nh);
+
     // Setup Subscriber(s)
     std::string topic_to_subscribe_to = "subscribe_topic";
     int queue_size                    = 10;
-    my_subscriber                     = nh.subscribe(
+    my_subscriber                     = it.subscribe(
     topic_to_subscribe_to, queue_size, &DetectQRCode::subscriberCallBack, this);
 
     // Setup Publisher(s)
@@ -26,7 +29,13 @@ DetectQRCode::DetectQRCode(int argc, char **argv, std::string node_name) {
     my_publisher = private_nh.advertise<std_msgs::String>(topic, queue_size);
 }
 
-void DetectQRCode::subscriberCallBack(const std_msgs::String::ConstPtr& msg) {
+void DetectQRCode::subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg) {
     ROS_INFO("Received message");
-    std::string input_string = msg->data.c_str();
+    rosToMat(msg);
+}
+
+cv::Mat DetectQRCode::rosToMat(const sensor_msgs::Image::ConstPtr& image) {
+    cv_bridge::CvImagePtr image_ptr;
+    image_ptr = cv_bridge::toCvCopy(image, image->encoding);
+    return image_ptr->image;
 }
