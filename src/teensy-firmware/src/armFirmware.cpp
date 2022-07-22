@@ -20,6 +20,9 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 #define REV 0
 
 int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
+int pprEnc = 512;
+int ENC_DIR[6] = {1, 1, -1, -1, -1, -1};
+const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 
 static const char release = 'R';
 static const char move = 'M';
@@ -34,20 +37,21 @@ static const char garbage = 'G';
 static const char faster = 'U';
 static const char slower = 'D';
 
-int stepPins[8] =   {11, 9, 5, 7, 1, 3, 1, 3};
-int dirPins[8] =    {10, 8, 4, 6, 0, 2, 0, 2};
+int stepPins[8] =   {6, 8, 10, 2, 12, 25, 12, 25};
+int dirPins[8] =    {5, 7, 9, 1, 11, 24, 11, 24};
+int stepPinsIK[6] = {6, 8, 2, 10, 25, 12};
+int dirPinsIK[6] = {5, 7, 1, 9, 24, 11};
+int encPinA[6] = {17, 38, 40, 36, 15, 13};
+int encPinB[6] = {16, 37, 39, 35, 14, 41};
 
 // limit switch pins
-int limPins[6] = {23, 22, 20, 21, 18, 19};
+int limPins[6] = {18, 19, 21, 20, 23, 22};
 
 // pulses per revolution for motors
 long ppr[6] = {400, 400, 400, 400, 400, 400};
 
 // Gear Reduction Ratios
-float red[6] = {30.0, 161.0, 44.8, 100, 57.34, 57.34};
-
-// Encoder pulses per revolution
-long pprEnc = 512;
+float red[6] = {50.0, 161.0, 44.8, 93.07, 57.34, 57.34};
 
 // Motor speeds and accelerations
 int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200};
@@ -56,7 +60,7 @@ int homeSpeed[8] = {500, 1200, 600, 400, 2000, 2000, 2000, 2000}; // {500, 1500,
 int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000, 1000, 1500, 1500, 1500, 1500, 1500};
 
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {180, 70, 180, 120, 140, 100};
+int maxAngles[6] = {180, 140, 180, 120, 140, 100};
 
 const unsigned long readInterval = 10;
 unsigned long currentTime;
@@ -64,6 +68,8 @@ unsigned long previousTime = 0;
 
 // stepper motor objects for AccelStepper library
 AccelStepper steppers[8];
+AccelStepper steppersIK[8];
+Encoder encoders[6];
 
 // variable declarations
 long max_steps[] = {red[0]*maxAngles[0]/360.0*ppr[0], red[1]*maxAngles[1]/360.0*ppr[1], red[2]*maxAngles[2]/360.0*ppr[2], red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
@@ -72,12 +78,13 @@ int currentAxis = 1;
 int runFlags[] = {0, 0, 0, 0, 0, 0};
 int i;
 bool initFlag = false;
+bool jointFlag = true;
 
 // variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst, axisDir[6]*homePosConst, axisDir[7]*homePosConst};
-long homeCompAngles[] = {axisDir[0]*90, axisDir[1]*5, axisDir[2]*93, axisDir[3]*12, axisDir[4]*102, axisDir[5]*102, axisDir[6]*80, axisDir[7]*80};
-long homeCompConst[] = {2000, 2000, 1000, 500, 500, 500, 500, 500};
+long homeCompAngles[] = {axisDir[0]*93, axisDir[1]*5, axisDir[2]*93, axisDir[3]*12, axisDir[4]*102, axisDir[5]*102, axisDir[6]*80, axisDir[7]*80};
+long homeCompConst[] = {500, 2000, 1000, 500, 500, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
 long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
 char value;
@@ -87,19 +94,28 @@ const int maxSpeedIndex = 2;
 int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 1050, 1050, 1050}, {900, 1200, 2000, 1665, 1460, 1460, 1460, 1460}, {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200}};
 int speedIndex = maxSpeedIndex;
 
-
-
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 
   Serial.begin(9600);
 
   // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
+  for(i = 0; i<NUM_AXES; i++) {
+      pinMode(stepPinsIK[i], OUTPUT);
+      pinMode(dirPinsIK[i], OUTPUT);
+      steppersIK[i] = AccelStepper(1, stepPinsIK[i], dirPinsIK[i]);
+      steppersIK[i].setMinPulseWidth(200);
+      encoders[i] = Encoder(encPinA[i], encPinB[i]);
+    }
+
   for(i = 0; i<NUM_AXES_EFF; i++) {
     pinMode(dirPins[i], OUTPUT);
     pinMode(stepPins[i], OUTPUT);
     pinMode(limPins[i], INPUT_PULLUP);
+    pinMode(stepPinsIK[i], OUTPUT);
+    pinMode(dirPinsIK[i], OUTPUT);
     steppers[i] = AccelStepper(1, stepPins[i], dirPins[i]);
     steppers[i].setMinPulseWidth(200);
+    steppersIK[i].setMinPulseWidth(200);
   }
   // waits for user to press "home" button before rest of functions are available
   waitForHome();
@@ -114,7 +130,11 @@ void loop()
     previousTime = currentTime;
   }
 
-runSteppers();
+  if(jointFlag)
+    runSteppers();
+
+  else
+    runSteppersIK();
 }
 
 void recieveCommand()
@@ -142,11 +162,13 @@ void parseMessage(String inMsg)
   if(function == "MT")
   {
     cartesianCommands(inMsg);
+    IKFlag = true;
   }
 
   else if(function == "JM")
   {
     jointCommands(inMsg);
+    IKFlag = false;
   }
 
   else if(function == "EE")
@@ -191,21 +213,8 @@ void cartesianCommands(String inMsg)
 
   // update target joint positions
   readEncPos(curEncSteps);
-  for (int i = 0; i < NUM_AXES; i++)
-  { 
-    int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
-    if (abs(diffEncSteps) > 2)
-    {
-    int diffMotSteps = diffEncSteps / ENC_MULT[i];
-    if (diffMotSteps < MOTOR_STEPS_PER_REV[i])
-    {
-      // for the last rev of motor, introduce artificial decceleration
-      // to help prevent overshoot
-      diffMotSteps = diffMotSteps / 2;  
-    }
-    steppers[i].move(diffMotSteps);
-    }
-  }
+  cmdArmBase();
+  cmdArmWrist();
 }
 
 // parses which commands to execute when in joint space mode
@@ -225,7 +234,7 @@ void jointCommands(String inMsg)
 
 void endEffectorCommands(String inMsg)
 {
-  // fill with end effector commands depending on substring
+  // Marcus to fill in with accelstepper code. 
 }
 
 void drillMotion(String inMsg)
@@ -277,13 +286,71 @@ void jointMovement(char joystick, char dir)
 
 void readEncPos(int* encPos)
 {
-  encPos[0] = J1encPos.read() * ENC_DIR[0];
-  encPos[1] = J2encPos.read() * ENC_DIR[1];
-  encPos[2] = J3encPos.read() * ENC_DIR[2];
-  encPos[3] = J4encPos.read() * ENC_DIR[3];
-  encPos[4] = J5encPos.read() * ENC_DIR[4];
-  encPos[5] = J6encPos.read() * ENC_DIR[5];
+  for(i=0; i<NUM_AXES; i++)
+  {
+    encPos[i] = encoders[i].read()*ENC_DIR[i];
+  }
 }
+
+void zeroEncoders()
+{
+  for(i=0; i<NUM_AXES; i++)
+  {
+    encoders[i].write(0);
+  }
+}
+
+void cmdArmBase()
+{
+  for (int i = 0; i < NUM_AXES_EX_WRIST; i++)
+  { 
+    int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
+    if (abs(diffEncSteps) > 2)
+    {
+    int diffMotSteps = diffEncSteps / ENC_MULT[i];
+    if (diffMotSteps < ppr[i])
+    {
+      // for the last rev of motor, introduce artificial decceleration
+      // to help prevent overshoot
+      diffMotSteps = diffMotSteps / 2;  
+    }
+
+    steppersIK[i].move(diffMotSteps);
+    }
+  }
+}
+
+void cmdArmWrist()
+{
+  int diffEncStepsA5 = cmdEncSteps[4] - curEncSteps[4];
+  int diffEncStepsA6 = cmdEncSteps[5] - curEncSteps[5];
+
+  if(abs(diffEncStepsA5) > 2)
+  {
+    int diffMotStepsA5 = diffEncStepsA5 / ENC_MULT[4];
+    if(diffMotStepsA5 < ppr[i])
+    {
+      diffMotStepsA5 = diffEncStepsA5 / 2;
+    }
+  }
+
+  if(abs(diffEncStepsA6) > 2)
+  {
+    int diffMotStepsA6 = diffEncStepsA6 / ENC_MULT[5];
+    if(diffMotStepsA6 < ppr[i])
+    {
+      diffMotStepsA6 = diffEncStepsA6 / 2;
+    }
+  }
+
+  int actualMotStepsA5 = diffMotStepsA5/2 + diffMotStepsA6/2;
+  int actualMotStepsA6 = diffMotStepsA6/2 - diffMotStepsA5/2;
+
+  steppersIK[4].move(actualMotStepsA5);
+  steppersIK[5].move(actualMotStepsA6);
+}
+
+
 
 //****//JOINT SPACE MODE FUNCTIONS//****//
 
@@ -442,7 +509,14 @@ void homeArm() { // main function for full arm homing
   initializeHomingMotion();
   homeBase();
   initializeMotion();
+  zeroEncoders();
   sendCurrentPosition();
+
+  for(int i=0; i<NUM_AXES; i++)
+  {
+    steppersIK[i].setCurrentPosition(0);
+  }
+
 }
 
 void homeBase() { // homes axes 1-4
@@ -596,6 +670,13 @@ void runSteppers() { // runs all stepper motors (if no target position has been 
     
   for(i = 0; i<NUM_AXES_EFF; i++) {
     steppers[i].run();
+  }
+}
+
+void runSteppersIK() { // runs all stepper motors (if no target position has been assigned, stepper will not move)
+    
+  for(i = 0; i<NUM_AXES; i++) {
+    steppersIK[i].run();
   }
 }
 
