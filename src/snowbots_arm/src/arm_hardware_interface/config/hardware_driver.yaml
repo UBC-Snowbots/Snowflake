@@ -1,0 +1,11 @@
+arm:
+    hardware_driver:
+        serial_port: "/dev/ttyUSB0" 
+        baudrate: 115200 
+        encoder_steps_per_deg: # encoder steps per joint angle degree
+            joint_1: 100 # 
+            joint_2: 100 # 
+            joint_3: 100 # 
+            joint_4: 100 # 
+            joint_5: 100 # 
+            joint_6: 100 # 

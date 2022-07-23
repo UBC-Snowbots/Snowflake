@@ -1,5 +1,13 @@
 #!/bin/bash
 
+install_clion=true
+while getopts 'n' OPTION; do
+	case "$OPTION" in
+		n)
+			install_clion=false
+	esac
+done
+
 # Directory this file was executed from
 echo "================================================================"
 echo "Starting first time installation and setup, please wait"
@@ -54,7 +62,9 @@ done
 #################
 # Install CLion #
 #################
-sudo snap install clion --classic
+if [ "$install_clion" = true ] ; then
+	sudo snap install clion --classic
+fi
 
 ###################
 # Install Arduino #

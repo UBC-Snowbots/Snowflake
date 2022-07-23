@@ -1,0 +1,8 @@
+prefix=/workfiles/snowbots_arm/install
+
+Name: arm_urdf_v9_2
+Description: Description of arm_urdf_v9_2
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

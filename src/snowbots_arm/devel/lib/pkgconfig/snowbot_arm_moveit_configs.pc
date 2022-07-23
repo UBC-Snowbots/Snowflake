@@ -1,0 +1,8 @@
+prefix=/workfiles/snowbots_arm/devel
+
+Name: snowbot_arm_moveit_configs
+Description: Description of snowbot_arm_moveit_configs
+Version: 0.3.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
