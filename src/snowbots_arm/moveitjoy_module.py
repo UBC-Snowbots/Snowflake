@@ -741,7 +741,7 @@ class MoveitJoy:
             status = PS4WiredStatus(msg)
         elif len(msg.axes) == 6 and len(msg.buttons) == 14:
             status = nintendoProController(msg)
-            procontroller = True
+            proController = True
 
             if proControllerFirstDetect:
                 print("procontroller detected")
@@ -749,21 +749,27 @@ class MoveitJoy:
 
             if msg.buttons[9] == 1:
                 proControllerEnabled = not proControllerEnabled
+		#print("Controller:{proControllerEnabled} in first".format(proControllerEnabled=proControllerEnabled))
+		time.sleep(1)
 
         else:
             raise Exception("Unknown joystick")
         
         if proController:
             if proControllerEnabled:
+		#print("Controller:{proControllerEnabled} in second".format(proControllerEnabled=proControllerEnabled))
                 self.run(status)
                 self.history.add(status)
             else:
+		#print("Controller:{proControllerEnabled} in third".format(proControllerEnabled=proControllerEnabled))
                 status = JoyStatus()
+		print(dir(status))
                 self.run(status)
                 self.history.add(status)
 
 
-        else:
+        if not proController:
+	    #print("Controller:{proControllerEnabled} in fourth".format(proControllerEnabled=proControllerEnabled))
             self.run(status)
             self.history.add(status)
 
