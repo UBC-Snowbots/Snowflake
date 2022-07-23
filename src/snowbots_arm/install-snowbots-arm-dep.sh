@@ -1,0 +1,35 @@
+#!/bin/bash
+
+echo "Installing dependencies for snowbots arm package"
+
+sudo apt-get update && apt-get install -y build-essential \
+	rviz python-rosdep \
+        ros-melodic-joy ros-melodic-joint-state-publisher vim \
+        ros-melodic-robot-state-publisher \
+	ros-melodic-joystick-drivers ros-melodic-joy \
+        ros-melodic-ros-control ros-melodic-ros-controllers \
+        ros-melodic-urdf-tutorial ros-melodic-rqt
+
+echo "Installing ProController moveit driver"
+
+sudo ./pro_controller_moveit_fix.sh
+
+sudo apt-get update && apt-get install -y git dkms
+sudo git clone https://github.com/nicman23/dkms-hid-nintendo && \
+cd ./dkms-hid-nintendo && \
+sudo add . && sudo dkms build nintendo -v 3.2 && sudo dkms install nintendo -v 3.2
+
+sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common wget -y
+sudo wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+sudo apt-get update
+sudo apt-get install cmake
+
+sudo apt-get install libudev-dev -y
+git clone https://github.com/DanielOgorchock/joycond && \
+cd ../joycond \
+sudo cmake . && make install && systemctl enable --now joycond
+
+sudo ./pro_controller_moveit_fix.sh
+
+
