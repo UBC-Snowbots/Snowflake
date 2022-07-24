@@ -21,6 +21,10 @@ DetectMarker::DetectMarker(int argc, char **argv, std::string node_name) {
     dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_50);
     parameters = cv::aruco::DetectorParameters::create();
 
+    // Obtains draw_markers parameter from the parameter server (or launch file)
+    std::string parameter_name    = "draw_markers";
+    SB_getParam(private_nh, parameter_name, draw_markers, false);
+
     // Setup Subscriber(s)
     std::string topic_to_subscribe_to = "subscribe_topic";
     int queue_size                    = 10;
@@ -43,7 +47,7 @@ void DetectMarker::subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg) {
     std::cout << std::endl;
 }
 
-std::vector<int> DetectMarker::fetchMarkerIds(const cv::Mat& image, bool draw_markers) {
+std::vector<int> DetectMarker::fetchMarkerIds(const cv::Mat& image) {
     std::vector<int> markerIds;
     std::vector<std::vector<cv::Point2f>> markerCorners;
     cv::aruco::detectMarkers(image, dictionary, markerCorners, markerIds, parameters);

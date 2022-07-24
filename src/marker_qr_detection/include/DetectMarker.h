@@ -42,7 +42,7 @@ private:
      */
     void subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg);
 
-    std::vector<int> fetchMarkerIds(const cv::Mat& image, bool draw_markers = false);
+    std::vector<int> fetchMarkerIds(const cv::Mat& image);
 
     cv::Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
 
@@ -51,5 +51,6 @@ private:
 
     cv::Ptr<cv::aruco::Dictionary> dictionary;
     cv::Ptr<cv::aruco::DetectorParameters> parameters;
+    bool draw_markers = false;
 };
 #endif //MARKER_QR_DETECTION_DETECT_MARKER_H
