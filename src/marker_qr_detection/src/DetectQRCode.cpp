@@ -17,6 +17,10 @@ DetectQRCode::DetectQRCode(int argc, char **argv, std::string node_name) {
     // Setup image transport
     image_transport::ImageTransport it(nh);
 
+    // Obtains draw_qr_codes parameter from the parameter server (or launch file)
+    std::string parameter_name    = "draw_qr_codes";
+    SB_getParam(private_nh, parameter_name, draw_qr_codes, false);
+
     // Setup Subscriber(s)
     std::string topic_to_subscribe_to = "subscribe_topic";
     int queue_size                    = 10;
@@ -31,11 +35,28 @@ DetectQRCode::DetectQRCode(int argc, char **argv, std::string node_name) {
 
 void DetectQRCode::subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg) {
     ROS_INFO("Received message");
-    rosToMat(msg);
+    std::vector<std::string> qr_codes = fetchQRCodes(rosToMat(msg));
 }
 
 cv::Mat DetectQRCode::rosToMat(const sensor_msgs::Image::ConstPtr& image) {
     cv_bridge::CvImagePtr image_ptr;
     image_ptr = cv_bridge::toCvCopy(image, image->encoding);
     return image_ptr->image;
+}
+
+std::vector<std::string> DetectQRCode::fetchQRCodes(const cv::Mat& image) {
+    std::vector<std::string> decoded_info;
+    std::vector<cv::Point> corners;
+    // qrcode.detectAndDecodeMulti(image, decoded_info, corners);
+    if (draw_qr_codes) {
+        cv::Mat outputImage;
+        image.copyTo(outputImage);
+        double fps = 1; // fix this with ROS based time calc
+        drawQRCodes(outputImage, decoded_info, corners, fps);
+    }
+    return decoded_info;
+}
+
+void DetectQRCode::drawQRCodes(cv::Mat& image, std::vector<std::string> decoded_info, std::vector<cv::Point> corners, double fps) {
+    // TODO
 }

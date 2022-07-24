@@ -13,11 +13,10 @@
 #include <opencv2/objdetect.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
-#include <opencv2/videoio.hpp>
-#include <opencv2/imgcodecs.hpp>
 
 // Image Conversion
 #include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
 #include <image_transport/subscriber.h>
 #include <sensor_msgs/image_encodings.h>
 
@@ -43,9 +42,16 @@ private:
      */
     void subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg);
 
+    std::vector<std::string> fetchQRCodes(const cv::Mat& image);
+
+    void drawQRCodes(cv::Mat& image, std::vector<std::string> decoded_info, std::vector<cv::Point> corners, double fps);
+
     cv::Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
 
     image_transport::Subscriber my_subscriber;
     ros::Publisher my_publisher;
+
+    // cv::QRCodeDetector qrcode;
+    bool draw_qr_codes = false;
 };
 #endif //MARKER_QR_DETECTION_DETECT_QR_CODE_H
