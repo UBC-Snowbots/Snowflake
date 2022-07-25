@@ -1,2 +1,0 @@
-arm_config:arm_hardware_driver:arm_hardware_interface:arm_urdf_v9_2:snowbot_arm_moveit_configs
--DCATKIN_DEVEL_PREFIX=/workfiles/snowbots_arm/devel -DCMAKE_INSTALL_PREFIX=/workfiles/snowbots_arm/install -G Unix Makefiles

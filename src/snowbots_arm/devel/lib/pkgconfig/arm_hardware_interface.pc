@@ -1,8 +1,0 @@
-prefix=/workfiles/snowbots_arm/devel
-
-Name: arm_hardware_interface
-Description: Description of arm_hardware_interface
-Version: 0.0.0
-Cflags: -I/workfiles/snowbots_arm/src/arm_hardware_interface/include
-Libs: -L${prefix}/lib -larm_hardware_interface
-Requires: hardware_interface controller_manager roscpp urdf joint_limits_interface arm_hardware_driver
