@@ -16,15 +16,19 @@ ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, string node_na
 	ros::init(argc, argv, node_name);
     ros::NodeHandle nh_;
     ros::NodeHandle private_nh("~");
-	string modeSubscriber = "xbox_mode";
+	string modeSubscriber = "/moveit_toggle";
 	subMode                    = nh.subscribe(
     modeSubscriber, 10, &ArmHardwareInterface::controllerModeCallBack, this);
+        string arm_pos_subscriber = "/observed_pos_arm";
+        sub_arm_pos = nh.subscribe(arm_pos_subscriber, 10, &ArmHardwareInterface::armPositionCallBack, this);
+        string arm_pos_publisher = "/cmd_pos_arm";
+        pub_arm_pos = private_nh.advertise<sb_msgs::ArmPosition>(arm_pos_publisher, 1);
 
 	bool initFlag = false;
 
 	while(!initFlag)
 	{
-		if(xbox_mode)
+		if(cartesian_mode)
 		{
 			initFlag = true;
 			init();
@@ -108,11 +112,17 @@ ArmHardwareInterface::~ArmHardwareInterface()
 
 void ArmHardwareInterface::controllerModeCallBack(const std_msgs::Bool::ConstPtr& inMsg)
 {
-	xbox_mode = inMsg->data;
-    if (xbox_mode)
-        ROS_INFO("Enabling Xbox Mode");
+	cartesian_mode = inMsg->data;
+    if (cartesian_mode)
+        ROS_INFO("Enabling Cartesian Mode");
     else
-        ROS_INFO("Pro Controller Mode Enabled");
+        ROS_INFO("Disabling Cartesian Mode");
+}
+
+void ArmHardwareInterface::armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
+    if (!cartesian_mode) {
+        // TODO
+    }
 }
 
 void ArmHardwareInterface::init()
@@ -144,7 +154,7 @@ void ArmHardwareInterface::init()
 void ArmHardwareInterface::update(const ros::TimerEvent &e)
 {
 
-	if(xbox_mode)
+	if(cartesian_mode)
 	{
 		std::string logInfo = "\n";
 		logInfo += "Joint Position Command:\n";

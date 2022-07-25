@@ -19,6 +19,7 @@
 
 // Snowbots Includes
 #include <sb_utils.h>
+#include <sb_msgs/ArmPosition.h>
 
 // Other
 #include <SerialStream.h>
@@ -94,8 +95,11 @@ class ArmHardwareDriver {
     const char garbage = 'G';
 
   private:
+    void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);
 
     ros::Subscriber subPro;
+    ros::Subscriber sub_command_pos;
+    ros::Publisher pub_observed_pos;
 
     // The SerialStream to/from the teensy
     LibSerial::SerialStream teensy;

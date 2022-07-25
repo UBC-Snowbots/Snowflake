@@ -12,6 +12,7 @@
 #include <controller_manager/controller_manager.h>
 #include <boost/scoped_ptr.hpp>
 #include "arm_hardware_driver/armHardwareDriver.h"
+#include <sb_msgs/ArmPosition.h>
 
 #include <chrono>
 #include <thread>
@@ -72,15 +73,18 @@ using joint_limits_interface::PositionJointSoftLimitsInterface;
 			std::vector<double> velocity_limits_;
 			std::vector<double> acceleration_limits_;
 
-			std::Boolean xbox_mode = false;
+			bool cartesian_mode = false;
 
 			// Misc
 			double degToRad(double deg);
 			double radToDeg(double rad);
 
 			void controllerModeCallBack(const std_msgs::Bool::ConstPtr& inMsg)
+			void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_Msg)
 
 			ros::Subscriber subMode;
+			ros::Subscriber sub_arm_pos;
+			ros::Publisher pub_arm_pos;
 	};
 
 #endif // ARM_HARDWARE_INTERFACE_H

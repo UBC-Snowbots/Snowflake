@@ -18,7 +18,9 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
     int queue_size                    = 10;
 
     subPro                     = nh.subscribe(
-    "/cmd_arm", queue_size, ArmHardwareDriver::teensySerialCallback, this);
+    "/cmd_arm", queue_size, &ArmHardwareDriver::teensySerialCallback, this);
+    sub_command_pos = nh.subscribe("/cmd_pos_arm", queue_size, &ArmHardwareDriver::armPositionCallBack, this);
+    pub_observed_pos = private_nh.advertise("/observed_pos_arm", 1);
 
     // Get Params
     SB_getParam(private_nh, "port", port, (std::string) "/dev/ttyACM0");
@@ -32,6 +34,10 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
 // Callback function to relay pro controller messages to teensy MCU on arm via rosserial
 void ArmHardwareDriver::teensySerialCallback(std_msgs::String& inMsg) {
     parseInput(inMsg.data);
+}
+
+void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg) {
+    // TODO
 }
 
 void ArmHardwareDriver::parseInput(std::string inMsg) {
