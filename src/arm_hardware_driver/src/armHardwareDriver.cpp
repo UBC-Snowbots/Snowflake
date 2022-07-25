@@ -100,6 +100,7 @@ void ArmHardwareDriver::drill_motion(std::string inMsg) {
         case buttonX: depositSample(); break;
         case triggerL: manualDrill(left); break;
         case triggerR: manualDrill(right); break;
+        case (triggerLRel || triggerRRel): manualDrill(); break;
         // below two lines to be implemented once cartesian mode is sorted
         // case rightJSU: moveDrillUp(); break;
         // case rightJSD: moveDrillDown(); break;
@@ -110,8 +111,8 @@ void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir)
 {
     std::string outMsg = "JM";
     outMsg += "M";
-    outMsg += dir;
     outMsg += joystick;
+    outMsg += dir;
     outMsg += "\n";
     sendMsg(outMsg);
 }
@@ -134,7 +135,7 @@ void ArmHardwareDriver::changeAxis(const char joystick)
     sendMsg(outMsg);
 }
 
-void ArmHardwareDriver::releaseAxis(const char joystick)
+void ArmHardwareDriver::releaseAxis(const char joystick, const char dir)
 {
     std::string outMsg = "JM";
     outMsg += "R";
@@ -180,8 +181,15 @@ void ArmHardwareDriver::depositSample()
 
 void ArmHardwareDriver::manualDrill(const char dir)
 {
-    std::string outMsg = "DM";
+    std::string outMsg = "DMM";
     outMsg += dir;
+    outMsg += "\n";
+    sendMsg(outMsg);
+}
+
+void ArmHardwareDriver::releaseDrill()
+{
+    std::string outMsg = "DMMX";
     outMsg += "\n";
     sendMsg(outMsg);
 }

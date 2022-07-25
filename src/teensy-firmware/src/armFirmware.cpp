@@ -6,6 +6,7 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 */
  
 #include <AccelStepper.h>
+#include <HX711.h>
 
 // general parameters
 #define NUM_AXES 6
@@ -19,11 +20,6 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 #define FWD 1
 #define REV 0
 
-int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
-int pprEnc = 512;
-int ENC_DIR[6] = {1, 1, -1, -1, -1, -1};
-const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
-
 static const char release = 'R';
 static const char move = 'M';
 static const char change = 'A';
@@ -36,13 +32,42 @@ static const char wrist = 'W';
 static const char garbage = 'G';
 static const char faster = 'U';
 static const char slower = 'D';
+static const char open = left;
+static const char close = right;
+static const char prepare = 'P';
+static const char collect = 'C';
+static const char deposit = 'D';
+static const char manual = 'M';
+static const char drillRelease = 'X';
 
+// Encoder Variables
+
+int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
+int pprEnc = 512;
+int ENC_DIR[6] = {1, 1, -1, -1, -1, -1};
+const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
+
+// Motor variables
 int stepPins[8] =   {6, 8, 10, 2, 12, 25, 12, 25};
 int dirPins[8] =    {5, 7, 9, 1, 11, 24, 11, 24};
 int stepPinsIK[6] = {6, 8, 2, 10, 25, 12};
 int dirPinsIK[6] = {5, 7, 1, 9, 24, 11};
 int encPinA[6] = {17, 38, 40, 36, 15, 13};
 int encPinB[6] = {16, 37, 39, 35, 14, 41};
+
+// end effector variables
+const int maxForce = 30; // needs to be checked
+const float calibrationFactor = -111.25
+float force;
+HX711 scale;
+int calPos = 0;
+int closePos = 0;
+int openPos = 2000; // needs to be calibrated
+int EEstepPin = 20;
+int EEdirPin = 21;
+int speedEE = 1000;
+int accEE = 5000;
+const int MOTOR_DIR_EE = 1;
 
 // limit switch pins
 int limPins[6] = {18, 19, 21, 20, 23, 22};
@@ -62,12 +87,18 @@ int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000
 // Range of motion (degrees) for each axis
 int maxAngles[6] = {180, 140, 180, 120, 140, 100};
 
+// Time variables
 const unsigned long readInterval = 10;
-unsigned long currentTime;
-unsigned long previousTime = 0;
+const unsigned long currentTime;
+const unsigned long previousTime = 0;
+const unsigned long previousTimeJP = 0;
+const unsigned long timeIntervalJP = 50;
+const unsigned long previousTimeEE = 0;
+const unsigned long timeIntervalEE = 100;
 
 // stepper motor objects for AccelStepper library
 AccelStepper steppers[8];
+AccelStepper endEff(1, EEstepPin, EEdirPin);
 AccelStepper steppersIK[8];
 Encoder encoders[6];
 
@@ -98,6 +129,10 @@ void setup() { // setup function to initialize pins and provide initial homing t
 
   Serial.begin(9600);
 
+  // initializes end effector motor
+  pinMode(EEstepPin, OUTPUT);
+  pinMode(EEdirPin, OUTPUT);
+
   // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
   for(i = 0; i<NUM_AXES; i++) {
       pinMode(stepPinsIK[i], OUTPUT);
@@ -111,11 +146,8 @@ void setup() { // setup function to initialize pins and provide initial homing t
     pinMode(dirPins[i], OUTPUT);
     pinMode(stepPins[i], OUTPUT);
     pinMode(limPins[i], INPUT_PULLUP);
-    pinMode(stepPinsIK[i], OUTPUT);
-    pinMode(dirPinsIK[i], OUTPUT);
     steppers[i] = AccelStepper(1, stepPins[i], dirPins[i]);
     steppers[i].setMinPulseWidth(200);
-    steppersIK[i].setMinPulseWidth(200);
   }
   // waits for user to press "home" button before rest of functions are available
   waitForHome();
@@ -230,16 +262,109 @@ void jointCommands(String inMsg)
     case axis: changeAxis(detail1); break;
     case move: jointMovement(detail1, inMsg[4]); break;
   }
+
+  sendJointPosTimer();
+}
+
+void sendJointPosTimer
+{
+  long currentTime = millis(); //checks total runtime
+  long timeDiff = currentTime - previousTimeJP; //finds interval between runtime and previous checked time
+  if (timeDiff >= timeIntervalJP)
+  {
+    sendCurrentPosition();
+    previousTimeJP = currentTime;
+  }
 }
 
 void endEffectorCommands(String inMsg)
 {
-  // Marcus to fill in with accelstepper code. 
+  char data = inMsg[2];
+  int force = getForce();
+
+  //opening code
+  if ((data == open) && (force < 100)) { //check if open button pressed and if force is less than max
+    endEff.moveTo(openPos*MOTOR_DIR_EE); //continue to move to open position
+  }
+
+  //closing code
+  else if ((data == close) && (force < 100)) { //check if open button pressed and if force is less than max
+    endEff.moveTo(closePos*MOTOR_DIR_EE); //continue to move to closed position
+  }
+
+  else if ((data == release) || (force >= 100)) { //else check if release button pressed
+    endEff.stop(); // stop when above condition reached
+  }
+
+  // need to only send force if a certain time interval defined by timeVal has passed
+  sendForce(force);
+}
+
+int getForce()
+{
+  force=scale.get_units()/1000*9.81;
+  int forcePercent = force*100/maxForce;
+  return forcePercent;
+}
+
+void sendForce(int forcePercent)
+{
+  long currentTime = millis(); //checks total runtime
+  long timeDiff = currentTime - previousTimeEE; //finds interval between runtime and previous checked time
+  if (timeDiff >= timeIntervalEE)
+  {
+    String force_value = String(forcePercent);
+    String force_message = "FV" + force_value;
+    Serial.print(force_message);
+    previousTimeEE = currentTime;
+  }
 }
 
 void drillMotion(String inMsg)
 {
-  // fill with calls to drill functions depending on substring
+  char function = inMsg[2];
+
+  switch(function)
+  {
+    case manual: manualDrill(inMsg[3]); break;
+    case drillRelease: stopDrill(); break;
+    case prepare: prepDrill(); break;
+    case collect: collectSample(); break;
+    case deposit: depositSample(); break;
+  }
+}
+
+void manualDrill(char dir)
+{
+  if(dir == left)
+  {
+    endEff.move(1000);
+  }
+
+  else
+  {
+    endEff.move(-1000);
+  }
+}
+
+void drillRelease()
+{
+  EE.stop();
+}
+
+void prepDrill()
+{
+
+}
+
+void collectSample()
+{
+
+}
+
+void depositSample()
+{
+
 }
 
 void sendCurrentPosition() 
@@ -508,9 +633,10 @@ void homeArm() { // main function for full arm homing
   homeWrist();
   initializeHomingMotion();
   homeBase();
+  //homeEE();
   initializeMotion();
   zeroEncoders();
-  sendCurrentPosition();
+  Serial.println("Arm Homed\n");
 
   for(int i=0; i<NUM_AXES; i++)
   {
@@ -629,6 +755,24 @@ void homeWrist() { // homes axes 5-6
   }
 }
 
+void homeEE()
+{
+  int force = getForce();
+  // target position for end effector in closed direction
+  endEff.move(-99000*MOTOR_DIR);
+
+  while(force < 100) 
+  {
+    force=getForce(); //converting mass to force
+    // close end effector
+    endEff.run();
+    //recording number of steps from calibration
+    calPos++;
+  }
+  //Set calibrated position as closed position
+  endEff.setCurrentPosition(0);
+}
+
 void initializeHomingMotion() { // sets homing speed and acceleration for axes 1-4 and sets target homing position
 
   for(i = 0; i<NUM_AXES_EX_WRIST; i++) {
@@ -657,6 +801,15 @@ void initializeMotion() { // sets main program speeds for each axis
     steppers[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
     steppers[i].setAcceleration(maxAccel[i]);
   }
+
+  for(i = 0; i<NUM_AXES; i++)
+  {
+    steppersIK[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
+    steppersIK[i].setAcceleration(maxAccel[i]);
+  }
+
+  endEff.setMaxSpeed(speedEE);
+  endEff.setAcceleration(accEE);
 }
 
 void zeroAxes() { // sets current position of all axes to 0
@@ -671,6 +824,8 @@ void runSteppers() { // runs all stepper motors (if no target position has been 
   for(i = 0; i<NUM_AXES_EFF; i++) {
     steppers[i].run();
   }
+
+  EE.run();
 }
 
 void runSteppersIK() { // runs all stepper motors (if no target position has been assigned, stepper will not move)
@@ -678,6 +833,8 @@ void runSteppersIK() { // runs all stepper motors (if no target position has bee
   for(i = 0; i<NUM_AXES; i++) {
     steppersIK[i].run();
   }
+
+  endEff.run();
 }
 
 void waitForHome() { // stops arm motion until user homes arm after firmware is flashed

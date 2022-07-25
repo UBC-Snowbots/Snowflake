@@ -35,13 +35,14 @@ class ArmHardwareDriver {
     void jointSpaceMove(const char joystick, const char dir);
     void changeSpeed(const char dir);
     void changeAxis(const char joystick);
-    void releaseAxis(const char joystick);
+    void releaseAxis(const char joystick, const char dir);
     void endEffector(const char dir);
     void endEffectorRel(const char dir);
     void prepareDrilling();
     void collectSample();
     void depositSample();
     void manualDrill(const char dir);
+    void releaseDrill();
     void homeArm();
     void cartesian_motion(std::string inMsg);
     void cartesian_moveit_move(std::vector<double>& pos_commands, std::vector<double>& joint_positions);
