@@ -1,0 +1,21 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if defined(__stdcall)
+ #define CCONV __stdcall
+ #define PHIDGET22_API __declspec(dllimport)
+#else
+ #if defined(__BORLANDC__) || defined(_MSC_VER)
+  #define CCONV __stdcall
+  #define PHIDGET22_API __declspec(dllimport)
+ #else
+  #define CCONV
+  #define PHIDGET22_API
+ #endif
+#endif
+
+#include <stdint.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdlib.h>

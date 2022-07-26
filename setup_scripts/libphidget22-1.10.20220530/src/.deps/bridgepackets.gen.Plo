@@ -1,0 +1,9 @@
+src/bridgepackets.gen.lo: src/bridgepackets.gen.c \
+ /usr/include/stdc-predef.h src/bridgepackets.gen.h \
+ src/constantsinternal.h
+
+/usr/include/stdc-predef.h:
+
+src/bridgepackets.gen.h:
+
+src/constantsinternal.h:

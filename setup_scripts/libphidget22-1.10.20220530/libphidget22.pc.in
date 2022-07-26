@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libphidget22
+Description: Phidgets library
+Version: @VERSION@
+Libs: -L${libdir} -lphidget22
+Cflags: -I${includedir}

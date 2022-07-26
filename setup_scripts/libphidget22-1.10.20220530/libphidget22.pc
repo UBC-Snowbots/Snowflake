@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libphidget22
+Description: Phidgets library
+Version: 1.10.20220530
+Libs: -L${libdir} -lphidget22
+Cflags: -I${includedir}

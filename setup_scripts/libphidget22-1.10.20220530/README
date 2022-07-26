@@ -1,0 +1,73 @@
+                          Phidget22 for Linux
+                             Version 1.10
+
+Installation
+============
+
+     ./configure
+	 make
+	 sudo make install
+
+   This installs the library libphidget22.so and the header phidget22.h.
+
+   *Note: USB devices are by default only usable by root in Linux.
+          Install udev script to use Phidgets from a normal 
+		  user account (see below).
+		  
+   *Note: If 'make' fails with 'aclocal-1.14: command not found' or similar:
+          This generally happens if the source folder is moved or put under
+		  source control - the autoconf files need to be regenerated:
+		  
+	 apt-get install autoconf automake libtool
+	 autoreconf -if
+	 ./configure
+    
+	
+Requirements
+============
+
+    C compiler and build tools
+
+   These are usually installed by a package called 'build-essential'
+
+	libusb 1.0
+
+   This is generally already installed. The libusb dev files may need to
+be installed - this is usually a package called 'libusb-1.0-0-dev'.
+
+	Avahi client library
+	
+	For Phidget server discovery support, Avahi is required, along with
+the Avahi client library. This is usually a package called 
+'libavahi-client-dev' or similar.
+
+Options
+=======
+
+   Configure options:
+
+   To enable LabVIEW support:
+   
+     ./configure --enable-labview
+     make LABVIEW_CINTOOLS_PATH=/usr/local/natinst/LabVIEW-2010/cintools
+	 
+   Note: replace 'LabVIEW-2010' with your version
+
+Usage
+=====
+
+   Compile your projects with -lphidget22 and include phidget22.h in the
+source file.
+
+udev
+====
+
+   The udev rules file will make all phidgets world writeable (mode 666)
+as soon as they are attached. Note that some systems may already have 
+generic USB rulesets defined.  The udev rules are run in order from 
+smallest to largest number - the Phidgets rules, at number 99, should 
+be high enough so that any USB rules will be overridden.
+
+   To Install:
+
+     cp plat/linux/udev/99-libphidget22.rules /etc/udev/rules.d

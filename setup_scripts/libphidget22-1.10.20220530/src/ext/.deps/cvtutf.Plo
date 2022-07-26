@@ -1,0 +1,6 @@
+src/ext/cvtutf.lo: src/ext/cvtutf.c /usr/include/stdc-predef.h \
+ src/ext/cvtutf.h
+
+/usr/include/stdc-predef.h:
+
+src/ext/cvtutf.h:
