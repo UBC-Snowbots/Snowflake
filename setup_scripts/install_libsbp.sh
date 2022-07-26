@@ -10,4 +10,4 @@ cd build
 cmake ../
 make
 sudo make install   # install headers and libraries into /usr/local
-cd ../
+

@@ -61,6 +61,9 @@ sudo ./setup_realsense_manual.sh
 
 cd $CURR_DIR
 sudo ./install_phidgets.sh
+cd $CURR_DIR
+sudo ./install_libsbp.sh
+cd $CURR_DIR
 
 echo "================================================================"
 echo "Installing Misc. Utilities"
