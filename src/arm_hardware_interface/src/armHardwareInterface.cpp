@@ -24,86 +24,65 @@ ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, string node_na
         string arm_pos_publisher = "/cmd_pos_arm";
         pub_arm_pos = private_nh.advertise<sb_msgs::ArmPosition>(arm_pos_publisher, 1);
 
-	bool initFlag = false;
+	init();
 
-	while(!initFlag)
+	// init ros controller manager
+	controller_manager_.reset(new controller_manager::ControllerManager(this, nh_));
+
+	nh_.param("/arm/hardware_interface/loop_hz", loop_hz_, 0.1);
+	ROS_DEBUG_STREAM_NAMED("constructor", "Using loop freqency of " << loop_hz_ << " hz");
+	ros::Duration update_freq = ros::Duration(1.0 / loop_hz_);
+	non_realtime_loop_ = nh_.createTimer(update_freq, &ArmHardwareInterface::cmdArmPosition, this);
+
+	// initialize controller
+	for (int i = 0; i < num_joints_; ++i)
 	{
-		if(cartesian_mode)
-		{
-			initFlag = true;
-			init();
+		ROS_DEBUG_STREAM_NAMED("constructor", "Loading joint name: " << joint_names_[i]);
 
-			// init ros controller manager
-			controller_manager_.reset(new controller_manager::ControllerManager(this, nh_));
+		// Create joint state interface
+		JointStateHandle jointStateHandle(joint_names_[i], &joint_positions_[i], &joint_velocities_[i], &joint_efforts_[i]);
+		joint_state_interface_.registerHandle(jointStateHandle);
 
-			nh_.param("/arm/hardware_interface/loop_hz", loop_hz_, 0.1);
-			ROS_DEBUG_STREAM_NAMED("constructor", "Using loop freqency of " << loop_hz_ << " hz");
-			ros::Duration update_freq = ros::Duration(1.0 / loop_hz_);
-			non_realtime_loop_ = nh_.createTimer(update_freq, &ArmHardwareInterface::update, this);
-
-			// initialize controller
-			for (int i = 0; i < num_joints_; ++i)
-			{
-				ROS_DEBUG_STREAM_NAMED("constructor", "Loading joint name: " << joint_names_[i]);
-
-				// Create joint state interface
-				JointStateHandle jointStateHandle(joint_names_[i], &joint_positions_[i], &joint_velocities_[i], &joint_efforts_[i]);
-				joint_state_interface_.registerHandle(jointStateHandle);
-
-				// Create position joint interface
-				JointHandle jointPositionHandle(jointStateHandle, &joint_position_commands_[i]);
-				position_joint_interface_.registerHandle(jointPositionHandle);
-			}
-
-			// get encoder calibration
-			std::vector<double> enc_steps_per_deg(num_joints_);
-
-			for (int i = 0; i < num_joints_; ++i)
-			{
-				if(!nh_.getParam("/arm/hardware_driver/encoder_steps_per_deg/" + joint_names_[i], enc_steps_per_deg[i]))
-				{
-					ROS_WARN("Failed to get params for /arm/hardware_driver/encoder_steps_per_deg/");
-				}
-
-				if (!nh_.getParam("/arm/hardware_interface/joint_offsets/" + joint_names_[i], joint_offsets_[i]))
-				{
-					ROS_WARN("Failed to get params for /arm/hardware_interface/joint_offsets/");
-				}
-
-			}
-
-			// set velocity limits
-			for (int i = 0; i < num_joints_; ++i)
-			{
-				nh_.getParam("/arm/joint_limits/" + joint_names_[i] + "/max_velocity", velocity_limits_[i]);
-				nh_.getParam("/arm/joint_limits/" + joint_names_[i] + "/max_acceleration", acceleration_limits_[i]);
-				velocity_limits_[i] = radToDeg(velocity_limits_[i]);
-				acceleration_limits_[i] = radToDeg(acceleration_limits_[i]);
-			}
-
-			// calibrate joints if needed
-			bool use_existing_calibrations = false;
-			nh_.getParam("/arm/hardware_interface/use_existing_calibrations", use_existing_calibrations);
-			if (!use_existing_calibrations)
-			{
-				// run calibration
-				ROS_INFO("Running joint calibration...");
-				driver_.homeArm();
-			}
-
-			// init position commands at current positions
-			driver_.getJointPositions(actuator_positions_);
-			for (int i = 0; i < num_joints_; ++i)
-			{
-				// apply offsets, convert from deg to rad for moveit
-				joint_positions_[i] = degToRad(actuator_positions_[i] + joint_offsets_[i]);
-				joint_position_commands_[i] = joint_positions_[i];
-			}
-
-			registerInterface(&joint_state_interface_);
-			registerInterface(&position_joint_interface_);
-		}
+		// Create position joint interface
+		JointHandle jointPositionHandle(jointStateHandle, &joint_position_commands_[i]);
+		position_joint_interface_.registerHandle(jointPositionHandle);
 	}
+
+	// get encoder calibration
+	std::vector<double> enc_steps_per_deg(num_joints_);
+
+	for (int i = 0; i < num_joints_; ++i)
+	{
+		if(!nh_.getParam("/arm/hardware_driver/encoder_steps_per_deg/" + joint_names_[i], enc_steps_per_deg[i]))
+		{
+			ROS_WARN("Failed to get params for /arm/hardware_driver/encoder_steps_per_deg/");
+		}
+
+		if (!nh_.getParam("/arm/hardware_interface/joint_offsets/" + joint_names_[i], joint_offsets_[i]))
+		{
+			ROS_WARN("Failed to get params for /arm/hardware_interface/joint_offsets/");
+		}
+
+	}
+
+	// set velocity limits
+	for (int i = 0; i < num_joints_; ++i)
+	{
+		nh_.getParam("/arm/joint_limits/" + joint_names_[i] + "/max_velocity", velocity_limits_[i]);
+		nh_.getParam("/arm/joint_limits/" + joint_names_[i] + "/max_acceleration", acceleration_limits_[i]);
+		velocity_limits_[i] = radToDeg(velocity_limits_[i]);
+		acceleration_limits_[i] = radToDeg(acceleration_limits_[i]);
+	}
+
+	for (int i = 0; i < num_joints_; ++i)
+	{
+		// assign zero angles initially
+		joint_positions_[i] = 0;
+		joint_position_commands_[i] = 0;
+	}
+
+	registerInterface(&joint_state_interface_);
+	registerInterface(&position_joint_interface_);
 }
 
 ArmHardwareInterface::~ArmHardwareInterface()
@@ -120,9 +99,34 @@ void ArmHardwareInterface::controllerModeCallBack(const std_msgs::Bool::ConstPtr
 }
 
 void ArmHardwareInterface::armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
-    if (!cartesian_mode) {
-        // TODO
+    
+    // TODO: ihsan implement snowbots message type
+    //actuator_positions_ = ___________ 
+
+    if (!cartesian_mode) 
+    {
+	    for (int i = 0; i < num_joints_; ++i)
+		{
+			// apply offsets, convert from deg to rad for moveit
+			joint_positions_[i] = degToRad(actuator_positions_[i] + joint_offsets_[i]);
+			joint_position_commands_[i] = joint_positions_[i];
+		}
     }
+    else
+    {
+    	read();
+    	controller_manager_->update(ros::Time::now(), elapsed_time_);
+    }
+}
+
+void ArmHardwareInterface::cmdArmPosition(const ros::TimerEvent &e)
+{
+	elapsed_time_ = ros::Duration(e.current_real - e.last_real);
+	write(elapsed_time_);
+
+	// TODO: ihsan inspect lines below
+	// sb_msgs::ArmPosition cmdPos = ________
+	// pub_arm_pos.publish(cmdPos);
 }
 
 void ArmHardwareInterface::init()
@@ -150,6 +154,8 @@ void ArmHardwareInterface::init()
 	velocity_limits_.resize(num_joints_);
 	acceleration_limits_.resize(num_joints_);
 }
+
+/* deprecated, for reference only
 
 void ArmHardwareInterface::update(const ros::TimerEvent &e)
 {
@@ -184,9 +190,12 @@ void ArmHardwareInterface::update(const ros::TimerEvent &e)
 	}
 }
 
+*/
+
 void ArmHardwareInterface::read()
 {		
-	driver_.update(actuator_commands_, actuator_positions_);
+	// TODO: assign observed_msg components to actuator_positions_
+
 	for (int i = 0; i < num_joints_; ++i)
 	{
 		// apply offsets, convert from deg to rad for moveit

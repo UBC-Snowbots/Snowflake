@@ -31,9 +31,9 @@ using joint_limits_interface::PositionJointSoftLimitsInterface;
 			~ArmHardwareInterface();
 
 			void init();
-			void update(const ros::TimerEvent& e);
 			void read();
 			void write(ros::Duration elapsed_time);
+			void cmdArmPosition(const ros::TimerEvent& e);
 
 		private:
 			ros::NodeHandle nh_;

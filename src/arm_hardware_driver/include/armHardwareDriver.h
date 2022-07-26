@@ -52,6 +52,12 @@ class ArmHardwareDriver {
     void jointPosToEncSteps(std::vector<double>& joint_positions, std::vector<int>& enc_steps);
     void sendMsg(std::string outMsg);
     void recieveMsg(std::string& inMsg);
+    void requestArmPosition();
+    void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_msg);
+    void updateHWInterface();
+    void requestArmPosition();
+
+
 
     // character representations of buttons for arm communication
     const char leftJSL = 'A';
@@ -94,6 +100,14 @@ class ArmHardwareDriver {
     const char down = 'D';
     const char wrist = 'W';
     const char garbage = 'G';
+
+    int num_joints_ = 6;
+    
+    std::vector<int> encPos, encCmd;
+    std::vector<double> armCmd, armPos, encStepsPerDeg;
+
+    double refresh_rate_hz = 10.0;
+    ros::Timer arm_pos_timer;
 
   private:
     void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);

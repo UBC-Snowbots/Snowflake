@@ -22,22 +22,32 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
     sub_command_pos = nh.subscribe("/cmd_pos_arm", queue_size, &ArmHardwareDriver::armPositionCallBack, this);
     pub_observed_pos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
 
+    ros::Duration pos_update_freq = ros::Duration(1.0/refresh_rate_hz);
+    arm_pos_timer = nh.createTimer(pos_update_freq, &ArmHardwareDriver::requestArmPosition, this);
+
     // Get Params
     SB_getParam(private_nh, "port", port, (std::string) "/dev/ttyACM0");
     // Open the given serial port
     teensy.Open(port);
     teensy.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
     teensy.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
+
+    encCmd.resize(num_joints_);
+    armCmd.resize(num_joints_);
+    encStepsPerDeg.resize(num_joints_);
+    armPos.resize(num_joints_);
+    armCmd.resize(num_joints_);
+
+    for(int i=0; i<num_joints_; i++)
+    {
+        encStepsPerDeg[i] = reductions[i]*ppr/(360.0*encppr*4.0);
+    }
 }
 
 
 // Callback function to relay pro controller messages to teensy MCU on arm via rosserial
 void ArmHardwareDriver::teensySerialCallback(std_msgs::String& inMsg) {
     parseInput(inMsg.data);
-}
-
-void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg) {
-    // TODO
 }
 
 void ArmHardwareDriver::parseInput(std::string inMsg) {
@@ -238,7 +248,24 @@ void ArmHardwareDriver::homeArm() {
 }
 
 
-// ROS SERIAL COMMUNICATION APIs //
+void ArmHardwareDriver::armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_msg)
+{
+    // TODO: ihsan fill std::vector<double> type with sb_msgs values
+    armCmd = // _________
+    jointPosToEncSteps(armCmd, encCmd);
+
+    std::string outMsg = "MT";
+    for (int i = 0; i < num_joints_; ++i)
+    {
+        outMsg += 'A' + i;
+        outMsg += std::to_string(encCmd[i]);
+    }
+    outMsg += "\n";
+    sendMsg(outMsg);
+    recieveMsg();
+}
+
+/* deprecated, for reference only
 
 void ArmHardwareDriver::cartesian_moveit_move(std::vector<double>& pos_commands, std::vector<double>& joint_positions)
 {
@@ -266,6 +293,7 @@ void ArmHardwareDriver::cartesian_moveit_move(std::vector<double>& pos_commands,
     // convert from encoder steps to angles
     encStepsToJointPos(enc_steps_ , joint_positions);
 }
+*/
 
 
 void ArmHardwareDriver::updateEncoderSteps(std::string msg)
@@ -302,7 +330,6 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
     }
 }
 
-
 // Libserial Implementation
 
 void ArmHardwareDriver::sendMsg(std::string outMsg)
@@ -321,5 +348,32 @@ void ArmHardwareDriver::recieveMsg(std::string& inMsg)
 	buffer << next_char;
     } while (next_char != '\n');
     inMsg = buffer.str();
+
+    if(inMsg.substr(0, 2) == "JP")
+    {
+        ROS_INFO("Sending Arm Position to HW Interface")
+        updateEncoderSteps(inMsg);
+        encStepsToJointPos(encPos , armPos);
+        updateHWInterface();
+    }
+
+    else if (inMsg.substr(0, 2) == "EE")
+        ROS_INFO(inMsg);
+
+}
+
+void ArmHardwareDriver::requestArmPosition()
+{
+    std::string outMsg = "JP";
+    outMsg += "\n";
+    sendMsg(outMsg);
+    recieveMsg()
+}
+
+void ArmHardwareDriver::updateHWInterface()
+{
+    // TODO: Ihsan fill in correct message implementation
+    //sb_msgs::ArmPosition outMsg = _____
+    //pub_observed_pos.publish(outMsg);
 }
 

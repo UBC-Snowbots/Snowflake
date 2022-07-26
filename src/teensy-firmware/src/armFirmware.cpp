@@ -91,8 +91,6 @@ int maxAngles[6] = {180, 140, 180, 120, 140, 100};
 const unsigned long readInterval = 10;
 const unsigned long currentTime;
 const unsigned long previousTime = 0;
-const unsigned long previousTimeJP = 0;
-const unsigned long timeIntervalJP = 50;
 const unsigned long previousTimeEE = 0;
 const unsigned long timeIntervalEE = 100;
 
@@ -155,12 +153,7 @@ void setup() { // setup function to initialize pins and provide initial homing t
 
 void loop()
 {
-  currentTime = millis();
-
-  if((currentTime - previousTime) > readInterval) {
-    recieveCommand();
-    previousTime = currentTime;
-  }
+  recieveCommand();
 
   if(jointFlag)
     runSteppers();
@@ -217,12 +210,20 @@ void parseMessage(String inMsg)
   {
     homeArm();
   }
+
+  else if(function == "JP")
+  {
+    readEncPos(curEncSteps);
+    sendCurrentPosition();
+  }
 }
 
 //****//CARTESIAN MODE FUNCTIONS//****//
 
 void cartesianCommands(String inMsg)
 {
+
+  jointFlag = false;
   // read current joint positions
   readEncPos(curEncSteps);
 
@@ -252,6 +253,7 @@ void cartesianCommands(String inMsg)
 // parses which commands to execute when in joint space mode
 void jointCommands(String inMsg)
 {
+  jointFlag = true;
   char function = inMsg[2];
   char detail1 = inMsg[3];
 
@@ -261,19 +263,6 @@ void jointCommands(String inMsg)
     case speed: changeSpeed(detail1); break;
     case axis: changeAxis(detail1); break;
     case move: jointMovement(detail1, inMsg[4]); break;
-  }
-
-  sendJointPosTimer();
-}
-
-void sendJointPosTimer
-{
-  long currentTime = millis(); //checks total runtime
-  long timeDiff = currentTime - previousTimeJP; //finds interval between runtime and previous checked time
-  if (timeDiff >= timeIntervalJP)
-  {
-    sendCurrentPosition();
-    previousTimeJP = currentTime;
   }
 }
 
@@ -314,7 +303,7 @@ void sendForce(int forcePercent)
   if (timeDiff >= timeIntervalEE)
   {
     String force_value = String(forcePercent);
-    String force_message = "FV" + force_value;
+    String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" %\n");
     Serial.print(force_message);
     previousTimeEE = currentTime;
   }
@@ -349,7 +338,7 @@ void manualDrill(char dir)
 
 void drillRelease()
 {
-  EE.stop();
+  endEff.stop();
 }
 
 void prepDrill()
@@ -766,8 +755,6 @@ void homeEE()
     force=getForce(); //converting mass to force
     // close end effector
     endEff.run();
-    //recording number of steps from calibration
-    calPos++;
   }
   //Set calibrated position as closed position
   endEff.setCurrentPosition(0);
