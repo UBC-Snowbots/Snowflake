@@ -108,6 +108,7 @@ int runFlags[] = {0, 0, 0, 0, 0, 0};
 int i;
 bool initFlag = false;
 bool jointFlag = true;
+bool IKFlag = false;
 
 // variables for homing / arm calibration
 long homePosConst = -99000;
@@ -155,7 +156,7 @@ void loop()
 {
   recieveCommand();
 
-  if(jointFlag)
+  if(!IKFlag)
     runSteppers();
 
   else
@@ -213,8 +214,11 @@ void parseMessage(String inMsg)
 
   else if(function == "JP")
   {
+    if(!IKFlag)
+    {
     readEncPos(curEncSteps);
     sendCurrentPosition();
+    }
   }
 }
 
@@ -257,14 +261,15 @@ void jointCommands(String inMsg)
   char function = inMsg[2];
   char detail1 = inMsg[3];
 
-  switch(function) 
-  {
-    case release: releaseEvent(detail1, inMsg[4]); break;
-    case speed: changeSpeed(detail1); break;
-    case axis: changeAxis(detail1); break;
-    case move: jointMovement(detail1, inMsg[4]); break;
+  if(function == release)
+    releaseEvent(detail1, inMsg[4]); 
+  else if(function == speed)
+    changeSpeed(detail1); 
+  else if(function == axis)
+    changeAxis(detail1);
+  else if(function == move)
+    jointMovement(detail1, inMsg[4]);
   }
-}
 
 void endEffectorCommands(String inMsg)
 {

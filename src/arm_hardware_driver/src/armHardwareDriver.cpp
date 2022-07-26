@@ -200,6 +200,8 @@ void ArmHardwareDriver::endEffector(const char dir)
     outMsg += dir;
     outMsg += "\n";
     sendMsg(outMsg);
+    // sending command to end effector results in force feedback being requested
+    recieveMsg();
 }
 
 void ArmHardwareDriver::endEffectorRel()

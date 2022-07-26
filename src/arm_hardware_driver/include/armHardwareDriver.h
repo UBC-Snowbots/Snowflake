@@ -102,10 +102,16 @@ class ArmHardwareDriver {
     const char garbage = 'G';
 
     int num_joints_ = 6;
+    double ppr = 400.0;
+    double encppr = 512.0;
     
+    // hardware interface communication variables
     std::vector<int> encPos, encCmd;
     std::vector<double> armCmd, armPos, encStepsPerDeg;
-
+    static const double reductions[] = {50, 161, 93.07, 44.8, 57.34, 57.34};
+    vector<double> red (reductions, reductions + sizeof(reductions) / sizeof(reductions[0]));
+    
+    // timer variables
     double refresh_rate_hz = 10.0;
     ros::Timer arm_pos_timer;
 
