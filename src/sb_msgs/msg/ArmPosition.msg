@@ -1,2 +1,1 @@
-Header header
-double[] positions
+float64[] positions

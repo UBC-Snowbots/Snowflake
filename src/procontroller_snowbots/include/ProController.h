@@ -12,6 +12,7 @@
 #include <cstring>
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/String.h>
+#include <std_msgs/Bool.h>
 #include <iostream>
 #include <libevdev-1.0/libevdev/libevdev.h>
 #include <ros/ros.h>
@@ -80,6 +81,8 @@ class ProController {
     const char arrowR = 'V';
     const char arrowU = 'W';
     const char arrowD = 'X';
+    const char arrowRLRel = '0';
+    const char arrowUDRel = '5';
     const char leftJSRel = 'Y';
     const char rightJSRel = 'Z';
     const char homeVal = '4';

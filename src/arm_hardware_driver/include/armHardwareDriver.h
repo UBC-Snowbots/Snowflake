@@ -24,7 +24,7 @@
 // Other
 #include <SerialStream.h>
 
-#include <ArmDriver.h>
+// #include <ArmDriver.h>
 
 class ArmHardwareDriver {
   public:
@@ -38,7 +38,7 @@ class ArmHardwareDriver {
     void changeAxis(const char joystick);
     void releaseAxis(const char joystick, const char dir);
     void endEffector(const char dir);
-    void endEffectorRel(const char dir);
+    void endEffectorRel();
     void prepareDrilling();
     void collectSample();
     void depositSample();
@@ -78,6 +78,7 @@ class ArmHardwareDriver {
     const char arrowR = 'V';
     const char arrowU = 'W';
     const char arrowD = 'X';
+    const char arrowRLRel = '0';
     const char leftJSRel = 'Y';
     const char rightJSRel = 'Z';
     const char homeVal = '4';

@@ -15,8 +15,9 @@ add_definitions(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  sb_utils
+  sb_msgs
 )
-find_package(sb_utils REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

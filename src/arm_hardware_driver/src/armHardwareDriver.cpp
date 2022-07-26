@@ -20,7 +20,7 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
     subPro                     = nh.subscribe(
     "/cmd_arm", queue_size, &ArmHardwareDriver::teensySerialCallback, this);
     sub_command_pos = nh.subscribe("/cmd_pos_arm", queue_size, &ArmHardwareDriver::armPositionCallBack, this);
-    pub_observed_pos = private_nh.advertise("/observed_pos_arm", 1);
+    pub_observed_pos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
 
     // Get Params
     SB_getParam(private_nh, "port", port, (std::string) "/dev/ttyACM0");
@@ -44,10 +44,12 @@ void ArmHardwareDriver::parseInput(std::string inMsg) {
 
     char mode = inMsg[0];
 
-    switch(mode) {
-        case jointMode: joint_space_motion(inMsg); break;
-        case IKMode: cartesian_motion(inMsg); break;
-        case drillMode: drill_motion(inMsg); break;
+    if (mode == jointMode) {
+        joint_space_motion(inMsg);
+    } else if (mode == IKMode) {
+        cartesian_motion(inMsg);
+    } else if (mode == drillMode) {
+        drill_motion(inMsg);
     }
 }
 
@@ -57,29 +59,50 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     ROS_INFO("Joint space command recieved");
     char action = inMsg[1];
     
-    switch(action) {
-        case leftJSL: jointSpaceMove(left, left); break;
-        case leftJSR: jointSpaceMove(left, right); break;
-        case rightJSU: jointSpaceMove(right, up); break;
-        case rightJSD: jointSpaceMove(right, down); break;
-        case buttonA: jointSpaceMove(wrist, down); break;
-        case buttonB: jointSpaceMove(wrist, right); break;
-        case buttonX: jointSpaceMove(wrist, left); break;
-        case buttonY: jointSpaceMove(wrist, up); break;
-        case triggerL: changeAxis(down); break;
-        case triggerR: changeAxis(up); break;
-        case leftJSRel: releaseAxis(left, garbage); break;
-        case rightJSRel: releaseAxis(right, garbage); break;
-        case buttonARel: releaseAxis(wrist, right); break;
-        case buttonBRel: releaseAxis(wrist, down); break;
-        case buttonXRel: releaseAxis(wrist, up); break;
-        case buttonYRel: releaseAxis(wrist, left); break;
-        case arrowU: changeSpeed(up); break;
-        case arrowD: changeSpeed(down); break;
-        case arrowL: endEffector(left); break;
-        case arrowR: endEffector(right); break;
-        case arrowRLRel: endEffectorRel(); break;
-        case homeVal: homeArm(); break;
+    if (action == leftJSL) {
+        jointSpaceMove(left, left);
+    } else if (action == leftJSR) {
+        jointSpaceMove(left, right);
+    } else if (action == rightJSU) {
+        jointSpaceMove(right, up);
+    } else if (action == rightJSD) {
+        jointSpaceMove(right, down);
+    } else if (action == buttonA) {
+        jointSpaceMove(wrist, down);
+    } else if (action == buttonB) {
+        jointSpaceMove(wrist, right);
+    } else if (action == buttonX) {
+        jointSpaceMove(wrist, left);
+    } else if (action == buttonY) {
+        jointSpaceMove(wrist, up);
+    } else if (action == triggerL) {
+        changeAxis(down);
+    } else if (action == triggerR) {
+        changeAxis(up);
+    } else if (action == leftJSRel) {
+        releaseAxis(right, garbage);
+    } else if (action == rightJSRel) {
+        releaseAxis(wrist, garbage);
+    } else if (action == buttonARel) {
+        releaseAxis(wrist, right);
+    } else if (action == buttonBRel) {
+        releaseAxis(wrist, down);
+    } else if (action == buttonXRel) {
+        releaseAxis(wrist, up);
+    } else if (action == buttonYRel) {
+        releaseAxis(wrist, left);
+    } else if (action == arrowU) {
+        changeSpeed(up);
+    } else if (action == arrowD) {
+        changeSpeed(down);
+    } else if (action == arrowL) {
+        endEffector(left);
+    } else if (action == arrowR) {
+        endEffector(right);
+    } else if (action == arrowRLRel) {
+        endEffectorRel();
+    } else if (action == homeVal) {
+        homeArm();
     }
 }
 
@@ -87,10 +110,12 @@ void ArmHardwareDriver::cartesian_motion(std::string inMsg)
 {
     char action = inMsg[1];
 
-    switch(action) {
-        case arrowL: endEffector(left); break;
-        case arrowR: endEffector(right); break;
-        case arrowRLRel: endEffectorRel(); break;
+    if (arrowL) {
+        endEffector(left);
+    } else if (arrowRLRel) {
+        endEffector(right);
+    } else if (arrowRLRel) {
+        endEffectorRel();
     }
 }
 
@@ -100,17 +125,22 @@ void ArmHardwareDriver::drill_motion(std::string inMsg) {
     ROS_INFO("Drilling command recieved");
     char action = inMsg.at(1);
 
-    switch(action) {
-        case buttonA: prepareDrilling(); break;
-        case buttonB: collectSample(); break;
-        case buttonX: depositSample(); break;
-        case triggerL: manualDrill(left); break;
-        case triggerR: manualDrill(right); break;
-        case (triggerLRel || triggerRRel): manualDrill(); break;
-        // below two lines to be implemented once cartesian mode is sorted
-        // case rightJSU: moveDrillUp(); break;
-        // case rightJSD: moveDrillDown(); break;
+    if (buttonA) {
+        prepareDrilling();
+    } else if (buttonB) {
+        collectSample();
+    } else if (buttonX) {
+        depositSample();
+    } else if (triggerL) {
+        manualDrill(left);
+    } else if (triggerR) {
+        manualDrill(right);
+    } else if (triggerLRel || triggerRRel) {
+        releaseDrill();
     }
+    // below two lines to be implemented once cartesian mode is sorted
+    // case rightJSU: moveDrillUp(); break;
+    // case rightJSD: moveDrillDown(); break;
 }
 
 void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir)
@@ -125,6 +155,8 @@ void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir)
 
 void ArmHardwareDriver::changeSpeed(const char dir)
 {
+    ROS_INFO("Changing speed");
+    ROS_INFO(dir == up ? "Speed increasing" : (dir == down ? "Speed decreasing" : "Incorrect direction provided"));
     std::string outMsg = "JM";
     outMsg = "S";
     outMsg += dir;
@@ -136,7 +168,7 @@ void ArmHardwareDriver::changeAxis(const char joystick)
 {
     std::string outMsg = "JM";
     outMsg += "A";
-    outMsg += dir;
+    outMsg += joystick;
     outMsg += "\n";
     sendMsg(outMsg);
 }
@@ -160,9 +192,9 @@ void ArmHardwareDriver::endEffector(const char dir)
     sendMsg(outMsg);
 }
 
-void ArmHardwareDriver:: endEffectorRel(const char dir)
+void ArmHardwareDriver::endEffectorRel()
 {
-    std::string outmsg = "EER\n";
+    std::string outMsg = "EER\n";
     sendMsg(outMsg);
 }
 

@@ -137,7 +137,7 @@ void ProController::readInputs() {
                     }
 
                     else { // Drilling mode for arm 
-                        outmsg += drillMode;
+                        armOutMsg += drillMode;
                         armOutMsg += armOutVal;
                         publishArmMessage(armOutMsg);
                     }
@@ -187,7 +187,7 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
 }
 
 // If controller recieves new commands and is in an arm mode, send message to arm
-void publishArmMessage(std::string outMsg) {
+void ProController::publishArmMessage(std::string outMsg) {
     std_msgs::String outMsgWrapper;
     outMsg += '\n';
     outMsgWrapper.data = outMsg;
