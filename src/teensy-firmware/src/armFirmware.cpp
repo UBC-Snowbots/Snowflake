@@ -214,12 +214,22 @@ void parseMessage(String inMsg)
 
   else if(function == "JP")
   {
-    if(!IKFlag)
+    if(IKFlag)
     {
-    readEncPos(curEncSteps);
-    sendCurrentPosition();
+      sendMessage('X');
+    }
+    else
+    {
+      readEncPos(curEncSteps);
+      sendCurrentPosition();
     }
   }
+}
+
+void sendMessage(char outChar)
+{
+  String outMsg = String(outChar) + String("\n");
+  Serial.print(outMsg);
 }
 
 //****//CARTESIAN MODE FUNCTIONS//****//
@@ -312,6 +322,8 @@ void sendForce(int forcePercent)
     Serial.print(force_message);
     previousTimeEE = currentTime;
   }
+
+  sendMessage('X');
 }
 
 void drillMotion(String inMsg)
