@@ -6,7 +6,7 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 */
  
 #include <AccelStepper.h>
-#include <HX711.h>
+// #include <HX711.h>
 #include <Encoder.h>
 
 // general parameters
@@ -160,19 +160,18 @@ void setup() { // setup function to initialize pins and provide initial homing t
   }
   // waits for user to press "home" button before rest of functions are available
   
-  
-  //waitForHome();
+  waitForHome();
 }
 
 void loop()
 {
-//  recieveCommand();
-//
-//  if(!IKFlag)
-//    runSteppers();
-//
-//  else
-//    runSteppersIK();
+  recieveCommand();
+
+  if(!IKFlag)
+    runSteppers();
+
+  else
+    runSteppersIK();
 
 if(!IKFlag)
 {
