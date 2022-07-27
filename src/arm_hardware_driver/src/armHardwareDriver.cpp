@@ -22,9 +22,6 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
     sub_command_pos = nh.subscribe("/cmd_pos_arm", queue_size, &ArmHardwareDriver::armPositionCallBack, this);
     pub_observed_pos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
 
-    ros::Duration pos_update_freq = ros::Duration(1.0/refresh_rate_hz);
-    arm_pos_timer = nh.createTimer(pos_update_freq, &ArmHardwareDriver::requestArmPosition, this);
-
     // Get Params
     SB_getParam(private_nh, "port", port, (std::string) "/dev/ttyACM0");
     // Open the given serial port
@@ -43,7 +40,6 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
         encStepsPerDeg[i] = reductions[i]*ppr/(360.0*encppr*4.0);
     }
 }
-
 
 // Callback function to relay pro controller messages to teensy MCU on arm via rosserial
 void ArmHardwareDriver::teensySerialCallback(std_msgs::String& inMsg) {
@@ -161,6 +157,7 @@ void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir)
     outMsg += dir;
     outMsg += "\n";
     sendMsg(outMsg);
+    recieveMsg();
 }
 
 void ArmHardwareDriver::changeSpeed(const char dir)
@@ -362,14 +359,6 @@ void ArmHardwareDriver::recieveMsg(std::string& inMsg)
     else if (inMsg.substr(0, 2) == "EE")
         ROS_INFO(inMsg);
 
-}
-
-void ArmHardwareDriver::requestArmPosition()
-{
-    std::string outMsg = "JP";
-    outMsg += "\n";
-    sendMsg(outMsg);
-    recieveMsg()
 }
 
 void ArmHardwareDriver::updateHWInterface()

@@ -7,7 +7,6 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
  
 #include <AccelStepper.h>
 #include <HX711.h>
-#include <Encoder.h>
 
 // general parameters
 #define NUM_AXES 6
@@ -45,7 +44,7 @@ static const char drillRelease = 'X';
 
 int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
 int pprEnc = 512;
-int ENC_DIR[6] = {1, -1, -1, -1, 1, -1};
+int ENC_DIR[6] = {1, 1, -1, -1, -1, -1};
 const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 
 // Motor variables
@@ -58,7 +57,7 @@ int encPinB[6] = {16, 37, 39, 35, 14, 41};
 
 // end effector variables
 const int maxForce = 30; // needs to be checked
-const float calibrationFactor = -111.25;
+const float calibrationFactor = -111.25
 float force;
 HX711 scale;
 int calPos = 0;
@@ -90,26 +89,18 @@ int maxAngles[6] = {180, 140, 180, 120, 140, 100};
 
 // Time variables
 const unsigned long readInterval = 10;
-unsigned long currentTime;
-unsigned long previousTime = 0;
-unsigned long previousTimeEE = 0;
+const unsigned long currentTime;
+const unsigned long previousTime = 0;
+const unsigned long previousTimeEE = 0;
 const unsigned long timeIntervalEE = 100;
 const unsigned long timeIntervalJP = 100;
-unsigned long previousTimeJP = 0;
+const unsigned long previousTimeJP = 0;
 
 // stepper motor objects for AccelStepper library
 AccelStepper steppers[8];
 AccelStepper endEff(1, EEstepPin, EEdirPin);
 AccelStepper steppersIK[8];
-
-Encoder enc1(encPinA[0], encPinB[0]);
-Encoder enc2(encPinA[1], encPinB[1]);
-Encoder enc3(encPinA[2], encPinB[2]);
-Encoder enc4(encPinA[3], encPinB[3]);
-Encoder enc5(encPinA[4], encPinB[4]);
-Encoder enc6(encPinA[5], encPinB[5]);
-
-Encoder encoders[] = {enc1, enc2, enc3, enc4, enc5, enc6};
+Encoder encoders[6];
 
 // variable declarations
 long max_steps[] = {red[0]*maxAngles[0]/360.0*ppr[0], red[1]*maxAngles[1]/360.0*ppr[1], red[2]*maxAngles[2]/360.0*ppr[2], red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
@@ -149,6 +140,7 @@ void setup() { // setup function to initialize pins and provide initial homing t
       pinMode(dirPinsIK[i], OUTPUT);
       steppersIK[i] = AccelStepper(1, stepPinsIK[i], dirPinsIK[i]);
       steppersIK[i].setMinPulseWidth(200);
+      encoders[i] = Encoder(encPinA[i], encPinB[i]);
     }
 
   for(i = 0; i<NUM_AXES_EFF; i++) {
@@ -176,7 +168,6 @@ void loop()
 void recieveCommand()
 {
   String inData = "";
-  char recieved;
 
   if(Serial.available()>0)
   {
@@ -276,7 +267,7 @@ void jointCommands(String inMsg)
     releaseEvent(detail1, inMsg[4]); 
   else if(function == speed)
     changeSpeed(detail1); 
-  else if(function == change)
+  else if(function == axis)
     changeAxis(detail1);
   else if(function == move)
     jointMovement(detail1, inMsg[4]);
@@ -341,13 +332,13 @@ void sendPosNonIK()
     sendMessage('X');
 }
 
-void drillCommands(String inMsg)
+void drillMotion(String inMsg)
 {
   char function = inMsg[2];
 
   if(function == manual)
     manualDrill(inMsg[3]);
-  else if(function == drillRelease)
+  else if(functino == drillRelease)
     stopDrill();
   else if(function == prepare)
     prepDrill();
@@ -370,7 +361,7 @@ void manualDrill(char dir)
   }
 }
 
-void stopDrill()
+void drillRelease()
 {
   endEff.stop();
 }
@@ -437,10 +428,6 @@ void readEncPos(int* encPos)
   {
     encPos[i] = encoders[i].read()*ENC_DIR[i];
   }
-
-  int temp = encPos[4];
-  encPos[4] = temp + encPos[5];
-  encPos[5] = encPos[5] - temp;
 }
 
 void zeroEncoders()
@@ -473,14 +460,12 @@ void cmdArmBase()
 
 void cmdArmWrist()
 {
-  int diffMotStepsA5, diffMotStepsA6, diffEncStepsA5, diffEncStepsA6;
-  
-  diffEncStepsA5 = cmdEncSteps[4] - curEncSteps[4];
-  diffEncStepsA6 = cmdEncSteps[5] - curEncSteps[5];
+  int diffEncStepsA5 = cmdEncSteps[4] - curEncSteps[4];
+  int diffEncStepsA6 = cmdEncSteps[5] - curEncSteps[5];
 
   if(abs(diffEncStepsA5) > 2)
   {
-    diffMotStepsA5 = diffEncStepsA5 / ENC_MULT[4];
+    int diffMotStepsA5 = diffEncStepsA5 / ENC_MULT[4];
     if(diffMotStepsA5 < ppr[i])
     {
       diffMotStepsA5 = diffEncStepsA5 / 2;
@@ -489,7 +474,7 @@ void cmdArmWrist()
 
   if(abs(diffEncStepsA6) > 2)
   {
-    diffMotStepsA6 = diffEncStepsA6 / ENC_MULT[5];
+    int diffMotStepsA6 = diffEncStepsA6 / ENC_MULT[5];
     if(diffMotStepsA6 < ppr[i])
     {
       diffMotStepsA6 = diffEncStepsA6 / 2;
@@ -612,13 +597,13 @@ void releaseEvent(char joystick, char dir) { // when user releases a joystick se
   else if(joystick == left)
   {
     steppers[currentAxis-1].stop();
-    runFlags[currentAxis-1] = 0;
+    runFlags[currentAxis-1].stop();
   }
 
   else 
   {
     steppers[currentAxis].stop();
-    runFlags[currentAxis] = 0;
+    runFlags[currentAxis].stop();
   }
 }
 
@@ -787,7 +772,7 @@ void homeEE()
 {
   int force = getForce();
   // target position for end effector in closed direction
-  endEff.move(-99000*MOTOR_DIR_EE);
+  endEff.move(-99000*MOTOR_DIR);
 
   while(force < 100) 
   {
@@ -851,7 +836,7 @@ void runSteppers() { // runs all stepper motors (if no target position has been 
     steppers[i].run();
   }
 
-  endEff.run();
+  EE.run();
 }
 
 void runSteppersIK() { // runs all stepper motors (if no target position has been assigned, stepper will not move)
@@ -875,7 +860,7 @@ void waitForHome() { // stops arm motion until user homes arm after firmware is 
     if(Serial.available() > 0)
     {
       recieved = Serial.read();
-      inData += String(recieved);
+      inData += String(recieved)
       if(recieved == '\n')
       {
         serialFlag = true;
