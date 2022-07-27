@@ -250,7 +250,7 @@ void ArmHardwareDriver::homeArm() {
 void ArmHardwareDriver::armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_msg)
 {
     // TODO: ihsan fill std::vector<double> type with sb_msgs values
-    armCmd = // _________
+    armCmd.assign(observed_msg.positions.begin(), observed_msg.positions.end());
     jointPosToEncSteps(armCmd, encCmd);
 
     std::string outMsg = "MT";
@@ -364,7 +364,8 @@ void ArmHardwareDriver::recieveMsg(std::string& inMsg)
 void ArmHardwareDriver::updateHWInterface()
 {
     // TODO: Ihsan fill in correct message implementation
-    //sb_msgs::ArmPosition outMsg = _____
-    //pub_observed_pos.publish(outMsg);
+    sb_msgs::ArmPosition outMsg;
+    outMsg.positions.assign(armPos.begin(), armPos.end());
+    pub_observed_pos.publish(outMsg);
 }
 
