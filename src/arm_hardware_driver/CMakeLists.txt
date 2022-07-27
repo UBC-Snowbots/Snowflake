@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   sb_utils
   sb_msgs
 )
+find_library(libserial_LIBRARIES libserial.so.0)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -151,7 +152,7 @@ add_executable(arm_hardware_driver src/arm_hardware_driver.cpp src/armHardwareDr
 # target_link_libraries(sample_package_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(arm_hardware_driver ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(arm_hardware_driver ${catkin_LIBRARIES} ${libserial_LIBRARIES} ${sb_utils_LIBRARIES})
 
 #############
 ## Install ##

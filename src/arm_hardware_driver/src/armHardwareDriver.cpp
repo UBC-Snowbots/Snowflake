@@ -42,8 +42,8 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
 }
 
 // Callback function to relay pro controller messages to teensy MCU on arm via rosserial
-void ArmHardwareDriver::teensySerialCallback(std_msgs::String& inMsg) {
-    parseInput(inMsg.data);
+void ArmHardwareDriver::teensySerialCallback(const std_msgs::String::ConstPtr& inMsg) {
+    parseInput(inMsg->data);
 }
 
 void ArmHardwareDriver::parseInput(std::string inMsg) {
@@ -250,7 +250,7 @@ void ArmHardwareDriver::homeArm() {
 void ArmHardwareDriver::armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_msg)
 {
     // TODO: ihsan fill std::vector<double> type with sb_msgs values
-    armCmd.assign(observed_msg.positions.begin(), observed_msg.positions.end());
+    armCmd.assign(observed_msg->positions.begin(), observed_msg->positions.end());
     jointPosToEncSteps(armCmd, encCmd);
 
     std::string outMsg = "MT";
@@ -303,12 +303,12 @@ void ArmHardwareDriver::updateEncoderSteps(std::string msg)
     size_t idx4 = msg.find("D", 2) + 1;
     size_t idx5 = msg.find("E", 2) + 1;
     size_t idx6 = msg.find("F", 2) + 1;
-    enc_steps_[0] = std::stoi(msg.substr(idx1, idx2 - idx1));
-    enc_steps_[1] = std::stoi(msg.substr(idx2, idx3 - idx2));
-    enc_steps_[2] = std::stoi(msg.substr(idx3, idx4 - idx3));
-    enc_steps_[3] = std::stoi(msg.substr(idx4, idx5 - idx4));
-    enc_steps_[4] = std::stoi(msg.substr(idx5, idx6 - idx5));
-    enc_steps_[5] = std::stoi(msg.substr(idx6));
+    encPos[0] = std::stoi(msg.substr(idx1, idx2 - idx1));
+    encPos[1] = std::stoi(msg.substr(idx2, idx3 - idx2));
+    encPos[2] = std::stoi(msg.substr(idx3, idx4 - idx3));
+    encPos[3] = std::stoi(msg.substr(idx4, idx5 - idx4));
+    encPos[4] = std::stoi(msg.substr(idx5, idx6 - idx5));
+    encPos[5] = std::stoi(msg.substr(idx6));
 }
 
 void ArmHardwareDriver::encStepsToJointPos(std::vector<int>& enc_steps, std::vector<double>& joint_positions)
@@ -316,7 +316,7 @@ void ArmHardwareDriver::encStepsToJointPos(std::vector<int>& enc_steps, std::vec
     for (int i = 0; i < enc_steps.size(); ++i)
     {
         // convert enc steps to joint deg
-        joint_positions[i] = static_cast<double>(enc_steps[i]) / enc_steps_per_deg_[i];
+        joint_positions[i] = static_cast<double>(enc_steps[i]) / encStepsPerDeg[i];
     }
 }
 
@@ -325,7 +325,7 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
     for (int i = 0; i < joint_positions.size(); ++i)
     {
         // convert joint deg to enc steps
-        enc_steps[i] = static_cast<int>(joint_positions[i] * enc_steps_per_deg_[i]);
+        enc_steps[i] = static_cast<int>(joint_positions[i] * encStepsPerDeg[i]);
     }
 }
 
@@ -337,7 +337,7 @@ void ArmHardwareDriver::sendMsg(std::string outMsg)
     teensy << outMsg;
 }
 
-void ArmHardwareDriver::recieveMsg(std::string& inMsg)
+void ArmHardwareDriver::recieveMsg()
 {
     // fill inMsg string with whatever comes through serial port until \n
     std::stringstream buffer;
@@ -346,18 +346,18 @@ void ArmHardwareDriver::recieveMsg(std::string& inMsg)
 	teensy >> next_char;
 	buffer << next_char;
     } while (next_char != '\n');
-    inMsg = buffer.str();
+    std::string inMsg = buffer.str();
 
     if(inMsg.substr(0, 2) == "JP")
     {
-        ROS_INFO("Sending Arm Position to HW Interface")
+        ROS_INFO("Sending Arm Position to HW Interface");
         updateEncoderSteps(inMsg);
         encStepsToJointPos(encPos , armPos);
         updateHWInterface();
     }
 
     else if (inMsg.substr(0, 2) == "EE")
-        ROS_INFO(inMsg);
+        ROS_INFO("%s", inMsg.c_str());
 
 }
 
