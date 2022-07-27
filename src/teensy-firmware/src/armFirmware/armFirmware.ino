@@ -7,6 +7,7 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
  
 #include <AccelStepper.h>
 #include <HX711.h>
+#include <Encoder.h>
 
 // general parameters
 #define NUM_AXES 6
@@ -44,7 +45,7 @@ static const char drillRelease = 'X';
 
 int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
 int pprEnc = 512;
-int ENC_DIR[6] = {1, 1, -1, -1, -1, -1};
+int ENC_DIR[6] = {1, -1, -1, -1, 1, -1};
 const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 
 // Motor variables
@@ -57,7 +58,7 @@ int encPinB[6] = {16, 37, 39, 35, 14, 41};
 
 // end effector variables
 const int maxForce = 30; // needs to be checked
-const float calibrationFactor = -111.25
+const float calibrationFactor = -111.25;
 float force;
 HX711 scale;
 int calPos = 0;
@@ -81,7 +82,7 @@ float red[6] = {50.0, 161.0, 44.8, 93.07, 57.34, 57.34};
 // Motor speeds and accelerations
 int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200};
 int maxAccel[8] = {900, 3000, 4000, 3000, 5000, 5000, 5000, 5000};
-int homeSpeed[8] = {500, 1200, 600, 400, 2000, 2000, 2000, 2000}; // {500, 1500, 700, 1200, 1200, 1200, 1200, 1200};
+int homeSpeed[8] = {300, 1000, 1000, 400, 2000, 2000, 2000, 2000}; // {500, 1200, 600, 400, 2000, 2000, 2000, 2000};
 int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000, 1000, 1500, 1500, 1500, 1500, 1500};
 
 // Range of motion (degrees) for each axis
@@ -89,18 +90,26 @@ int maxAngles[6] = {180, 140, 180, 120, 140, 100};
 
 // Time variables
 const unsigned long readInterval = 10;
-const unsigned long currentTime;
-const unsigned long previousTime = 0;
-const unsigned long previousTimeEE = 0;
+unsigned long currentTime;
+unsigned long previousTime = 0;
+unsigned long previousTimeEE = 0;
 const unsigned long timeIntervalEE = 100;
 const unsigned long timeIntervalJP = 100;
-const unsigned long previousTimeJP = 0;
+unsigned long previousTimeJP = 0;
 
 // stepper motor objects for AccelStepper library
 AccelStepper steppers[8];
 AccelStepper endEff(1, EEstepPin, EEdirPin);
 AccelStepper steppersIK[8];
-Encoder encoders[6];
+
+Encoder enc1(encPinA[0], encPinB[0]);
+Encoder enc2(encPinA[1], encPinB[1]);
+Encoder enc3(encPinA[2], encPinB[2]);
+Encoder enc4(encPinA[3], encPinB[3]);
+Encoder enc5(encPinA[4], encPinB[4]);
+Encoder enc6(encPinA[5], encPinB[5]);
+
+Encoder encoders[] = {enc1, enc2, enc3, enc4, enc5, enc6};
 
 // variable declarations
 long max_steps[] = {red[0]*maxAngles[0]/360.0*ppr[0], red[1]*maxAngles[1]/360.0*ppr[1], red[2]*maxAngles[2]/360.0*ppr[2], red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
@@ -115,7 +124,7 @@ bool IKFlag = false;
 // variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst, axisDir[6]*homePosConst, axisDir[7]*homePosConst};
-long homeCompAngles[] = {axisDir[0]*93, axisDir[1]*5, axisDir[2]*93, axisDir[3]*12, axisDir[4]*102, axisDir[5]*102, axisDir[6]*80, axisDir[7]*80};
+long homeCompAngles[] = {axisDir[0]*7, axisDir[1]*13, axisDir[2]*90, axisDir[3]*3, axisDir[4]*85, axisDir[5]*85, axisDir[6]*80, axisDir[7]*80};
 long homeCompConst[] = {500, 2000, 1000, 500, 500, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
 long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
@@ -140,7 +149,6 @@ void setup() { // setup function to initialize pins and provide initial homing t
       pinMode(dirPinsIK[i], OUTPUT);
       steppersIK[i] = AccelStepper(1, stepPinsIK[i], dirPinsIK[i]);
       steppersIK[i].setMinPulseWidth(200);
-      encoders[i] = Encoder(encPinA[i], encPinB[i]);
     }
 
   for(i = 0; i<NUM_AXES_EFF; i++) {
@@ -151,23 +159,32 @@ void setup() { // setup function to initialize pins and provide initial homing t
     steppers[i].setMinPulseWidth(200);
   }
   // waits for user to press "home" button before rest of functions are available
-  waitForHome();
+  
+  
+  //waitForHome();
 }
 
 void loop()
 {
-  recieveCommand();
+//  recieveCommand();
+//
+//  if(!IKFlag)
+//    runSteppers();
+//
+//  else
+//    runSteppersIK();
 
-  if(!IKFlag)
-    runSteppers();
-
-  else
-    runSteppersIK();
+if(!IKFlag)
+{
+homeArm();
+IKFlag = true;
+}
 }
 
 void recieveCommand()
 {
   String inData = "";
+  char recieved;
 
   if(Serial.available()>0)
   {
@@ -267,7 +284,7 @@ void jointCommands(String inMsg)
     releaseEvent(detail1, inMsg[4]); 
   else if(function == speed)
     changeSpeed(detail1); 
-  else if(function == axis)
+  else if(function == change)
     changeAxis(detail1);
   else if(function == move)
     jointMovement(detail1, inMsg[4]);
@@ -332,13 +349,13 @@ void sendPosNonIK()
     sendMessage('X');
 }
 
-void drillMotion(String inMsg)
+void drillCommands(String inMsg)
 {
   char function = inMsg[2];
 
   if(function == manual)
     manualDrill(inMsg[3]);
-  else if(functino == drillRelease)
+  else if(function == drillRelease)
     stopDrill();
   else if(function == prepare)
     prepDrill();
@@ -361,7 +378,7 @@ void manualDrill(char dir)
   }
 }
 
-void drillRelease()
+void stopDrill()
 {
   endEff.stop();
 }
@@ -428,6 +445,10 @@ void readEncPos(int* encPos)
   {
     encPos[i] = encoders[i].read()*ENC_DIR[i];
   }
+
+  int temp = encPos[4];
+  encPos[4] = temp + encPos[5];
+  encPos[5] = encPos[5] - temp;
 }
 
 void zeroEncoders()
@@ -460,12 +481,14 @@ void cmdArmBase()
 
 void cmdArmWrist()
 {
-  int diffEncStepsA5 = cmdEncSteps[4] - curEncSteps[4];
-  int diffEncStepsA6 = cmdEncSteps[5] - curEncSteps[5];
+  int diffMotStepsA5, diffMotStepsA6, diffEncStepsA5, diffEncStepsA6;
+  
+  diffEncStepsA5 = cmdEncSteps[4] - curEncSteps[4];
+  diffEncStepsA6 = cmdEncSteps[5] - curEncSteps[5];
 
   if(abs(diffEncStepsA5) > 2)
   {
-    int diffMotStepsA5 = diffEncStepsA5 / ENC_MULT[4];
+    diffMotStepsA5 = diffEncStepsA5 / ENC_MULT[4];
     if(diffMotStepsA5 < ppr[i])
     {
       diffMotStepsA5 = diffEncStepsA5 / 2;
@@ -474,7 +497,7 @@ void cmdArmWrist()
 
   if(abs(diffEncStepsA6) > 2)
   {
-    int diffMotStepsA6 = diffEncStepsA6 / ENC_MULT[5];
+    diffMotStepsA6 = diffEncStepsA6 / ENC_MULT[5];
     if(diffMotStepsA6 < ppr[i])
     {
       diffMotStepsA6 = diffEncStepsA6 / 2;
@@ -495,7 +518,7 @@ void cmdArmWrist()
 // sets target position for axes in joint space mode
 void runAxes(int dir, int axis) { // assigns run flags to indicate forward / reverse motion and sets target position
 
-  if(axis == 3) {
+  if((axis == 3) || (axis == 1)) {
     dir = !dir;
   }
   
@@ -597,13 +620,13 @@ void releaseEvent(char joystick, char dir) { // when user releases a joystick se
   else if(joystick == left)
   {
     steppers[currentAxis-1].stop();
-    runFlags[currentAxis-1].stop();
+    runFlags[currentAxis-1] = 0;
   }
 
   else 
   {
     steppers[currentAxis].stop();
-    runFlags[currentAxis].stop();
+    runFlags[currentAxis] = 0;
   }
 }
 
@@ -772,7 +795,7 @@ void homeEE()
 {
   int force = getForce();
   // target position for end effector in closed direction
-  endEff.move(-99000*MOTOR_DIR);
+  endEff.move(-99000*MOTOR_DIR_EE);
 
   while(force < 100) 
   {
@@ -836,7 +859,7 @@ void runSteppers() { // runs all stepper motors (if no target position has been 
     steppers[i].run();
   }
 
-  EE.run();
+  endEff.run();
 }
 
 void runSteppersIK() { // runs all stepper motors (if no target position has been assigned, stepper will not move)
@@ -860,7 +883,7 @@ void waitForHome() { // stops arm motion until user homes arm after firmware is 
     if(Serial.available() > 0)
     {
       recieved = Serial.read();
-      inData += String(recieved)
+      inData += String(recieved);
       if(recieved == '\n')
       {
         serialFlag = true;
