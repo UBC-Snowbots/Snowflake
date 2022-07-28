@@ -6,7 +6,7 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 */
  
 #include <AccelStepper.h>
-// #include <HX711.h>
+#include <HX711.h>
 #include <Encoder.h>
 
 // general parameters
@@ -622,7 +622,7 @@ void releaseEvent(char joystick, char dir) { // when user releases a joystick se
     runFlags[currentAxis-1] = 0;
   }
 
-  else 
+  else if(joystick == right)
   {
     steppers[currentAxis].stop();
     runFlags[currentAxis] = 0;
@@ -891,7 +891,7 @@ void waitForHome() { // stops arm motion until user homes arm after firmware is 
 
     if(serialFlag)
     {
-        if(inData = "HM")
+        if(inData.substring(0, 2) = "HM")
         {
           homeArm();
           initFlag = true;

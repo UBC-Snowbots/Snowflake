@@ -86,9 +86,9 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     } else if (action == triggerR) {
         changeAxis(up);
     } else if (action == leftJSRel) {
-        releaseAxis(right, garbage);
+        releaseAxis(left, garbage);
     } else if (action == rightJSRel) {
-        releaseAxis(wrist, garbage);
+        releaseAxis(right, garbage);
     } else if (action == buttonARel) {
         releaseAxis(wrist, right);
     } else if (action == buttonBRel) {

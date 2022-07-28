@@ -97,6 +97,7 @@ void ProController::readInputs() {
 
                     // vehicle for arm output message
                     armOutMsg = "";
+                    armOutVal = "";
                     // handle all controller inputs using API functions
                     switch (ev.code) {
                         case ABS_X: leftJoystickX(ev.value); break;
@@ -204,7 +205,7 @@ void ProController::leftJoystickX(int value) {
         }
 
         else if(state == Mode::arm_joint_space){
-            armOutVal += leftJSRel;
+            armOutVal = leftJSRel;
         }
     } 
     
@@ -254,7 +255,7 @@ void ProController::rightJoystickY(int value) {
 
     if (value > 118 && value < 137) {
 
-     armOutVal += leftJSRel;
+     armOutVal = rightJSRel;
     } 
     
     else {

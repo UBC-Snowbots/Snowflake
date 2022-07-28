@@ -29,7 +29,7 @@
 class ArmHardwareDriver {
   public:
     ArmHardwareDriver(int argc, char** argv, std::string node_name);
-    void teensySerialCallback(const std_msgs::String::ConstPtr& inMsg);
+    void teensySerialCallback(std_msgs::String& inMsg);
     void parseInput(std::string inMsg);
     void joint_space_motion(std::string inMsg);
     void drill_motion(std::string inMsg);
@@ -51,11 +51,10 @@ class ArmHardwareDriver {
     void encStepsToJointPos(std::vector<int>& enc_steps, std::vector<double>& joint_positions);
     void jointPosToEncSteps(std::vector<double>& joint_positions, std::vector<int>& enc_steps);
     void sendMsg(std::string outMsg);
-    void recieveMsg();
+    void recieveMsg(std::string& inMsg);
     void requestArmPosition();
+    void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_msg);
     void updateHWInterface();
-
-
 
     // character representations of buttons for arm communication
     const char leftJSL = 'A';
@@ -106,11 +105,8 @@ class ArmHardwareDriver {
     // hardware interface communication variables
     std::vector<int> encPos, encCmd;
     std::vector<double> armCmd, armPos, encStepsPerDeg;
-    std::vector<double> reductions{50, 161, 93.07, 44.8, 57.34, 57.34};
-    
-    // timer variables
-    double refresh_rate_hz = 10.0;
-    ros::Timer arm_pos_timer;
+    static const double reductions[] = {50, 161, 93.07, 44.8, 57.34, 57.34};
+    vector<double> red (reductions, reductions + sizeof(reductions) / sizeof(reductions[0]));
 
   private:
     void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);
