@@ -346,6 +346,7 @@ void ArmHardwareDriver::recieveMsg()
     char next_char;
     do {
 	teensy >> next_char;
+	ROS_INFO("next_char: '%c'", next_char);
 	buffer << next_char;
     } while (next_char != 'Z');
     std::string inMsg = buffer.str();
