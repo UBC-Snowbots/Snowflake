@@ -354,7 +354,6 @@ void ArmHardwareDriver::recieveMsg()
     if(inMsg.substr(0, 2) == "JP")
     {
         inMsg = inMsg.substr(0, inMsg.length() - 1);
-
         if(inMsg.substr(0, 2) == "JP")
         {
             ROS_INFO("Sending Arm Position to HW Interface");
@@ -362,11 +361,9 @@ void ArmHardwareDriver::recieveMsg()
             encStepsToJointPos(encPos , armPos);
             // updateHWInterface();
         }
-
         else if (inMsg.substr(0, 2) == "EE")
             ROS_INFO("%s", inMsg.c_str());
     }
-
 }
 
 void ArmHardwareDriver::updateHWInterface()
