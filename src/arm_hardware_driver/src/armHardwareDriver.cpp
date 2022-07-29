@@ -336,6 +336,7 @@ void ArmHardwareDriver::sendMsg(std::string outMsg)
     // Send everything in outMsg through serial port
     
     teensy << outMsg;
+    ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg()
@@ -346,25 +347,23 @@ void ArmHardwareDriver::recieveMsg()
     do {
 	teensy >> next_char;
 	buffer << next_char;
-    } while (next_char != '\n');
+    } while (next_char != 'Z');
     std::string inMsg = buffer.str();
-
-
-    if(inMsg[0] == "Z")
+    if (inMsg[0] != 'Z')
     {
+        inMsg = inMsg.substr(0, inMsg.length() - 1);
 
-    }
-    
-    else if(inMsg.substr(0, 2) == "JP")
-    {
-        ROS_INFO("Sending Arm Position to HW Interface");
-        updateEncoderSteps(inMsg);
-        encStepsToJointPos(encPos , armPos);
-        updateHWInterface();
-    }
+        if(inMsg.substr(0, 2) == "JP")
+        {
+            ROS_INFO("Sending Arm Position to HW Interface");
+            updateEncoderSteps(inMsg);
+            encStepsToJointPos(encPos , armPos);
+            // updateHWInterface();
+        }
 
-    else if (inMsg.substr(0, 2) == "EE")
-        ROS_INFO("%s", inMsg.c_str());
+        else if (inMsg.substr(0, 2) == "EE")
+            ROS_INFO("%s", inMsg.c_str());
+    }
 
 }
 
