@@ -81,7 +81,7 @@ float red[6] = {50.0, 161.0, 44.8, 93.07, 57.34, 57.34};
 
 // Motor speeds and accelerations
 int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200};
-int maxAccel[8] = {900, 3000, 4000, 3000, 5000, 5000, 5000, 5000};
+int maxAccel[8] = {1300, 3000, 4000, 3000, 5000, 5000, 5000, 5000};
 int homeSpeed[8] = {300, 1000, 1000, 400, 2000, 2000, 2000, 2000}; // {500, 1200, 600, 400, 2000, 2000, 2000, 2000};
 int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000, 1000, 1500, 1500, 1500, 1500, 1500};
 
@@ -94,7 +94,7 @@ unsigned long currentTime;
 unsigned long previousTime = 0;
 unsigned long previousTimeEE = 0;
 const unsigned long timeIntervalEE = 100;
-const unsigned long timeIntervalJP = 100;
+const unsigned long timeIntervalJP = 300;
 unsigned long previousTimeJP = 0;
 
 // stepper motor objects for AccelStepper library
@@ -160,7 +160,8 @@ void setup() { // setup function to initialize pins and provide initial homing t
   }
   // waits for user to press "home" button before rest of functions are available
   
-  waitForHome();
+  //waitForHome();
+  Serial.println("firmware starting");
 }
 
 void loop()
@@ -172,18 +173,12 @@ void loop()
 
   else
     runSteppersIK();
-
-if(!IKFlag)
-{
-homeArm();
-IKFlag = true;
-}
 }
 
 void recieveCommand()
 {
   String inData = "";
-  char recieved;
+  char recieved = '\0';
 
   if(Serial.available()>0)
   {
@@ -195,6 +190,7 @@ void recieveCommand()
 
   if(recieved == '\n')
   {
+
     parseMessage(inData);
   }
 }
@@ -219,7 +215,7 @@ void parseMessage(String inMsg)
 
   else if(function == "EE")
   {
-    endEffectorCommands(inMsg);
+    //endEffectorCommands(inMsg);
   }
 
   else if(function == "DM")
@@ -235,7 +231,7 @@ void parseMessage(String inMsg)
 
 void sendMessage(char outChar)
 {
-  String outMsg = String(outChar) + String("\n");
+  String outMsg = String(outChar) + String('\n');
   Serial.print(outMsg);
 }
 
@@ -272,10 +268,6 @@ void cartesianCommands(String inMsg)
 // parses which commands to execute when in joint space mode
 void jointCommands(String inMsg)
 {
-  // update HW interface with joint positions
-  readEncPos(curEncSteps);
-  sendPosNonIK();
-
   char function = inMsg[2];
   char detail1 = inMsg[3];
 
@@ -287,6 +279,9 @@ void jointCommands(String inMsg)
     changeAxis(detail1);
   else if(function == move)
     jointMovement(detail1, inMsg[4]);
+    // update HW interface with joint positions
+    readEncPos(curEncSteps);
+    sendPosNonIK();
   }
 
 void endEffectorCommands(String inMsg)
@@ -332,7 +327,7 @@ void sendForce(int forcePercent)
   }
 
   else
-    sendMessage('X');
+    sendMessage('Z');
 }
 
 void sendPosNonIK()
@@ -345,7 +340,7 @@ void sendPosNonIK()
   }
 
   else
-    sendMessage('X');
+    sendMessage('Z');
 }
 
 void drillCommands(String inMsg)
@@ -400,7 +395,7 @@ void depositSample()
 void sendCurrentPosition() 
 {
   String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
-                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("\n");
+                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
     Serial.print(outMsg);
 }
 
@@ -410,13 +405,13 @@ void jointMovement(char joystick, char dir)
   if(joystick == wrist)
   {
     if(dir == up)
-      runWrist(FWD, 5);
-    else if(dir == down)
-      runWrist(REV, 5);
-    else if(dir == left)
       runWrist(FWD, 6);
-    else if(dir == right)
+    else if(dir == down)
       runWrist(REV, 6);
+    else if(dir == left)
+      runWrist(FWD, 5);
+    else if(dir == right)
+      runWrist(REV, 5);
   }
 
   else if(joystick == left)
@@ -517,7 +512,7 @@ void cmdArmWrist()
 // sets target position for axes in joint space mode
 void runAxes(int dir, int axis) { // assigns run flags to indicate forward / reverse motion and sets target position
 
-  if((axis == 3) || (axis == 1)) {
+  if((axis == 3) || (axis == 1) || (axis == 2)) {
     dir = !dir;
   }
   
@@ -601,7 +596,7 @@ void releaseEvent(char joystick, char dir) { // when user releases a joystick se
 
   if(joystick == wrist)
   {
-    if ((dir == up) || (dir == down))
+    if ((dir == left) || (dir == right))
     {
       steppers[6].stop();
       steppers[7].stop();
@@ -677,6 +672,12 @@ void homeArm() { // main function for full arm homing
   {
     steppersIK[i].setCurrentPosition(0);
   }
+
+  while(Serial.available() !=0)
+  {
+    Serial.read();
+  }
+  Serial.println("serial port open");
 
 }
 
@@ -881,6 +882,7 @@ void waitForHome() { // stops arm motion until user homes arm after firmware is 
 
     if(Serial.available() > 0)
     {
+      Serial.println("recieved");
       recieved = Serial.read();
       inData += String(recieved);
       if(recieved == '\n')

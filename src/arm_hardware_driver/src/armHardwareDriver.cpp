@@ -334,6 +334,7 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 void ArmHardwareDriver::sendMsg(std::string outMsg)
 {
     // Send everything in outMsg through serial port
+    
     teensy << outMsg;
 }
 
@@ -348,7 +349,13 @@ void ArmHardwareDriver::recieveMsg()
     } while (next_char != '\n');
     std::string inMsg = buffer.str();
 
-    if(inMsg.substr(0, 2) == "JP")
+
+    if(inMsg[0] == "Z")
+    {
+
+    }
+    
+    else if(inMsg.substr(0, 2) == "JP")
     {
         ROS_INFO("Sending Arm Position to HW Interface");
         updateEncoderSteps(inMsg);
