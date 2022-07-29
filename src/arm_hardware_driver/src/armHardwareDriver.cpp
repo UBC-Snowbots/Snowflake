@@ -351,6 +351,7 @@ void ArmHardwareDriver::recieveMsg()
     } while (next_char != 'Z');
     std::string inMsg = buffer.str();
     if (inMsg[0] != 'Z')
+    if(inMsg.substr(0, 2) == "JP")
     {
         inMsg = inMsg.substr(0, inMsg.length() - 1);
 
