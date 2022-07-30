@@ -1,6 +1,7 @@
 - git:
     local-name: src/external_pkgs/nmea_navsat_driver
     uri: https://github.com/UBC-Snowbots/nmea_navsat_driver.git
+    version: noetic-snowbots-mods
 - git:
     local-name: src/external_pkgs/realsense-ros
     uri: https://github.com/IntelRealSense/realsense-ros.git
@@ -10,6 +11,7 @@
 - git:
     local-name: src/external_pkgs/ros_arduino_bridge
     uri: https://github.com/UBC-Snowbots/ros_arduino_bridge.git
+    version: noetic-snowbots-mods
 - git:
     local-name: src/external_pkgs/swiftnav_piksi
     uri: https://github.com/PaulBouchier/swiftnav_piksi.git
