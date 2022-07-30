@@ -14,7 +14,7 @@
 CURR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo "================================================================" 
-echo "Installing ROS Melodic"
+echo "Installing ROS Noetic"
 echo "================================================================"
 
 sudo apt-get install -y software-properties-common
