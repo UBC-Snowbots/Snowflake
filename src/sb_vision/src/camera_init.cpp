@@ -14,7 +14,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
     string inputWindow = "Camera";
-    namedWindow(inputWindow, CV_WINDOW_AUTOSIZE);
+    namedWindow(inputWindow, WINDOW_AUTOSIZE);
 
     VideoCapture cap(0); // captures the first camera
     if (!cap.isOpened()) {

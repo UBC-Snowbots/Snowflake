@@ -25,8 +25,8 @@
     version: 0.0.3
 - git:
     local-name: src/external_pkgs/qt_ros
-    uri: https://github.com/stonier/qt_ros
+    uri: https://github.com/stonier/qt_ros.git
 - git:
     local-name: src/external_pkgs/phidgets_drivers
-    uri: https://github.com/ros-drivers/phidgets_drivers
+    uri: https://github.com/ros-drivers/phidgets_drivers.git
     version: melodic
