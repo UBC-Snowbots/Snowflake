@@ -17,6 +17,9 @@ echo "================================================================"
 echo "Installing ROS Melodic"
 echo "================================================================"
 
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository ppa:rock-core/qt4
+
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc -O - | sudo apt-key add -
 sudo apt-get update -y
@@ -58,7 +61,7 @@ echo "================================================================"
 echo "Installing other dependencies specified by our packages"
 echo "================================================================"
 cd $CURR_DIR
-sudo ./setup_realsense_manual.sh
+sudo ./setup_realsense.sh
 
 cd $CURR_DIR
 sudo ./install_phidgets.sh
@@ -72,7 +75,7 @@ echo "================================================================"
 
 sudo apt-get install -y\
     clang-format\
-    python-rosinstall
+    python3-rosinstall
 
 echo "================================================================"
 echo "Installing Robotic Arm Dependencies"
