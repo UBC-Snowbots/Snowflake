@@ -20,7 +20,7 @@
 #include <std_msgs/String.h>
 
 // Other
-#include <SerialStream.h>
+#include <libserial/SerialStream.h>
 
 class SteeringDriver {
   public:
