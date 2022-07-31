@@ -74,7 +74,7 @@ echo "================================================================"
 echo "Installing Robotic Arm Dependencies"
 echo "================================================================"
 
-sudo ./snowbots_arm_deps/install-snowbots-arm-dep.sh
+./snowbots_arm_deps/install-snowbots-arm-dep.sh
 
 echo "================================================================"
 echo "Finished Installing Utilities"
