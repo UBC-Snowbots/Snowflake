@@ -71,6 +71,13 @@ sudo apt-get install -y\
     python-rosinstall
 
 echo "================================================================"
+echo "Installing Robotic Arm Dependencies
+echo "================================================================"
+
+sudo ./snowbots_arm_deps/install-snowbots-arm-dep.sh
+sudo ./pro_controller_moveit_fix.sh
+
+echo "================================================================"
 echo "Finished Installing Utilities"
 echo "================================================================"
 
