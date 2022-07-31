@@ -67,7 +67,8 @@ include_directories(
         # we should be able to remove this line and delete the `dlib` folder.
         # Current system version of dlib in Ubuntu is indicated here:
         #   https://launchpad.net/ubuntu/+source/dlib
-        ./dlib
+        # ./dlib
+        ${DLIB_INCLUDE_DIRS}
         ./include
 )
 
@@ -90,7 +91,7 @@ file(GLOB sb_geom_SRCS
         # we should be able to remove this line and delete the `dlib` folder.
         # Current system version of dlib in Ubuntu is indicated here:
         #   https://launchpad.net/ubuntu/+source/dlib
-        "dlib/dlib/global_optimization/*.cpp"
+        # "dlib/dlib/global_optimization/*.cpp"
         )
 file(GLOB sb_geom_HEADERS
         "include/sb_geom/*.h"
