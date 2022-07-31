@@ -168,24 +168,24 @@ void ProController::publishArmXZ(double x_new,
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
     if (value > 115 && value < 135) {
-        z = 0;
+        x = 0;
     } else {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick X event with value: %d\n", value);
-        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+        x = (value - 128) / 128.0 * X_SENSITIVITY;
     }
 }
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
     if (value > 115 && value < 135) {
-        x = 0;
+        z = 0;
     } else {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*X_SENSITIVITY
         ROS_INFO("Left Joystick Y event with value: %d\n", value);
-        x = (value - 128) / 128.0 * X_SENSITIVITY;
+        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
     }
 }
 
