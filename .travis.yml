@@ -14,7 +14,7 @@ install:
 # compile and run tests  
 script:
         # setup ROS
-        - source /opt/ros/melodic/setup.bash
+        - source /opt/ros/noetic/setup.bash
         # create workspace
         - catkin_make
         # setup catkin path variables
