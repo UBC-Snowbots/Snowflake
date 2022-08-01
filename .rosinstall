@@ -23,3 +23,9 @@
     local-name: src/mapping_urc/multi_resolution_graph
     uri: 'https://github.com/garethellis0/multi_resolution_graph.git'
     version: 0.0.3
+- git:
+    local-name: external_libs/dkms-hid-nintendo
+    uri: 'https://github.com/nicman23/dkms-hid-nintendo'
+- git:
+    local-name: external_libs/joycond
+    uri: https://github.com/DanielOgorchock/joycond
