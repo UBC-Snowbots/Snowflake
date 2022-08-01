@@ -41,7 +41,7 @@ const double error_margin = 20;
 
 TEST(imageTest, moveAwayFromLineAndTurnRight) {
     string filename = "imageTests/testStraightImage.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -61,7 +61,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRight) {
 
 TEST(imageTest, angleLeft) {
     string filename = "imageTests/testLeftImage.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -81,7 +81,7 @@ TEST(imageTest, angleLeft) {
 
 TEST(imageTest, angleRight) {
     string filename = "imageTests/testNoisyRightImage.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -101,7 +101,7 @@ TEST(imageTest, angleRight) {
 
 TEST(imageTest, moveAwayFromLineAndTurnRightTwo) {
     string filename = "imageTests/testVeryNoisyStraightImage.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -121,7 +121,7 @@ TEST(imageTest, moveAwayFromLineAndTurnRightTwo) {
 
 TEST(imageTest, moveAwayFromLineAndTurnLeft) {
     string filename = "imageTests/testStraightOnRightSide.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -141,7 +141,7 @@ TEST(imageTest, moveAwayFromLineAndTurnLeft) {
 
 TEST(imageTest, noisyLeft) {
     string filename = "imageTests/testVeryNoisyLeftImage.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -166,7 +166,7 @@ TEST(imageTest, noisyLeft) {
  */
 TEST(imageTest, elevatedLeftLine) {
     string filename = "imageTests/testElevatedLeftLine.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -191,7 +191,7 @@ TEST(imageTest, elevatedLeftLine) {
  */
 TEST(imageTest, elevatedRightLine) {
     string filename = "imageTests/testElevatedRightLine.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -211,7 +211,7 @@ TEST(imageTest, elevatedRightLine) {
 
 TEST(imageTest, straightButLineNearEdge) {
     string filename = "imageTests/testStraightButLineNearEdge.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -231,7 +231,7 @@ TEST(imageTest, straightButLineNearEdge) {
 
 TEST(imageTest, perpendicular) {
     string filename = "imageTests/testPerpendicular.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -251,7 +251,7 @@ TEST(imageTest, perpendicular) {
 
 TEST(imageTest, curved) {
     string filename = "imageTests/testCurvedLine.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -271,7 +271,7 @@ TEST(imageTest, curved) {
 
 TEST(imageTest, multiLineLeft) {
     string filename = "imageTests/testMultipleLinesLeft.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -291,7 +291,7 @@ TEST(imageTest, multiLineLeft) {
 
 TEST(imageTest, multiLineRight) {
     string filename = "imageTests/testMultipleLinesRight.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -311,7 +311,7 @@ TEST(imageTest, multiLineRight) {
 
 TEST(imageTest, rightAngleLeft) {
     string filename = "imageTests/testRightAngleTurnLeft.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -331,7 +331,7 @@ TEST(imageTest, rightAngleLeft) {
 
 TEST(imageTest, rightAngleRight) {
     string filename = "imageTests/testRightAngleTurnRight.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -351,7 +351,7 @@ TEST(imageTest, rightAngleRight) {
 
 TEST(imageTest, cornerAngleRight) {
     string filename = "imageTests/testCornerTurnRight.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -371,7 +371,7 @@ TEST(imageTest, cornerAngleRight) {
 
 TEST(imageTest, cornerBigAngleRight) {
     string filename = "imageTests/testCornerTurnRight.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -391,7 +391,7 @@ TEST(imageTest, cornerBigAngleRight) {
 
 TEST(imageTest, cornerBigAngleLeft) {
     string filename = "imageTests/testBigCornerTurnLeft.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -411,7 +411,7 @@ TEST(imageTest, cornerBigAngleLeft) {
 
 TEST(imageTest, cornerAngleLeft) {
     string filename = "imageTests/testCornerTurnLeft.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -431,7 +431,7 @@ TEST(imageTest, cornerAngleLeft) {
 
 TEST(imageTest, coneAngleLeft) {
     string filename = "imageTests/testConeTurnLeft.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -451,7 +451,7 @@ TEST(imageTest, coneAngleLeft) {
 
 TEST(imageTest, coneAngleRight) {
     string filename = "imageTests/testConeTurnRight.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -471,7 +471,7 @@ TEST(imageTest, coneAngleRight) {
 
 TEST(imageTest, oppositeConeAngleRight) {
     string filename = "imageTests/testOppositeConeTurnRight.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -491,7 +491,7 @@ TEST(imageTest, oppositeConeAngleRight) {
 
 TEST(imageTest, avoidConeLeft) {
     string filename = "imageTests/testAvoidCone.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
@@ -511,7 +511,7 @@ TEST(imageTest, avoidConeLeft) {
 
 TEST(imageTest, avoidConeRight) {
     string filename = "imageTests/testAvoidConeRight.jpg";
-    Mat image       = imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat image       = imread(filename, IMREAD_GRAYSCALE);
 
     sensor_msgs::Image sensorMsg = convertToSensorMsg(image);
 
