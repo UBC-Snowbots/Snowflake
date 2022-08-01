@@ -11,8 +11,8 @@
 #include <joint_limits_interface/joint_limits_rosparam.h>
 #include <controller_manager/controller_manager.h>
 #include <boost/scoped_ptr.hpp>
-#include "arm_hardware_driver/armHardwareDriver.h"
 #include <sb_msgs/ArmPosition.h>
+#include <std_msgs/Bool.h>
 
 #include <chrono>
 #include <thread>
@@ -47,7 +47,6 @@ using joint_limits_interface::PositionJointSoftLimitsInterface;
 			double p_error_, v_error_, e_error_;
 
 			// Motor driver
-			ArmHardwareDriver driver_;
 			std::vector<double> actuator_commands_;
 			std::vector<double> actuator_positions_;
 
@@ -79,8 +78,8 @@ using joint_limits_interface::PositionJointSoftLimitsInterface;
 			double degToRad(double deg);
 			double radToDeg(double rad);
 
-			void controllerModeCallBack(const std_msgs::Bool::ConstPtr& inMsg)
-			void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_Msg)
+			void controllerModeCallBack(const std_msgs::Bool::ConstPtr& inMsg);
+			void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& observed_Msg);
 
 			ros::Subscriber subMode;
 			ros::Subscriber sub_arm_pos;

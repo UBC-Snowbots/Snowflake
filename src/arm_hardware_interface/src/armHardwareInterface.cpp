@@ -1,5 +1,5 @@
 #include <sstream>
-#include <arm_hardware_interface/armHardwareInterface.h>
+#include <armHardwareInterface.h>
 #include <joint_limits_interface/joint_limits_interface.h>
 #include <joint_limits_interface/joint_limits.h>
 #include <joint_limits_interface/joint_limits_urdf.h>
@@ -11,17 +11,16 @@ using joint_limits_interface::PositionJointSoftLimitsHandle;
 using joint_limits_interface::PositionJointSoftLimitsInterface;
 using joint_limits_interface::SoftJointLimits;
 
-ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, string node_name)
+ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, std::string node_name)
 {
 	ros::init(argc, argv, node_name);
-    ros::NodeHandle nh_;
     ros::NodeHandle private_nh("~");
-	string modeSubscriber = "/moveit_toggle";
-	subMode                    = nh.subscribe(
+    std::string modeSubscriber = "/moveit_toggle";
+	subMode                    = nh_.subscribe(
     modeSubscriber, 10, &ArmHardwareInterface::controllerModeCallBack, this);
-        string arm_pos_subscriber = "/observed_pos_arm";
-        sub_arm_pos = nh.subscribe(arm_pos_subscriber, 10, &ArmHardwareInterface::armPositionCallBack, this);
-        string arm_pos_publisher = "/cmd_pos_arm";
+	std::string arm_pos_subscriber = "/observed_pos_arm";
+        sub_arm_pos = nh_.subscribe(arm_pos_subscriber, 10, &ArmHardwareInterface::armPositionCallBack, this);
+	std::string arm_pos_publisher = "/cmd_pos_arm";
         pub_arm_pos = private_nh.advertise<sb_msgs::ArmPosition>(arm_pos_publisher, 1);
 
 	init();
