@@ -61,8 +61,8 @@ SteeringDriver::SteeringDriver(int argc, char** argv, std::string node_name) {
     // received a message
     // Open the given serial port
     arduino.Open(port);
-    arduino.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
-    arduino.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
+    arduino.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
+    arduino.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
 }
 
 void SteeringDriver::twistCallback(
