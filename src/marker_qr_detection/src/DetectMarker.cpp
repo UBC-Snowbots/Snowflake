@@ -24,21 +24,29 @@ DetectMarker::DetectMarker(int argc, char **argv, std::string node_name) {
     dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_50);
     parameters = cv::aruco::DetectorParameters::create();
   
+    
 
     // Obtains draw_markers parameter from the parameter server (or launch file)
     std::string parameter_name    = "draw_markers";
     SB_getParam(private_nh, parameter_name, draw_markers, false);
   
     // Setup Subscriber(s)
-    std::string topic_to_subscribe_to = "/cam1/color/image_raw/compressed";
+    std::string topic_to_subscribe_to = "/cam_1/color/image_raw";
     int queue_size                    = 10;
     my_subscriber                     = it.subscribe(
     topic_to_subscribe_to, queue_size, &DetectMarker::subscriberCallBack, this);
 
     // Setup Publisher(s)
     std::string topic = private_nh.resolveName("identified");
-    queue_size        = 1;
+    queue_size        = 10;
     my_publisher = private_nh.advertise<std_msgs::String>(topic, queue_size);
+
+    ROS_INFO("initiation appears successfull.");
+    if(draw_markers){
+        ROS_INFO("I WILL ATTEMPT TO DRAW DETECTED MARKERS");
+    }else{
+        ROS_INFO("I WILL ***********NOT************* ATTEMPT TO DRAW DETECTED MARKERS");
+    }
 }
 
 void DetectMarker::subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg) {
@@ -55,10 +63,11 @@ std::vector<int> DetectMarker::fetchMarkerIds(const cv::Mat& image) {
     std::vector<int> markerIds;
     std::vector<std::vector<cv::Point2f>> markerCorners;
     cv::aruco::detectMarkers(image, dictionary, markerCorners, markerIds, parameters);
-    if (true) {
+    if (draw_markers) {
         cv::Mat outputImage;
         image.copyTo(outputImage);
         cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
+        ROS_INFO("attempted draw");
     }
     return markerIds;
 }
