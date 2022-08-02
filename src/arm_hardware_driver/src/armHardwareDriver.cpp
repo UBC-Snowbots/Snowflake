@@ -33,6 +33,7 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
     armCmd.resize(num_joints_);
     encStepsPerDeg.resize(num_joints_);
     armPos.resize(num_joints_);
+    encPos.resize(num_joints_);
     armCmd.resize(num_joints_);
 
     for(int i=0; i<num_joints_; i++)
@@ -260,6 +261,7 @@ void ArmHardwareDriver::armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr
         outMsg += std::to_string(encCmd[i]);
     }
     outMsg += "\n";
+    ROS_INFO("Sending angles to teensy");
     sendMsg(outMsg);
     recieveMsg();
 }
@@ -303,12 +305,13 @@ void ArmHardwareDriver::updateEncoderSteps(std::string msg)
     size_t idx4 = msg.find("D", 2) + 1;
     size_t idx5 = msg.find("E", 2) + 1;
     size_t idx6 = msg.find("F", 2) + 1;
+    size_t idx7 = msg.find("Z", 2) + 1;
     encPos[0] = std::stoi(msg.substr(idx1, idx2 - idx1));
     encPos[1] = std::stoi(msg.substr(idx2, idx3 - idx2));
     encPos[2] = std::stoi(msg.substr(idx3, idx4 - idx3));
     encPos[3] = std::stoi(msg.substr(idx4, idx5 - idx4));
     encPos[4] = std::stoi(msg.substr(idx5, idx6 - idx5));
-    encPos[5] = std::stoi(msg.substr(idx6));
+    encPos[5] = std::stoi(msg.substr(idx6, idx7 - idx6));
 }
 
 void ArmHardwareDriver::encStepsToJointPos(std::vector<int>& enc_steps, std::vector<double>& joint_positions)
@@ -353,13 +356,12 @@ void ArmHardwareDriver::recieveMsg()
     if (inMsg[0] != 'Z')
     if(inMsg.substr(0, 2) == "JP")
     {
-        inMsg = inMsg.substr(0, inMsg.length() - 1);
         if(inMsg.substr(0, 2) == "JP")
         {
             ROS_INFO("Sending Arm Position to HW Interface");
             updateEncoderSteps(inMsg);
             encStepsToJointPos(encPos , armPos);
-            // updateHWInterface();
+            updateHWInterface();
         }
         else if (inMsg.substr(0, 2) == "EE")
             ROS_INFO("%s", inMsg.c_str());
