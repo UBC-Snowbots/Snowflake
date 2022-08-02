@@ -33,13 +33,16 @@ DetectMarker::DetectMarker(int argc, char **argv, std::string node_name) {
     // Setup Subscriber(s)
     std::string topic_to_subscribe_to = "/cam_1/color/image_raw";
     int queue_size                    = 10;
-    my_subscriber                     = it.subscribe(
-    topic_to_subscribe_to, queue_size, &DetectMarker::subscriberCallBack, this);
+    my_subscriber                     = it.subscribe(topic_to_subscribe_to, queue_size, &DetectMarker::subscriberCallBack, this);
 
     // Setup Publisher(s)
+        //marker id data (string)
     std::string topic = private_nh.resolveName("identified");
     queue_size        = 10;
     my_publisher = private_nh.advertise<std_msgs::String>(topic, queue_size);
+
+        //image detection publisher
+    bounder = it.advertise("bounding_boxes", 1);
 
     ROS_INFO("initiation appears successfull.");
     if(draw_markers){
@@ -67,6 +70,7 @@ std::vector<int> DetectMarker::fetchMarkerIds(const cv::Mat& image) {
         cv::Mat outputImage;
         image.copyTo(outputImage);
         cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
+        bounder.publish(cv_bridge::CvImage(std_msgs::Header(), "bgr8", outputImage).toImageMsg());
         ROS_INFO("attempted draw");
     }
     return markerIds;
