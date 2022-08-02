@@ -8,6 +8,9 @@
 
 #include <DetectMarker.h>
 
+    
+
+
 DetectMarker::DetectMarker(int argc, char **argv, std::string node_name) {
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
@@ -20,19 +23,20 @@ DetectMarker::DetectMarker(int argc, char **argv, std::string node_name) {
     // Initialize ArUco parameters
     dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_50);
     parameters = cv::aruco::DetectorParameters::create();
+  
 
     // Obtains draw_markers parameter from the parameter server (or launch file)
     std::string parameter_name    = "draw_markers";
     SB_getParam(private_nh, parameter_name, draw_markers, false);
-
+  
     // Setup Subscriber(s)
-    std::string topic_to_subscribe_to = "subscribe_topic";
+    std::string topic_to_subscribe_to = "/cam1/color/image_raw/compressed";
     int queue_size                    = 10;
     my_subscriber                     = it.subscribe(
     topic_to_subscribe_to, queue_size, &DetectMarker::subscriberCallBack, this);
 
     // Setup Publisher(s)
-    std::string topic = private_nh.resolveName("publish_topic");
+    std::string topic = private_nh.resolveName("identified");
     queue_size        = 1;
     my_publisher = private_nh.advertise<std_msgs::String>(topic, queue_size);
 }
@@ -51,7 +55,7 @@ std::vector<int> DetectMarker::fetchMarkerIds(const cv::Mat& image) {
     std::vector<int> markerIds;
     std::vector<std::vector<cv::Point2f>> markerCorners;
     cv::aruco::detectMarkers(image, dictionary, markerCorners, markerIds, parameters);
-    if (draw_markers) {
+    if (true) {
         cv::Mat outputImage;
         image.copyTo(outputImage);
         cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
@@ -64,3 +68,6 @@ cv::Mat DetectMarker::rosToMat(const sensor_msgs::Image::ConstPtr& image) {
     image_ptr = cv_bridge::toCvCopy(image, image->encoding);
     return image_ptr->image;
 }
+
+
+
