@@ -49,7 +49,7 @@ import roslib
 import numpy
 import time
 import tf
-from std_msgs.msg import Empty, String
+from std_msgs.msg import Empty, String, Bool
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import PoseStamped
 from visualization_msgs.msg import InteractiveMarkerInit
@@ -627,6 +627,7 @@ class MoveitJoy:
             queue_size=1,
         )
         self.sub = rospy.Subscriber("/joy", Joy, self.joyCB, queue_size=1)
+        self.sub = rospy.Subscriber("/moveit_toggle", Bool, self.controllerCB, queue_size=1)
 
     def updatePlanningGroup(self, next_index):
         if next_index >= len(self.planning_groups_keys):
@@ -772,6 +773,10 @@ class MoveitJoy:
 	    #print("Controller:{proControllerEnabled} in fourth".format(proControllerEnabled=proControllerEnabled))
             self.run(status)
             self.history.add(status)
+
+    def controllerCB(self, msg):
+        proControllerEnabled = msg.data
+        print("Pro Controller enabled" if proControllerEnabled else "Pro Controller disabled")
 
     def computePoseFromJoy(self, pre_pose, status):
         new_pose = PoseStamped()

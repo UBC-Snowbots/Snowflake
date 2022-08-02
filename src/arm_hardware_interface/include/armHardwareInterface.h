@@ -18,11 +18,6 @@
 #include <thread>
 
 using namespace hardware_interface;
-using joint_limits_interface::JointLimits;
-using joint_limits_interface::SoftJointLimits;
-using joint_limits_interface::PositionJointSoftLimitsHandle;
-using joint_limits_interface::PositionJointSoftLimitsInterface;
-
 
 	class ArmHardwareInterface: public hardware_interface::RobotHW
 	{
@@ -36,15 +31,11 @@ using joint_limits_interface::PositionJointSoftLimitsInterface;
 			void cmdArmPosition(const ros::TimerEvent& e);
 
 		private:
-			ros::NodeHandle nh_;
 			ros::Timer non_realtime_loop_;
 			ros::Duration control_period_;
 			ros::Duration elapsed_time_;
-			PositionJointInterface positionJointInterface;
-			PositionJointSoftLimitsInterface positionJointSoftLimitsInterface;
 			double loop_hz_;
 			boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
-			double p_error_, v_error_, e_error_;
 
 			// Motor driver
 			std::vector<double> actuator_commands_;
@@ -54,9 +45,6 @@ using joint_limits_interface::PositionJointSoftLimitsInterface;
 			hardware_interface::JointStateInterface joint_state_interface_;
 			hardware_interface::PositionJointInterface position_joint_interface_;
 
-			joint_limits_interface::PositionJointSaturationInterface position_joint_saturation_interface_;
-			joint_limits_interface::PositionJointSoftLimitsInterface position_joint_limits_interface_;
-
 			// Shared memory
 			int num_joints_;
 			std::vector<std::string> joint_names_;
@@ -65,12 +53,6 @@ using joint_limits_interface::PositionJointSoftLimitsInterface;
 			std::vector<double> joint_velocities_;
 			std::vector<double> joint_efforts_;
 			std::vector<double> joint_position_commands_;
-			std::vector<double> joint_velocity_commands_;
-			std::vector<double> joint_effort_commands_;
-			std::vector<double> joint_lower_limits_;
-			std::vector<double> joint_upper_limits_;
-			std::vector<double> velocity_limits_;
-			std::vector<double> acceleration_limits_;
 
 			bool cartesian_mode = false;
 

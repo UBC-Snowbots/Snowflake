@@ -6,14 +6,10 @@
 #include <joint_limits_interface/joint_limits_rosparam.h>
 
 
-using joint_limits_interface::JointLimits;
-using joint_limits_interface::PositionJointSoftLimitsHandle;
-using joint_limits_interface::PositionJointSoftLimitsInterface;
-using joint_limits_interface::SoftJointLimits;
-
 ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, std::string node_name)
 {
 	ros::init(argc, argv, node_name);
+	ros::NodeHandle nh_;
     ros::NodeHandle private_nh("~");
     std::string modeSubscriber = "/moveit_toggle";
 	subMode                    = nh_.subscribe(
@@ -23,12 +19,18 @@ ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, std::string no
 	std::string arm_pos_publisher = "/cmd_pos_arm";
         pub_arm_pos = private_nh.advertise<sb_msgs::ArmPosition>(arm_pos_publisher, 1);
 
+
+	nh_.getParam("/hardware_interface/joints", joint_names_);
+	if (joint_names_.size() == 0)
+	{
+		ROS_FATAL_STREAM_NAMED("init", "No joints found on parameter server for controller. Did you load the proper yaml file?");
+	}
 	init();
 
 	// init ros controller manager
 	controller_manager_.reset(new controller_manager::ControllerManager(this, nh_));
 
-	nh_.param("/arm/hardware_interface/loop_hz", loop_hz_, 0.1);
+	nh_.param("/generic_hw_control_loop/loop_hz", loop_hz_, 0.1);
 	ROS_DEBUG_STREAM_NAMED("constructor", "Using loop freqency of " << loop_hz_ << " hz");
 	ros::Duration update_freq = ros::Duration(1.0 / loop_hz_);
 	non_realtime_loop_ = nh_.createTimer(update_freq, &ArmHardwareInterface::cmdArmPosition, this);
@@ -47,30 +49,14 @@ ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, std::string no
 		position_joint_interface_.registerHandle(jointPositionHandle);
 	}
 
-	// get encoder calibration
-	std::vector<double> enc_steps_per_deg(num_joints_);
-
 	for (int i = 0; i < num_joints_; ++i)
 	{
-		if(!nh_.getParam("/arm/hardware_driver/encoder_steps_per_deg/" + joint_names_[i], enc_steps_per_deg[i]))
+		if (!nh_.getParam("/hardware_interface/joint_offsets/" + joint_names_[i], joint_offsets_[i]))
 		{
-			ROS_WARN("Failed to get params for /arm/hardware_driver/encoder_steps_per_deg/");
+			ROS_WARN("Failed to get params for /hardware_interface/joint_offsets/%s", joint_names_[i].c_str());
+			joint_offsets_[i] = 0;
 		}
 
-		if (!nh_.getParam("/arm/hardware_interface/joint_offsets/" + joint_names_[i], joint_offsets_[i]))
-		{
-			ROS_WARN("Failed to get params for /arm/hardware_interface/joint_offsets/");
-		}
-
-	}
-
-	// set velocity limits
-	for (int i = 0; i < num_joints_; ++i)
-	{
-		nh_.getParam("/arm/joint_limits/" + joint_names_[i] + "/max_velocity", velocity_limits_[i]);
-		nh_.getParam("/arm/joint_limits/" + joint_names_[i] + "/max_acceleration", acceleration_limits_[i]);
-		velocity_limits_[i] = radToDeg(velocity_limits_[i]);
-		acceleration_limits_[i] = radToDeg(acceleration_limits_[i]);
 	}
 
 	for (int i = 0; i < num_joints_; ++i)
@@ -79,7 +65,6 @@ ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, std::string no
 		joint_positions_[i] = 0;
 		joint_position_commands_[i] = 0;
 	}
-
 	registerInterface(&joint_state_interface_);
 	registerInterface(&position_joint_interface_);
 }
@@ -101,6 +86,7 @@ void ArmHardwareInterface::armPositionCallBack(const sb_msgs::ArmPosition::Const
     
     // TODO: ihsan implement snowbots message type
     //actuator_positions_ = ___________ 
+	actuator_positions_.assign(observed_msg->positions.begin(), observed_msg->positions.end());
 
     if (!cartesian_mode) 
     {
@@ -124,18 +110,14 @@ void ArmHardwareInterface::cmdArmPosition(const ros::TimerEvent &e)
 	write(elapsed_time_);
 
 	// TODO: ihsan inspect lines below
-	// sb_msgs::ArmPosition cmdPos = ________
-	// pub_arm_pos.publish(cmdPos);
+	sb_msgs::ArmPosition cmdPos;
+	cmdPos.positions.assign(actuator_commands_.begin(), actuator_commands_.end());
+	pub_arm_pos.publish(cmdPos);
 }
 
 void ArmHardwareInterface::init()
 {
 	// get joint names
-	nh_.getParam("/arm/hardware_interface/joints", joint_names_);
-	if (joint_names_.size() == 0)
-	{
-		ROS_FATAL_STREAM_NAMED("init", "No joints found on parameter server for controller. Did you load the proper yaml file?");
-	}
 	num_joints_ = static_cast<int>(joint_names_.size());
 
 	// resize vectors
@@ -145,13 +127,7 @@ void ArmHardwareInterface::init()
 	joint_velocities_.resize(num_joints_);
 	joint_efforts_.resize(num_joints_);
 	joint_position_commands_.resize(num_joints_);
-	joint_velocity_commands_.resize(num_joints_);
-	joint_effort_commands_.resize(num_joints_);
 	joint_offsets_.resize(num_joints_);
-	joint_lower_limits_.resize(num_joints_);
-	joint_upper_limits_.resize(num_joints_);
-	velocity_limits_.resize(num_joints_);
-	acceleration_limits_.resize(num_joints_);
 }
 
 /* deprecated, for reference only
