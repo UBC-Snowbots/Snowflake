@@ -48,6 +48,7 @@ private:
 
     image_transport::Subscriber my_subscriber;
     ros::Publisher my_publisher;
+    image_transport::Publisher bounder; 
 
     cv::Ptr<cv::aruco::Dictionary> dictionary;
     cv::Ptr<cv::aruco::DetectorParameters> parameters;
