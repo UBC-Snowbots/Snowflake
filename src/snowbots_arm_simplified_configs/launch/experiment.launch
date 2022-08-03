@@ -40,7 +40,6 @@
     <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
   </node>
   -->
-  <!-- <rosparam file="$(find arm_hardware_interface)/config/controllers.yaml" command="load"/> -->
 
   <!-- Given the published joint states, publish tf for the robot links -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
@@ -58,7 +57,7 @@
 
   <!-- Run Rviz and load the default config to see the state of the move_group node -->
   <include file="$(find snowbots_arm_simplified_configs)/launch/moveit_rviz.launch" if="$(arg use_rviz)">
-    <arg name="config" value="$(find snowbots_arm_simplified_configs)/launch/moveit_rviz.launch"/>
+    <arg name="config" value="true"/>
     <arg name="debug" value="$(arg debug)"/>
   </include>
 
