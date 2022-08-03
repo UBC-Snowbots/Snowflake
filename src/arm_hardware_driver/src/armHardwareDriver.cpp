@@ -23,7 +23,7 @@ ArmHardwareDriver::ArmHardwareDriver(int argc, char** argv, std::string node_nam
     pub_observed_pos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
 
     // Get Params
-    SB_getParam(private_nh, "port", port, (std::string) "/dev/ttyACM0");
+    SB_getParam(private_nh, "/hardware_interface/port", port, (std::string) "/dev/ttyACM0");
     // Open the given serial port
     teensy.Open(port);
     teensy.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);

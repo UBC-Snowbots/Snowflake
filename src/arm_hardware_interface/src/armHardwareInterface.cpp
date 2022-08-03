@@ -30,7 +30,7 @@ ArmHardwareInterface::ArmHardwareInterface(int argc, char** argv, std::string no
 	// init ros controller manager
 	controller_manager_.reset(new controller_manager::ControllerManager(this, nh_));
 
-	nh_.param("/generic_hw_control_loop/loop_hz", loop_hz_, 0.1);
+	nh_.param("/hardware_interface/loop_hz", loop_hz_, 0.1);
 	ROS_DEBUG_STREAM_NAMED("constructor", "Using loop freqency of " << loop_hz_ << " hz");
 	ros::Duration update_freq = ros::Duration(1.0 / loop_hz_);
 	non_realtime_loop_ = nh_.createTimer(update_freq, &ArmHardwareInterface::cmdArmPosition, this);
