@@ -54,7 +54,7 @@ from sensor_msgs.msg import Joy
 from geometry_msgs.msg import PoseStamped
 from visualization_msgs.msg import InteractiveMarkerInit
 
-proControllerEnabled = True
+proControllerEnabled = False
 proController = False
 proControllerFirstDetect = True
 
@@ -629,6 +629,14 @@ class MoveitJoy:
         self.sub = rospy.Subscriber("/joy", Joy, self.joyCB, queue_size=1)
         self.sub = rospy.Subscriber("/moveit_toggle", Bool, self.controllerCB, queue_size=1)
 
+        rospy.Timer(rospy.Duration(0.1), planAndExecute)
+
+
+    def planAndExecute(self):
+        if(proControllerEnabled):
+            self.plan_pub.publish(Empty())
+            self.execute_pub.publish(Empty())
+
     def updatePlanningGroup(self, next_index):
         if next_index >= len(self.planning_groups_keys):
             self.current_planning_group_index = 0
@@ -747,10 +755,6 @@ class MoveitJoy:
             if proControllerFirstDetect:
                 print("procontroller detected")
                 proControllerFirstDetect = False
-
-            if msg.buttons[9] == 1:
-                proControllerEnabled = not proControllerEnabled
-		#print("Controller:{proControllerEnabled} in first".format(proControllerEnabled=proControllerEnabled))
 		time.sleep(1)
 
         else:
