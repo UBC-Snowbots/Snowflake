@@ -19,7 +19,7 @@
     <rosparam file="$(find snowbots_arm_simplified_config)/config/joint_limits.yaml" command="load"/>
 
     <!-- Load universal robot description format (URDF) -->
-    <!-- <param name="robot_description" command="$(find xacro)/xacro --inorder $(find arm_description)/urdf/ar3.urdf.xacro"/> -->
+    <param name="robot_description" textfile=$(find snowbots_arm_urdf_simplified_v5_12)/urdf/snowbots_arm_urdf_simplified_v5_12.urdf"/>
 
     <!-- The semantic description that corresponds to the URDF -->
     <param name="robot_description_semantic" textfile="$(find snowbots_arm_simplified_config)/config/snowbots_arm_urdf_simplified_v5_12.srdf" />
