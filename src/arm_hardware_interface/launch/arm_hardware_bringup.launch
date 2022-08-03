@@ -16,16 +16,16 @@
     <rosparam file="$(find arm_hardware_interface)/config/hardware_driver.yaml" command="load"/>
 
     <!-- Load moveit joint limits config in separate namespace to get velocity limits -->
-    <rosparam file="$(find snowbots_arm_simplified_config)/config/joint_limits.yaml" command="load"/>
+    <rosparam file="$(find snowbots_arm_simplified_configs)/config/joint_limits.yaml" command="load"/>
 
     <!-- Load universal robot description format (URDF) -->
-    <param name="robot_description" textfile=$(find snowbots_arm_urdf_simplified_v5_12)/urdf/snowbots_arm_urdf_simplified_v5_12.urdf"/>
+    <param name="robot_description" textfile="$(find snowbots_arm_urdf_simplified_v5_12)/urdf/snowbots_arm_urdf_simplified_v5_12.urdf"/>
 
     <!-- The semantic description that corresponds to the URDF -->
-    <param name="robot_description_semantic" textfile="$(find snowbots_arm_simplified_config)/config/snowbots_arm_urdf_simplified_v5_12.srdf" />
+    <param name="robot_description_semantic" textfile="$(find snowbots_arm_simplified_configs)/config/snowbots_arm_urdf_simplified_v5_12.srdf" />
 
     <!-- Start hardware_interface node -->
-    <node name="arm_hardware_interface" pkg="arm_hardware_interface" type="arm_hardware_interface_node" output="screen" launch-prefix="$(arg launch_prefix)"/>
+    <node name="arm_hardware_interface" pkg="arm_hardware_interface" type="arm_hardware_interface" output="screen" launch-prefix="$(arg launch_prefix)"/>
 
     <!-- Start controllers -->
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/" 
