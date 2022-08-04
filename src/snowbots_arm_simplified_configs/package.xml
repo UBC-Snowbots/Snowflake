@@ -16,13 +16,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>moveit</run_depend>
   <run_depend>moveit_ros_move_group</run_depend>
-  <run_depend>rqt</run_depend>
-  <run_depend>joy</run_depend>
-  <run_depend>joystick_drivers</run_depend>
-  <run_depend>ros_controllers</run_depend>
-  <run_depend>ros_control</run_depend>
   <run_depend>moveit_fake_controller_manager</run_depend>
   <run_depend>moveit_kinematics</run_depend>
   <run_depend>moveit_planners_ompl</run_depend>
