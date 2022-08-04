@@ -632,7 +632,7 @@ class MoveitJoy:
         rospy.Timer(rospy.Duration(0.1), planAndExecute)
 
 
-    def planAndExecute(self):
+    def planAndExecute(self, timerEvent):
         if(proControllerEnabled):
             self.plan_pub.publish(Empty())
             self.execute_pub.publish(Empty())
