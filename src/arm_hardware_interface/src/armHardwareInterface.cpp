@@ -86,6 +86,7 @@ void ArmHardwareInterface::armPositionCallBack(const sb_msgs::ArmPosition::Const
     
     // TODO: ihsan implement snowbots message type
     //actuator_positions_ = ___________ 
+    ROS_INFO("Received new message");
 	actuator_positions_.assign(observed_msg->positions.begin(), observed_msg->positions.end());
 
     if (!cartesian_mode) 
