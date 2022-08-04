@@ -12,7 +12,7 @@
   <arg name="debug" default="false" />
 
   <!-- By default, we will load or override the robot_description -->
-  <arg name="load_robot_description" default="true"/>
+  <arg name="load_robot_description" default="false"/>
 
   <!-- Set execution mode for fake execution controllers -->
   <!-- <arg name="fake_execution_type" default="interpolate" /> -->
@@ -53,6 +53,7 @@
     <arg name="debug" value="$(arg debug)"/>
     <arg name="pipeline" value="$(arg pipeline)"/>
     <arg name="load_robot_description" value="$(arg load_robot_description)"/>
+    <remap from="joint_states" to="snowbots_arm_urdf_simplified_v5_12/joint_states"/>
   </include>
 
   <!-- Run Rviz and load the default config to see the state of the move_group node -->
