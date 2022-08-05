@@ -10,7 +10,6 @@
 // Read the master documentation if there's any issues with this package
 ProController::ProController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
-    setup();
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
     if (private_nh.param<double>("X", X_SENSITIVITY, 1.0)) {
@@ -22,6 +21,7 @@ ProController::ProController(int argc, char** argv, string node_name) {
     if (private_nh.param<bool>("debug", debug, false)) {
         ROS_INFO("Debug mode %s", (debug) ? "on" : "off");
     }
+    setup();
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<geometry_msgs::Twist>("/cmd_arm", 1);
     ROS_INFO("Preparing to read inputs...\n");
@@ -57,7 +57,7 @@ void ProController::setup() {
                      libevdev_get_name(dev),
                      path);
             if (debug) {
-                ROS_INFO("Input device ID: bus %#x vendor %#x product %#x\n",
+                ROS_DEBUG("Input device ID: bus %#x vendor %#x product %#x\n",
                          libevdev_get_id_bustype(dev),
                          libevdev_get_id_vendor(dev),
                          libevdev_get_id_product(dev));
@@ -126,7 +126,7 @@ void ProController::readInputs() {
 void ProController::printControllerDebug(int type, int code, int value) {
     auto codeout = libevdev_event_code_get_name(type, code);
     auto typeout = libevdev_event_type_get_name(type);
-    ROS_INFO("Event: Type: %s Code: %s Value: %d\n", typeout, codeout, value);
+    ROS_DEBUG("Event: Type: %s Code: %s Value: %d\n", typeout, codeout, value);
 }
 
 // Prints a status message detailing the current control mode
