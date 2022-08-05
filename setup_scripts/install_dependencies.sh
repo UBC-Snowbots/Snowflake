@@ -74,13 +74,13 @@ echo "================================================================"
 echo "Installing Robotic Arm Dependencies"
 echo "================================================================"
 
-# echo "Upgrading CMake"
-# apt-get install wget
-# apt-get install apt-transport-https ca-certificates gnupg software-properties-common wget -y
-# wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add
-# apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
-# apt-get update
-# apt-get install cmake
+echo "Upgrading CMake"
+sudo apt-get install wget -y
+sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common wget -y
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add
+sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+sudo apt-get update
+sudo apt-get install cmake -y
 
 echo "Installing Nintendo HID kernel module"
 
@@ -90,7 +90,7 @@ sudo dkms add . && sudo dkms build nintendo -v 3.2 && sudo dkms install nintendo
 
 echo "the Joycond Linux Daemon"
 
-sudo apt-get install libudev-dev -y
+sudo apt-get install libevdev-dev libudev-dev -y
 cd $CURR_DIR/../external_libs/joycond && \
 cmake . && sudo make install && sudo systemctl enable --now joycond
 
