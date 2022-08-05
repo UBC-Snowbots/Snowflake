@@ -57,10 +57,10 @@ echo "================================================================"
 echo "Installing other dependencies specified by our packages"
 echo "================================================================"
 cd $CURR_DIR
-# sudo ./setup_realsense_manual.sh
+sudo ./setup_realsense_manual.sh
 
 cd $CURR_DIR
-# sudo ./install_phidgets.sh
+sudo ./install_phidgets.sh
 
 echo "================================================================"
 echo "Installing Misc. Utilities"
