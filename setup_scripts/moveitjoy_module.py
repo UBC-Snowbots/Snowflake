@@ -629,13 +629,15 @@ class MoveitJoy:
         self.sub = rospy.Subscriber("/joy", Joy, self.joyCB, queue_size=1)
         self.sub = rospy.Subscriber("/moveit_toggle", Bool, self.controllerCB, queue_size=1)
 
-        rospy.Timer(rospy.Duration(0.1), planAndExecute)
+        # rospy.Timer(rospy.Duration(0.1), planAndExecute)
 
 
+    '''
     def planAndExecute(self, timerEvent):
         if(proControllerEnabled):
             self.plan_pub.publish(Empty())
             self.execute_pub.publish(Empty())
+            '''
 
     def updatePlanningGroup(self, next_index):
         if next_index >= len(self.planning_groups_keys):

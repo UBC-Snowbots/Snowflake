@@ -38,7 +38,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     armCmd.resize(num_joints_);
 
     for (int i = 0; i < num_joints_; i++) {
-        encStepsPerDeg[i] = reductions[i] * ppr / (360.0 * encppr * 4.0);
+        encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
 }
 
