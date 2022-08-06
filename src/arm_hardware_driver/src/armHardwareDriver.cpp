@@ -75,13 +75,13 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     } else if (action == rightJSD) {
         jointSpaceMove(right, down);
     } else if (action == buttonA) {
-        jointSpaceMove(wrist, down);
-    } else if (action == buttonB) {
         jointSpaceMove(wrist, right);
+    } else if (action == buttonB) {
+        jointSpaceMove(wrist, down);
     } else if (action == buttonX) {
-        jointSpaceMove(wrist, left);
-    } else if (action == buttonY) {
         jointSpaceMove(wrist, up);
+    } else if (action == buttonY) {
+        jointSpaceMove(wrist, left);
     } else if (action == triggerL) {
         changeAxis(down);
     } else if (action == triggerR) {
