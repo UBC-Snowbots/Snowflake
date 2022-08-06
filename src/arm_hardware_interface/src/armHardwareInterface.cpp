@@ -108,13 +108,14 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
 }
 
 void ArmHardwareInterface::cmdArmPosition(const ros::TimerEvent& e) {
-    
-    ROS_INFO("-I- Timer Initiated Position Exchange");
-    elapsed_time_ = ros::Duration(e.current_real - e.last_real);
-    write(elapsed_time);
-    sb_msgs::ArmPosition cmdPos;
-    cmdPos.positions.assign(actuator_commands_.begin(),
-    actuator_commands_.end()); pub_arm_pos.publish(cmdPos);
+    if (cartesian_mode) {
+        ROS_INFO("-I- Timer Initiated Position Exchange");
+        elapsed_time_ = ros::Duration(e.current_real - e.last_real);
+        write(elapsed_time_);
+        sb_msgs::ArmPosition cmdPos;
+        cmdPos.positions.assign(actuator_commands_.begin(),
+                actuator_commands_.end()); pub_arm_pos.publish(cmdPos);
+    }
 }
 
 void ArmHardwareInterface::init() {
