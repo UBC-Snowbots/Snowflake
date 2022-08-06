@@ -41,13 +41,6 @@ static const char deposit = 'D';
 static const char manual = 'M';
 static const char drillRelease = 'X';
 
-// Encoder Variables
-
-int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
-int pprEnc = 512;
-int ENC_DIR[6] = {1, -1, -1, -1, 1, -1};
-const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
-
 // Motor variables
 int stepPins[8] =   {6, 8, 10, 2, 12, 25, 12, 25};
 int dirPins[8] =    {5, 7, 9, 1, 11, 24, 11, 24};
@@ -78,6 +71,19 @@ long ppr[6] = {400, 400, 400, 400, 400, 400};
 
 // Gear Reduction Ratios
 float red[6] = {50.0, 161.0, 44.8, 93.07, 57.34, 57.34};
+
+
+// Encoder Variables
+int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
+int pprEnc = 512;
+int ENC_DIR[6] = {1, -1, -1, -1, -1, -1};
+const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
+float ENC_STEPS_PER_DEG[NUM_AXES];
+
+for(int i=0; i<NUM_AXES; i++)
+{
+  ENC_STEPS_PER_DEG[i] = ppr[i]*red[i]*(ENC_MULT[i]/360.0);
+}
 
 // Motor speeds and accelerations
 int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200};
@@ -135,6 +141,10 @@ const int maxSpeedIndex = 2;
 int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 1050, 1050, 1050}, {900, 1200, 2000, 1665, 1460, 1460, 1460, 1460}, {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200}};
 int speedIndex = maxSpeedIndex;
 
+// Cartesian mode speed settings
+float IKspeeds[] = {0.4, 0.4, 0.4, 0.4, 0.4, 0.4};
+float IKaccs[] = {0.2, 0.2, 0.2, 0.2, 0.2, 0.2};
+
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 
   Serial.begin(9600);
@@ -160,8 +170,7 @@ void setup() { // setup function to initialize pins and provide initial homing t
   }
   // waits for user to press "home" button before rest of functions are available
   
-  //waitForHome();
-  Serial.println("firmware starting");
+  waitForHome();
 }
 
 void loop()
@@ -202,15 +211,11 @@ void parseMessage(String inMsg)
   if(function == "MT")
   {
     cartesianCommands(inMsg);
-    IKFlag = true;
-    jointFlag = false;
   }
 
   else if(function == "JM")
   {
     jointCommands(inMsg);
-    IKFlag = false;
-    jointFlag = true;
   }
 
   else if(function == "EE")
@@ -245,6 +250,13 @@ void cartesianCommands(String inMsg)
   // update host with joint positions
   sendCurrentPosition();
 
+  if(!IKFlag)
+  {
+    setCartesianSpeed();
+    IKFlag = true;
+    jointFlag = false;
+  }
+
   // get new position commands
   int msgIdxJ1 = inMsg.indexOf('A');
   int msgIdxJ2 = inMsg.indexOf('B');
@@ -265,11 +277,35 @@ void cartesianCommands(String inMsg)
   cmdArmWrist();
 }
 
+void setCartesianSpeed()
+{
+  float JOINT_MAX_SPEED[NUM_AXES];
+  float MOTOR_MAX_SPEED[NUM_AXES];
+  float JOINT_MAX_ACCEL[NUM_AXES];
+
+  for(int i=0; i<NUM_AXES; i++)
+  {
+    JOINT_MAX_SPEED[i] = IKspeeds[i]*(180.0/3.14159);
+    JOINT_MAX_ACCEL[i] = IKaccs[i]*(180.0/3.14159);
+    MOTOR_MAX_SPEED[i] = JOINT_MAX_SPEED[i] * ENC_STEPS_PER_DEG[i] / ENC_MULT[i];
+    MOTOR_MAX_ACCEL[i] = JOINT_MAX_ACCEL[i] * ENC_STEPS_PER_DEG[i] / ENC_MULT[i];
+    steppersIK[i].setAcceleration(MOTOR_MAX_ACCEL[i] * MOTOR_ACCEL_MULT[i]);
+    steppersIK[i].setMaxSpeed(MOTOR_MAX_SPEED[i] * MOTOR_SPEED_MULT[i]);
+  }
+}
+
 // parses which commands to execute when in joint space mode
 void jointCommands(String inMsg)
 {
   char function = inMsg[2];
   char detail1 = inMsg[3];
+
+  if(!jointFlag)
+  {
+    IKFlag = false;
+    jointFlag = true;
+    initializeMotion();
+  }
 
   if(function == release)
     releaseEvent(detail1, inMsg[4]); 
@@ -441,8 +477,8 @@ void readEncPos(int* encPos)
   }
 
   int temp = encPos[4];
-  encPos[4] = temp + encPos[5];
-  encPos[5] = encPos[5] - temp;
+  encPos[5] = temp + encPos[5];
+  encPos[4] = encPos[5] - temp;
 }
 
 void zeroEncoders()
