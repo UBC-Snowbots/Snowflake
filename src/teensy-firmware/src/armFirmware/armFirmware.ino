@@ -71,19 +71,15 @@ long ppr[6] = {400, 400, 400, 400, 400, 400};
 
 // Gear Reduction Ratios
 float red[6] = {50.0, 161.0, 44.8, 93.07, 57.34, 57.34};
+float redIK[6] = {50.0, 161.0, 93.07, 44.8, 57.34, 57.34};
 
 
 // Encoder Variables
 int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
 int pprEnc = 512;
-int ENC_DIR[6] = {1, -1, -1, -1, -1, -1};
+int ENC_DIR[6] = {-1, -1, -1, -1, 1, 1};
 const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 float ENC_STEPS_PER_DEG[NUM_AXES];
-
-for(int i=0; i<NUM_AXES; i++)
-{
-  ENC_STEPS_PER_DEG[i] = ppr[i]*red[i]*(ENC_MULT[i]/360.0);
-}
 
 // Motor speeds and accelerations
 int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200};
@@ -120,6 +116,7 @@ Encoder encoders[] = {enc1, enc2, enc3, enc4, enc5, enc6};
 // variable declarations
 long max_steps[] = {red[0]*maxAngles[0]/360.0*ppr[0], red[1]*maxAngles[1]/360.0*ppr[1], red[2]*maxAngles[2]/360.0*ppr[2], red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
 int axisDir[8] = {1, -1, 1, -1, 1, 1, -1, 1}; 
+int axisDirIK[6] = {-1, -1, -1, 1, -1, -1};
 int currentAxis = 1;
 int runFlags[] = {0, 0, 0, 0, 0, 0};
 int i;
@@ -130,7 +127,7 @@ bool IKFlag = false;
 // variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst, axisDir[6]*homePosConst, axisDir[7]*homePosConst};
-long homeCompAngles[] = {axisDir[0]*7, axisDir[1]*13, axisDir[2]*90, axisDir[3]*3, axisDir[4]*85, axisDir[5]*85, axisDir[6]*80, axisDir[7]*80};
+long homeCompAngles[] = {axisDir[0]*10, axisDir[1]*43, axisDir[2]*90, axisDir[3]*35, axisDir[4]*85, axisDir[5]*85, axisDir[6]*80, axisDir[7]*80};
 long homeCompConst[] = {500, 2000, 1000, 500, 500, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
 long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
@@ -148,6 +145,11 @@ float IKaccs[] = {0.2, 0.2, 0.2, 0.2, 0.2, 0.2};
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 
   Serial.begin(9600);
+
+  for(int i=0; i<NUM_AXES; i++)
+  {
+  ENC_STEPS_PER_DEG[i] = ppr[i]*redIK[i]*(ENC_MULT[i]/360.0);
+  }
 
   // initializes end effector motor
   pinMode(EEstepPin, OUTPUT);
@@ -282,6 +284,7 @@ void setCartesianSpeed()
   float JOINT_MAX_SPEED[NUM_AXES];
   float MOTOR_MAX_SPEED[NUM_AXES];
   float JOINT_MAX_ACCEL[NUM_AXES];
+  float MOTOR_MAX_ACCEL[NUM_AXES];
 
   for(int i=0; i<NUM_AXES; i++)
   {
@@ -289,8 +292,8 @@ void setCartesianSpeed()
     JOINT_MAX_ACCEL[i] = IKaccs[i]*(180.0/3.14159);
     MOTOR_MAX_SPEED[i] = JOINT_MAX_SPEED[i] * ENC_STEPS_PER_DEG[i] / ENC_MULT[i];
     MOTOR_MAX_ACCEL[i] = JOINT_MAX_ACCEL[i] * ENC_STEPS_PER_DEG[i] / ENC_MULT[i];
-    steppersIK[i].setAcceleration(MOTOR_MAX_ACCEL[i] * MOTOR_ACCEL_MULT[i]);
-    steppersIK[i].setMaxSpeed(MOTOR_MAX_SPEED[i] * MOTOR_SPEED_MULT[i]);
+    steppersIK[i].setAcceleration(MOTOR_MAX_ACCEL[i]);
+    steppersIK[i].setMaxSpeed(MOTOR_MAX_SPEED[i]);
   }
 }
 
@@ -476,7 +479,7 @@ void readEncPos(int* encPos)
     encPos[i] = encoders[i].read()*ENC_DIR[i];
   }
 
-  int temp = encPos[4];
+  long temp = encPos[4];
   encPos[5] = temp + encPos[5];
   encPos[4] = encPos[5] - temp;
 }
@@ -504,7 +507,7 @@ void cmdArmBase()
       diffMotSteps = diffMotSteps / 2;  
     }
 
-    steppersIK[i].move(diffMotSteps);
+    steppersIK[i].move(diffMotSteps*axisDirIK[i]);
     }
   }
 }
@@ -534,11 +537,11 @@ void cmdArmWrist()
     }
   }
 
-  int actualMotStepsA5 = diffMotStepsA5/2 + diffMotStepsA6/2;
-  int actualMotStepsA6 = diffMotStepsA6/2 - diffMotStepsA5/2;
+  int actualMotStepsA5 = diffMotStepsA6/2 - diffMotStepsA5/2;
+  int actualMotStepsA6 = diffMotStepsA6/2 + diffMotStepsA5/2;
 
-  steppersIK[4].move(actualMotStepsA5);
-  steppersIK[5].move(actualMotStepsA6);
+  steppersIK[4].move(actualMotStepsA5*axisDirIK[4]);
+  steppersIK[5].move(actualMotStepsA6*axisDirIK[5]);
 }
 
 
