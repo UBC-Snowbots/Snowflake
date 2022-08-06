@@ -148,8 +148,8 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
                                                    double z_old) {
     if (abs(x_old - x_new) > 0.0001 || abs(z_old - z_new) > 0.0001) {
         geometry_msgs::Twist msg;
-        msg.linear.x  = x_new;
-        msg.angular.z = z_new;
+        msg.linear.x  = x_new * speed;
+        msg.angular.z = z_new * speed;
         pubmove.publish(msg);
         // return tuple
         return make_tuple(x_new, z_new);
@@ -325,14 +325,18 @@ void ProController::arrowsRorL(int value) {
     }
 }
 
-// Currently doing nothing
+// Increase or reduce rover speed
 void ProController::arrowsUorD(int value) {
     if (value == 1) {
         ROS_INFO("Up button pressed");
+        speed = speed < 100 ? speed + 5 : speed;
+        ROS_INFO("Speed increased to %d%% of max output", speed);
     } else if (value == 0) {
         ROS_INFO("Arrow button released");
     } else {
         ROS_INFO("Down button pressed");
+        speed = speed > 5 ? speed - 5 : speed;
+        ROS_INFO("Speed increased to %d%% of max output", speed);
     }
 }
 
