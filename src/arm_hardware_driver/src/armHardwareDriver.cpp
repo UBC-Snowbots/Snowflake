@@ -15,8 +15,8 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     // Setup Subscribers
     int queue_size = 10;
 
-    // subPro = nh.subscribe(
-    // "/cmd_arm", queue_size, &ArmHardwareDriver::teensySerialCallback, this);
+    subPro = nh.subscribe(
+    "/cmd_arm", queue_size, &ArmHardwareDriver::teensySerialCallback, this);
     sub_command_pos = nh.subscribe(
     "/cmd_pos_arm", queue_size, &ArmHardwareDriver::armPositionCallBack, this);
     pub_observed_pos =
@@ -26,9 +26,9 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     SB_getParam(
     private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM0");
     // Open the given serial port
-    // teensy.Open(port);
-    // teensy.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
-    // teensy.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
+    teensy.Open(port);
+    teensy.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
+    teensy.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
 
     encCmd.resize(num_joints_);
     armCmd.resize(num_joints_);

@@ -112,9 +112,9 @@ void ArmHardwareInterface::cmdArmPosition(const ros::TimerEvent& e) {
     elapsed_time_ = ros::Duration(e.current_real - e.last_real);
 
     // TODO: ihsan inspect lines below
-    // sb_msgs::ArmPosition cmdPos;
-    // cmdPos.positions.assign(actuator_commands_.begin(),
-    // actuator_commands_.end()); pub_arm_pos.publish(cmdPos);
+    sb_msgs::ArmPosition cmdPos;
+    cmdPos.positions.assign(actuator_commands_.begin(),
+    actuator_commands_.end()); pub_arm_pos.publish(cmdPos);
 
     for (int i = 0; i < num_joints_; ++i) {
         joint_positions_[i] = joint_position_commands_[i];
