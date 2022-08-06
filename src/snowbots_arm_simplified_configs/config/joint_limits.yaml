@@ -3,50 +3,32 @@
 # Joint limits can be turned off with [has_velocity_limits, has_acceleration_limits]
 joint_limits:
   j1:
-    has_position_limits: true
-    max_position: 3.14
-    min_position: 0
-    has_velocity_limits: true
-    max_velocity: 0.4
-    has_acceleration_limits: true
-    max_acceleration: 0.2
+    has_velocity_limits: false
+    max_velocity: 0
+    has_acceleration_limits: false
+    max_acceleration: 0
   j2:
-    has_position_limits: true
-    max_position: 3.14
-    min_position: 0
-    has_velocity_limits: true
-    max_velocity: 0.4
-    has_acceleration_limits: true
-    max_acceleration: 0.2
+    has_velocity_limits: false
+    max_velocity: 0
+    has_acceleration_limits: false
+    max_acceleration: 0
   j3:
-    has_position_limits: true
-    max_position: 3.14
-    min_position: 0
-    has_velocity_limits: true
-    max_velocity: 0.4
-    has_acceleration_limits: true
-    max_acceleration: 0.2
+    has_velocity_limits: false
+    max_velocity: 0
+    has_acceleration_limits: false
+    max_acceleration: 0
   j4:
-    has_position_limits: true
-    max_position: 3.14
-    min_position: 0
-    has_velocity_limits: true
-    max_velocity: 0.4
-    has_acceleration_limits: true
-    max_acceleration: 0.2
+    has_velocity_limits: false
+    max_velocity: 0
+    has_acceleration_limits: false
+    max_acceleration: 0
   j5:
-    has_position_limits: true
-    max_position: 3.14
-    min_position: 0
-    has_velocity_limits: true
-    max_velocity: 0.4
-    has_acceleration_limits: true
-    max_acceleration: 0.2
+    has_velocity_limits: false
+    max_velocity: 0
+    has_acceleration_limits: false
+    max_acceleration: 0
   j6:
-    has_position_limits: true
-    max_position: 3.14
-    min_position: 0
-    has_velocity_limits: true
-    max_velocity: 0.4
-    has_acceleration_limits: true
-    max_acceleration: 0.2
+    has_velocity_limits: false
+    max_velocity: 0
+    has_acceleration_limits: false
+    max_acceleration: 0

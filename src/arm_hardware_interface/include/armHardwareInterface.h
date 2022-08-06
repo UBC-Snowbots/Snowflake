@@ -22,7 +22,7 @@ using namespace hardware_interface;
 	class ArmHardwareInterface: public hardware_interface::RobotHW
 	{
 		public:
-			ArmHardwareInterface(int argc, char** argv, std::string node_name);
+			ArmHardwareInterface(ros::NodeHandle& nh);
 			~ArmHardwareInterface();
 
 			void init();
@@ -31,6 +31,7 @@ using namespace hardware_interface;
 			void cmdArmPosition(const ros::TimerEvent& e);
 
 		private:
+			ros::NodeHandle nh;
 			ros::Timer non_realtime_loop_;
 			ros::Duration control_period_;
 			ros::Duration elapsed_time_;

@@ -32,7 +32,6 @@
 
     <!-- Start controllers -->
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/" 
-          args="/controllers/state
-			    /controllers/position"/>
+          args="controllers/state /controllers/position"/>
 
 </launch>
