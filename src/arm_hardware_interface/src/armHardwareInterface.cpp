@@ -108,23 +108,13 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
 }
 
 void ArmHardwareInterface::cmdArmPosition(const ros::TimerEvent& e) {
-    // ROS_INFO("-I- Timer Initiated Position Exchange");
+    
+    ROS_INFO("-I- Timer Initiated Position Exchange");
     elapsed_time_ = ros::Duration(e.current_real - e.last_real);
-
-    // TODO: ihsan inspect lines below
+    write(elapsed_time);
     sb_msgs::ArmPosition cmdPos;
     cmdPos.positions.assign(actuator_commands_.begin(),
     actuator_commands_.end()); pub_arm_pos.publish(cmdPos);
-
-    for (int i = 0; i < num_joints_; ++i) {
-        joint_positions_[i] = joint_position_commands_[i];
-        controller_manager_->update(ros::Time::now(), elapsed_time_);
-
-        std::ostringstream ss;
-        ss << "j" << i << ": " << joint_positions_[i];
-        std::string str = ss.str();
-		ROS_INFO(str.c_str());
-    }
 }
 
 void ArmHardwareInterface::init() {
@@ -140,45 +130,6 @@ void ArmHardwareInterface::init() {
     joint_position_commands_.resize(num_joints_);
     joint_offsets_.resize(num_joints_);
 }
-
-/* deprecated, for reference only
-
-void ArmHardwareInterface::update(const ros::TimerEvent &e)
-{
-
-    if(cartesian_mode)
-    {
-        std::string logInfo = "\n";
-        logInfo += "Joint Position Command:\n";
-        for (int i = 0; i < num_joints_; i++)
-        {
-            std::ostringstream jointPositionStr;
-            jointPositionStr << radToDeg(joint_position_commands_[i]);
-            logInfo += "  " + joint_names_[i] + ": " + jointPositionStr.str() +
-"\n";
-        }
-
-        elapsed_time_ = ros::Duration(e.current_real - e.last_real);
-
-        write(elapsed_time_);
-        read();
-
-        logInfo += "Joint Position State:\n";
-        for (int i = 0; i < num_joints_; i++)
-        {
-            std::ostringstream jointPositionStr;
-            jointPositionStr << radToDeg(joint_positions_[i]);
-            logInfo += "  " + joint_names_[i] + ": " + jointPositionStr.str() +
-"\n";
-        }
-
-        controller_manager_->update(ros::Time::now(), elapsed_time_);
-
-        ROS_INFO_STREAM(logInfo);
-    }
-}
-
-*/
 
 void ArmHardwareInterface::read() {
     // TODO: assign observed_msg components to actuator_positions_
