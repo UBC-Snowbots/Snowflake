@@ -87,16 +87,15 @@ int maxAccel[8] = {1300, 3000, 4000, 3000, 5000, 5000, 5000, 5000};
 int homeSpeed[8] = {300, 1000, 1000, 400, 2000, 2000, 2000, 2000}; // {500, 1200, 600, 400, 2000, 2000, 2000, 2000};
 int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000, 1000, 1500, 1500, 1500, 1500, 1500};
 
-// Range of motion (degrees) for each axis
-int maxAngles[6] = {180, 140, 180, 120, 140, 100};
 
 // Time variables
 const unsigned long readInterval = 10;
 unsigned long currentTime;
+unsigned long currentTimeJP;
 unsigned long previousTime = 0;
 unsigned long previousTimeEE = 0;
 const unsigned long timeIntervalEE = 100;
-const unsigned long timeIntervalJP = 300;
+const unsigned long timeIntervalJP = 250;
 unsigned long previousTimeJP = 0;
 
 // stepper motor objects for AccelStepper library
@@ -114,7 +113,7 @@ Encoder enc6(encPinA[5], encPinB[5]);
 Encoder encoders[] = {enc1, enc2, enc3, enc4, enc5, enc6};
 
 // variable declarations
-long max_steps[] = {red[0]*maxAngles[0]/360.0*ppr[0], red[1]*maxAngles[1]/360.0*ppr[1], red[2]*maxAngles[2]/360.0*ppr[2], red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
+
 int axisDir[8] = {1, -1, 1, -1, 1, 1, -1, 1}; 
 int axisDirIK[6] = {-1, -1, -1, 1, -1, -1};
 int currentAxis = 1;
@@ -131,6 +130,10 @@ long homeCompAngles[] = {axisDir[0]*10, axisDir[1]*43, axisDir[2]*90, axisDir[3]
 long homeCompConst[] = {500, 2000, 1000, 500, 500, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
 long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
+// Range of motion (degrees) for each axis
+int maxAngles[6] = {190, 160, 180, 120, 180, 100};
+long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
+long min_steps[NUM_AXES]; 
 char value;
 
 // values for changing speed
@@ -149,7 +152,19 @@ void setup() { // setup function to initialize pins and provide initial homing t
   for(int i=0; i<NUM_AXES; i++)
   {
   ENC_STEPS_PER_DEG[i] = ppr[i]*redIK[i]*(ENC_MULT[i]/360.0);
+ 
   }
+  for(int i=0; i<NUM_AXES_EX_WRIST; i++)
+  {
+    min_steps[i] = -homeCompSteps[i];
+    max_steps[i] = max_steps[i]-homeCompSteps[i];
+  }
+  min_steps[0] = -(homeCompSteps[0]*axisDir[0]*180)/homeCompAngles[0];
+  min_steps[4] = -homeCompSteps[4]/axisDir[4];
+  min_steps[5] = -homeCompSteps[6]/axisDir[6];
+  max_steps[4] = max_steps[4] - homeCompSteps[4]/axisDir[4];
+  max_steps[5] = max_steps[5] - homeCompSteps[6]/axisDir[6];
+  
 
   // initializes end effector motor
   pinMode(EEstepPin, OUTPUT);
@@ -236,6 +251,27 @@ void parseMessage(String inMsg)
   }
 }
 
+void cartesianToJointSpace()
+{
+  long curJointPos[NUM_AXES_EFF];
+  readEncPos(curEncSteps);
+  curJointPos[0] = curEncSteps[0]/5.12;
+  curJointPos[1] = curEncSteps[1]/5.12;
+  curJointPos[3] = curEncSteps[2]/5.12;
+  curJointPos[2] = curEncSteps[3]/5.12;
+  curJointPos[6] = curEncSteps[4]/5.12;
+  curJointPos[7] = curEncSteps[4]/5.12;
+  curJointPos[4] = curEncSteps[5]/5.12;
+  curJointPos[5] = curEncSteps[5]/5.12;
+
+  for(int i=0; i<NUM_AXES_EFF; i++)
+  {
+    steppers[i].setCurrentPosition(curJointPos[i]);
+  }
+
+  
+}
+
 void sendMessage(char outChar)
 {
   String outMsg = String(outChar) + String('\n');
@@ -305,9 +341,9 @@ void jointCommands(String inMsg)
 
   if(!jointFlag)
   {
+    cartesianToJointSpace();
     IKFlag = false;
     jointFlag = true;
-    initializeMotion();
   }
 
   if(function == release)
@@ -371,11 +407,12 @@ void sendForce(int forcePercent)
 
 void sendPosNonIK()
 {
-  long currentTime = millis(); //checks total runtime
+  currentTime = millis(); //checks total runtime
   long timeDiff = currentTime - previousTimeJP; //finds interval between runtime and previous checked time
   if (timeDiff >= timeIntervalJP)
   {
     sendCurrentPosition();
+    previousTimeJP = currentTimeJP;
   }
 
   else
@@ -434,7 +471,7 @@ void depositSample()
 void sendCurrentPosition() 
 {
   String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
-                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
+                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("\n");
     Serial.print(outMsg);
 }
 
@@ -474,11 +511,12 @@ void jointMovement(char joystick, char dir)
 
 void readEncPos(int* encPos)
 {
-  for(i=0; i<NUM_AXES; i++)
-  {
-    encPos[i] = encoders[i].read()*ENC_DIR[i];
-  }
-
+  encPos[0] = enc1.read()*ENC_DIR[0];
+  encPos[1] = enc2.read()*ENC_DIR[1];
+  encPos[2] = enc3.read()*ENC_DIR[2];
+  encPos[3] = enc4.read()*ENC_DIR[3];
+  encPos[4] = enc5.read()*ENC_DIR[4];
+  encPos[5] = enc6.read()*ENC_DIR[5];
   long temp = encPos[4];
   encPos[5] = temp + encPos[5];
   encPos[4] = encPos[5] - temp;
@@ -486,10 +524,12 @@ void readEncPos(int* encPos)
 
 void zeroEncoders()
 {
-  for(i=0; i<NUM_AXES; i++)
-  {
-    encoders[i].write(0);
-  }
+  enc1.write(0);
+  enc2.write(0);
+  enc3.write(0);
+  enc4.write(0);
+  enc5.write(0);
+  enc6.write(0);
 }
 
 void cmdArmBase()
@@ -562,19 +602,19 @@ void runAxes(int dir, int axis) { // assigns run flags to indicate forward / rev
   }
     
   else if(dir == FWD) {
-    steppers[axis-1].moveTo(max_steps[axis-1]*axisDir[axis-1]);
+    steppers[axis-1].moveTo(max_steps[axis-1]);
     runFlags[axis-1] = 1;
   }
 
   else {
-    steppers[axis-1].moveTo(0);
+    steppers[axis-1].moveTo(min_steps[axis-1]);
     runFlags[axis-1] = -1;
   }
 }
 
 void runWrist(int dir, int axis) { // assigns target position for selected axis based on user input. 
 
-  if(axis == 5) { // axis 5 motion -> both wrist motors spin in opposite directions
+  if(axis == 6) { 
     if(runFlags[5] == 1 && dir == FWD) {
     }
 
@@ -588,13 +628,13 @@ void runWrist(int dir, int axis) { // assigns target position for selected axis 
     }
 
     else {
-      steppers[6].moveTo(0);
-      steppers[7].moveTo(0);
+      steppers[6].moveTo(axisDir[6]*min_steps[5]);
+      steppers[7].moveTo(axisDir[7]*min_steps[5]);
       runFlags[5] = -1;
     } 
   }
 
-  else if(axis == 6) { // axis 6 motion -> both wrist motors spin in same direction
+  else if(axis == 5) { 
     dir = !dir;
     if(runFlags[4] == 1 && dir == FWD) {
     }
@@ -609,8 +649,8 @@ void runWrist(int dir, int axis) { // assigns target position for selected axis 
     }
 
     else {
-      steppers[4].moveTo(0);
-      steppers[5].moveTo(0);
+      steppers[4].moveTo(axisDir[4]*min_steps[4]);
+      steppers[5].moveTo(axisDir[5]*min_steps[4]);
       runFlags[4] = -1;
     }
   } 
@@ -758,6 +798,8 @@ void homeBase() { // homes axes 1-4
     }
   }
   initializeMotion();
+
+  
 }
 
 void homeWrist() { // homes axes 5-6
@@ -870,6 +912,7 @@ void initializeMotion() { // sets main program speeds for each axis
   for(i = 0; i<NUM_AXES_EFF; i++) {
     steppers[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
     steppers[i].setAcceleration(maxAccel[i]);
+    steppers[i].setCurrentPosition(0);
   }
 
   for(i = 0; i<NUM_AXES; i++)
