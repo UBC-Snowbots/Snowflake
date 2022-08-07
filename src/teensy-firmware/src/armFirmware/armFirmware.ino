@@ -613,7 +613,7 @@ void runAxes(int dir, int axis) { // assigns run flags to indicate forward / rev
 
 void runWrist(int dir, int axis) { // assigns target position for selected axis based on user input. 
 
-  if(axis == 6) { 
+  if(axis == 5) { 
     if(runFlags[5] == 1 && dir == FWD) {
     }
 
@@ -633,7 +633,7 @@ void runWrist(int dir, int axis) { // assigns target position for selected axis 
     } 
   }
 
-  else if(axis == 5) { 
+  else if(axis == 6) { 
     dir = !dir;
     if(runFlags[4] == 1 && dir == FWD) {
     }
