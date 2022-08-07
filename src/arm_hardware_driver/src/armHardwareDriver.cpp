@@ -155,6 +155,7 @@ void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir) {
     outMsg += dir;
     outMsg += "\n";
     sendMsg(outMsg);
+    // request current joint positions from teensy
     recieveMsg();
 }
 
@@ -194,7 +195,7 @@ void ArmHardwareDriver::endEffector(const char dir) {
     outMsg += "\n";
     sendMsg(outMsg);
     // sending command to end effector results in force feedback being requested
-    recieveMsg();
+    //recieveMsg();
 }
 
 void ArmHardwareDriver::endEffectorRel() {
@@ -252,39 +253,8 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
     ROS_INFO("Sending angles to teensy");
     // ROS_INFO(outMsg);
     sendMsg(outMsg);
-    recieveMsg();
+    //recieveMsg();
 }
-
-/* deprecated, for reference only
-
-void ArmHardwareDriver::cartesian_moveit_move(std::vector<double>& pos_commands,
-std::vector<double>& joint_positions)
-{
-    std::string inMsg = "";
-    // convert angles to encoder steps for teensy
-    jointPosToEncSteps(pos_commands, enc_commands_);
-
-    // construct update message
-    std::string outMsg = "MT";
-    for (int i = 0; i < num_joints_; ++i)
-    {
-        outMsg += 'A' + i;
-        outMsg += std::to_string(enc_commands_[i]);
-    }
-    outMsg += "\n";
-
-    // run the communication with board
-    sendMsg(outMsg);
-
-    // get feedback from arm
-    recieveMsg(inMsg);
-    ROS_INFO("Recieved Arm Current Position");
-    updateEncoderSteps(inMsg);
-
-    // convert from encoder steps to angles
-    encStepsToJointPos(enc_steps_ , joint_positions);
-}
-*/
 
 void ArmHardwareDriver::updateEncoderSteps(std::string msg) {
     size_t idx1 = msg.find("A", 2) + 1;

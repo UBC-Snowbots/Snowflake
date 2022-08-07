@@ -115,6 +115,7 @@ void ArmHardwareInterface::cmdArmPosition(const ros::TimerEvent& e) {
         sb_msgs::ArmPosition cmdPos;
         cmdPos.positions.assign(actuator_commands_.begin(),
                 actuator_commands_.end()); pub_arm_pos.publish(cmdPos);
+        controller_manager_->update(ros::Time::now(), elapsed_time_);
     }
 }
 

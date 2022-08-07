@@ -268,8 +268,6 @@ void cartesianToJointSpace()
   {
     steppers[i].setCurrentPosition(curJointPos[i]);
   }
-
-  
 }
 
 void sendMessage(char outChar)
@@ -354,9 +352,10 @@ void jointCommands(String inMsg)
     changeAxis(detail1);
   else if(function == move)
     jointMovement(detail1, inMsg[4]);
+
     // update HW interface with joint positions
     readEncPos(curEncSteps);
-    //sendPosNonIK();
+    sendPosNonIK();
   }
 
 void endEffectorCommands(String inMsg)
@@ -471,7 +470,7 @@ void depositSample()
 void sendCurrentPosition() 
 {
   String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
-                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("\n");
+                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
     Serial.print(outMsg);
 }
 
