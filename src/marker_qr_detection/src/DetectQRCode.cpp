@@ -19,11 +19,17 @@ DetectQRCode::DetectQRCode(int argc, char **argv, std::string node_name) {
 
     // Obtains draw_qr_codes parameter from the parameter server (or launch file)
     std::string parameter_name    = "draw_qr_codes";
+    //std::string parameter_name2    = "camera";
     SB_getParam(private_nh, parameter_name, draw_qr_codes, false);
+    //SB_getParam(private_nh, parameter_name2, camera, 1);
 
     // Setup Subscriber(s)
-    std::string topic_to_subscribe_to = "subscribe_topic";
-    int queue_size                    = 10;
+   // if(camera == 1){
+   // std::string topic_to_subscribe_to = "cam_1/color/raw";
+    //}else if(camera == 2){
+    std::string topic_to_subscribe_to = "cam_2/color/raw";
+    //}
+    int queue_size                    = 5;
     my_subscriber                     = it.subscribe(
     topic_to_subscribe_to, queue_size, &DetectQRCode::subscriberCallBack, this);
 
@@ -59,4 +65,5 @@ std::vector<std::string> DetectQRCode::fetchQRCodes(const cv::Mat& image) {
 
 void DetectQRCode::drawQRCodes(cv::Mat& image, std::vector<std::string> decoded_info, std::vector<cv::Point> corners, double fps) {
     // TODO
+    
 }
