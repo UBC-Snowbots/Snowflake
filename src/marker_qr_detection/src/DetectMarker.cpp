@@ -29,10 +29,15 @@ DetectMarker::DetectMarker(int argc, char **argv, std::string node_name) {
     // Obtains draw_markers parameter from the parameter server (or launch file)
     std::string parameter_name    = "draw_markers";
     SB_getParam(private_nh, parameter_name, draw_markers, false);
-  
+    //std::string parameter_name2    = "camera";
+    //SB_getParam(private_nh, parameter_name2, camera, 1);
     // Setup Subscriber(s)
-    std::string topic_to_subscribe_to = "/cam_1/color/image_raw";
-    int queue_size                    = 10;
+    // if(camera == 1){
+    //std::string topic_to_subscribe_to = "cam_1/color/raw";
+   // }else{
+    std::string topic_to_subscribe_to = "cam_2/color/image_raw";
+    //}
+    int queue_size                    = 5;
     my_subscriber                     = it.subscribe(topic_to_subscribe_to, queue_size, &DetectMarker::subscriberCallBack, this);
 
     // Setup Publisher(s)
