@@ -139,8 +139,8 @@ int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 105
 int speedIndex = maxSpeedIndex;
 
 // Cartesian mode speed settings
-float IKspeeds[] = {0.4, 0.4, 0.4, 0.4, 0.4, 0.4};
-float IKaccs[] = {0.2, 0.2, 0.2, 0.2, 0.2, 0.2};
+float IKspeeds[] = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
+float IKaccs[] = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
 
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 
@@ -250,7 +250,7 @@ void cartesianCommands(String inMsg)
   readEncPos(curEncSteps);
 
   // update host with joint positions
-  sendCurrentPosition();
+  //sendCurrentPosition();
 
   if(!IKFlag)
   {
@@ -320,7 +320,7 @@ void jointCommands(String inMsg)
     jointMovement(detail1, inMsg[4]);
     // update HW interface with joint positions
     readEncPos(curEncSteps);
-    sendPosNonIK();
+    //sendPosNonIK();
   }
 
 void endEffectorCommands(String inMsg)
@@ -343,7 +343,7 @@ void endEffectorCommands(String inMsg)
   }
 
   // need to only send force if a certain time interval defined by timeVal has passed
-  sendForce(force);
+  //sendForce(force);
 }
 
 int getForce()
@@ -705,7 +705,6 @@ void homeArm() { // main function for full arm homing
   //homeEE();
   initializeMotion();
   zeroEncoders();
-  Serial.println("Arm Homed\n");
 
   for(int i=0; i<NUM_AXES; i++)
   {
@@ -716,8 +715,6 @@ void homeArm() { // main function for full arm homing
   {
     Serial.read();
   }
-  Serial.println("serial port open");
-
 }
 
 void homeBase() { // homes axes 1-4
@@ -921,7 +918,6 @@ void waitForHome() { // stops arm motion until user homes arm after firmware is 
 
     if(Serial.available() > 0)
     {
-      Serial.println("recieved");
       recieved = Serial.read();
       inData += String(recieved);
       if(recieved == '\n')
