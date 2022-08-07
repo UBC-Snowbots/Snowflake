@@ -1,8 +1,8 @@
 hardware_interface:
     joint_offsets: # degrees
-        j1: -170.0 # default -170.0
-        j2: -39.6 # default -39.6
-        j3: 0.0 # default 0.0
-        j4: -164.5 # default -164.5
-        j5: -104.5 # default -104.15
-        j6: -148.1 # default -148.1
+        j1: 0.0
+        j2: 0.0
+        j3: 0.0
+        j4: 0.0
+        j5: 0.0
+        j6: 0.0
