@@ -99,8 +99,9 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
             // apply offsets, convert from deg to rad for moveit
             joint_positions_[i] =
             degToRad(actuator_positions_[i] + joint_offsets_[i]);
-            joint_position_commands_[i] = joint_positions_[i];
+            // joint_position_commands_[i] = joint_positions_[i];
         }
+        controller_manager_->update(ros::Time::now(), elapsed_time_);
     } else {
         read();
         controller_manager_->update(ros::Time::now(), elapsed_time_);

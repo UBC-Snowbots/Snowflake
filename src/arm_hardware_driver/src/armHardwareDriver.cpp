@@ -75,13 +75,13 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     } else if (action == rightJSD) {
         jointSpaceMove(right, down);
     } else if (action == buttonA) {
-        jointSpaceMove(wrist, right);
-    } else if (action == buttonB) {
-        jointSpaceMove(wrist, down);
-    } else if (action == buttonX) {
         jointSpaceMove(wrist, up);
-    } else if (action == buttonY) {
+    } else if (action == buttonB) {
         jointSpaceMove(wrist, left);
+    } else if (action == buttonX) {
+        jointSpaceMove(wrist, right);
+    } else if (action == buttonY) {
+        jointSpaceMove(wrist, down);
     } else if (action == triggerL) {
         changeAxis(down);
     } else if (action == triggerR) {
@@ -91,13 +91,13 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     } else if (action == rightJSRel) {
         releaseAxis(right, garbage);
     } else if (action == buttonARel) {
-        releaseAxis(wrist, right);
-    } else if (action == buttonBRel) {
-        releaseAxis(wrist, down);
-    } else if (action == buttonXRel) {
         releaseAxis(wrist, up);
-    } else if (action == buttonYRel) {
+    } else if (action == buttonBRel) {
         releaseAxis(wrist, left);
+    } else if (action == buttonXRel) {
+        releaseAxis(wrist, right);
+    } else if (action == buttonYRel) {
+        releaseAxis(wrist, down);
     } else if (action == arrowU) {
         changeSpeed(up);
     } else if (action == arrowD) {
@@ -235,6 +235,7 @@ void ArmHardwareDriver::releaseDrill() {
 void ArmHardwareDriver::homeArm() {
     std::string outMsg = "HM\n";
     sendMsg(outMsg);
+    recieveMsg();
 }
 
 void ArmHardwareDriver::armPositionCallBack(
