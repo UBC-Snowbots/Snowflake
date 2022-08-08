@@ -107,7 +107,7 @@ class ArmHardwareDriver {
     double ppr      = 400.0;
     double encppr   = 512.0;
 
-    bool serialOpen = false;
+    bool serialOpen = true;
 
     // hardware interface communication variables
     std::vector<int> encPos, encCmd;
