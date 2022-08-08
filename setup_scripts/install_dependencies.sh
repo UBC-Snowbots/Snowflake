@@ -51,7 +51,7 @@ cd $CURR_DIR
 rosdep install --from-paths \
     $CURR_DIR/../src \
     $CURR_DIR/../src/external_pkgs \
-    --ignore-src --rosdistro melodic --skip-keys=librealsense2 -y 
+    --ignore-src --rosdistro melodic --skip-keys=librealsense2,libswiftnav -y 
 
 echo "================================================================"
 echo "Installing other dependencies specified by our packages"
