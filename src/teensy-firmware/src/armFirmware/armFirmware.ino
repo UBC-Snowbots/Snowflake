@@ -152,8 +152,8 @@ int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 105
 int speedIndex = maxSpeedIndex;
 
 // Cartesian mode speed settings
-float IKspeeds[] = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
-float IKaccs[] = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1};
+float IKspeeds[] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
+float IKaccs[] = {0.2, 0.2, 0.2, 0.2, 0.2, 0.2};
 
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 
@@ -198,7 +198,8 @@ void setup() { // setup function to initialize pins and provide initial homing t
   }
   // waits for user to press "home" button before rest of functions are available
   
-  waitForHome();
+  //waitForHome();
+  zeroEncoders();
 }
 
 void loop()
@@ -210,6 +211,10 @@ void loop()
 
   else
     runSteppersIK();
+
+    readEncPos(curEncSteps);
+    sendPosNonIK();
+    Serial.print('\n');
 }
 
 void recieveCommand()
@@ -533,6 +538,8 @@ void zeroEncoders()
   enc4.write(0);
   enc5.write(0);
   enc6.write(0);
+
+  readEncPos(curEncSteps);
 }
 
 void cmdArmBase()
@@ -540,7 +547,7 @@ void cmdArmBase()
   for (int i = 0; i < NUM_AXES_EX_WRIST; i++)
   { 
     int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
-    if (abs(diffEncSteps) > 2)
+    if (abs(diffEncSteps) > 6)
     {
     int diffMotSteps = diffEncSteps / ENC_MULT[i];
     if (diffMotSteps < ppr[i])
@@ -748,6 +755,7 @@ void homeArm() { // main function for full arm homing
   homeBase();
   initializeMotion();
   zeroEncoders();
+  sendCurrentPosition();
 
   for(int i=0; i<NUM_AXES; i++)
   {
