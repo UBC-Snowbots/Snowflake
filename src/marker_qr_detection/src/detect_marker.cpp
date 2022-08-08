@@ -1,9 +1,7 @@
 /*
  * Created By: Ihsan Olawale, Rowan Zawadski
  * Created On: July 17th, 2022
- * Description: An example node that subscribes to a topic publishing strings,
- *              and re-publishes everything it receives to another topic with
- *              a "!" at the end
+ * Description: A node that subscribes and scans arcu codes on with the realsense cameras 
  */
 
 #include <DetectMarker.h>
