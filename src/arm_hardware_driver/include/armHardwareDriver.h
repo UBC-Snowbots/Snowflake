@@ -58,6 +58,8 @@ class ArmHardwareDriver {
     void recieveMsg();
     void requestArmPosition();
     void updateHWInterface();
+    void requestEEFeedback();
+    void requestJPFeedback();
 
     // character representations of buttons for arm communication
     const char leftJSL     = 'A';
@@ -123,6 +125,7 @@ class ArmHardwareDriver {
   private:
     ros::NodeHandle nh;
     void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);
+    void teensyFeedback(const ros::TimerEvent& e);
 
     ros::Subscriber subPro;
     ros::Subscriber sub_command_pos;

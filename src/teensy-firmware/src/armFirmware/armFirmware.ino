@@ -562,19 +562,19 @@ void cmdArmWrist()
   diffEncStepsA5 = cmdEncSteps[4] - curEncSteps[4];
   diffEncStepsA6 = cmdEncSteps[5] - curEncSteps[5];
 
-  if(abs(diffEncStepsA5) > 2)
+  if(abs(diffEncStepsA5) > 10)
   {
     diffMotStepsA5 = diffEncStepsA5 / ENC_MULT[4];
-    if(diffMotStepsA5 < ppr[i])
+    if(diffMotStepsA5 < ppr[4])
     {
       diffMotStepsA5 = diffEncStepsA5 / 2;
     }
   }
 
-  if(abs(diffEncStepsA6) > 2)
+  if(abs(diffEncStepsA6) > 10)
   {
     diffMotStepsA6 = diffEncStepsA6 / ENC_MULT[5];
-    if(diffMotStepsA6 < ppr[i])
+    if(diffMotStepsA6 < ppr[5])
     {
       diffMotStepsA6 = diffEncStepsA6 / 2;
     }

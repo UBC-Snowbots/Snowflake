@@ -95,6 +95,7 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
                                observed_msg->positions.end());
 
     if (!cartesian_mode) {
+        elapsed_time_ = ros::Duration(e.current_real - e.last_real);
         for (int i = 0; i < num_joints_; ++i) {
             // apply offsets, convert from deg to rad for moveit
             joint_positions_[i] =
@@ -111,12 +112,20 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
 void ArmHardwareInterface::cmdArmPosition(const ros::TimerEvent& e) {
     if (cartesian_mode) {
         ROS_INFO("-I- Timer Initiated Position Exchange");
+
+        for(int i=0; i<num_joints_; ++i)
+        {
+            if(abs(joint_positions_[i] - joint_position_commands_[i]) < 10)
+            {
+                joint_position_commands_[i] = joint_positions_[i];
+            }
+        }
+
         elapsed_time_ = ros::Duration(e.current_real - e.last_real);
         write(elapsed_time_);
         sb_msgs::ArmPosition cmdPos;
         cmdPos.positions.assign(actuator_commands_.begin(),
                 actuator_commands_.end()); pub_arm_pos.publish(cmdPos);
-        controller_manager_->update(ros::Time::now(), elapsed_time_);
     }
 }
 
