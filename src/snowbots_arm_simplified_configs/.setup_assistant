@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: snowbots_arm_urdf_simplified_v5_12
+    relative_path: urdf/snowbots_arm_urdf_simplified_v5_12.urdf
+    xacro_args: ""
+  SRDF:
+    relative_path: config/snowbots_arm_urdf_simplified_v5_12.srdf
+  CONFIG:
+    author_name: adam Nguyen
+    author_email: avnguyen213@gmail.com
+    generated_timestamp: 1658956981
