@@ -13,7 +13,6 @@ ProController::ProController(int argc, char** argv, string node_name) {
     string armPublisher = "/cmd_arm";
     string modePublisher = "/moveit_toggle";
     string moveGrpPublisher = "/move_group_trigger";
-    setup();
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
     if (private_nh.param<double>("X", X_SENSITIVITY, 1.0)) {
@@ -25,6 +24,7 @@ ProController::ProController(int argc, char** argv, string node_name) {
     if (private_nh.param<bool>("debug", debug, false)) {
         ROS_INFO("Debug mode %s", (debug) ? "on" : "off");
     }
+    setup();
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
     pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 1);
@@ -66,10 +66,10 @@ void ProController::setup() {
                      libevdev_get_name(dev),
                      path);
             if (debug) {
-                ROS_INFO("Input device ID: bus %#x vendor %#x product %#x\n",
-                         libevdev_get_id_bustype(dev),
-                         libevdev_get_id_vendor(dev),
-                         libevdev_get_id_product(dev));
+                ROS_DEBUG("Input device ID: bus %#x vendor %#x product %#x\n",
+                          libevdev_get_id_bustype(dev),
+                          libevdev_get_id_vendor(dev),
+                          libevdev_get_id_product(dev));
             }
             break;
         }
@@ -154,7 +154,7 @@ void ProController::readInputs() {
 void ProController::printControllerDebug(int type, int code, int value) {
     auto codeout = libevdev_event_code_get_name(type, code);
     auto typeout = libevdev_event_type_get_name(type);
-    ROS_INFO("Event: Type: %s Code: %s Value: %d\n", typeout, codeout, value);
+    ROS_DEBUG("Event: Type: %s Code: %s Value: %d\n", typeout, codeout, value);
 }
 
 // Prints a status message detailing the current control mode
@@ -180,8 +180,8 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
                                                    double z_old) {
     if (abs(x_old - x_new) > 0.0001 || abs(z_old - z_new) > 0.0001) {
         geometry_msgs::Twist msg;
-        msg.linear.x  = x_new;
-        msg.angular.z = z_new;
+        msg.linear.x  = x_new * speed;
+        msg.angular.z = z_new * speed;
         pubmove.publish(msg);
         // return tuple
         return make_tuple(x_new, z_new);
@@ -201,9 +201,8 @@ void ProController::publishArmMessage(std::string outMsg) {
 void ProController::leftJoystickX(int value) {
 
     if (value > 115 && value < 135) {
-
         if(state == Mode::wheels) {
-            z = 0;
+        x = 0;
         }
 
         else if(state == Mode::arm_joint_space){
@@ -216,7 +215,7 @@ void ProController::leftJoystickX(int value) {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick X event with value: %d\n", value);
-        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+        x = (value - 128) / 128.0 * X_SENSITIVITY;
 
         // Left joystick is only used in x direction in arm joint space mode. Drilling / cartesion mode do not use this joystick
         if(state == Mode::arm_joint_space) {
@@ -235,12 +234,12 @@ void ProController::leftJoystickX(int value) {
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
     if (value > 115 && value < 135) {
-        x = 0;
+        z = 0;
     } else {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*X_SENSITIVITY
         ROS_INFO("Left Joystick Y event with value: %d\n", value);
-        x = (value - 128) / 128.0 * X_SENSITIVITY;
+        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
     }
 }
 
@@ -415,12 +414,20 @@ void ProController::arrowsUorD(int value) {
     if (value == 1) {
         ROS_INFO("Up button pressed");
         armOutVal = arrowU;
+	if (state == Mode::wheels) {
+	    speed = speed < 100 ? speed + 5 : speed;
+	    ROS_INFO("Speed increased to %d%% of max output", speed);
+	}
     } else if (value == 0) {
         ROS_INFO("Arrow button released");
         armOutVal = arrowUDRel;
     } else {
         ROS_INFO("Down button pressed");
         armOutVal = arrowD;
+	if (state == Mode::wheels) {
+	    speed = speed > 5 ? speed - 5 : speed;
+	    ROS_INFO("Speed increased to %d%% of max output", speed);
+	}
     }
 }
 

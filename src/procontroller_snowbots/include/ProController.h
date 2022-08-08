@@ -105,6 +105,7 @@ class ProController {
 
     std_msgs::Bool true_message;
     std_msgs::Bool false_message;
+    int speed = 50;
 };
 
 #endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H
