@@ -239,10 +239,10 @@ void ArmHardwareDriver::homeArm() {
 }
 
 void ArmHardwareDriver::armPositionCallBack(
-const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
+const sb_msgs::ArmPosition::ConstPtr& commanded_msg) {
     // TODO: ihsan fill std::vector<double> type with sb_msgs values
-    armCmd.assign(observed_msg->positions.begin(),
-                  observed_msg->positions.end());
+    armCmd.assign(commanded_msg->positions.begin(),
+                  commanded_msg->positions.end());
     jointPosToEncSteps(armCmd, encCmd);
 
     std::string outMsg = "MT";
@@ -254,7 +254,7 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
     ROS_INFO("Sending angles to teensy");
     // ROS_INFO(outMsg);
     sendMsg(outMsg);
-    //recieveMsg();
+    recieveMsg();
 }
 
 void ArmHardwareDriver::updateEncoderSteps(std::string msg) {
