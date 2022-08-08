@@ -53,5 +53,6 @@ private:
     cv::Ptr<cv::aruco::Dictionary> dictionary;
     cv::Ptr<cv::aruco::DetectorParameters> parameters;
     bool draw_markers = false;
+    int camera = 1;
 };
 #endif //MARKER_QR_DETECTION_DETECT_MARKER_H
