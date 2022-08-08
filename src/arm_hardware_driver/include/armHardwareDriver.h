@@ -100,10 +100,14 @@ class ArmHardwareDriver {
     const char down    = 'D';
     const char wrist   = 'W';
     const char garbage = 'G';
+    const char open = 'O';
+    const char close = 'C';
 
     int num_joints_ = 6;
     double ppr      = 400.0;
     double encppr   = 512.0;
+
+    bool serialOpen = false;
 
     // hardware interface communication variables
     std::vector<int> encPos, encCmd;

@@ -40,6 +40,8 @@ static const char collect = 'C';
 static const char deposit = 'D';
 static const char manual = 'M';
 static const char drillRelease = 'X';
+static const char open = 'O';
+static const char close = 'C';
 
 // Motor variables
 int stepPins[8] =   {6, 8, 10, 2, 12, 25, 12, 25};
@@ -59,9 +61,15 @@ int closePos = 0;
 int openPos = 2000; // needs to be calibrated
 int EEstepPin = 20;
 int EEdirPin = 21;
-int speedEE = 1000;
-int accEE = 5000;
+int speedEE = 100;
+int accEE = 500;
 const int MOTOR_DIR_EE = 1;
+const int openButton = 5;
+const int closeButton = 4;
+const float calForce = 0.3;
+const float maxForce = 10.0;
+float EEforce;
+int forcePct = 0;
 
 // limit switch pins
 int limPins[6] = {18, 19, 21, 20, 23, 22};
@@ -92,9 +100,10 @@ int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000
 const unsigned long readInterval = 10;
 unsigned long currentTime;
 unsigned long currentTimeJP;
+unsigned long currentTimeEE;
 unsigned long previousTime = 0;
 unsigned long previousTimeEE = 0;
-const unsigned long timeIntervalEE = 100;
+const unsigned long timeIntervalEE = 500;
 const unsigned long timeIntervalJP = 250;
 unsigned long previousTimeJP = 0;
 
@@ -102,6 +111,7 @@ unsigned long previousTimeJP = 0;
 AccelStepper steppers[8];
 AccelStepper endEff(1, EEstepPin, EEdirPin);
 AccelStepper steppersIK[8];
+
 
 Encoder enc1(encPinA[0], encPinB[0]);
 Encoder enc2(encPinA[1], encPinB[1]);
@@ -131,7 +141,7 @@ long homeCompConst[] = {500, 2000, 1000, 500, 500, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
 long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {190, 160, 180, 120, 180, 100};
+int maxAngles[6] = {190, 160, 180, 120, 100, 180};
 long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
 long min_steps[NUM_AXES]; 
 char value;
@@ -169,6 +179,7 @@ void setup() { // setup function to initialize pins and provide initial homing t
   // initializes end effector motor
   pinMode(EEstepPin, OUTPUT);
   pinMode(EEdirPin, OUTPUT);
+  endEff.setMinPulseWidth(200);
 
   // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
   for(i = 0; i<NUM_AXES; i++) {
@@ -237,7 +248,7 @@ void parseMessage(String inMsg)
 
   else if(function == "EE")
   {
-    //endEffectorCommands(inMsg);
+    endEffectorCommands(inMsg);
   }
 
   else if(function == "DM")
@@ -251,28 +262,9 @@ void parseMessage(String inMsg)
   }
 }
 
-void cartesianToJointSpace()
-{
-  long curJointPos[NUM_AXES_EFF];
-  readEncPos(curEncSteps);
-  curJointPos[0] = curEncSteps[0]/5.12;
-  curJointPos[1] = curEncSteps[1]/5.12;
-  curJointPos[3] = curEncSteps[2]/5.12;
-  curJointPos[2] = curEncSteps[3]/5.12;
-  curJointPos[6] = curEncSteps[4]/5.12;
-  curJointPos[7] = curEncSteps[4]/5.12;
-  curJointPos[4] = curEncSteps[5]/5.12;
-  curJointPos[5] = curEncSteps[5]/5.12;
-
-  for(int i=0; i<NUM_AXES_EFF; i++)
-  {
-    steppers[i].setCurrentPosition(curJointPos[i]);
-  }
-}
-
 void sendMessage(char outChar)
 {
-  String outMsg = String(outChar) + String('\n');
+  String outMsg = String(outChar);
   Serial.print(outMsg);
 }
 
@@ -361,43 +353,45 @@ void jointCommands(String inMsg)
 void endEffectorCommands(String inMsg)
 {
   char data = inMsg[2];
-  int force = getForce();
+  getForce();
 
   //opening code
-  if ((data == open) && (force < 100)) { //check if open button pressed and if force is less than max
+  if ((data == open) && (forcePct < 100)) { //check if open button pressed and if force is less than max
     endEff.moveTo(openPos*MOTOR_DIR_EE); //continue to move to open position
   }
 
   //closing code
-  else if ((data == close) && (force < 100)) { //check if open button pressed and if force is less than max
+  else if ((data == close) && (forcePct < 100)) { //check if open button pressed and if force is less than max
     endEff.moveTo(closePos*MOTOR_DIR_EE); //continue to move to closed position
   }
 
-  else if ((data == release) || (force >= 100)) { //else check if release button pressed
+  else if ((data == release) || (forcePct >= 100)) { //else check if release button pressed
     endEff.stop(); // stop when above condition reached
   }
 
   // need to only send force if a certain time interval defined by timeVal has passed
-  //sendForce(force);
+  sendForce(force);
 }
 
-int getForce()
+void getForce()
 {
-  force=scale.get_units()/1000*9.81;
-  int forcePercent = force*100/maxForce;
-  return forcePercent;
+  if(scale.wait_ready_timeout(1))
+  {
+    float force = scale.get_units()/1000*9.81;
+    forcePct = force*100/maxForce;
+  }
 }
 
 void sendForce(int forcePercent)
 {
   long currentTime = millis(); //checks total runtime
-  long timeDiff = currentTime - previousTimeEE; //finds interval between runtime and previous checked time
+  long timeDiff = currentTimeEE - previousTimeEE; //finds interval between runtime and previous checked time
   if (timeDiff >= timeIntervalEE)
   {
     String force_value = String(forcePercent);
-    String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" %\n");
+    String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" %Z");
     Serial.print(force_message);
-    previousTimeEE = currentTime;
+    previousTimeEE = currentTimeEE;
   }
 
   else
@@ -438,12 +432,12 @@ void manualDrill(char dir)
 {
   if(dir == left)
   {
-    endEff.move(1000);
+    endEff.move(99000);
   }
 
   else
   {
-    endEff.move(-1000);
+    endEff.move(-99000);
   }
 }
 
@@ -472,6 +466,26 @@ void sendCurrentPosition()
   String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
                 + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
     Serial.print(outMsg);
+}
+
+// converts cartesian angles to joint space stepper current positions
+void cartesianToJointSpace()
+{
+  long curJointPos[NUM_AXES_EFF];
+  readEncPos(curEncSteps);
+  curJointPos[0] = curEncSteps[0]/5.12;
+  curJointPos[1] = curEncSteps[1]/5.12;
+  curJointPos[3] = curEncSteps[2]/5.12;
+  curJointPos[2] = curEncSteps[3]/5.12;
+  curJointPos[6] = curEncSteps[4]/5.12;
+  curJointPos[7] = curEncSteps[4]/5.12;
+  curJointPos[4] = curEncSteps[5]/5.12;
+  curJointPos[5] = curEncSteps[5]/5.12;
+
+  for(int i=0; i<NUM_AXES_EFF; i++)
+  {
+    steppers[i].setCurrentPosition(curJointPos[i]);
+  }
 }
 
 // Sets movement target positions when in joint space mode
@@ -738,10 +752,10 @@ void zeroRunFlags() { // when user changes axis to control on switch, slow curre
 
 void homeArm() { // main function for full arm homing
   initializeWristHomingMotion();
+  homeEE();
   homeWrist();
   initializeHomingMotion();
   homeBase();
-  //homeEE();
   initializeMotion();
   zeroEncoders();
 
@@ -870,18 +884,26 @@ void homeWrist() { // homes axes 5-6
 
 void homeEE()
 {
-  int force = getForce();
-  // target position for end effector in closed direction
-  endEff.move(-99000*MOTOR_DIR_EE);
+  EEforce=scale.get_units()/1000*9.81;
 
-  while(force < 100) 
+  // target position for end effector in closed direction
+  endEff.move(-99000*dir);
+
+  while(abs(EEforce) < calForce) 
   {
-    force=getForce(); //converting mass to force
+    if (scale.wait_ready_timeout(1)) {   
+      EEforce=scale.get_units()/1000*9.81; //converting mass to force
     // close end effector
+    }
     endEff.run();
   }
-  //Set calibrated position as closed position
-  endEff.setCurrentPosition(0);
+
+  endEff.setCurrentPosition(-30);
+  endEff.moveTo(openPos*dir);
+  while(endEff.distanceToGo() != 0)
+  {
+    endEff.run();
+  }
 }
 
 void initializeHomingMotion() { // sets homing speed and acceleration for axes 1-4 and sets target homing position

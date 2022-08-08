@@ -63,7 +63,6 @@ void ArmHardwareDriver::parseInput(std::string inMsg) {
 
 // Sends joint space motion related commands to teensy
 void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
-    ROS_INFO("Joint space command recieved");
     char action = inMsg[1];
 
     if (action == leftJSL) {
@@ -103,9 +102,9 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     } else if (action == arrowD) {
         changeSpeed(down);
     } else if (action == arrowL) {
-        endEffector(left);
+        endEffector(open);
     } else if (action == arrowR) {
-        endEffector(right);
+        endEffector(close);
     } else if (action == arrowRLRel) {
         endEffectorRel();
     } else if (action == homeVal) {
@@ -117,9 +116,9 @@ void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
     char action = inMsg[1];
 
     if (arrowL) {
-        endEffector(left);
+        endEffector(open);
     } else if (arrowRLRel) {
-        endEffector(right);
+        endEffector(close);
     } else if (arrowRLRel) {
         endEffectorRel();
     }
@@ -127,7 +126,6 @@ void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
 
 // Sends drilling mode related commands to teensy
 void ArmHardwareDriver::drill_motion(std::string inMsg) {
-    ROS_INFO("Drilling command recieved");
     char action = inMsg.at(1);
 
     if (buttonA) {
@@ -160,10 +158,6 @@ void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir) {
 }
 
 void ArmHardwareDriver::changeSpeed(const char dir) {
-    ROS_INFO("Changing speed");
-    ROS_INFO(dir == up ? "Speed increasing"
-                       : (dir == down ? "Speed decreasing"
-                                      : "Incorrect direction provided"));
     std::string outMsg = "JM";
     outMsg             = "S";
     outMsg += dir;
@@ -193,9 +187,14 @@ void ArmHardwareDriver::endEffector(const char dir) {
     std::string outMsg = "EE";
     outMsg += dir;
     outMsg += "\n";
+    if(serialOpen)
+    {
+    serialOpen = false;
     sendMsg(outMsg);
     // sending command to end effector results in force feedback being requested
-    //recieveMsg();
+    recieveMsg();
+    serialOpen = true;
+    }
 }
 
 void ArmHardwareDriver::endEffectorRel() {
@@ -251,10 +250,13 @@ const sb_msgs::ArmPosition::ConstPtr& commanded_msg) {
         outMsg += std::to_string(encCmd[i]);
     }
     outMsg += "\n";
-    ROS_INFO("Sending angles to teensy");
-    // ROS_INFO(outMsg);
-    sendMsg(outMsg);
-    recieveMsg();
+    if(serialOpen)
+    {
+        serialOpen = false;
+        sendMsg(outMsg);
+        recieveMsg();
+        serialOpen = true;
+    }
 }
 
 void ArmHardwareDriver::updateEncoderSteps(std::string msg) {
@@ -296,7 +298,7 @@ void ArmHardwareDriver::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
 
     teensy << outMsg;
-    ROS_INFO("Sent via serial: %s", outMsg.c_str());
+    //ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg() {
@@ -305,20 +307,18 @@ void ArmHardwareDriver::recieveMsg() {
     char next_char;
     do {
         teensy >> next_char;
-        ROS_INFO("next_char: '%c'", next_char);
         buffer << next_char;
     } while (next_char != 'Z');
     std::string inMsg = buffer.str();
     if (inMsg[0] != 'Z')
+    {
         if (inMsg.substr(0, 2) == "JP") {
-            if (inMsg.substr(0, 2) == "JP") {
-                ROS_INFO("Sending Arm Position to HW Interface");
-                updateEncoderSteps(inMsg);
-                encStepsToJointPos(encPos, armPos);
-                updateHWInterface();
-            } else if (inMsg.substr(0, 2) == "EE")
-                ROS_INFO("%s", inMsg.c_str());
-        }
+            updateEncoderSteps(inMsg);
+            encStepsToJointPos(encPos, armPos);
+            updateHWInterface();
+        } else if (inMsg.substr(0, 2) == "EE")
+            ROS_INFO("%s", inMsg.c_str());
+    }
 }
 
 void ArmHardwareDriver::updateHWInterface() {
