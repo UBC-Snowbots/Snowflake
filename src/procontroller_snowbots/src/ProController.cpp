@@ -58,9 +58,9 @@ void ProController::setup() {
                      path);
             if (debug) {
                 ROS_DEBUG("Input device ID: bus %#x vendor %#x product %#x\n",
-                         libevdev_get_id_bustype(dev),
-                         libevdev_get_id_vendor(dev),
-                         libevdev_get_id_product(dev));
+                          libevdev_get_id_bustype(dev),
+                          libevdev_get_id_vendor(dev),
+                          libevdev_get_id_product(dev));
             }
             break;
         }
