@@ -60,6 +60,7 @@ class ProController {
     bool debug = false;
     ros::Publisher pubmove;
     ros::Publisher pubarm;
+    int speed = 50;
 };
 
 #endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H
