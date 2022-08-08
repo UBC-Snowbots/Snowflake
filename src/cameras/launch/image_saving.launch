@@ -1,5 +1,5 @@
 <launch>
-    <node name="image_saver" pkg="marker_qr_detection" type="ImageSaver" output="screen">
+    <node name="image_saver" pkg="cameras" type="ImageSaver" output="screen">
      
       
     </node>

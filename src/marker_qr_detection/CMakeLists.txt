@@ -145,7 +145,7 @@ include_directories(
 ## Declare a C++ executable
 # add_executable(marker_qr_detection_node src/sample_package_node.cpp)
 add_executable(detect_marker src/detect_marker.cpp src/DetectMarker.cpp include/DetectMarker.h)
-add_executable(ImageSaver src/ImageSaver.cpp)
+
 
 
 
@@ -159,7 +159,7 @@ add_executable(ImageSaver src/ImageSaver.cpp)
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(detect_marker ${catkin_LIBRARIES} ${OpenCV_LIBS} ${sb_utils_LIBRARIES})
-target_link_libraries(ImageSaver ${catkin_LIBRARIES} ${OpenCV_LIBS} ${sb_utils_LIBRARIES})
+
 
 
 # add_executable(detect_qr_code src/detect_qr_code.cpp src/DetectQRCode.cpp include/DetectQRCode.h)
