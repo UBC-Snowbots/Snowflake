@@ -111,6 +111,7 @@ class ArmHardwareDriver {
 
     bool serialOpen = true;
     bool dataInTransit = false;
+    bool homeFlag = false;
     char mode = jointMode;
 
     // hardware interface communication variables

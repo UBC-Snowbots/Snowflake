@@ -754,10 +754,14 @@ void homeArm() { // main function for full arm homing
     steppersIK[i].setCurrentPosition(0);
   }
 
+  // clear serial port in case of garbage values
   while(Serial.available() !=0)
   {
     Serial.read();
   }
+
+  // notify hardware driver that homing has completed
+  Serial.print("HCZ");
 }
 
 void homeBase() { // homes axes 1-4
