@@ -128,9 +128,9 @@ void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
 void ArmHardwareDriver::drill_motion(std::string inMsg) {
     char action = inMsg.at(1);
 
-    if (buttonA) {
+    if (buttonARel) {
         prepareDrilling();
-    } else if (buttonB) {
+    } else if (buttonBRel) {
         collectSample();
     } else if (buttonX) {
         depositSample();
@@ -158,11 +158,11 @@ void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir) {
 }
 
 void ArmHardwareDriver::changeSpeed(const char dir) {
-    std::string outMsg = "JM";
-    outMsg             = "S";
-    outMsg += dir;
-    outMsg += "\n";
-    sendMsg(outMsg);
+    //std::string outMsg = "JM";
+    //outMsg             = "S";
+    //outMsg += dir;
+    //outMsg += "\n";
+    //sendMsg(outMsg);
 }
 
 void ArmHardwareDriver::changeAxis(const char joystick) {

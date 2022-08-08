@@ -421,9 +421,9 @@ void drillCommands(String inMsg)
   else if(function == drillRelease)
     stopDrill();
   else if(function == prepare)
-    prepDrill();
+    spinDrill();
   else if(function == collect)
-    collectSample();
+    stopDrill();
   else if(function == deposit)
     depositSample();
 }
@@ -446,9 +446,9 @@ void stopDrill()
   endEff.stop();
 }
 
-void prepDrill()
+void spinDrill()
 {
-
+  endEff.move(99000);
 }
 
 void collectSample()
