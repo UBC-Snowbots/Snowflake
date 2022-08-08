@@ -6,15 +6,15 @@
  *              a "!" at the end
  */
 
-#include <DetectQRCode.h>
+#include <ImageSaver.h>
 
 
 int main(int argc, char **argv){
     // Setup your ROS node
-    std::string node_name = "detect_qr_code";
+    std::string node_name = "image_saver";
 
     // Create an instance of your class
-    DetectQRCode detect_qr_code(argc, argv, node_name);
+    ImageSaver image_saver(argc, argv, node_name);
 
     // Start up ros. This will continue to run until the node is killed
     ros::spin();

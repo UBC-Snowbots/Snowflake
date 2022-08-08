@@ -19,9 +19,11 @@
 #include <image_transport/image_transport.h>
 #include <image_transport/subscriber.h>
 #include <sensor_msgs/image_encodings.h>
+#include <camera_calibration_parsers/parse.h>
 
 // STD Includes
 #include <iostream>
+#include <std_srvs/Empty.h>
 
 // ROS Includes
 #include <std_msgs/String.h>
@@ -30,9 +32,9 @@
 // Snowbots Includes
 #include <sb_utils.h>
 
-class DetectQRCode {
+class ImageSaver {
 public:
-    DetectQRCode(int argc, char **argv, std::string node_name);
+   ImageSaver(int argc, char **argv, std::string node_name);
 
 private:
     /**
