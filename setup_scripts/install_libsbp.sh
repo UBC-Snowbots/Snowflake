@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "================================================================"
-echo "Installing Siwft Navigation's Binary Protocol library || (GPS)"
+echo "Installing Swift Navigation's Binary Protocol library || (GPS)"
 echo "================================================================"
 
 cd external_libs/libsbp/c # get to build space
