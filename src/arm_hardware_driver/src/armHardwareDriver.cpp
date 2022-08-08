@@ -40,6 +40,35 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     for (int i = 0; i < num_joints_; i++) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
+
+    float feed_freq = 5.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
+    ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);
+    feedbackLoop = nh.createTimer(feedbackFreq, &ArmHardwareDriver::teensyFeedback, this);
+
+}
+
+//Timer initiated event to request joint feedback 
+void ArmHardwareDriver::teensyFeedback(const ros::TimerEvent& e)
+{
+    requestEEFeedback();
+    if(mode == jointMode)
+    {
+        requestJPFeedback();
+    }
+}
+
+void ArmHardwareDriver::requestEEFeedback()
+{
+    std::string outMsg = "FBE\n";
+    sendMsg(outMsg);
+    recieveMsg();
+}
+
+void ArmHardwareDriver::requestJPFeedback();
+{
+    std::string outMsg = "FBJ\n";
+    sendMsg(outMsg);
+    recieveMsg();
 }
 
 // Callback function to relay pro controller messages to teensy MCU on arm via
@@ -50,7 +79,7 @@ const std_msgs::String::ConstPtr& inMsg) {
 }
 
 void ArmHardwareDriver::parseInput(std::string inMsg) {
-    char mode = inMsg[0];
+    mode = inMsg[0];
 
     if (mode == jointMode) {
         joint_space_motion(inMsg);
@@ -187,14 +216,7 @@ void ArmHardwareDriver::endEffector(const char dir) {
     std::string outMsg = "EE";
     outMsg += dir;
     outMsg += "\n";
-    if(serialOpen)
-    {
-    serialOpen = false;
     sendMsg(outMsg);
-    // sending command to end effector results in force feedback being requested
-    recieveMsg();
-    serialOpen = true;
-    }
 }
 
 void ArmHardwareDriver::endEffectorRel() {
@@ -250,12 +272,8 @@ const sb_msgs::ArmPosition::ConstPtr& commanded_msg) {
         outMsg += std::to_string(encCmd[i]);
     }
     outMsg += "\n";
-    if(serialOpen)
-    {
-        serialOpen = false;
-        sendMsg(outMsg);
-        recieveMsg();
-        serialOpen = true;
+    sendMsg(outMsg);
+    recieveMsg();
     }
 }
 
@@ -296,28 +314,37 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
-
-    teensy << outMsg;
+    if(serialOpen)
+    {
+        // close serial port to other processes
+        serialOpen = false;
+        teensy << outMsg;
+    }
     //ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg() {
     // fill inMsg string with whatever comes through serial port until \n
-    std::stringstream buffer;
-    char next_char;
-    do {
-        teensy >> next_char;
-        buffer << next_char;
-    } while (next_char != 'Z');
-    std::string inMsg = buffer.str();
-    if (inMsg[0] != 'Z')
+    if(dataInTransit)
     {
+        std::stringstream buffer;
+        char next_char;
+        do {
+            teensy >> next_char;
+            buffer << next_char;
+        } while (next_char != 'Z');
+        std::string inMsg = buffer.str();
+
         if (inMsg.substr(0, 2) == "JP") {
             updateEncoderSteps(inMsg);
             encStepsToJointPos(encPos, armPos);
             updateHWInterface();
         } else if (inMsg.substr(0, 2) == "EE")
             ROS_INFO("%s", inMsg.c_str());
+
+        // open serial port to other processes
+        serialOpen = true;
+        dataInTransit = false;   
     }
 }
 

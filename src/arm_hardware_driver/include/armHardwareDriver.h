@@ -108,6 +108,8 @@ class ArmHardwareDriver {
     double encppr   = 512.0;
 
     bool serialOpen = true;
+    bool dataInTransit = false;
+    char mode = jointMode;
 
     // hardware interface communication variables
     std::vector<int> encPos, encCmd;
@@ -125,6 +127,7 @@ class ArmHardwareDriver {
     ros::Subscriber subPro;
     ros::Subscriber sub_command_pos;
     ros::Publisher pub_observed_pos;
+    ros::Timer feedbackLoop;
 
     // The SerialStream to/from the teensy
     LibSerial::SerialStream teensy;

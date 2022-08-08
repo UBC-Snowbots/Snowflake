@@ -256,6 +256,11 @@ void parseMessage(String inMsg)
     drillCommands(inMsg);
   }
 
+  else if(function == "FB")
+  {
+    sendFeedback(inMsg);
+  }
+
   else if(function == "HM")
   {
     homeArm();
@@ -268,6 +273,20 @@ void sendMessage(char outChar)
   Serial.print(outMsg);
 }
 
+void sendFeedback(String inMsg)
+{
+  if(inMsg[2] == "E")
+  {
+    sendEEForce();
+  }
+
+  else if(inMsg[2] == "J")
+  {
+    readEncPos(curEncSteps);
+    sendCurrentPosition();
+  }
+}
+
 //****//CARTESIAN MODE FUNCTIONS//****//
 
 void cartesianCommands(String inMsg)
@@ -276,7 +295,7 @@ void cartesianCommands(String inMsg)
   readEncPos(curEncSteps);
 
   // update host with joint positions
-  //sendCurrentPosition();
+  sendCurrentPosition();
 
   if(!IKFlag)
   {
@@ -344,16 +363,12 @@ void jointCommands(String inMsg)
     changeAxis(detail1);
   else if(function == move)
     jointMovement(detail1, inMsg[4]);
-
-    // update HW interface with joint positions
-    readEncPos(curEncSteps);
-    sendPosNonIK();
   }
 
 void endEffectorCommands(String inMsg)
 {
   char data = inMsg[2];
-  getForce();
+  getEEForce();
 
   //opening code
   if ((data == open) && (forcePct < 100)) { //check if open button pressed and if force is less than max
@@ -368,12 +383,9 @@ void endEffectorCommands(String inMsg)
   else if ((data == release) || (forcePct >= 100)) { //else check if release button pressed
     endEff.stop(); // stop when above condition reached
   }
-
-  // need to only send force if a certain time interval defined by timeVal has passed
-  sendForce(force);
 }
 
-void getForce()
+void getEEForce()
 {
   if(scale.wait_ready_timeout(1))
   {
@@ -382,34 +394,12 @@ void getForce()
   }
 }
 
-void sendForce(int forcePercent)
+void sendEEForce()
 {
-  long currentTime = millis(); //checks total runtime
-  long timeDiff = currentTimeEE - previousTimeEE; //finds interval between runtime and previous checked time
-  if (timeDiff >= timeIntervalEE)
-  {
-    String force_value = String(forcePercent);
-    String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" %Z");
-    Serial.print(force_message);
-    previousTimeEE = currentTimeEE;
-  }
-
-  else
-    sendMessage('Z');
-}
-
-void sendPosNonIK()
-{
-  currentTime = millis(); //checks total runtime
-  long timeDiff = currentTime - previousTimeJP; //finds interval between runtime and previous checked time
-  if (timeDiff >= timeIntervalJP)
-  {
-    sendCurrentPosition();
-    previousTimeJP = currentTimeJP;
-  }
-
-  else
-    sendMessage('Z');
+  String force_value = String(forcePct);
+  String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" %Z");
+  Serial.print(force_message);
+  previousTimeEE = currentTimeEE;
 }
 
 void drillCommands(String inMsg)
