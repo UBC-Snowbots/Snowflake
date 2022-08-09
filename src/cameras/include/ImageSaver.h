@@ -36,16 +36,24 @@
 class ImageSaver {
 public:
    ImageSaver(int argc, char **argv, std::string node_name);
-   int PicsToTake = 0;
+   int PicsToTake1 = 0;
+   int PicsToTake2 = 0;
+   int picCounter1 = 0;
+   int picCounter2 = 0;
 
 private:
     
-    void subscriberCallBack(const sensor_msgs::Image::ConstPtr& image);
-    void subscriberCallBack2(const std_msgs::Int32::ConstPtr& msg);
+    void subscriberCallBack1(const sensor_msgs::Image::ConstPtr& img1);
+    void subscriberCallBack2(const sensor_msgs::Image::ConstPtr& img2);
+    void subscriberCallBackShutter1(const std_msgs::Int32::ConstPtr& msg);
+    void subscriberCallBackShutter2(const std_msgs::Int32::ConstPtr& msg);
 
-    image_transport::Subscriber camera_subscribe;
-    ros::Subscriber shutter; // subscriber to initiate photo saving
-   // ros::Publisher test;
-  
+
+    image_transport::Subscriber camera1_subscribe;
+    image_transport::Subscriber camera2_subscribe;
+    ros::Subscriber shutter1; // subscriber to initiate photo saving
+    ros::Subscriber shutter2; // subscriber to initiate photo saving
+
+    int camera;
 };
 #endif //CAMERAS_IMAGE_SAVER_H
