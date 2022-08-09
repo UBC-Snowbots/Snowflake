@@ -50,6 +50,8 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 //Timer initiated event to request joint feedback 
 void ArmHardwareDriver::teensyFeedback(const ros::TimerEvent& e)
 {
+
+    ROS_INFO("timer working");
     requestEEFeedback();
     if(mode == jointMode)
     {
@@ -353,7 +355,8 @@ void ArmHardwareDriver::recieveMsg() {
         if(!homeFlag)
         {
             serialOpen = true;
-            dataInTransit = false;   
+            dataInTransit = false;  
+            ROS_INFO("Ready to send"); 
         }
     }
 }

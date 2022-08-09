@@ -394,7 +394,7 @@ void getEEForce()
 void sendEEForce()
 {
   String force_value = String(forcePct);
-  String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" %Z");
+  String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" Z");
   Serial.print(force_message);
 }
 
@@ -746,7 +746,6 @@ void homeArm() { // main function for full arm homing
   homeBase();
   initializeMotion();
   zeroEncoders();
-  sendCurrentPosition();
 
   for(int i=0; i<NUM_AXES; i++)
   {
