@@ -82,8 +82,10 @@ const std_msgs::Bool::ConstPtr& inMsg) {
     cartesian_mode = inMsg->data;
     if (cartesian_mode)
         ROS_INFO("Enabling Cartesian Mode");
-    else
+    else {
         ROS_INFO("Disabling Cartesian Mode");
+        previous_time_ = ros::Time::now();
+    }
 }
 
 void ArmHardwareInterface::armPositionCallBack(
@@ -95,7 +97,8 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
                                observed_msg->positions.end());
 
     if (!cartesian_mode) {
-        // elapsed_time_ = ros::Duration(e.current_real - e.last_real);
+        elapsed_time_ = ros::Duration(observed_msg->header.stamp - previous_time_);
+        previous_time_ = observed_msg->header.stamp;
         for (int i = 0; i < num_joints_; ++i) {
             // apply offsets, convert from deg to rad for moveit
             joint_positions_[i] =

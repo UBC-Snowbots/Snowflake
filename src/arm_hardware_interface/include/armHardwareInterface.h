@@ -35,6 +35,7 @@ using namespace hardware_interface;
 			ros::Timer non_realtime_loop_;
 			ros::Duration control_period_;
 			ros::Duration elapsed_time_;
+			ros::Time previous_time_;
 			double loop_hz_;
 			boost::shared_ptr<controller_manager::ControllerManager> controller_manager_;
 
