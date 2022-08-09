@@ -64,7 +64,7 @@ void ArmHardwareDriver::requestEEFeedback()
     recieveMsg();
 }
 
-void ArmHardwareDriver::requestJPFeedback();
+void ArmHardwareDriver::requestJPFeedback()
 {
     std::string outMsg = "FBJ\n";
     sendMsg(outMsg);
@@ -275,7 +275,6 @@ const sb_msgs::ArmPosition::ConstPtr& commanded_msg) {
     outMsg += "\n";
     sendMsg(outMsg);
     recieveMsg();
-    }
 }
 
 void ArmHardwareDriver::updateEncoderSteps(std::string msg) {

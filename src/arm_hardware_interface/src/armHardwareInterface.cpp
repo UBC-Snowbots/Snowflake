@@ -95,7 +95,7 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
                                observed_msg->positions.end());
 
     if (!cartesian_mode) {
-        elapsed_time_ = ros::Duration(e.current_real - e.last_real);
+        // elapsed_time_ = ros::Duration(e.current_real - e.last_real);
         for (int i = 0; i < num_joints_; ++i) {
             // apply offsets, convert from deg to rad for moveit
             joint_positions_[i] =
