@@ -6,8 +6,8 @@
  *              a "!" at the end
  */
 
-#ifndef MARKER_QR_DETECTION_DETECT_QR_CODE_H
-#define MARKER_QR_DETECTION_DETECT_QR_CODE_H
+#ifndef CAMERAS_IMAGE_SAVER_H
+#define CAMERAS_IMAGE_SAVER_H
 
 // OpenCV
 #include <opencv2/objdetect.hpp>
@@ -19,7 +19,7 @@
 #include <image_transport/image_transport.h>
 #include <image_transport/subscriber.h>
 #include <sensor_msgs/image_encodings.h>
-#include <camera_calibration_parsers/parse.h>
+
 
 // STD Includes
 #include <iostream>
@@ -27,6 +27,7 @@
 
 // ROS Includes
 #include <std_msgs/String.h>
+#include <std_msgs/Int32.h>
 #include <ros/ros.h>
 
 // Snowbots Includes
@@ -37,23 +38,13 @@ public:
    ImageSaver(int argc, char **argv, std::string node_name);
 
 private:
-    /**
-     * Callback function for when a new string is received
-     *
-     * @param msg the string received in the callback
-     */
-    void subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg);
+    
+    void subscriberCallBack(const sensor_msgs::Image::ConstPtr& image);
+    void subscriberCallBack2(const std_msgs::String::ConstPtr& msg);
 
-    std::vector<std::string> fetchQRCodes(const cv::Mat& image);
-
-    void drawQRCodes(cv::Mat& image, std::vector<std::string> decoded_info, std::vector<cv::Point> corners, double fps);
-
-    cv::Mat rosToMat(const sensor_msgs::Image::ConstPtr& image);
-
-    image_transport::Subscriber my_subscriber;
-    ros::Publisher my_publisher;
-
-    // cv::QRCodeDetector qrcode;
-    bool draw_qr_codes = false;
+    image_transport::Subscriber camera_subscribe;
+    ros::Subscriber shutter; // subscriber to initiate photo saving
+   // ros::Publisher test;
+  
 };
-#endif //MARKER_QR_DETECTION_DETECT_QR_CODE_H
+#endif //CAMERAS_IMAGE_SAVER_H
