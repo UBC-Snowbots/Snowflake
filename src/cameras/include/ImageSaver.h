@@ -36,11 +36,12 @@
 class ImageSaver {
 public:
    ImageSaver(int argc, char **argv, std::string node_name);
+   int PicsToTake = 0;
 
 private:
     
     void subscriberCallBack(const sensor_msgs::Image::ConstPtr& image);
-    void subscriberCallBack2(const std_msgs::String::ConstPtr& msg);
+    void subscriberCallBack2(const std_msgs::Int32::ConstPtr& msg);
 
     image_transport::Subscriber camera_subscribe;
     ros::Subscriber shutter; // subscriber to initiate photo saving

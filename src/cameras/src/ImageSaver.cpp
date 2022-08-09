@@ -7,6 +7,7 @@
 #include <ImageSaver.h>
 
 ImageSaver::ImageSaver(int argc, char **argv, std::string node_name) {
+  
     // Setup NodeHandles
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
@@ -26,6 +27,7 @@ ImageSaver::ImageSaver(int argc, char **argv, std::string node_name) {
     shutter                  = nh.subscribe(topic_to_subscribe_to2, queue_size2, &ImageSaver::subscriberCallBack2, this);
 
 
+    
     // Setup Publisher(s)
     //to automatically take photos
     //std::string topic = private_nh.resolveName("shutter_button");
@@ -34,13 +36,19 @@ ImageSaver::ImageSaver(int argc, char **argv, std::string node_name) {
     //ROS_INFO("Virtual button has been pushed, taking photo(s) and saving to");
 }
 
-void ImageSaver::subscriberCallBack(const sensor_msgs::Image::ConstPtr& image) {
-    
+void ImageSaver::subscriberCallBack(const sensor_msgs::Image::ConstPtr& img) {
+    if (PicsToTake > 0){
+      cv::Mat image;
+      image = cv_bridge::toCvShare(img, "rgb8")->image;
+      cv::imwrite("uniqueName", image);
+
+    }
    
 }
 
-void ImageSaver::subscriberCallBack2(const std_msgs::String::ConstPtr& msg) {
-    
+void ImageSaver::subscriberCallBack2(const std_msgs::Int32::ConstPtr& msg) {
+
+   PicsToTake += msg->data; 
    
 }
 
