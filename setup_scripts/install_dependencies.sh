@@ -51,7 +51,7 @@ cd $CURR_DIR
 rosdep install --from-paths \
     $CURR_DIR/../src \
     $CURR_DIR/../src/external_pkgs \
-    --ignore-src --rosdistro melodic --skip-keys=librealsense2 -y 
+    --ignore-src --rosdistro melodic --skip-keys=librealsense2 --skip-keys=libswiftnav -y 
 
 echo "================================================================"
 echo "Installing other dependencies specified by our packages"
@@ -60,7 +60,10 @@ cd $CURR_DIR
 # sudo ./setup_realsense_manual.sh
 
 cd $CURR_DIR
-# sudo ./install_phidgets.sh
+sudo ./install_phidgets.sh
+cd $CURR_DIR
+sudo ./install_libsbp.sh
+cd $CURR_DIR
 
 echo "================================================================"
 echo "Installing Misc. Utilities"
