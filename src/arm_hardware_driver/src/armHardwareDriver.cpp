@@ -99,50 +99,56 @@ void ArmHardwareDriver::parseInput(std::string inMsg) {
 void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     char action = inMsg[1];
 
-    if (action == leftJSL) {
-        jointSpaceMove(left, left);
-    } else if (action == leftJSR) {
-        jointSpaceMove(left, right);
-    } else if (action == rightJSU) {
-        jointSpaceMove(right, up);
-    } else if (action == rightJSD) {
-        jointSpaceMove(right, down);
-    } else if (action == buttonA) {
-        jointSpaceMove(wrist, up);
-    } else if (action == buttonB) {
-        jointSpaceMove(wrist, left);
-    } else if (action == buttonX) {
-        jointSpaceMove(wrist, right);
-    } else if (action == buttonY) {
-        jointSpaceMove(wrist, down);
-    } else if (action == triggerL) {
-        changeAxis(down);
-    } else if (action == triggerR) {
-        changeAxis(up);
-    } else if (action == leftJSRel) {
-        releaseAxis(left, garbage);
-    } else if (action == rightJSRel) {
-        releaseAxis(right, garbage);
-    } else if (action == buttonARel) {
-        releaseAxis(wrist, up);
-    } else if (action == buttonBRel) {
-        releaseAxis(wrist, left);
-    } else if (action == buttonXRel) {
-        releaseAxis(wrist, right);
-    } else if (action == buttonYRel) {
-        releaseAxis(wrist, down);
-    } else if (action == arrowU) {
-        changeSpeed(up);
-    } else if (action == arrowD) {
-        changeSpeed(down);
-    } else if (action == arrowL) {
-        endEffector(open);
-    } else if (action == arrowR) {
-        endEffector(close);
-    } else if (action == arrowRLRel) {
-        endEffectorRel();
-    } else if (action == homeVal) {
+    if(action == homeVal) 
+    {
         homeArm();
+    } 
+
+    else if (homeFlag)
+    {
+        if(action == leftJSL) {
+            jointSpaceMove(left, left);
+        } else if (action == leftJSR) {
+            jointSpaceMove(left, right);
+        } else if (action == rightJSU) {
+            jointSpaceMove(right, up);
+        } else if (action == rightJSD) {
+            jointSpaceMove(right, down);
+        } else if (action == buttonA) {
+            jointSpaceMove(wrist, up);
+        } else if (action == buttonB) {
+            jointSpaceMove(wrist, left);
+        } else if (action == buttonX) {
+            jointSpaceMove(wrist, right);
+        } else if (action == buttonY) {
+            jointSpaceMove(wrist, down);
+        } else if (action == triggerL) {
+            changeAxis(down);
+        } else if (action == triggerR) {
+            changeAxis(up);
+        } else if (action == leftJSRel) {
+            releaseAxis(left, garbage);
+        } else if (action == rightJSRel) {
+            releaseAxis(right, garbage);
+        } else if (action == buttonARel) {
+            releaseAxis(wrist, up);
+        } else if (action == buttonBRel) {
+            releaseAxis(wrist, left);
+        } else if (action == buttonXRel) {
+            releaseAxis(wrist, right);
+        } else if (action == buttonYRel) {
+            releaseAxis(wrist, down);
+        } else if (action == arrowU) {
+            changeSpeed(up);
+        } else if (action == arrowD) {
+            changeSpeed(down);
+        } else if (action == arrowL) {
+            endEffector(open);
+        } else if (action == arrowR) {
+            endEffector(close);
+        } else if (action == arrowRLRel) {
+            endEffectorRel();
+        }      
     }
 }
 
@@ -258,9 +264,10 @@ void ArmHardwareDriver::releaseDrill() {
 
 void ArmHardwareDriver::homeArm() {
     std::string outMsg = "HM\n";
-    homeFlag = true;
+    homeFlag = false;
     sendMsg(outMsg);
     recieveMsg();
+    homeFlag = true;
 }
 
 void ArmHardwareDriver::armPositionCallBack(
@@ -355,7 +362,6 @@ void ArmHardwareDriver::recieveMsg() {
         // open serial port to other processes
         serialOpen = true;
         dataInTransit = false;  
-        ROS_INFO("Ready to send"); 
     }
 }
 

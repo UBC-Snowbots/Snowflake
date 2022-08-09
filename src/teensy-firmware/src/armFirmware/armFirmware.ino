@@ -406,7 +406,7 @@ void sendEEForce()
 {
   //String force_value = String(forcePct);
   //String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" Z");
-  String force_message = String("EEZ");
+  String force_message = String("EEForceZ");
   Serial.print(force_message);
 }
 
@@ -1032,3 +1032,7 @@ void waitForHome()
     }
   }
 }
+
+// updated 12:08 on tuesday
+
+
