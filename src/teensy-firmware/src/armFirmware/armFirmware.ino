@@ -33,8 +33,6 @@ static const char wrist = 'W';
 static const char garbage = 'G';
 static const char faster = 'U';
 static const char slower = 'D';
-static const char open = left;
-static const char close = right;
 static const char prepare = 'P';
 static const char collect = 'C';
 static const char deposit = 'D';
@@ -52,7 +50,6 @@ int encPinA[6] = {17, 38, 40, 36, 15, 13};
 int encPinB[6] = {16, 37, 39, 35, 14, 41};
 
 // end effector variables
-const int maxForce = 30; // needs to be checked
 const float calibrationFactor = -111.25;
 float force;
 HX711 scale;
@@ -152,8 +149,8 @@ int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 105
 int speedIndex = maxSpeedIndex;
 
 // Cartesian mode speed settings
-float IKspeeds[] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
-float IKaccs[] = {0.2, 0.2, 0.2, 0.2, 0.2, 0.2};
+float IKspeeds[] = {0.2, 0.2, 0.2, 0.2, 0.2, 0.2};
+float IKaccs[] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
 
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 
@@ -198,8 +195,7 @@ void setup() { // setup function to initialize pins and provide initial homing t
   }
   // waits for user to press "home" button before rest of functions are available
   
-  //waitForHome();
-  zeroEncoders();
+  waitForHome();
 }
 
 void loop()
@@ -211,10 +207,6 @@ void loop()
 
   else
     runSteppersIK();
-
-    readEncPos(curEncSteps);
-    sendPosNonIK();
-    Serial.print('\n');
 }
 
 void recieveCommand()
@@ -373,7 +365,7 @@ void jointCommands(String inMsg)
 void endEffectorCommands(String inMsg)
 {
   char data = inMsg[2];
-  getEEForce();
+  //getEEForce();
 
   //opening code
   if ((data == open) && (forcePct < 100)) { //check if open button pressed and if force is less than max
@@ -404,7 +396,6 @@ void sendEEForce()
   String force_value = String(forcePct);
   String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" %Z");
   Serial.print(force_message);
-  previousTimeEE = currentTimeEE;
 }
 
 void drillCommands(String inMsg)
@@ -749,7 +740,7 @@ void zeroRunFlags() { // when user changes axis to control on switch, slow curre
 
 void homeArm() { // main function for full arm homing
   initializeWristHomingMotion();
-  homeEE();
+  //homeEE();
   homeWrist();
   initializeHomingMotion();
   homeBase();
@@ -889,7 +880,7 @@ void homeEE()
   EEforce=scale.get_units()/1000*9.81;
 
   // target position for end effector in closed direction
-  endEff.move(-99000*dir);
+  endEff.move(-99000*MOTOR_DIR_EE);
 
   while(abs(EEforce) < calForce) 
   {
@@ -901,7 +892,7 @@ void homeEE()
   }
 
   endEff.setCurrentPosition(-30);
-  endEff.moveTo(openPos*dir);
+  endEff.moveTo(openPos*MOTOR_DIR_EE);
   while(endEff.distanceToGo() != 0)
   {
     endEff.run();
