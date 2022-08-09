@@ -52,10 +52,13 @@ void ArmHardwareDriver::teensyFeedback(const ros::TimerEvent& e)
 {
 
     ROS_INFO("timer working");
-    requestEEFeedback();
-    if(mode == jointMode)
+    if(homeFlag)
     {
-        requestJPFeedback();
+        requestEEFeedback();
+        if(mode == jointMode)
+        {
+            requestJPFeedback();
+        }
     }
 }
 
@@ -321,7 +324,7 @@ void ArmHardwareDriver::sendMsg(std::string outMsg) {
         dataInTransit = true;
         teensy << outMsg;
     }
-    //ROS_INFO("Sent via serial: %s", outMsg.c_str());
+    ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg() {
@@ -347,17 +350,12 @@ void ArmHardwareDriver::recieveMsg() {
         // check if homing is completed
         else if(inMsg.substr(0, 2) == "HC")
         {
-            homeFlag = false;
             ROS_INFO("ARM CALIBRATION COMPLETE, NOW ACCEPTING CONTROLLER COMMANDS!");
         }
-
         // open serial port to other processes
-        if(!homeFlag)
-        {
-            serialOpen = true;
-            dataInTransit = false;  
-            ROS_INFO("Ready to send"); 
-        }
+        serialOpen = true;
+        dataInTransit = false;  
+        ROS_INFO("Ready to send"); 
     }
 }
 

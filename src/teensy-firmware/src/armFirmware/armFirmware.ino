@@ -40,6 +40,8 @@ static const char manual = 'M';
 static const char drillRelease = 'X';
 static const char open = 'O';
 static const char close = 'C';
+static const char joint = 'J';
+static const char EEval = 'E';
 
 // Motor variables
 int stepPins[8] =   {6, 8, 10, 2, 12, 25, 12, 25};
@@ -53,17 +55,19 @@ int encPinB[6] = {16, 37, 39, 35, 14, 41};
 const float calibrationFactor = -111.25;
 float force;
 HX711 scale;
+const int dataPin = 34;
+const int clkPin = 33;
 int calPos = 0;
 int closePos = 0;
-int openPos = 2000; // needs to be calibrated
-int EEstepPin = 20;
-int EEdirPin = 21;
+int openPos = 500; // needs to be calibrated
+int EEstepPin = 4;
+int EEdirPin = 3;
 int speedEE = 100;
 int accEE = 500;
 const int MOTOR_DIR_EE = 1;
 const int openButton = 5;
 const int closeButton = 4;
-const float calForce = 0.3;
+const float calForce = 0.2;
 const float maxForce = 10.0;
 float EEforce;
 int forcePct = 0;
@@ -155,6 +159,9 @@ float IKaccs[] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 
   Serial.begin(9600);
+  scale.begin(dataPin, clkPin);
+  scale.set_scale(calibrationFactor);
+  scale.tare();
 
   for(int i=0; i<NUM_AXES; i++)
   {
@@ -177,6 +184,8 @@ void setup() { // setup function to initialize pins and provide initial homing t
   pinMode(EEstepPin, OUTPUT);
   pinMode(EEdirPin, OUTPUT);
   endEff.setMinPulseWidth(200);
+  endEff.setMaxSpeed(speedEE);
+  endEff.setAcceleration(accEE);
 
   // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
   for(i = 0; i<NUM_AXES; i++) {
@@ -272,12 +281,14 @@ void sendMessage(char outChar)
 
 void sendFeedback(String inMsg)
 {
-  if(inMsg[2] == "E")
+  char function = inMsg[2];
+  
+  if(function == EEval)
   {
     sendEEForce();
   }
 
-  else if(inMsg[2] == "J")
+  else if(function == joint)
   {
     readEncPos(curEncSteps);
     sendCurrentPosition();
@@ -365,7 +376,7 @@ void jointCommands(String inMsg)
 void endEffectorCommands(String inMsg)
 {
   char data = inMsg[2];
-  //getEEForce();
+  getEEForce();
 
   //opening code
   if ((data == open) && (forcePct < 100)) { //check if open button pressed and if force is less than max
@@ -387,14 +398,15 @@ void getEEForce()
   if(scale.wait_ready_timeout(1))
   {
     float force = scale.get_units()/1000*9.81;
-    forcePct = force*100/maxForce;
+    forcePct = force*100.0/maxForce;
   }
 }
 
 void sendEEForce()
 {
-  String force_value = String(forcePct);
-  String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" Z");
+  //String force_value = String(forcePct);
+  //String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" Z");
+  String force_message = String("EEZ");
   Serial.print(force_message);
 }
 
@@ -740,7 +752,7 @@ void zeroRunFlags() { // when user changes axis to control on switch, slow curre
 
 void homeArm() { // main function for full arm homing
   initializeWristHomingMotion();
-  //homeEE();
+  homeEE();
   homeWrist();
   initializeHomingMotion();
   homeBase();
@@ -933,9 +945,6 @@ void initializeMotion() { // sets main program speeds for each axis
     steppersIK[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
     steppersIK[i].setAcceleration(maxAccel[i]);
   }
-
-  endEff.setMaxSpeed(speedEE);
-  endEff.setAcceleration(accEE);
 }
 
 void zeroAxes() { // sets current position of all axes to 0
@@ -963,38 +972,63 @@ void runSteppersIK() { // runs all stepper motors (if no target position has bee
   endEff.run();
 }
 
-void waitForHome() { // stops arm motion until user homes arm after firmware is flashed
+//void waitForHome() { // stops arm motion until user homes arm after firmware is flashed
+//
+//  String inData = "";
+//  char recieved;
+//  bool initFlag = false;
+//  bool serialFlag = false;
+//
+//  while(!initFlag) {
+//
+//    if(Serial.available() > 0)
+//    {
+//      recieved = Serial.read();
+//      inData += String(recieved);
+//      if(recieved == '\n')
+//      {
+//        serialFlag = true;
+//      }
+//    }
+//
+//    if(serialFlag)
+//    {
+//        if(inData.substring(0, 2) = "HM")
+//        {
+//          homeArm();
+//          initFlag = true;
+//        }
+//
+//        else
+//        {
+//          inData = "";
+//          serialFlag = false;
+//        }
+//    }
+//  }
+//}
 
-  String inData = "";
-  char recieved;
-  bool initFlag = false;
-  bool serialFlag = false;
+void waitForHome()
+{
+  String inData;
+  char recieved = '\0';
 
-  while(!initFlag) {
-
-    if(Serial.available() > 0)
+  while(!initFlag)
+  {
+    inData = "";
+    if(Serial.available()>0)
     {
-      recieved = Serial.read();
-      inData += String(recieved);
-      if(recieved == '\n')
-      {
-        serialFlag = true;
-      }
+      do {
+        recieved = Serial.read();
+        inData += String(recieved);
+      } while(recieved != '\n');
     }
-
-    if(serialFlag)
+  
+    if(recieved == '\n')
     {
-        if(inData.substring(0, 2) = "HM")
-        {
-          homeArm();
-          initFlag = true;
-        }
-
-        else
-        {
-          inData = "";
-          serialFlag = false;
-        }
+      if(inData.substring(0, 2) == "HM")
+        homeArm();
+        initFlag = true;
     }
   }
 }
