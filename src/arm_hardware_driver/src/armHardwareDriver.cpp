@@ -182,8 +182,6 @@ void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir) {
     outMsg += dir;
     outMsg += "\n";
     sendMsg(outMsg);
-    // request current joint positions from teensy
-    recieveMsg();
 }
 
 void ArmHardwareDriver::changeSpeed(const char dir) {
