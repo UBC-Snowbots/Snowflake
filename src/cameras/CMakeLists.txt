@@ -29,5 +29,5 @@ catkin_package(
         CATKIN_DEPENDS roscpp geometry_msgs
 )
 
-add_executable(ImageSaver src/ImageSaver.cpp)
+add_executable(ImageSaver src/ImageSaver.cpp src/image_saver.cpp include/ImageSaver.h)
 target_link_libraries(ImageSaver ${catkin_LIBRARIES} ${OpenCV_LIBS} ${sb_utils_LIBRARIES})
