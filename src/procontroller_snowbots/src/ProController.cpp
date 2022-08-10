@@ -12,6 +12,7 @@ ProController::ProController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
     string armPublisher = "/cmd_arm";
     string modePublisher = "/moveit_toggle";
+    string moveGrpPublisher = "/move_group_trigger";
     setup();
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
@@ -27,6 +28,7 @@ ProController::ProController(int argc, char** argv, string node_name) {
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
     pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 1);
+    pubmovegrp = private_.nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
 
     true_message.data = true;
     false_message.data = false;
@@ -367,6 +369,8 @@ void ProController::home(int value) {
             if (state == Mode::wheels || state == Mode::arm_joint_space) {
                 pubmode.publish(false_message);
             } else {
+                pubmovegrp.publish(true_message);
+                sleep(8);
                 pubmode.publish(true_message);
             }
             printState();

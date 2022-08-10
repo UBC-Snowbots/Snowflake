@@ -18,6 +18,8 @@
 #include <ros/ros.h>
 #include <sys/fcntl.h>
 #include <tuple>
+#include <unistd.h>
+
 using namespace std;
 
 class ProController {
@@ -99,6 +101,7 @@ class ProController {
     ros::Publisher pubmove;
     ros::Publisher pubarm;
     ros::Publisher pubmode;
+    ros::Publisher pubmovegrp;
 
     std_msgs::Bool true_message;
     std_msgs::Bool false_message;

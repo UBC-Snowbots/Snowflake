@@ -15,14 +15,13 @@ class MoveGroupArm {
         
     private: 
         void updatePose(const sb_msgs::ArmPosition::ConstPtr& observed_msg);
-        void toggleMode(const std_msgs::Bool::ConstPtr& inMsg);
+        void executePose(const std_msgs::Bool::ConstPtr& inMsg);
         double degToRad(double deg);
         void init();
 
         ros::Subscriber curPos;
-        ros::Subscriber curMode;
+        ros::Subscriber subExecute;
 
-        bool cartesian_mode = false;
         std::vector<double> actuator_positions_;
         std::vector<double> joint_positions_;
         std::vector<double> joint_group_positions;

@@ -14,51 +14,44 @@ MoveGroupArm::MoveGroupArm(int argc, char** argv, string node_name)
   ros::NodeHandle node_handle;
   subPos = 
   node_handle.subscribe("/observed_pos_arm", 1, &updatePose, this); 
-  curMode = 
-  node_handle.subscribe("/moveit_toggle", 1, &toggleMode, this);
+  subExecute = 
+  node_handle.subscribe("/move_group_trigger", 1, &executePose, this);
 
   init();
-
 }
 
-void MoveGroupArm::toggleMode(const std_msgs::Bool::ConstPtr& inMsg) {
-    cartesian_mode = inMsg->data;
-    if (cartesian_mode)
-        ROS_INFO("Enabling Cartesian Mode");
-    else {
-        ROS_INFO("Disabling Cartesian Mode");
-        previous_time_ = ros::Time::now();
-    }
+void MoveGroupArm::executePose(const std_msgs::Bool::ConstPtr& inMsg) {
+
+  // fetches current state of rover
+  moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
+  current_state->copyJointGroupPositions(joint_model_group, joint_group_positions);
+
+  // writes new position command
+  for(int i=0; i<num_joints_; i++)
+  {
+    joint_positions_[i] = degToRad(actuator_positions_[i]);
+    joint_group_positions[i] = joint_positions_[i];
+  }
+
+  // plans movement
+  move_group.setJointValueTarget(joint_group_positions);
+  bool success = (move_group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+  if(success)
+  {
+    ROS_INFO("Target pose successfully planned");
+  }
+  else
+  {
+    ROS_INFO("Target pose failed");
+  }
+
+  // executes current arm position in move group interface
+  move_group.move();
 }
 
 void MoveGroupArm::updatePose(const sb_msgs::ArmPosition::ConstPtr& observed_msg)
 {
   actuator_positions_.assign(observed_msg->positions.begin(), observed_msg->positions.end());
-  if(!cartesian_mode)
-  {
-    moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
-    current_state->copyJointGroupPositions(joint_model_group, joint_group_positions);
-    for(int i=0; i<num_joints_; i++)
-    {
-      joint_positions_[i] = degToRad(actuator_positions_[i]);
-      joint_group_positions[i] = joint_positions_[i];
-    }
-
-    std::vector<double> joint_group_positions;
-    current_state->copyJointGroupPositions(joint_model_group, joint_group_positions);
-    move_group.setJointValueTarget(joint_group_positions);
-    bool success = (move_group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-    if(success)
-    {
-      ROS_INFO("Target pose successfully planned");
-    }
-
-    else
-    {
-      ROS_INFO("Target pose failed");
-    }
-    move_group.move();
-  }
 }
 
 void MoveGroupArm::init()
@@ -80,6 +73,7 @@ void MoveGroupArm::init()
   moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
 }
 
-double ArmHardwareInterface::degToRad(double deg) {
-    return deg / 180.0 * 3.14159;
+double ArmHardwareInterface::degToRad(double deg) 
+{
+  return deg / 180.0 * 3.14159;
 }
