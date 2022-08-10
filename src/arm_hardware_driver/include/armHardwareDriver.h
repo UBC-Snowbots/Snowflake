@@ -60,6 +60,7 @@ class ArmHardwareDriver {
     void updateHWInterface();
     void requestEEFeedback();
     void requestJPFeedback();
+    void homeEE();
 
     // character representations of buttons for arm communication
     const char leftJSL     = 'A';
@@ -90,6 +91,7 @@ class ArmHardwareDriver {
     const char leftJSRel   = 'Y';
     const char rightJSRel  = 'Z';
     const char homeVal     = '4';
+    const char homeValEE = '6';
     // arm modes
     const char jointMode = '1';
     const char IKMode    = '2';

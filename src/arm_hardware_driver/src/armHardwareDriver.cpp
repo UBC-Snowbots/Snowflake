@@ -54,7 +54,7 @@ void ArmHardwareDriver::teensyFeedback(const ros::TimerEvent& e)
     ROS_INFO("timer working");
     if(homeFlag)
     {
-        requestEEFeedback();
+        //requestEEFeedback();
         if(mode == jointMode)
         {
             requestJPFeedback();
@@ -148,19 +148,23 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
             endEffector(close);
         } else if (action == arrowRLRel) {
             endEffectorRel();
-        }      
+        } else if(action == homeValEE) {
+            homeEE();
+        }
     }
 }
 
 void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
     char action = inMsg[1];
 
-    if (arrowL) {
+    if (action == arrowL) {
         endEffector(open);
-    } else if (arrowRLRel) {
+    } else if (action == arrowRLRel) {
         endEffector(close);
-    } else if (arrowRLRel) {
+    } else if (action == rrowRLRel) {
         endEffectorRel();
+    } else if(action == homeValEE) {
+        homeEE();
     }
 }
 
@@ -168,17 +172,17 @@ void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
 void ArmHardwareDriver::drill_motion(std::string inMsg) {
     char action = inMsg.at(1);
 
-    if (buttonARel) {
+    if (action == buttonARel) {
         prepareDrilling();
-    } else if (buttonBRel) {
+    } else if (action == buttonBRel) {
         collectSample();
-    } else if (buttonX) {
+    } else if (action == buttonX) {
         depositSample();
-    } else if (triggerL) {
+    } else if (action == triggerL) {
         manualDrill(left);
-    } else if (triggerR) {
+    } else if (action == triggerR) {
         manualDrill(right);
-    } else if (triggerLRel || triggerRRel) {
+    } else if ((action == triggerLRel) || (action == triggerRRel)) {
         releaseDrill();
     }
     // below two lines to be implemented once cartesian mode is sorted
@@ -268,6 +272,11 @@ void ArmHardwareDriver::homeArm() {
     sendMsg(outMsg);
     recieveMsg();
     homeFlag = true;
+}
+
+void ArmHardwareDriver::homeEE() {
+    std::string outMsg = "EEH\n";
+    sendMsg(outMsg);
 }
 
 void ArmHardwareDriver::armPositionCallBack(

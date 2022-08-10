@@ -344,6 +344,7 @@ void ProController::select(int value) {
         ROS_INFO("Select button pressed");
     } else if (value == 0) {
         ROS_INFO("Select button released");
+        armOutVal = homeValEE;
     }
 }
 

@@ -752,7 +752,6 @@ void zeroRunFlags() { // when user changes axis to control on switch, slow curre
 
 void homeArm() { // main function for full arm homing
   initializeWristHomingMotion();
-  homeEE();
   homeWrist();
   initializeHomingMotion();
   homeBase();

@@ -86,6 +86,7 @@ class ProController {
     const char leftJSRel = 'Y';
     const char rightJSRel = 'Z';
     const char homeVal = '4';
+    const char homeValEE = '6';
     // arm modes
     const char jointMode = '1';
     const char IKMode = '2';
