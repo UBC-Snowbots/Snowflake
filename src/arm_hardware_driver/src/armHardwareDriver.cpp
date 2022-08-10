@@ -159,9 +159,9 @@ void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
 
     if (action == arrowL) {
         endEffector(open);
-    } else if (action == arrowRLRel) {
+    } else if (action == arrowR) {
         endEffector(close);
-    } else if (action == rrowRLRel) {
+    } else if (action == arrowRLRel) {
         endEffectorRel();
     } else if(action == homeValEE) {
         homeEE();

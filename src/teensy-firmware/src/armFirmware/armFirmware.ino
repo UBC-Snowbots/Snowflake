@@ -42,6 +42,7 @@ static const char open = 'O';
 static const char close = 'C';
 static const char joint = 'J';
 static const char EEval = 'E';
+static const char homeValEE = 'H';
 
 // Motor variables
 int stepPins[8] =   {6, 8, 10, 2, 12, 25, 12, 25};
@@ -150,7 +151,7 @@ char value;
 
 // values for changing speed
 const int maxSpeedIndex = 2;
-int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 1050, 1050, 1050}, {900, 1200, 2000, 1665, 1460, 1460, 1460, 1460}, {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200}};
+int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 1050, 1050, 1050}, {900, 1200, 2000, 1665, 1460, 1460, 1460, 1460}, {900, 1600, 2500, 2200, 2000, 2000, 2000, 2000}};
 int speedIndex = maxSpeedIndex;
 
 // Cartesian mode speed settings
@@ -376,20 +377,24 @@ void jointCommands(String inMsg)
 void endEffectorCommands(String inMsg)
 {
   char data = inMsg[2];
-  getEEForce();
 
   //opening code
-  if ((data == open) && (forcePct < 100)) { //check if open button pressed and if force is less than max
+  if (data == open) { //check if open button pressed and if force is less than max
     endEff.moveTo(openPos*MOTOR_DIR_EE); //continue to move to open position
   }
 
   //closing code
-  else if ((data == close) && (forcePct < 100)) { //check if open button pressed and if force is less than max
+  else if (data == close) { //check if open button pressed and if force is less than max
     endEff.moveTo(closePos*MOTOR_DIR_EE); //continue to move to closed position
   }
 
-  else if ((data == release) || (forcePct >= 100)) { //else check if release button pressed
+  else if (data == release) { //else check if release button pressed
     endEff.stop(); // stop when above condition reached
+  }
+
+  else if (data == homeValEE)
+  {
+    endEff.setCurrentPosition(0);
   }
 }
 
