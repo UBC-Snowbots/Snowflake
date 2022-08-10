@@ -101,7 +101,7 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
         previous_time_ = observed_msg->header.stamp;
         for (int i = 0; i < num_joints_; ++i) {
             // fake controller, set position state to equal command state
-            joint_positions_[i]; = joint_position_commands_[i];
+            joint_positions_[i] = joint_position_commands_[i];
         }
         controller_manager_->update(ros::Time::now(), elapsed_time_);
     } else {

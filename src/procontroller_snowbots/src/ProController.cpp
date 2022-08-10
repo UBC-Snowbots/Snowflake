@@ -28,7 +28,7 @@ ProController::ProController(int argc, char** argv, string node_name) {
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
     pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 1);
-    pubmovegrp = private_.nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
+    pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
 
     true_message.data = true;
     false_message.data = false;
