@@ -324,24 +324,29 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
+	/*
     if(serialOpen)
     {
+    */
         // close serial port to other processes
         serialOpen = false;
         dataInTransit = true;
         teensy << outMsg;
-    }
+    // }
     ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg() {
     // fill inMsg string with whatever comes through serial port until \n
+	/*
     if(dataInTransit)
     {
+	    */
         std::stringstream buffer;
         char next_char;
         do {
             teensy >> next_char;
+	    ROS_INFO("next_char: %c", next_char);
             buffer << next_char;
         } while (next_char != 'Z');
         std::string inMsg = buffer.str();
@@ -362,7 +367,9 @@ void ArmHardwareDriver::recieveMsg() {
         // open serial port to other processes
         serialOpen = true;
         dataInTransit = false;  
+	/*
     }
+    */
 }
 
 void ArmHardwareDriver::updateHWInterface() {

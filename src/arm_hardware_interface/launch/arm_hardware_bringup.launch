@@ -25,9 +25,7 @@
     <param name="robot_description_semantic" textfile="$(find snowbots_arm_simplified_configs)/config/snowbots_arm_urdf_simplified_v5_12.srdf" />
 
     <!-- Start hardware_driver node -->
-    <!--
     <node name="arm_hardware_driver" pkg="arm_hardware_driver" type="arm_hardware_driver" output="screen" launch-prefix="$(arg launch_prefix)"/>
-    -->
 
     <!-- Start hardware_interface node -->
     <node name="arm_hardware_interface" pkg="arm_hardware_interface" type="arm_hardware_interface" output="screen" launch-prefix="$(arg launch_prefix)"/>
