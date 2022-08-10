@@ -487,7 +487,7 @@ void cartesianToJointSpace()
 
   for(int i=0; i<NUM_AXES_EFF; i++)
   {
-    steppers[i].setCurrentPosition(curJointPos[i]);
+    steppers[i].setCurrentPosition(curJointPos[i]*axisDir[i]);
   }
 }
 
