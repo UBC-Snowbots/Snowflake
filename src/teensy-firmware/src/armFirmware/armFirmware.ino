@@ -67,7 +67,7 @@ int accEE = 500;
 const int MOTOR_DIR_EE = 1;
 const int openButton = 5;
 const int closeButton = 4;
-const float calForce = 0.2;
+const float calForce = 0.3;
 const float maxForce = 10.0;
 float EEforce;
 int forcePct = 0;
@@ -133,6 +133,7 @@ int i;
 bool initFlag = false;
 bool jointFlag = true;
 bool IKFlag = false;
+bool J1Flag = false;
 
 // variables for homing / arm calibration
 long homePosConst = -99000;
@@ -203,7 +204,6 @@ void setup() { // setup function to initialize pins and provide initial homing t
     steppers[i].setMinPulseWidth(200);
   }
   // waits for user to press "home" button before rest of functions are available
-  
   waitForHome();
 }
 
@@ -758,6 +758,7 @@ void homeArm() { // main function for full arm homing
   homeBase();
   initializeMotion();
   zeroEncoders();
+  J1Flag = true;
 
   for(int i=0; i<NUM_AXES; i++)
   {
@@ -917,7 +918,26 @@ void initializeHomingMotion() { // sets homing speed and acceleration for axes 1
     steppers[i].setMaxSpeed(homeSpeed[i]);
     steppers[i].setAcceleration(homeAccel[i]);
     steppers[i].setCurrentPosition(0);
-    steppers[i].move(homePos[i]);
+
+    if(i !=0)
+    {
+      steppers[i].move(homePos[i]);
+    }
+    else if(J1Flag == true)
+    {
+      if((steppers[0].currentPosition()/axisDir[0] < 0) && (abs(steppers[0].currentPosition()/axisDir[0]) > (homeCompSteps[0] + homeComp[0])/axisDir[0]))
+      {
+        steppers[0].move(-homePos[i]);
+      }
+      else
+      {
+        steppers[0].move(homePos[i]);
+      }
+    }
+    else
+    {
+      steppers[0].move(homePos[i]);
+    }
   }
 }
 
@@ -1034,5 +1054,3 @@ void waitForHome()
 }
 
 // updated 12:08 on tuesday
-
-
