@@ -100,10 +100,8 @@ const sb_msgs::ArmPosition::ConstPtr& observed_msg) {
         elapsed_time_ = ros::Duration(observed_msg->header.stamp - previous_time_);
         previous_time_ = observed_msg->header.stamp;
         for (int i = 0; i < num_joints_; ++i) {
-            // apply offsets, convert from deg to rad for moveit
-            joint_positions_[i] =
-            degToRad(actuator_positions_[i] + joint_offsets_[i]);
-            joint_position_commands_[i] = joint_positions_[i];
+            // fake controller, set position state to equal command state
+            joint_positions_[i]; = joint_position_commands_[i];
         }
         controller_manager_->update(ros::Time::now(), elapsed_time_);
     } else {
