@@ -12,7 +12,7 @@ ProController::ProController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
     string armPublisher = "/cmd_arm";
     string modePublisher = "/moveit_toggle";
-    string moveGrpPublisher = "/move_group_trigger";
+    // string moveGrpPublisher = "/move_group_trigger";
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
     if (private_nh.param<double>("X", X_SENSITIVITY, 1.0)) {
@@ -28,7 +28,7 @@ ProController::ProController(int argc, char** argv, string node_name) {
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
     pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 1);
-    pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
+    // pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
 
     true_message.data = true;
     false_message.data = false;
@@ -180,8 +180,8 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
                                                    double z_old) {
     if (abs(x_old - x_new) > 0.0001 || abs(z_old - z_new) > 0.0001) {
         geometry_msgs::Twist msg;
-        msg.linear.x  = x_new * speed;
-        msg.angular.z = z_new * speed;
+        msg.linear.x  = x_new * speed / 100;
+        msg.angular.z = z_new * speed / 100;
         pubmove.publish(msg);
         // return tuple
         return make_tuple(x_new, z_new);
@@ -200,7 +200,7 @@ void ProController::publishArmMessage(std::string outMsg) {
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
 
-    if (value > 115 && value < 135) {
+    if (value > 110 && value < 140) {
         if(state == Mode::wheels) {
         x = 0;
         }
@@ -220,7 +220,7 @@ void ProController::leftJoystickX(int value) {
         // Left joystick is only used in x direction in arm joint space mode. Drilling / cartesion mode do not use this joystick
         if(state == Mode::arm_joint_space) {
 
-            if(z > 0) {
+            if(x < 0) {
              armOutVal = leftJSL;
             }
 
@@ -233,7 +233,7 @@ void ProController::leftJoystickX(int value) {
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
-    if (value > 115 && value < 135) {
+    if (value > 110 && value < 140) {
         z = 0;
     } else {
         // 128 is the center, so this normalizes the result to
@@ -368,8 +368,8 @@ void ProController::home(int value) {
             if (state == Mode::wheels || state == Mode::arm_joint_space) {
                 pubmode.publish(false_message);
             } else {
-                pubmovegrp.publish(true_message);
-                sleep(8);
+                // pubmovegrp.publish(true_message);
+                // sleep(8);
                 pubmode.publish(true_message);
             }
             printState();
