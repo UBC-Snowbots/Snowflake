@@ -135,11 +135,12 @@ bool initFlag = false;
 bool jointFlag = true;
 bool IKFlag = false;
 bool J1Flag = false;
+bool resetEE = false;
 
 // variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst, axisDir[6]*homePosConst, axisDir[7]*homePosConst};
-long homeCompAngles[] = {axisDir[0]*10, axisDir[1]*43, axisDir[2]*90, axisDir[3]*35, axisDir[4]*85, axisDir[5]*85, axisDir[6]*80, axisDir[7]*80};
+long homeCompAngles[] = {axisDir[0]*54, axisDir[1]*43, axisDir[2]*90, axisDir[3]*35, axisDir[4]*85, axisDir[5]*85, axisDir[6]*80, axisDir[7]*80};
 long homeCompConst[] = {500, 2000, 1000, 500, 500, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
 long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
@@ -161,9 +162,6 @@ float IKaccs[] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 
   Serial.begin(9600);
-  scale.begin(dataPin, clkPin);
-  scale.set_scale(calibrationFactor);
-  scale.tare();
 
   for(int i=0; i<NUM_AXES; i++)
   {
@@ -188,6 +186,7 @@ void setup() { // setup function to initialize pins and provide initial homing t
   endEff.setMinPulseWidth(200);
   endEff.setMaxSpeed(speedEE);
   endEff.setAcceleration(accEE);
+  endEff.setCurrentPosition(1000);
 
   // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
   for(i = 0; i<NUM_AXES; i++) {
@@ -205,11 +204,15 @@ void setup() { // setup function to initialize pins and provide initial homing t
     steppers[i].setMinPulseWidth(200);
   }
   // waits for user to press "home" button before rest of functions are available
-  waitForHome();
+
+
+//homeArm();
+waitForHome();
 }
 
 void loop()
 {
+
   recieveCommand();
 
   if(!IKFlag)
@@ -394,7 +397,17 @@ void endEffectorCommands(String inMsg)
 
   else if (data == homeValEE)
   {
-    endEff.setCurrentPosition(0);
+    if(resetEE)
+    {
+      endEff.setCurrentPosition(1000);
+      resetEE = false;
+    }
+
+    else
+    {
+      endEff.setCurrentPosition(0);
+      resetEE = true;
+    }
   }
 }
 
@@ -891,29 +904,29 @@ void homeWrist() { // homes axes 5-6
   }
 }
 
-void homeEE()
-{
-  EEforce=scale.get_units()/1000*9.81;
-
-  // target position for end effector in closed direction
-  endEff.move(-99000*MOTOR_DIR_EE);
-
-  while(abs(EEforce) < calForce) 
-  {
-    if (scale.wait_ready_timeout(1)) {   
-      EEforce=scale.get_units()/1000*9.81; //converting mass to force
-    // close end effector
-    }
-    endEff.run();
-  }
-
-  endEff.setCurrentPosition(-30);
-  endEff.moveTo(openPos*MOTOR_DIR_EE);
-  while(endEff.distanceToGo() != 0)
-  {
-    endEff.run();
-  }
-}
+//void homeEE()
+//{
+//  EEforce=scale.get_units()/1000*9.81;
+//
+//  // target position for end effector in closed direction
+//  endEff.move(-99000*MOTOR_DIR_EE);
+//
+//  while(abs(EEforce) < calForce) 
+//  {
+//    if (scale.wait_ready_timeout(1)) {   
+//      EEforce=scale.get_units()/1000*9.81; //converting mass to force
+//    // close end effector
+//    }
+//    endEff.run();
+//  }
+//
+//  endEff.setCurrentPosition(-30);
+//  endEff.moveTo(openPos*MOTOR_DIR_EE);
+//  while(endEff.distanceToGo() != 0)
+//  {
+//    endEff.run();
+//  }
+//}
 
 void initializeHomingMotion() { // sets homing speed and acceleration for axes 1-4 and sets target homing position
 
