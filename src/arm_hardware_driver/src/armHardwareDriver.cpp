@@ -41,7 +41,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
 
-    float feed_freq = 5.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
+    float feed_freq = 1.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
     ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);
     feedbackLoop = nh.createTimer(feedbackFreq, &ArmHardwareDriver::teensyFeedback, this);
 
@@ -52,14 +52,16 @@ void ArmHardwareDriver::teensyFeedback(const ros::TimerEvent& e)
 {
 
     ROS_INFO("timer working");
+    /*
     if(homeFlag)
     {
+    */
         //requestEEFeedback();
         if(mode == jointMode)
         {
             requestJPFeedback();
         }
-    }
+    // }
 }
 
 void ArmHardwareDriver::requestEEFeedback()
@@ -102,55 +104,50 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     if(action == homeVal) 
     {
         homeArm();
-    } 
-
-    else if (homeFlag)
-    {
-        if(action == leftJSL) {
-            jointSpaceMove(left, left);
-        } else if (action == leftJSR) {
-            jointSpaceMove(left, right);
-        } else if (action == rightJSU) {
-            jointSpaceMove(right, up);
-        } else if (action == rightJSD) {
-            jointSpaceMove(right, down);
-        } else if (action == buttonA) {
-            jointSpaceMove(wrist, up);
-        } else if (action == buttonB) {
-            jointSpaceMove(wrist, left);
-        } else if (action == buttonX) {
-            jointSpaceMove(wrist, right);
-        } else if (action == buttonY) {
-            jointSpaceMove(wrist, down);
-        } else if (action == triggerL) {
-            changeAxis(down);
-        } else if (action == triggerR) {
-            changeAxis(up);
-        } else if (action == leftJSRel) {
-            releaseAxis(left, garbage);
-        } else if (action == rightJSRel) {
-            releaseAxis(right, garbage);
-        } else if (action == buttonARel) {
-            releaseAxis(wrist, up);
-        } else if (action == buttonBRel) {
-            releaseAxis(wrist, left);
-        } else if (action == buttonXRel) {
-            releaseAxis(wrist, right);
-        } else if (action == buttonYRel) {
-            releaseAxis(wrist, down);
-        } else if (action == arrowU) {
-            changeSpeed(up);
-        } else if (action == arrowD) {
-            changeSpeed(down);
-        } else if (action == arrowL) {
-            endEffector(open);
-        } else if (action == arrowR) {
-            endEffector(close);
-        } else if (action == arrowRLRel) {
-            endEffectorRel();
-        } else if(action == homeValEE) {
-            homeEE();
-        }
+    } else if(action == leftJSL) {
+        jointSpaceMove(left, left);
+    } else if (action == leftJSR) {
+        jointSpaceMove(left, right);
+    } else if (action == rightJSU) {
+        jointSpaceMove(right, up);
+    } else if (action == rightJSD) {
+        jointSpaceMove(right, down);
+    } else if (action == buttonA) {
+        jointSpaceMove(wrist, up);
+    } else if (action == buttonB) {
+        jointSpaceMove(wrist, left);
+    } else if (action == buttonX) {
+        jointSpaceMove(wrist, right);
+    } else if (action == buttonY) {
+        jointSpaceMove(wrist, down);
+    } else if (action == triggerL) {
+        changeAxis(down);
+    } else if (action == triggerR) {
+        changeAxis(up);
+    } else if (action == leftJSRel) {
+        releaseAxis(left, garbage);
+    } else if (action == rightJSRel) {
+        releaseAxis(right, garbage);
+    } else if (action == buttonARel) {
+        releaseAxis(wrist, up);
+    } else if (action == buttonBRel) {
+        releaseAxis(wrist, left);
+    } else if (action == buttonXRel) {
+        releaseAxis(wrist, right);
+    } else if (action == buttonYRel) {
+        releaseAxis(wrist, down);
+    } else if (action == arrowU) {
+        changeSpeed(up);
+    } else if (action == arrowD) {
+        changeSpeed(down);
+    } else if (action == arrowL) {
+        endEffector(open);
+    } else if (action == arrowR) {
+        endEffector(close);
+    } else if (action == arrowRLRel) {
+        endEffectorRel();
+    } else if(action == homeValEE) {
+        homeEE();
     }
 }
 
@@ -355,7 +352,7 @@ void ArmHardwareDriver::recieveMsg() {
         char next_char;
         do {
             teensy >> next_char;
-	    ROS_INFO("next_char: %c", next_char);
+	    // ROS_INFO("next_char: %c", next_char);
             buffer << next_char;
         } while (next_char != 'Z');
         std::string inMsg = buffer.str();
