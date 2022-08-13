@@ -101,6 +101,8 @@ sudo cp $CURR_DIR/moveitjoy_module.py /opt/ros/melodic/lib/python2.7/dist-packag
 
 echo "ProController is now enabled"
 
+wget https://www.pjrc.com/teensy/00-teensy.rules
+sudo mv 00-teensy.rules /etc/udev/rules.d/
 
 
 echo "================================================================"
