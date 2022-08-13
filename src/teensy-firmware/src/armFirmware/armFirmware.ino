@@ -93,7 +93,7 @@ float ENC_STEPS_PER_DEG[NUM_AXES];
 
 // Motor speeds and accelerations
 int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200};
-int maxAccel[8] = {1300, 3000, 4000, 3000, 5000, 5000, 5000, 5000};
+int maxAccel[8] = {1300, 3500, 4600, 3300, 5000, 5000, 5000, 5000};
 int homeSpeed[8] = {300, 1000, 1000, 400, 2000, 2000, 2000, 2000}; // {500, 1200, 600, 400, 2000, 2000, 2000, 2000};
 int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000, 1000, 1500, 1500, 1500, 1500, 1500};
 
@@ -500,7 +500,7 @@ void cartesianToJointSpace()
 
   for(int i=0; i<NUM_AXES_EFF; i++)
   {
-    steppers[i].setCurrentPosition(curJointPos[i]*axisDir[i]);
+    steppers[i].setCurrentPosition(curJointPos[i]);
   }
 }
 
