@@ -1,0 +1,5 @@
+<launch>
+    <node name="detect_waypoint" pkg="gps_waypoint_detection" type="detect_waypoint" output="screen">
+        <param name="pathfind" value="false" />
+    </node>
+</launch>
