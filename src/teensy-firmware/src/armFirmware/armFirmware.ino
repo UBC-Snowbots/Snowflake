@@ -65,6 +65,8 @@ int EEstepPin = 4;
 int EEdirPin = 3;
 int speedEE = 100;
 int accEE = 500;
+int speedDrill = 3000;
+int accDrill = 1000;
 const int MOTOR_DIR_EE = 1;
 const int openButton = 5;
 const int closeButton = 4;
@@ -184,8 +186,8 @@ void setup() { // setup function to initialize pins and provide initial homing t
   pinMode(EEstepPin, OUTPUT);
   pinMode(EEdirPin, OUTPUT);
   endEff.setMinPulseWidth(200);
-  endEff.setMaxSpeed(speedEE);
-  endEff.setAcceleration(accEE);
+  endEff.setMaxSpeed(speedDrill);
+  endEff.setAcceleration(accDrill);
   endEff.setCurrentPosition(1000);
 
   // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
@@ -500,7 +502,7 @@ void cartesianToJointSpace()
 
   for(int i=0; i<NUM_AXES_EFF; i++)
   {
-    steppers[i].setCurrentPosition(curJointPos[i]);
+    steppers[i].setCurrentPosition(curJointPos[i]*axisDir[i]);
   }
 }
 
