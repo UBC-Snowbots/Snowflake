@@ -8,7 +8,7 @@
 CLion*
 clion*
 *~
-.swp
+*.swp
 filter_init.txt
 cmake-build-debug
 cmake-build-release
