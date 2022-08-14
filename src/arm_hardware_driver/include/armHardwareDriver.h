@@ -60,10 +60,12 @@ class ArmHardwareDriver {
     void requestEEFeedback();
     void requestJPFeedback();
     void homeEE();
+    void axisRelease(const char axis);
+    void axisMove(const char axis, const char dir);
 
     // character representations of buttons for arm communication
-    const char leftJSL     = 'A';
-    const char leftJSR     = 'B';
+    const char leftJSU     = 'A';
+    const char leftJSD     = 'B';
     const char rightJSU    = 'C';
     const char rightJSD    = 'D';
     const char buttonA     = 'E';
@@ -89,6 +91,8 @@ class ArmHardwareDriver {
     const char arrowRLRel  = '0';
     const char leftJSRel   = 'Y';
     const char rightJSRel  = 'Z';
+    const char rightJSPress = '7';
+    const char rightJSPressRel = '8';
     const char homeVal     = '4';
     const char homeValEE = '6';
     // arm modes

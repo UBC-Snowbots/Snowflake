@@ -41,7 +41,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
 
-    float feed_freq = 1.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
+    float feed_freq = 10.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
     ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);
     feedbackLoop = nh.createTimer(feedbackFreq, &ArmHardwareDriver::teensyFeedback, this);
 
@@ -51,16 +51,16 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 void ArmHardwareDriver::teensyFeedback(const ros::TimerEvent& e)
 {
 
-    ROS_INFO("timer working");
+    //ROS_INFO("timer working");
     /*
     if(homeFlag)
     {
     */
         //requestEEFeedback();
-        if(mode == jointMode)
-        {
-            requestJPFeedback();
-        }
+        //if(mode == jointMode)
+        //{
+            //requestJPFeedback();
+        //}
     // }
 }
 
@@ -101,17 +101,20 @@ void ArmHardwareDriver::parseInput(std::string inMsg) {
 void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     char action = inMsg[1];
 
-    if(action == homeVal) 
-    {
+    if(action == homeVal) {
         homeArm();
-    } else if(action == leftJSL) {
-        jointSpaceMove(left, left);
-    } else if (action == leftJSR) {
-        jointSpaceMove(left, right);
+    } else if(action == leftJSU) {
+        axisMove(J3,up);
+    } else if (action == leftJSD) {
+        axisMove(J3, down);
     } else if (action == rightJSU) {
-        jointSpaceMove(right, up);
+        axisMove(J2, up);
     } else if (action == rightJSD) {
-        jointSpaceMove(right, down);
+        axisMove(J2, down);
+    } else if (action == leftJSRel) {
+        axisRelease(J3);
+    } else if (action == rightJSRel) {
+        axisRelease(J2);
     } else if (action == buttonA) {
         jointSpaceMove(wrist, up);
     } else if (action == buttonB) {
@@ -121,14 +124,12 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
     } else if (action == buttonY) {
         jointSpaceMove(wrist, down);
     } else if (action == triggerL) {
-        changeAxis(down);
+        axisMove(J1, left);
     } else if (action == triggerR) {
-        changeAxis(up);
-    } else if (action == leftJSRel) {
-        releaseAxis(left, garbage);
-    } else if (action == rightJSRel) {
-        releaseAxis(right, garbage);
-    } else if (action == buttonARel) {
+        axisMove(J1, right);
+    } else if ((action == triggerLRel) || (action == triggerRRel)) {
+        axisRelease(J1);
+    }  else if (action == buttonARel) {
         releaseAxis(wrist, up);
     } else if (action == buttonBRel) {
         releaseAxis(wrist, left);
@@ -136,10 +137,12 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
         releaseAxis(wrist, right);
     } else if (action == buttonYRel) {
         releaseAxis(wrist, down);
-    } else if (action == arrowU) {
-        changeSpeed(up);
-    } else if (action == arrowD) {
-        changeSpeed(down);
+    } else if(action == bumperL) {
+        axisMove(J4, left);
+    } else if(action == bumperR) {
+        axisMove(J4, right); 
+    } else if((action == bumperLRel) || (action == bumperRRel)) {
+        axisRelease(J4);
     } else if (action == arrowL) {
         endEffector(open);
     } else if (action == arrowR) {
@@ -192,6 +195,23 @@ void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir) {
     outMsg += "M";
     outMsg += joystick;
     outMsg += dir;
+    outMsg += "\n";
+    sendMsg(outMsg);
+}
+
+void ArmHardwareDriver::axisMove(const char axis, const char dir)
+{
+    std::string outMsg = "JMT";
+    outMsg += axis;
+    outMsg += dir;
+    outMsg += "\n";
+    sendMsg(outMsg);
+}
+
+void ArmHardwareDriver::axisRelease(const char axis)
+{
+    std::string outMsg = "JMW";
+    outMsg += axis;
     outMsg += "\n";
     sendMsg(outMsg);
 }

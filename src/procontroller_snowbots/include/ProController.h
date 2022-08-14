@@ -59,8 +59,8 @@ class ProController {
     double z;
     std::string armOutMsg, armOutVal;
 // character representations of buttons for arm communication
-    const char leftJSL = 'A';
-    const char leftJSR = 'B';
+    const char leftJSU = 'A';
+    const char leftJSD = 'B';
     const char rightJSU = 'C';
     const char rightJSD = 'D';
     const char buttonA = 'E';
@@ -87,8 +87,14 @@ class ProController {
     const char arrowUDRel = '5';
     const char leftJSRel = 'Y';
     const char rightJSRel = 'Z';
+    const char rightJSPress = '7';
+    const char rightJSPressRel = '8';
     const char homeVal = '4';
     const char homeValEE = '6';
+    const char J1 = '1';
+    const char J2 = '2';
+    const char J3 = '3';
+    const char J4 = '4';
     // arm modes
     const char jointMode = '1';
     const char IKMode = '2';

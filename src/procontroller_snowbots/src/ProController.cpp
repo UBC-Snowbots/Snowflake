@@ -204,42 +204,73 @@ void ProController::leftJoystickX(int value) {
         if(state == Mode::wheels) {
         x = 0;
         }
-
-        else if(state == Mode::arm_joint_space){
-            armOutVal = leftJSRel;
-        }
     } 
     
     else {
-
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick X event with value: %d\n", value);
         x = (value - 128) / 128.0 * X_SENSITIVITY;
-
-        // Left joystick is only used in x direction in arm joint space mode. Drilling / cartesion mode do not use this joystick
-        if(state == Mode::arm_joint_space) {
-
-            if(x < 0) {
-             armOutVal = leftJSL;
-            }
-
-            else {
-             armOutVal = leftJSR;
-            }
-        }
     }
 }
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
     if (value > 110 && value < 140) {
-        z = 0;
+        if(state == Mode::wheels) {
+            x = 0;
+        }
+
+        else if(state == Mode::arm_joint_space){
+            armOutVal = leftJSRel;
+        }
     } else {
+
+        if(state == Mode::wheels)
+        {
+            // 128 is the center, so this normalizes the result to
+            // [-1,1]*X_SENSITIVITY
+            ROS_INFO("Left Joystick Y event with value: %d\n", value);
+            z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+        }
+        else {
+            if(z > 0) {
+                armOutVal = leftJSU;
+            }
+
+            else {
+                armOutVal = leftJSD;
+            }
+        }
+    }
+}
+
+void ProController::leftJoystickY(int value) {
+
+    if (value > 110 && value < 140) {
+
+     armOutVal = rightJSRel;
+     z = 0;
+    } 
+    
+    else {
+
         // 128 is the center, so this normalizes the result to
-        // [-1,1]*X_SENSITIVITY
-        ROS_INFO("Left Joystick Y event with value: %d\n", value);
+        // [-1,1]*Z_SENSITIVITY
+        ROS_INFO("Right Joystick Y event with value: %d\n", value);
         z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+
+        // Right joystick is only used in Y direction in all arm modes
+        if(state != Mode::wheels) {
+
+            if(z > 0) {
+             armOutVal = rightJSU;
+            }
+
+            else {
+             armOutVal = rightJSD;
+            }
+        }
     }
 }
 
@@ -444,7 +475,9 @@ void ProController::leftJoystickPress(int value) {
 void ProController::rightJoystickPress(int value) {
     if (value == 1) {
         ROS_INFO("Right Joystick pressed");
+        armOutVal = rightJSPress;
     } else if (value == 0) {
         ROS_INFO("Right Joystick released");
+        armOutVal = rightJSPressRel;
     }
 }
