@@ -1,13 +1,13 @@
 /*
  * Created By: Ihsan Olawale, Rowan Zawadski
  * Created On: July 17th, 2022
- * Description: A node that subscribes and scans arcu codes on with the realsense cameras 
+ * Description: A node that subscribes and scans arcu codes on with the
+ * realsense cameras
  */
 
 #include <DetectMarker.h>
 
-
-int main(int argc, char **argv){
+int main(int argc, char** argv) {
     // Setup your ROS node
     std::string node_name = "detect_marker";
 

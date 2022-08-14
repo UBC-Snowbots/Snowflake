@@ -10,13 +10,13 @@
 #define MARKER_QR_DETECTION_DETECT_MARKER_H
 
 // OpenCV
-#include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
+#include <opencv2/highgui.hpp>
 
 // Image Conversion
 #include <cv_bridge/cv_bridge.h>
-#include <image_transport/subscriber.h>
 #include <image_transport/image_transport.h>
+#include <image_transport/subscriber.h>
 #include <sensor_msgs/image_encodings.h>
 
 // STD Includes
@@ -24,17 +24,17 @@
 #include <vector>
 
 // ROS Includes
-#include <std_msgs/String.h>
 #include <ros/ros.h>
+#include <std_msgs/String.h>
 
 // Snowbots Includes
 #include <sb_utils.h>
 
 class DetectMarker {
-public:
-    DetectMarker(int argc, char **argv, std::string node_name);
+  public:
+    DetectMarker(int argc, char** argv, std::string node_name);
 
-private:
+  private:
     /**
      * Callback function for when a new string is received
      *
@@ -48,11 +48,11 @@ private:
 
     image_transport::Subscriber my_subscriber;
     ros::Publisher my_publisher;
-    image_transport::Publisher bounder; 
+    image_transport::Publisher bounder;
 
     cv::Ptr<cv::aruco::Dictionary> dictionary;
     cv::Ptr<cv::aruco::DetectorParameters> parameters;
     bool draw_markers = false;
-    int camera = 1;
+    int camera        = 1;
 };
-#endif //MARKER_QR_DETECTION_DETECT_MARKER_H
+#endif // MARKER_QR_DETECTION_DETECT_MARKER_H
