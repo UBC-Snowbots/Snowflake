@@ -361,7 +361,7 @@ void ArmHardwareDriver::recieveMsg() {
         if (inMsg.substr(0, 2) == "JP") {
             updateEncoderSteps(inMsg);
             encStepsToJointPos(encPos, armPos);
-            updateHWInterface();
+            // updateHWInterface();
         // check if end effector force feedback is available
         } else if (inMsg.substr(0, 2) == "EE")
             ROS_INFO("%s", inMsg.c_str());

@@ -95,7 +95,7 @@ class ProController {
     const char drillMode = '3';
 
     struct libevdev* dev = NULL;
-    enum Mode { wheels = 0, arm_joint_space = 1, arm_cartesian = 2, drilling = 3, num_modes = 4 };
+    enum Mode { wheels = 0, arm_joint_space = 1, arm_cartesian = 2, drilling = 3, num_modes = 2 };
     Mode state;
     bool debug = false;
     ros::Publisher pubmove;
