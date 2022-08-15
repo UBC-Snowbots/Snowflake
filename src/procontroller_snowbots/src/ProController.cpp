@@ -198,7 +198,7 @@ void ProController::publishArmMessage(std::string outMsg) {
 }
 
 bool ProController::inDeadzone(int value) {
-    return value > 108 && value < 148;
+    return state == Mode::wheels ? value > 108 && value < 148 :  value > 88 && value < 168 ;
 }
 
 // Updates z, which is then published by publish___XZ in readInputs()
@@ -234,7 +234,7 @@ void ProController::leftJoystickY(int value) {
         // [-1,1]*X_SENSITIVITY
         ROS_INFO("Left Joystick Y event with value: %d\n", value);
         z = -(value - 128) / 128.0 * Z_SENSITIVITY;
-        if(z < 0) {
+        if(z > 0) {
             armOutVal = leftJSU;
         }
 
@@ -270,7 +270,7 @@ void ProController::rightJoystickY(int value) {
         // Right joystick is only used in Y direction in all arm modes
         if(state != Mode::wheels) {
 
-            if(z < 0) {
+            if(z > 0) {
              armOutVal = rightJSU;
             }
 
@@ -416,7 +416,7 @@ void ProController::arrowsUorD(int value) {
         ROS_INFO("Up button pressed");
         armOutVal = arrowU;
 	if (state == Mode::wheels) {
-	    speed = speed < 100 ? speed + 5 : speed;
+	    speed = speed < max_speed ? speed + increment : speed;
 	    ROS_INFO("Speed increased to %d%% of max output", speed);
 	}
     } else if (value == 0) {
@@ -426,8 +426,8 @@ void ProController::arrowsUorD(int value) {
         ROS_INFO("Down button pressed");
         armOutVal = arrowD;
 	if (state == Mode::wheels) {
-	    speed = speed > 5 ? speed - 5 : speed;
-	    ROS_INFO("Speed increased to %d%% of max output", speed);
+	    speed = speed > increment ? speed - increment : speed;
+	    ROS_INFO("Speed decreased to %d%% of max output", speed);
 	}
     }
 }
