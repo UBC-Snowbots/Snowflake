@@ -197,10 +197,14 @@ void ProController::publishArmMessage(std::string outMsg) {
     pubarm.publish(outMsgWrapper);
 }
 
+bool ProController::inDeadzone(int value) {
+    return value > 108 && value < 148;
+}
+
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
 
-    if (value > 110 && value < 140) {
+    if (inDeadzone(value)) {
         if(state == Mode::wheels) {
         x = 0;
         }
@@ -216,7 +220,7 @@ void ProController::leftJoystickX(int value) {
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
-    if (value > 110 && value < 140) {
+    if (inDeadzone(value)) {
         if(state == Mode::wheels) {
             z = 0;
         }
@@ -226,28 +230,23 @@ void ProController::leftJoystickY(int value) {
         }
     } else {
 
-        if(state == Mode::wheels)
-        {
-            // 128 is the center, so this normalizes the result to
-            // [-1,1]*X_SENSITIVITY
-            ROS_INFO("Left Joystick Y event with value: %d\n", value);
-            z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+        // 128 is the center, so this normalizes the result to
+        // [-1,1]*X_SENSITIVITY
+        ROS_INFO("Left Joystick Y event with value: %d\n", value);
+        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+        if(z < 0) {
+            armOutVal = leftJSU;
         }
-        else {
-            if(z < 0) {
-                armOutVal = leftJSU;
-            }
 
-            else {
-                armOutVal = leftJSD;
-            }
+        else {
+            armOutVal = leftJSD;
         }
     }
 }
 
 // Currently doing nothing
 void ProController::rightJoystickX(int value) {
-    if (value > 118 && value < 137) {
+    if (inDeadzone(value)) {
         // do nothing
     } else {
         ROS_INFO("Right Joystick X event with value: %d\n", value);
@@ -256,8 +255,8 @@ void ProController::rightJoystickX(int value) {
 
 void ProController::rightJoystickY(int value) {
 
-    if (value > 118 && value < 137) {
-        if(mode != Mode::wheels)
+    if (inDeadzone(value)) {
+        if(state != Mode::wheels)
             armOutVal = rightJSRel;
     }
     
@@ -271,7 +270,7 @@ void ProController::rightJoystickY(int value) {
         // Right joystick is only used in Y direction in all arm modes
         if(state != Mode::wheels) {
 
-            if(z > 0) {
+            if(z < 0) {
              armOutVal = rightJSU;
             }
 

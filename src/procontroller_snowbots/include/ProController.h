@@ -29,6 +29,7 @@ class ProController {
   private:
     void setup();
     void readInputs();
+    bool inDeadzone(int value);
     void leftJoystickX(int value);      // ABS_X
     void leftJoystickY(int value);      // ABS_Y
     void rightJoystickX(int value);     // ABS_RX
