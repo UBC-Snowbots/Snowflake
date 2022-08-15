@@ -218,7 +218,7 @@ void ProController::leftJoystickX(int value) {
 void ProController::leftJoystickY(int value) {
     if (value > 110 && value < 140) {
         if(state == Mode::wheels) {
-            x = 0;
+            z = 0;
         }
 
         else if(state == Mode::arm_joint_space){
@@ -234,7 +234,7 @@ void ProController::leftJoystickY(int value) {
             z = -(value - 128) / 128.0 * Z_SENSITIVITY;
         }
         else {
-            if(z > 0) {
+            if(z < 0) {
                 armOutVal = leftJSU;
             }
 
@@ -257,9 +257,9 @@ void ProController::rightJoystickX(int value) {
 void ProController::rightJoystickY(int value) {
 
     if (value > 118 && value < 137) {
-
-     armOutVal = rightJSRel;
-    } 
+        if(mode != Mode::wheels)
+            armOutVal = rightJSRel;
+    }
     
     else {
 
