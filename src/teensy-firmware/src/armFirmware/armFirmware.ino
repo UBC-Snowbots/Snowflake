@@ -209,8 +209,7 @@ void setup() { // setup function to initialize pins and provide initial homing t
 
 
 //homeArm();
-//waitForHome();
-initializeMotion();
+waitForHome();
 }
 
 void loop()
@@ -276,7 +275,7 @@ void parseMessage(String inMsg)
 
   else if(function == "HM")
   {
-    //homeArm();
+    homeArm();
   }
 }
 
@@ -297,7 +296,7 @@ void sendFeedback(String inMsg)
 
   else if(function == joint)
   {
-    //readEncPos(curEncSteps);
+    readEncPos(curEncSteps);
     sendCurrentPosition();
   }
 }
@@ -482,8 +481,8 @@ void depositSample()
 
 void sendCurrentPosition() 
 {
-  String outMsg = String("JP") + String("A") + String(0) + String("B") + String(0) + String("C") + String(0)
-                + String("D") + String(0) + String("E") + String(0) + String("F") + String(0) + String("Z");
+  String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
+                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
     Serial.print(outMsg);
 }
 
