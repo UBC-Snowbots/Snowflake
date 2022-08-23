@@ -43,6 +43,10 @@ static const char close = 'C';
 static const char joint = 'J';
 static const char EEval = 'E';
 static const char homeValEE = 'H';
+static const char moveBase = 'T';
+static const char moveWrist = 'M';
+static const char relWrist = 'R';
+static const char relBase = 'W';
 
 // Motor variables
 int stepPins[8] =   {6, 8, 10, 2, 12, 25, 12, 25};
@@ -138,16 +142,18 @@ bool jointFlag = true;
 bool IKFlag = false;
 bool J1Flag = false;
 bool resetEE = false;
+bool vertFlag = false;
+bool horizFlag = false;
 
 // variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst, axisDir[6]*homePosConst, axisDir[7]*homePosConst};
-long homeCompAngles[] = {axisDir[0]*54, axisDir[1]*43, axisDir[2]*90, axisDir[3]*35, axisDir[4]*85, axisDir[5]*85, axisDir[6]*80, axisDir[7]*80};
+long homeCompAngles[] = {axisDir[0]*54, axisDir[1]*10, axisDir[2]*90, axisDir[3]*1, axisDir[4]*85, axisDir[5]*85, axisDir[6]*170, axisDir[7]*170};
 long homeCompConst[] = {500, 2000, 1000, 500, 500, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
 long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {190, 160, 180, 120, 150, 180};
+int maxAngles[6] = {190, 160, 180, 120, 160, 180};
 long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
 long min_steps[NUM_AXES]; 
 char value;
@@ -207,8 +213,6 @@ void setup() { // setup function to initialize pins and provide initial homing t
   }
   // waits for user to press "home" button before rest of functions are available
 
-
-//homeArm();
 waitForHome();
 }
 
@@ -288,13 +292,8 @@ void sendMessage(char outChar)
 void sendFeedback(String inMsg)
 {
   char function = inMsg[2];
-  
-  if(function == EEval)
-  {
-    sendEEForce();
-  }
 
-  else if(function == joint)
+  if(function == joint)
   {
     readEncPos(curEncSteps);
     sendCurrentPosition();
@@ -369,15 +368,74 @@ void jointCommands(String inMsg)
     jointFlag = true;
   }
 
-  if(function == release)
-    releaseEvent(detail1, inMsg[4]); 
-  else if(function == speed)
-    changeSpeed(detail1); 
-  else if(function == change)
-    changeAxis(detail1);
-  else if(function == move)
-    jointMovement(detail1, inMsg[4]);
+if(function == moveBase)
+  moveArmBase(detail1, inMsg[4]);
+else if(function == moveWrist)
+{
+    char dir = inMsg[4];
+    if(dir == up)
+      runWrist(FWD, 6);
+    else if(dir == down)
+      runWrist(REV, 6);
+    else if(dir == left)
+      runWrist(FWD, 5);
+    else if(dir == right)
+      runWrist(REV, 5);
+}
+else if(function == relBase)
+  relArmBase(detail1);
+else if(function == relWrist)
+  releaseEvent(detail1, inMsg[4]);
+}
+
+void moveArmBase(char axis, char dir)
+{
+   int axisNum = String(axis).toInt();
+
+   if(axisNum == 3)
+    axisNum = 4;
+
+   else if(axisNum == 4)
+    axisNum = 3;
+    
+   if((dir == left) || (dir == up))
+   {
+      moveBaseAxis((axisNum-1), FWD);
+   }
+   else if((dir == right) || (dir == down))
+   {
+      moveBaseAxis((axisNum-1), REV); 
+   }
+}
+
+void relArmBase(char axis)
+{
+  int axisNum = String(axis).toInt();
+
+  if(axisNum == 3)
+    axisNum = 4;
+
+   else if(axisNum == 4)
+    axisNum = 3;
+    
+  steppers[axisNum-1].stop();
+}
+
+void moveBaseAxis(int axis, int dir)
+{
+ if((axis == 0) || (axis == 1)) {
+  dir = !dir;
+ }
+ 
+ if(dir == FWD) {
+  steppers[axis].moveTo(max_steps[axis]);
+  runFlags[axis] = 1;
   }
+else if (dir == REV) {
+  steppers[axis].moveTo(min_steps[axis]);
+  runFlags[axis] = -1;
+  }
+}
 
 void endEffectorCommands(String inMsg)
 {
@@ -1011,42 +1069,6 @@ void runSteppersIK() { // runs all stepper motors (if no target position has bee
   endEff.run();
 }
 
-//void waitForHome() { // stops arm motion until user homes arm after firmware is flashed
-//
-//  String inData = "";
-//  char recieved;
-//  bool initFlag = false;
-//  bool serialFlag = false;
-//
-//  while(!initFlag) {
-//
-//    if(Serial.available() > 0)
-//    {
-//      recieved = Serial.read();
-//      inData += String(recieved);
-//      if(recieved == '\n')
-//      {
-//        serialFlag = true;
-//      }
-//    }
-//
-//    if(serialFlag)
-//    {
-//        if(inData.substring(0, 2) = "HM")
-//        {
-//          homeArm();
-//          initFlag = true;
-//        }
-//
-//        else
-//        {
-//          inData = "";
-//          serialFlag = false;
-//        }
-//    }
-//  }
-//}
-
 void waitForHome()
 {
   String inData;
@@ -1072,4 +1094,4 @@ void waitForHome()
   }
 }
 
-// updated 12:08 on tuesday
+// updated aug 22, 2022
