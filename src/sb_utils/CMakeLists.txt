@@ -14,7 +14,9 @@ add_definitions(-std=c++14)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  #mapping_msgs_urc
+  mapping_msgs_urc
+  sb_geom
+  sb_geom_msgs
 )
 
 
@@ -49,9 +51,9 @@ include_directories(
 ## Declare a C++ library
 add_library(sb_utils
         include/sb_utils.h
-      #  include/RvizUtils.h
+       include/RvizUtils.h
         src/sb_utils.cpp
-      #  src/RvizUtils.cpp
+       src/RvizUtils.cpp
 )
 
 ## Specify libraries to link a library or executable target against

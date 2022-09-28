@@ -17,8 +17,8 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 
-//#include "sb_geom_msgs/Point2D.h"
-//#include "sb_geom_msgs/Polygon2D.h"
+#include "sb_geom_msgs/Point2D.h"
+#include "sb_geom_msgs/Polygon2D.h"
 
 namespace snowbots {
 namespace RvizUtils {

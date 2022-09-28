@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mapping_msgs_urc</name>
+  <version>0.0.0</version>
+  <description>
+      Mapping messages for the University Rover Competition, developed by UBC Snowbots
+  </description>
+
+  <maintainer email="gareth@todo.todo">gareth</maintainer>
+
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>message_generation</depend>
+  <depend>message_runtime</depend>
+  <depend>std_msgs</depend>
+  <depend>sb_geom_msgs</depend>
+
+</package>

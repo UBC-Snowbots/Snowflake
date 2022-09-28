@@ -76,6 +76,11 @@ echo "================================================================"
 sudo apt-get install -y\
     clang-format\
     python3-rosinstall
+    
+sudo apt-get update -y
+sudo apt-get install -y libalglib-dev
+
+sudo apt-get install -y libgsl-dev
 
 echo "================================================================"
 echo "Installing Robotic Arm Dependencies"
