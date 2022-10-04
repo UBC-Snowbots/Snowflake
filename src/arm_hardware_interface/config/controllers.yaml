@@ -1,0 +1,33 @@
+controllers:
+    state:
+        type: joint_state_controller/JointStateController
+        publish_rate: 50
+    position:
+        type: position_controllers/JointTrajectoryController
+        joints:
+            - j1
+            - j2
+            - j3
+            - j4
+            - j5
+            - j6
+        constraints:
+            goal_time: 0.5
+            j1:
+                trajectory: 0.5
+                goal: 0.02
+            j2:
+                trajectory: 0.5
+                goal: 0.02
+            j3:
+                trajectory: 0.5
+                goal: 0.02
+            j4:
+                trajectory: 0.5
+                goal: 0.02
+            j5:
+                trajectory: 0.5
+                goal: 0.02
+            j6:
+                trajectory: 0.5
+                goal: 0.02
