@@ -1,0 +1,17 @@
+controller_list:
+  - name: fake_arm_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - j1
+      - j2
+      - j3
+      - j4
+      - j5
+      - j6
+  - name: fake_end_effector_controller
+    type: $(arg fake_execution_type)
+    joints:
+      []
+initial:  # Define initial robot poses.
+  - group: arm
+    pose: default

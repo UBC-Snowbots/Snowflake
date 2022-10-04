@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="snowbots_arm_urdf_simplified_v5_12">
+  <link
+    name="l1">
+    <inertial>
+      <origin
+        xyz="-0.168479827162396 -0.115656336839165 0.00578093326197773"
+        rpy="0 0 0" />
+      <mass
+        value="0.733491685538154" />
+      <inertia
+        ixx="0.00196115627924208"
+        ixy="-4.46821490532512E-20"
+        ixz="9.15645494285907E-06"
+        iyy="0.001877726034367"
+        iyz="-2.9985437698021E-20"
+        izz="0.00376586973501081" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="l2">
+    <inertial>
+      <origin
+        xyz="-0.00223967300075031 -1.38777878078145E-17 0.0102631542786473"
+        rpy="0 0 0" />
+      <mass
+        value="0.250775647780571" />
+      <inertia
+        ixx="0.000537910808454074"
+        ixy="7.38589996174416E-20"
+        ixz="2.58073706594528E-05"
+        iyy="0.000436108333138116"
+        iyz="-2.41807862734038E-20"
+        izz="0.000869807679942593" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j1"
+    type="continuous">
+    <origin
+      xyz="-0.16681 -0.11566 0.018262"
+      rpy="0 0 0" />
+    <parent
+      link="l1" />
+    <child
+      link="l2" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="l3">
+    <inertial>
+      <origin
+        xyz="4.40423545552959E-05 0.0239245727073928 4.16333634234434E-17"
+        rpy="0 0 0" />
+      <mass
+        value="1.02884531575438" />
+      <inertia
+        ixx="0.00879556882291034"
+        ixy="-8.93852366892045E-06"
+        ixz="-1.19316316259719E-19"
+        iyy="0.00261900523250968"
+        iyz="-5.34730066793665E-18"
+        izz="0.00766388032777999" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j2"
+    type="continuous">
+    <origin
+      xyz="0.03025 0 0.08135"
+      rpy="1.5708 0 3.1416" />
+    <parent
+      link="l2" />
+    <child
+      link="l3" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="l4">
+    <inertial>
+      <origin
+        xyz="0.00226816102522268 8.1886690761479E-09 1.65251658703902E-05"
+        rpy="0 0 0" />
+      <mass
+        value="1.08198232148716" />
+      <inertia
+        ixx="0.0021829023488644"
+        ixy="-1.01373372274236E-09"
+        ixz="4.05545769876673E-08"
+        iyy="0.00220354743226762"
+        iyz="1.08123755507794E-09"
+        izz="0.00142067321575571" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j3"
+    type="continuous">
+    <origin
+      xyz="0 0.36 0"
+      rpy="0 0 3.1416" />
+    <parent
+      link="l3" />
+    <child
+      link="l4" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="l5">
+    <inertial>
+      <origin
+        xyz="-2.77555756156289E-16 1.38777878078145E-17 -0.133249135431632"
+        rpy="0 0 0" />
+      <mass
+        value="1.33086052072626" />
+      <inertia
+        ixx="0.00895840763765954"
+        ixy="7.01367211253052E-20"
+        ixz="-1.32455397339338E-17"
+        iyy="0.00873704695466796"
+        iyz="1.94062575221042E-19"
+        izz="0.00133806494519881" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j4"
+    type="continuous">
+    <origin
+      xyz="0.05 0 0"
+      rpy="-1.5708 0 1.5708" />
+    <parent
+      link="l4" />
+    <child
+      link="l5" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="l6">
+    <inertial>
+      <origin
+        xyz="0.00199123381435215 -4.16333634234434E-17 1.36247749749074E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.492952229102601" />
+      <inertia
+        ixx="0.000719349317967228"
+        ixy="-3.09499030960209E-20"
+        ixz="7.74229887926325E-12"
+        iyy="0.000329383302634573"
+        iyz="-3.29293443660839E-12"
+        izz="0.000732786626667122" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j5"
+    type="continuous">
+    <origin
+      xyz="0 0 -0.334"
+      rpy="3.1416 1.5708 0" />
+    <parent
+      link="l5" />
+    <child
+      link="l6" />
+    <axis
+      xyz="0 1 0" />
+  </joint>
+  <link
+    name="l7">
+    <inertial>
+      <origin
+        xyz="-5.55111512312578E-17 0.00266488951978006 0.005"
+        rpy="0 0 0" />
+      <mass
+        value="0.0374663749693614" />
+      <inertia
+        ixx="1.29723066499449E-05"
+        ixy="-9.87932207759026E-22"
+        ixz="-5.75656326040793E-22"
+        iyy="1.57184875775034E-05"
+        iyz="2.28507040319312E-21"
+        izz="2.80663546446257E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/l7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j6"
+    type="continuous">
+    <origin
+      xyz="0.0378 0 0"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="l6" />
+    <child
+      link="l7" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="ef">
+    <inertial>
+      <origin
+        xyz="-2.77555756156289E-17 -5.55111512312578E-17 -0.0898279852825325"
+        rpy="0 0 0" />
+      <mass
+        value="0.11427222801809" />
+      <inertia
+        ixx="7.71894569292431E-05"
+        ixy="-1.34431161567347E-23"
+        ixz="6.12029386300329E-22"
+        iyy="7.71894569292431E-05"
+        iyz="-7.75448771292539E-21"
+        izz="3.03303765648842E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/ef.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://snowbots_arm_urdf_simplified_v5_12/meshes/ef.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="j7"
+    type="fixed">
+    <origin
+      xyz="0 0 0.12886"
+      rpy="0 0 3.1416" />
+    <parent
+      link="l7" />
+    <child
+      link="ef" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

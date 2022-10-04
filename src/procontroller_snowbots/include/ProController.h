@@ -11,11 +11,15 @@
 #include <cstdlib>
 #include <cstring>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/String.h>
+#include <std_msgs/Bool.h>
 #include <iostream>
 #include <libevdev-1.0/libevdev/libevdev.h>
 #include <ros/ros.h>
 #include <sys/fcntl.h>
 #include <tuple>
+#include <unistd.h>
+
 using namespace std;
 
 class ProController {
@@ -25,6 +29,7 @@ class ProController {
   private:
     void setup();
     void readInputs();
+    bool inDeadzone(int value);
     void leftJoystickX(int value);      // ABS_X
     void leftJoystickY(int value);      // ABS_Y
     void rightJoystickX(int value);     // ABS_RX
@@ -44,9 +49,8 @@ class ProController {
     void arrowsUorD(int value);         // ABS_HAT0Y
     void leftJoystickPress(int value);  // BTN_THUMBL
     void rightJoystickPress(int value); // BTN_THUMBR
-    tuple<double, double>
-    publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
-    void publishArmXZ(double x_new, double z_new, double x_old, double z_old);
+    tuple<double, double> publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
+    void publishArmMessage(std::string outMsg);
     void printState();
     void printControllerDebug(int type, int code, int value);
     // see documentation to changes sensitivities at runtime
@@ -54,12 +58,63 @@ class ProController {
     double Z_SENSITIVITY = 1.0;
     double x;
     double z;
+    std::string armOutMsg, armOutVal;
+// character representations of buttons for arm communication
+    const char leftJSU = 'A';
+    const char leftJSD = 'B';
+    const char rightJSU = 'C';
+    const char rightJSD = 'D';
+    const char buttonA = 'E';
+    const char buttonB = 'F';
+    const char buttonX = 'G';
+    const char buttonY = 'H';
+    const char triggerL = 'I';
+    const char triggerR = 'J';
+    const char bumperL = 'K';
+    const char bumperR = 'L';
+    const char buttonARel = 'M';
+    const char buttonBRel = 'N';
+    const char buttonXRel = 'O';
+    const char buttonYRel = 'P';
+    const char triggerLRel = 'Q';
+    const char triggerRRel = 'R';
+    const char bumperLRel = 'S';
+    const char bumperRRel = 'T';
+    const char arrowL = 'U';
+    const char arrowR = 'V';
+    const char arrowU = 'W';
+    const char arrowD = 'X';
+    const char arrowRLRel = '0';
+    const char arrowUDRel = '5';
+    const char leftJSRel = 'Y';
+    const char rightJSRel = 'Z';
+    const char rightJSPress = '7';
+    const char rightJSPressRel = '8';
+    const char homeVal = '4';
+    const char homeValEE = '6';
+    const char J1 = '1';
+    const char J2 = '2';
+    const char J3 = '3';
+    const char J4 = '4';
+    // arm modes
+    const char jointMode = '1';
+    const char IKMode = '2';
+    const char drillMode = '3';
+
     struct libevdev* dev = NULL;
-    enum Mode { wheels = 0, arm = 1 };
+    enum Mode { wheels = 0, arm_joint_space = 1, arm_cartesian = 2, drilling = 3, num_modes = 2 };
     Mode state;
     bool debug = false;
     ros::Publisher pubmove;
     ros::Publisher pubarm;
+    ros::Publisher pubmode;
+    ros::Publisher pubmovegrp;
+
+    std_msgs::Bool true_message;
+    std_msgs::Bool false_message;
+    int speed = 50;
+    int max_speed = 100;
+    int increment = 10;
 };
 
 #endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H

@@ -10,7 +10,9 @@
 // Read the master documentation if there's any issues with this package
 ProController::ProController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
-    setup();
+    string armPublisher = "/cmd_arm";
+    string modePublisher = "/moveit_toggle";
+    // string moveGrpPublisher = "/move_group_trigger";
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
     if (private_nh.param<double>("X", X_SENSITIVITY, 1.0)) {
@@ -22,8 +24,15 @@ ProController::ProController(int argc, char** argv, string node_name) {
     if (private_nh.param<bool>("debug", debug, false)) {
         ROS_INFO("Debug mode %s", (debug) ? "on" : "off");
     }
+    setup();
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
-    pubarm  = private_nh.advertise<geometry_msgs::Twist>("/cmd_arm", 1);
+    pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
+    pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 1);
+    // pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
+
+    true_message.data = true;
+    false_message.data = false;
+
     ROS_INFO("Preparing to read inputs...\n");
     state = Mode::wheels;
     printState();
@@ -57,10 +66,10 @@ void ProController::setup() {
                      libevdev_get_name(dev),
                      path);
             if (debug) {
-                ROS_INFO("Input device ID: bus %#x vendor %#x product %#x\n",
-                         libevdev_get_id_bustype(dev),
-                         libevdev_get_id_vendor(dev),
-                         libevdev_get_id_product(dev));
+                ROS_DEBUG("Input device ID: bus %#x vendor %#x product %#x\n",
+                          libevdev_get_id_bustype(dev),
+                          libevdev_get_id_vendor(dev),
+                          libevdev_get_id_product(dev));
             }
             break;
         }
@@ -87,6 +96,10 @@ void ProController::readInputs() {
                 if (debug) {
                     printControllerDebug(ev.type, ev.code, ev.value);
                 } else {
+
+                    // vehicle for arm output message
+                    armOutMsg = "";
+                    armOutVal = "";
                     // handle all controller inputs using API functions
                     switch (ev.code) {
                         case ABS_X: leftJoystickX(ev.value); break;
@@ -113,8 +126,23 @@ void ProController::readInputs() {
                     if (state == Mode::wheels) {
                         // Publish motion, update x and z old using tuple
                         tie(x_old, z_old) = publishMoveXZ(x, z, x_old, z_old);
-                    } else if (state == Mode::arm) {
-                        publishArmXZ(x, z, x_old, z_old);
+                    }
+                    else if (state == Mode::arm_joint_space) { // Joint space control of the arm
+                        armOutMsg += jointMode;
+                        armOutMsg += armOutVal;
+                        publishArmMessage(armOutMsg);
+                    }
+
+                    else if (state == Mode::arm_cartesian) { // Inverse Kinematics mode i.e. cartesian motion
+                        armOutMsg += IKMode;
+                        armOutMsg += armOutVal;
+                        publishArmMessage(armOutMsg);
+                    }
+
+                    else { // Drilling mode for arm 
+                        armOutMsg += drillMode;
+                        armOutMsg += armOutVal;
+                        publishArmMessage(armOutMsg);
                     }
                 }
             }
@@ -126,15 +154,19 @@ void ProController::readInputs() {
 void ProController::printControllerDebug(int type, int code, int value) {
     auto codeout = libevdev_event_code_get_name(type, code);
     auto typeout = libevdev_event_type_get_name(type);
-    ROS_INFO("Event: Type: %s Code: %s Value: %d\n", typeout, codeout, value);
+    ROS_DEBUG("Event: Type: %s Code: %s Value: %d\n", typeout, codeout, value);
 }
 
 // Prints a status message detailing the current control mode
 void ProController::printState() {
     if (state == Mode::wheels) {
         ROS_INFO("Current mode: controlling wheels");
-    } else if (state == Mode::arm) {
-        ROS_INFO("Current mode: controlling arm");
+    } else if (state == Mode::arm_joint_space) {
+        ROS_INFO("Current mode: controlling arm in the joint space");
+    } else if (state == Mode::arm_cartesian) {
+        ROS_INFO("Current mode: controlling arm in the cartesian space");
+    } else if (state == Mode::drilling) {
+        ROS_INFO("Current mode: drilling with the arm");
     } else {
         ROS_INFO("There is no current mode, which is a problem");
     }
@@ -148,8 +180,8 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
                                                    double z_old) {
     if (abs(x_old - x_new) > 0.0001 || abs(z_old - z_new) > 0.0001) {
         geometry_msgs::Twist msg;
-        msg.linear.x  = x_new;
-        msg.angular.z = z_new;
+        msg.linear.x  = x_new * speed / 100;
+        msg.angular.z = z_new * speed / 100;
         pubmove.publish(msg);
         // return tuple
         return make_tuple(x_new, z_new);
@@ -157,125 +189,173 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
     return make_tuple(x_old, z_old);
 }
 
-// The place to implement arm commands if they use left joystick x and y
-void ProController::publishArmXZ(double x_new,
-                                 double z_new,
-                                 double x_old,
-                                 double z_old) {
-    // use pubarm to do something with x and z inputs
+// If controller recieves new commands and is in an arm mode, send message to arm
+void ProController::publishArmMessage(std::string outMsg) {
+    std_msgs::String outMsgWrapper;
+    outMsg += '\n';
+    outMsgWrapper.data = outMsg;
+    pubarm.publish(outMsgWrapper);
+}
+
+bool ProController::inDeadzone(int value) {
+    return state == Mode::wheels ? value > 108 && value < 148 :  value > 88 && value < 168 ;
 }
 
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
-    if (value > 115 && value < 135) {
-        z = 0;
-    } else {
+
+    if (inDeadzone(value)) {
+        if(state == Mode::wheels) {
+        x = 0;
+        }
+    } 
+    
+    else {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick X event with value: %d\n", value);
-        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+        x = (value - 128) / 128.0 * X_SENSITIVITY;
     }
 }
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
-    if (value > 115 && value < 135) {
-        x = 0;
+    if (inDeadzone(value)) {
+        if(state == Mode::wheels) {
+            z = 0;
+        }
+
+        else if(state == Mode::arm_joint_space){
+            armOutVal = leftJSRel;
+        }
     } else {
+
         // 128 is the center, so this normalizes the result to
         // [-1,1]*X_SENSITIVITY
         ROS_INFO("Left Joystick Y event with value: %d\n", value);
-        x = (value - 128) / 128.0 * X_SENSITIVITY;
+        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+        if(z > 0) {
+            armOutVal = leftJSU;
+        }
+
+        else {
+            armOutVal = leftJSD;
+        }
     }
 }
 
 // Currently doing nothing
 void ProController::rightJoystickX(int value) {
-    if (value > 118 && value < 137) {
+    if (inDeadzone(value)) {
         // do nothing
     } else {
         ROS_INFO("Right Joystick X event with value: %d\n", value);
     }
 }
 
-// Currently doing nothing
 void ProController::rightJoystickY(int value) {
-    if (value > 118 && value < 137) {
-        // do nothing
-    } else {
+
+    if (inDeadzone(value)) {
+        if(state != Mode::wheels)
+            armOutVal = rightJSRel;
+    }
+    
+    else {
+
+        // 128 is the center, so this normalizes the result to
+        // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Right Joystick Y event with value: %d\n", value);
+        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+
+        // Right joystick is only used in Y direction in all arm modes
+        if(state != Mode::wheels) {
+
+            if(z > 0) {
+             armOutVal = rightJSU;
+            }
+
+            else {
+             armOutVal = rightJSD;
+            }
+        }
     }
 }
 
-// Currently doing nothing
 void ProController::A(int value) {
     if (value == 1) {
         ROS_INFO("A button pressed");
+     armOutVal = buttonA;
     } else if (value == 0) {
         ROS_INFO("A button released");
+     armOutVal = buttonARel;
     }
 }
 
-// Currently doing nothing
 void ProController::B(int value) {
     if (value == 1) {
         ROS_INFO("B button pressed");
+     armOutVal = buttonB;
     } else if (value == 0) {
         ROS_INFO("B button released");
+     armOutVal = buttonBRel;
     }
 }
 
-// Currently doing nothing
 void ProController::X(int value) {
     if (value == 1) {
         ROS_INFO("X button pressed");
+        armOutVal = buttonX;
     } else if (value == 0) {
         ROS_INFO("X button released");
+        armOutVal = buttonXRel;
     }
 }
 
-// Currently doing nothing
 void ProController::Y(int value) {
     if (value == 1) {
         ROS_INFO("Y button pressed");
+        armOutVal = buttonY;
     } else if (value == 0) {
         ROS_INFO("Y button released");
+        armOutVal = buttonYRel;
     }
 }
 
-// Currently doing nothing
 void ProController::leftBumper(int value) {
     if (value == 1) {
         ROS_INFO("Left bumper pressed");
+        armOutVal = bumperL;
     } else if (value == 0) {
         ROS_INFO("Left bumper released");
+        armOutVal = bumperLRel;
     }
 }
 
-// Currently doing nothing
 void ProController::rightBumper(int value) {
     if (value == 1) {
         ROS_INFO("Right bumper pressed");
+        armOutVal = bumperR;
     } else if (value == 0) {
         ROS_INFO("Right bumper released");
+        armOutVal = bumperRRel;
     }
 }
 
-// Currently doing nothing
 void ProController::select(int value) {
     if (value == 1) {
         ROS_INFO("Select button pressed");
     } else if (value == 0) {
         ROS_INFO("Select button released");
+        armOutVal = homeValEE;
     }
 }
 
-// Currently doing nothing
 void ProController::start(int value) {
     if (value == 1) {
         ROS_INFO("Start button pressed");
     } else if (value == 0) {
         ROS_INFO("Start button released");
+        armOutVal = homeVal;
     }
 }
 
@@ -285,54 +365,70 @@ void ProController::home(int value) {
         if (value == 1) {
             ROS_INFO("Home button pressed");
         } else if (value == 0) {
-            if (state == Mode::wheels) {
-                state = Mode::arm;
-                printState();
+            state = static_cast<Mode>((state + 1) % (Mode::num_modes));
+            if (state == Mode::wheels || state == Mode::arm_joint_space) {
+                pubmode.publish(false_message);
             } else {
-                state = Mode::wheels;
-                printState();
+                // pubmovegrp.publish(true_message);
+                // sleep(8);
+                pubmode.publish(true_message);
             }
+            printState();
         }
     }
 }
 
-// Currently doing nothing
 void ProController::leftTrigger(int value) {
     if (value == 255) {
         ROS_INFO("Left trigger pressed");
+        armOutVal = triggerL;
     } else if (value == 0) {
         ROS_INFO("Left trigger released");
+        armOutVal = triggerLRel;
     }
 }
 
-// Currently doing nothing
 void ProController::rightTrigger(int value) {
     if (value == 255) {
         ROS_INFO("Right trigger pressed");
+        armOutVal = triggerR;
     } else if (value == 0) {
         ROS_INFO("Right trigger released");
+        armOutVal = triggerRRel;
     }
 }
 
-// Currently doing nothing
 void ProController::arrowsRorL(int value) {
     if (value == 1) {
         ROS_INFO("Right button pressed");
+        armOutVal = arrowR;
     } else if (value == 0) {
         ROS_INFO("Arrow button released");
+        armOutVal = arrowRLRel;
     } else {
         ROS_INFO("Left button pressed");
+        armOutVal = arrowL;
     }
 }
 
-// Currently doing nothing
 void ProController::arrowsUorD(int value) {
     if (value == 1) {
         ROS_INFO("Up button pressed");
+        armOutVal = arrowU;
+	if (state == Mode::wheels) {
+	    speed = speed < max_speed ? speed + increment : speed;
+	    ROS_INFO("Speed increased to %d%% of max output", speed);
+	}
     } else if (value == 0) {
         ROS_INFO("Arrow button released");
+        armOutVal = arrowUDRel;
     } else {
         ROS_INFO("Down button pressed");
+        armOutVal = arrowD;
+	if (state == Mode::wheels) {
+	    speed = speed > increment ? speed - increment : speed;
+	    ROS_INFO("Speed decreased to %d%% of max output", speed);
+	}
     }
 }
 
@@ -349,7 +445,9 @@ void ProController::leftJoystickPress(int value) {
 void ProController::rightJoystickPress(int value) {
     if (value == 1) {
         ROS_INFO("Right Joystick pressed");
+        armOutVal = rightJSPress;
     } else if (value == 0) {
         ROS_INFO("Right Joystick released");
+        armOutVal = rightJSPressRel;
     }
 }
