@@ -81,6 +81,7 @@ sudo apt-get update -y
 sudo apt-get install -y libalglib-dev
 
 sudo apt-get install -y libgsl-dev
+sudo apt-get install -y libserial-dev
 
 echo "================================================================"
 echo "Installing Robotic Arm Dependencies"

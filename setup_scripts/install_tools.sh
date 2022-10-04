@@ -67,10 +67,10 @@ if [ "$install_clion" = true ] ; then
 fi
 
 ###################
-# Install Arduino #
+# SKIPPING Install Arduino #
 ###################
-cd $DIR
-./install_arduino.sh
+#cd $DIR
+#./install_arduino.sh
 
 ##############################
 # Install Other Dependencies #
