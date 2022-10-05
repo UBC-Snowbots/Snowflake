@@ -180,13 +180,8 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
                                                    double z_old) {
     if (abs(x_old - x_new) > 0.0001 || abs(z_old - z_new) > 0.0001) {
         geometry_msgs::Twist msg;
-<<<<<<< HEAD
-        msg.linear.x  = x_new * speed;
-        msg.angular.z = z_new * speed;
-=======
         msg.linear.x  = x_new * speed / 100;
         msg.angular.z = z_new * speed / 100;
->>>>>>> got arm code compiling with Noetic. Updated libserial to newer verison. SerialStream is no longer, we are using SerialPort instead. Changed up the arm_driver code to use SerialPort instead of SerialStream
         pubmove.publish(msg);
         // return tuple
         return make_tuple(x_new, z_new);
@@ -208,11 +203,6 @@ bool ProController::inDeadzone(int value) {
 
 // Updates z, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickX(int value) {
-<<<<<<< HEAD
-    if (value > 115 && value < 135) {
-        x = 0;
-    } else {
-=======
 
     if (inDeadzone(value)) {
         if(state == Mode::wheels) {
@@ -221,7 +211,6 @@ void ProController::leftJoystickX(int value) {
     } 
     
     else {
->>>>>>> got arm code compiling with Noetic. Updated libserial to newer verison. SerialStream is no longer, we are using SerialPort instead. Changed up the arm_driver code to use SerialPort instead of SerialStream
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick X event with value: %d\n", value);
@@ -231,10 +220,6 @@ void ProController::leftJoystickX(int value) {
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void ProController::leftJoystickY(int value) {
-<<<<<<< HEAD
-    if (value > 115 && value < 135) {
-        z = 0;
-=======
     if (inDeadzone(value)) {
         if(state == Mode::wheels) {
             z = 0;
@@ -243,15 +228,12 @@ void ProController::leftJoystickY(int value) {
         else if(state == Mode::arm_joint_space){
             armOutVal = leftJSRel;
         }
->>>>>>> got arm code compiling with Noetic. Updated libserial to newer verison. SerialStream is no longer, we are using SerialPort instead. Changed up the arm_driver code to use SerialPort instead of SerialStream
     } else {
 
         // 128 is the center, so this normalizes the result to
         // [-1,1]*X_SENSITIVITY
         ROS_INFO("Left Joystick Y event with value: %d\n", value);
         z = -(value - 128) / 128.0 * Z_SENSITIVITY;
-<<<<<<< HEAD
-=======
         if(z > 0) {
             armOutVal = leftJSU;
         }
@@ -259,7 +241,6 @@ void ProController::leftJoystickY(int value) {
         else {
             armOutVal = leftJSD;
         }
->>>>>>> got arm code compiling with Noetic. Updated libserial to newer verison. SerialStream is no longer, we are using SerialPort instead. Changed up the arm_driver code to use SerialPort instead of SerialStream
     }
 }
 
@@ -430,14 +411,6 @@ void ProController::arrowsRorL(int value) {
     }
 }
 
-<<<<<<< HEAD
-// Increase or reduce rover speed
-void ProController::arrowsUorD(int value) {
-    if (value == 1) {
-        ROS_INFO("Up button pressed");
-        speed = speed < 100 ? speed + 5 : speed;
-        ROS_INFO("Speed increased to %d%% of max output", speed);
-=======
 void ProController::arrowsUorD(int value) {
     if (value == 1) {
         ROS_INFO("Up button pressed");
@@ -446,22 +419,16 @@ void ProController::arrowsUorD(int value) {
 	    speed = speed < max_speed ? speed + increment : speed;
 	    ROS_INFO("Speed increased to %d%% of max output", speed);
 	}
->>>>>>> got arm code compiling with Noetic. Updated libserial to newer verison. SerialStream is no longer, we are using SerialPort instead. Changed up the arm_driver code to use SerialPort instead of SerialStream
     } else if (value == 0) {
         ROS_INFO("Arrow button released");
         armOutVal = arrowUDRel;
     } else {
         ROS_INFO("Down button pressed");
-<<<<<<< HEAD
-        speed = speed > 5 ? speed - 5 : speed;
-        ROS_INFO("Speed increased to %d%% of max output", speed);
-=======
         armOutVal = arrowD;
 	if (state == Mode::wheels) {
 	    speed = speed > increment ? speed - increment : speed;
 	    ROS_INFO("Speed decreased to %d%% of max output", speed);
 	}
->>>>>>> got arm code compiling with Noetic. Updated libserial to newer verison. SerialStream is no longer, we are using SerialPort instead. Changed up the arm_driver code to use SerialPort instead of SerialStream
     }
 }
 
