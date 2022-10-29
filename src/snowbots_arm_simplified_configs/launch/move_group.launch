@@ -55,8 +55,7 @@
   <include ns="move_group" file="$(find snowbots_arm_simplified_configs)/launch/trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
     <arg name="moveit_manage_controllers" value="true" />
     <arg name="moveit_controller_manager" value="snowbots_arm_urdf_simplified_v5_12" unless="$(arg fake_execution)"/>
-    <arg name="moveit_controller_manager" value="fake" if="$(arg fake_execution)"/>
-    <arg name="fake_execution_type" value="$(arg fake_execution_type)" />
+
   </include>
 
   <!-- Sensors Functionality -->

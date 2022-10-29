@@ -1,6 +1,0 @@
-<launch>
-    <node name="image_saver" pkg="cameras" type="ImageSaver" output="screen">
-    
-      
-    </node>
-</launch>

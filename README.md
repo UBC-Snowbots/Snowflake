@@ -32,9 +32,9 @@ You will be downloading an Ubuntu ISO and multiple ROS packages with their respe
 It is highly recommended that you have access to high speed internet while doing this entire setup; 
 if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 
-1. Install Ubuntu 18.04 (**Note**: Download 18.04, **not** another version, as other Ubuntu versions will make setting up this repo much more painful) (**Backup your important data first**) (We recommend you use a minimum of 30GB of space) 
-    - For dual-booting: [Windows Instructions](https://askubuntu.com/questions/1031993/how-to-install-ubuntu-18-04-alongside-windows-10), [Mac Instructions](https://www.maketecheasier.com/install-dual-boot-ubuntu-mac)
-2. If you haven't done so already, setup your UBC alumni email account [here](https://id.ubc.ca/) 
+1. Install Ubuntu 20.04 (**Note**: Download 20.04, **not** another version, as other Ubuntu versions will make setting up this repo much more painful) (**Backup your important data first**) (We recommend you use a minimum of 30GB of space)
+    - For dual-booting: [Windows Instructions](https://linuxconfig.org/how-to-install-ubuntu-20-04-alongside-windows-10-dual-boot), [Mac Instructions](https://www.maketecheasier.com/install-dual-boot-ubuntu-mac)
+2. If you haven't done so already, setup your UBC email account [here](https://id.ubc.ca/)
 3. Using your UBC email account, get a JetBrains education account [here](https://www.jetbrains.com/shop/eform/students)
     - _JetBrains will send an initial email to confirm the UBC email you inputted, 
     once you've confirmed another email will be sent to activate your new education account; 
@@ -45,7 +45,7 @@ if you're on campus use the `ubcsecure` or `resnet` networks for best results.
 7. Clone your server-side repository from the terminal by running `git clone --recursive https://github.com/YOUR_USERNAME/Snowflake.git` (`YOUR_USERNAME` is your github username)
 8. To start the setup run `cd ~/Snowflake && ./setup_scripts/install_tools.sh` (Do not run this script as root).
     - *Just choose yes and enter your password when the terminal prompts you*
-9. Run `source /opt/ros/melodic/setup.sh`.
+9. Run `source /opt/ros/noetic/setup.sh`.
 10. To build the workspace run `catkin_make`. If everything compiles correctly and you don't get any errors, then you're good to go!
 11. If catkin_make fails, and mentions missing .cmake files, run `./setup_scripts/install_dependencies.sh`.
 
@@ -75,6 +75,8 @@ Current packages included under wstool:
 - NMEA_Navsat_Driver: NMEA msg driver
 - Zed_ROS_Wrapper: Wrapper for interfacing Zed Stereo Cam with ROS
 - realsense: Wrapper for interfacing the Realsense D415 with ROS
+- qt_ros: Interface for integrating ROS with QT
+- phidgets_drivers: Interface for integrating ROS and Phidgets drivers
 
 ### Nodelets Quick Guide
 See [here](nodelets.md)

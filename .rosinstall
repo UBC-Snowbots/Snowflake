@@ -1,6 +1,7 @@
 - git:
     local-name: src/external_pkgs/nmea_navsat_driver
     uri: https://github.com/UBC-Snowbots/nmea_navsat_driver.git
+    version: noetic-snowbots-mods
 - git:
     local-name: src/external_pkgs/realsense-ros
     uri: https://github.com/IntelRealSense/realsense-ros.git
@@ -10,12 +11,7 @@
 - git:
     local-name: src/external_pkgs/ros_arduino_bridge
     uri: https://github.com/UBC-Snowbots/ros_arduino_bridge.git
-- git:
-    local-name: src/external_pkgs/swiftnav_piksi
-    uri: https://github.com/PaulBouchier/swiftnav_piksi.git
-- git:
-    local-name: external_libs/libsbp
-    uri: https://github.com/PaulBouchier/libsbp
+    version: noetic-snowbots-mods
 - git:
     local-name: src/external_pkgs/sicktoolbox
     uri: https://github.com/UBC-Snowbots/sicktoolbox.git
@@ -35,3 +31,11 @@
 - git:
     local-name: external_libs/joycond
     uri: https://github.com/DanielOgorchock/joycond
+-git:
+    local-name: src/external_pkgs/qt_ros
+    uri: https://github.com/stonier/qt_ros.git
+- git:
+    local-name: src/external_pkgs/phidgets_drivers
+    uri: https://github.com/ros-drivers/phidgets_drivers
+    version: noetic
+

@@ -35,7 +35,7 @@ int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, int iHighV) {
 
 // Functions
 void HSVFilter::manualCalibration(void) {
-    cv::namedWindow(manualCalibrationWindow, CV_WINDOW_AUTOSIZE);
+    cv::namedWindow(manualCalibrationWindow, cv::WINDOW_AUTOSIZE);
     cv::createTrackbar(
     "LowH", manualCalibrationWindow, &_iLowH, 179); // Hue (0 - 179)
     cv::createTrackbar("HighH", manualCalibrationWindow, &_iHighH, 179);
@@ -54,7 +54,7 @@ void HSVFilter::stopManualCalibration() {
 }
 
 void HSVFilter::filterImage(const cv::Mat& input, cv::Mat& output) {
-    cv::cvtColor(input, hsvOutput, CV_BGR2HSV, 0);
+    cv::cvtColor(input, hsvOutput, cv::COLOR_BGR2HSV, 0);
     cv::inRange(hsvOutput,
                 cv::Scalar(_iLowH, _iLowS, _iLowV),
                 cv::Scalar(_iHighH, _iHighS, _iHighV),

@@ -1,0 +1,37 @@
+<launch>
+    <arg name="robot_name" default="arm"/>
+    
+    <!-- GDB functionality -->
+    <arg name="debug" default="false" />
+    <arg unless="$(arg debug)" name="launch_prefix" value="" />
+    <arg if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+    <arg name="use_existing_calibrations" default="false" />
+
+    <param name="/hardware_interface/use_existing_calibrations" type="bool" value="$(arg use_existing_calibrations)"/>
+
+    <!-- Load hardware interface and driver configs -->
+    <rosparam file="$(find arm_hardware_interface)/config/hardware_interface.yaml" command="load"/>
+    <rosparam file="$(find arm_hardware_interface)/config/controllers.yaml" command="load"/>
+    <rosparam file="$(find arm_hardware_interface)/config/joint_offsets.yaml" command="load"/>
+    <rosparam file="$(find arm_hardware_interface)/config/hardware_driver.yaml" command="load"/>
+
+    <!-- Load moveit joint limits config in separate namespace to get velocity limits -->
+    <rosparam file="$(find snowbots_arm_simplified_configs)/config/joint_limits.yaml" command="load" ns="/" />
+
+    <!-- Load universal robot description format (URDF) -->
+    <param name="robot_description" textfile="$(find snowbots_arm_urdf_simplified_v5_12)/urdf/snowbots_arm_urdf_simplified_v5_12.urdf"/>
+
+    <!-- The semantic description that corresponds to the URDF -->
+    <param name="robot_description_semantic" textfile="$(find snowbots_arm_simplified_configs)/config/snowbots_arm_urdf_simplified_v5_12.srdf" />
+
+    <!-- Start hardware_driver node -->
+    <node name="arm_hardware_driver" pkg="arm_hardware_driver" type="arm_hardware_driver" output="screen" launch-prefix="$(arg launch_prefix)"/>
+
+    <!-- Start hardware_interface node -->
+    <node name="arm_hardware_interface" pkg="arm_hardware_interface" type="arm_hardware_interface" output="screen" launch-prefix="$(arg launch_prefix)"/>
+
+    <!-- Start controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/" 
+          args="controllers/state /controllers/position"/>
+
+</launch>
