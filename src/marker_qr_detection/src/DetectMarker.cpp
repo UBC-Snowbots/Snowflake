@@ -29,7 +29,11 @@ DetectMarker::DetectMarker(int argc, char** argv, std::string node_name) {
     SB_getParam(private_nh, parameter_name2, camera, 1);
     // Setup Subscriber(s)
     if (camera == 1) {
+<<<<<<< HEAD
         topic_to_subscribe_to = "cam_1/color/raw";
+=======
+        topic_to_subscribe_to = "cam_1/color/image_raw";
+>>>>>>> origin/master
     } else {
         topic_to_subscribe_to = "cam_2/color/image_raw";
     }

@@ -33,7 +33,7 @@ SHELL_CONFIG_FILES=(
 # listed above, if they are not present already
 declare -a new_shell_config_lines=(
     # Source the ROS Environment Variables Automatically
-    "source /opt/ros/melodic/setup.sh"\
+    "source /opt/ros/noetic/setup.sh"\
     # Make sure that all shells know where to find our custom gazebo models,
     # plugins, and resources. Make sure to preserve the path that already exists as well
     "export GAZEBO_MODEL_PATH=$DIR/../src/sb_gazebo/models:${GAZEBO_MODEL_PATH}"\
@@ -67,10 +67,10 @@ if [ "$install_clion" = true ] ; then
 fi
 
 ###################
-# Install Arduino #
+# SKIPPING Install Arduino #
 ###################
-cd $DIR
-./install_arduino.sh
+#cd $DIR
+#./install_arduino.sh
 
 ##############################
 # Install Other Dependencies #

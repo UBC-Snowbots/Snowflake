@@ -3,7 +3,7 @@ cache:
 language: generic
 # currently running on ubuntu 18.04
 os: linux
-dist: bionic
+dist: focal
 
 # install all dependencies necessary to build our project
 install:
@@ -14,7 +14,7 @@ install:
 # compile and run tests  
 script:
         # setup ROS
-        - source /opt/ros/melodic/setup.bash
+        - source /opt/ros/noetic/setup.bash
         # create workspace
         - catkin_make
         # setup catkin path variables

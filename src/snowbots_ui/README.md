@@ -4,13 +4,6 @@ This is a UI package built for the UBC Snowbots Team
 ![alt text](https://github.com/adamsnguyen/Snowflake/blob/master/src/snowbots_ui/resources/demo.png)
 
 
-## Installation
-### Install qt build for ROS Melodic.
-```bash
-sudo apt-get install ros-melodic-qt-build
-```
-
-
 # Run GUI
 ### First run a rosmaster
 ```bash

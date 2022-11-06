@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
         sensor_msgs
         sb_utils
 )
-find_library(libserial_LIBRARIES libserial.so.0)
+find_library(libserial_LIBRARIES libserial.so.1)
 
 catkin_package(
     INCLUDE_DIRS include

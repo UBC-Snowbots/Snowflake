@@ -1,7 +1,11 @@
 <launch>
     <node name="detect_marker" pkg="marker_qr_detection" type="detect_marker" output="screen">
       <param name="draw_markers" value="true" />
+<<<<<<< HEAD
       <param name="camera" value="2" />
+=======
+      <param name="camera" value="1" />
+>>>>>>> origin/master
       
     </node>
 </launch>

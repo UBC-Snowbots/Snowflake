@@ -1,0 +1,13 @@
+<launch>
+    
+    
+    <node name="camera_pub_node" pkg="init_camera" type="camera_pub" output="screen">
+
+        
+
+        <!--rosparam param=""> 5 </rosparam!-->
+        
+        
+    </node>
+
+</launch>
