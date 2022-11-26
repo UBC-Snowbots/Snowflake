@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(procontroller_snowbots)
+project(sb_all_controller)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
@@ -10,13 +10,15 @@ add_definitions(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
         roscpp
         geometry_msgs
+        sensor_msgs
         )
 find_package(sb_utils REQUIRED)
 
 
 catkin_package(
         INCLUDE_DIRS include
-        CATKIN_DEPENDS roscpp geometry_msgs
+        CATKIN_DEPENDS roscpp geometry_msgs sensor_msgs
+
 )
 
 include_directories(
@@ -26,10 +28,10 @@ include_directories(
 )
 
 
-add_executable(pro_controller src/pro_controller.cpp
-        src/ProController.cpp include/ProController.h)
+add_executable(all_controller src/all_controller.cpp
+        src/AllController.cpp include/AllController.h)
 
 
-target_link_libraries(pro_controller evdev)
-target_link_libraries(pro_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+#target_link_libraries(all_controller evdev)
+target_link_libraries(all_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 

@@ -4,13 +4,14 @@
  * Description: Simple header file for switch controller-->ROS Twist message cpp
  */
 
-#ifndef PROCONTROLLER_SNOWBOTS_CONTROLLER_H
-#define PROCONTROLLER_SNOWBOTS_CONTROLLER_H
+#ifndef ALLCONTROLLER_SNOWBOTS_CONTROLLER_H
+#define ALLCONTROLLER_SNOWBOTS_CONTROLLER_H
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Joy.h>
 #include <std_msgs/String.h>
 #include <std_msgs/Bool.h>
 #include <iostream>
@@ -22,13 +23,14 @@
 
 using namespace std;
 
-class ProController {
+class AllController {
   public:
-    ProController(int argc, char** argv, std::string node_name);
+    AllController(int argc, char** argv, std::string node_name);
 
   private:
     void setup();
-    void readInputs();
+    void processInputs();
+    void readJoyInputs(const sensor_msgs::Joy::ConstPtr&);
     bool inDeadzone(int value);
     void leftJoystickX(int value);      // ABS_X
     void leftJoystickY(int value);      // ABS_Y
@@ -109,6 +111,7 @@ class ProController {
     ros::Publisher pubarm;
     ros::Publisher pubmode;
     ros::Publisher pubmovegrp;
+    ros::Subscriber joyinput;
 
     std_msgs::Bool true_message;
     std_msgs::Bool false_message;
@@ -118,4 +121,4 @@ class ProController {
 
 };
 
-#endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H
+#endif // ALLCONTROLLER_SNOWBOTS_CONTROLLER_H

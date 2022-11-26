@@ -1,17 +1,19 @@
 /*
- * Created By: Kevin Lin
+ * Created By: Rowan Zawadkzki, modified from the old procontroller_snowbots
  * Created On: December 21st, 2019
  * Description: Uses Libevdev to turn Nintendo Switch Pro Controller left
  * joystick inputs into a ROS Twist message
+ * old summary^^
  */
 
-#include "../include/ProController.h"
+#include "../include/AllController.h"
 
 // Read the master documentation if there's any issues with this package
-ProController::ProController(int argc, char** argv, string node_name) {
+AllController::AllController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
     string armPublisher = "/cmd_arm";
     string modePublisher = "/moveit_toggle";
+    string joyTopic = "/joy";
     // string moveGrpPublisher = "/move_group_trigger";
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
@@ -28,100 +30,104 @@ ProController::ProController(int argc, char** argv, string node_name) {
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
     pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 1);
+    joyinput = private_nh.subscribe(joyTopic, 1, &AllController::readJoyInputs, this);
     // pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
 
     true_message.data = true;
     false_message.data = false;
 
-    ROS_INFO("Preparing to read inputs...\n");
+    ROS_INFO("Preparing to process inputs...\n");
     state = Mode::wheels;
     printState();
     x = 0;
     z = 0;
-    readInputs();
+    processInputs();
 }
 
-void ProController::setup() {
-    system(
-    "gnome-terminal --tab -- bash -c 'cd src/procontroller_snowbots/src; sudo "
-    "./procon_driver; read;'");
-    ROS_INFO(
-    "Press enter after you've calibrated the Controller in the other "
-    "terminal...\n ");
-    ROS_INFO(
-    "If calibration is done properly, X and Y buttons should correctly print "
-    "out when pressed");
-    int c  = getchar();
-    int rc = 0;
-#//check the first 50 event inputs to find the controller.
-    for (auto i = 0; i < 50; i++) {
-        string inttostring = to_string(i);
-        string EVTEST_PATH = "/dev/input/event";
-        string pathstring  = EVTEST_PATH + inttostring;
-        const char* path   = (pathstring).c_str();
-        int fd             = open(path, O_RDONLY | O_NONBLOCK);
-        rc                 = libevdev_new_from_fd(fd, &dev);
-        if (rc >= 0) {
-            ROS_INFO("Succesfully set up %s with path \"%s\n",
-                     libevdev_get_name(dev),
-                     path);
-            if (debug) {
-                ROS_DEBUG("Input device ID: bus %#x vendor %#x product %#x\n",
-                          libevdev_get_id_bustype(dev),
-                          libevdev_get_id_vendor(dev),
-                          libevdev_get_id_product(dev));
-            }
-            break;
-        }
-    }
-    if (rc < 0) {
-        ROS_INFO_COND(stderr, "Failed to init libevdev (%s)\n", strerror(-rc));
-        exit(1);
-    }
+void AllController::readJoyInputs(const sensor_msgs::Joy::ConstPtr&){
+
+
 }
 
-void ProController::readInputs() {
+  void AllController::setup() {
+//     system(
+//     "gnome-terminal --tab -- bash -c 'cd src/sb_AllController/src; sudo "
+//     "./procon_driver; read;'");
+//     ROS_INFO(
+//     "Press enter after you've calibrated the Controller in the other "
+//     "terminal...\n ");
+//     ROS_INFO(
+//     "If calibration is done properly, X and Y buttons should correctly print "
+//     "out when pressed");
+//     int c  = getchar();
+//     int rc = 0;
+// #//check the first 50 event inputs to find the controller.
+//     for (auto i = 0; i < 50; i++) {
+//         string inttostring = to_string(i);
+//         string EVTEST_PATH = "/dev/input/event";
+//         string pathstring  = EVTEST_PATH + inttostring;
+//         const char* path   = (pathstring).c_str();
+//         int fd             = open(path, O_RDONLY | O_NONBLOCK);
+//         rc                 = libevdev_new_from_fd(fd, &dev);
+//         if (rc >= 0) {
+//             ROS_INFO("Succesfully set up %s with path \"%s\n",
+//                      libevdev_get_name(dev),
+//                      path);
+//             if (debug) {
+//                 ROS_DEBUG("Input device ID: bus %#x vendor %#x product %#x\n",
+//                           libevdev_get_id_bustype(dev),
+//                           libevdev_get_id_vendor(dev),
+//                           libevdev_get_id_product(dev));
+//             }
+//             break;
+//         }
+//     }
+//     if (rc < 0) {
+//         ROS_INFO_COND(stderr, "Failed to init libevdev (%s)\n", strerror(-rc));
+//         exit(1);
+//     }
+}
+
+void AllController::processInputs() {
     double x_old = 0;
     double z_old = 0;
     int rc;
     do {
-        struct input_event ev;
-        rc = libevdev_next_event(dev, LIBEVDEV_READ_FLAG_NORMAL, &ev);
         if (rc == 0) {
             // EV_SYN types are useless, ABS and KEY are useful (see .h file for
             // details)
-            if (ev.type != EV_SYN) {
+            
                 // use rosrun procontroller_snowbots pro_controller
                 // _debug:="true"
                 if (debug) {
-                    printControllerDebug(ev.type, ev.code, ev.value);
+                   // printControllerDebug(ev.type, ev.code, ev.value);
                 } else {
 
                     // vehicle for arm output message
                     armOutMsg = "";
                     armOutVal = "";
                     // handle all controller inputs using API functions
-                    switch (ev.code) {
-                        case ABS_X: leftJoystickX(ev.value); break;
-                        case ABS_Y: leftJoystickY(ev.value); break;
-                        case ABS_RX: rightJoystickX(ev.value); break;
-                        case ABS_RY: rightJoystickY(ev.value); break;
-                        case BTN_EAST: A(ev.value); break;
-                        case BTN_SOUTH: B(ev.value); break;
-                        case BTN_WEST: X(ev.value); break;
-                        case BTN_NORTH: Y(ev.value); break;
-                        case BTN_TL: leftBumper(ev.value); break;
-                        case BTN_TR: rightBumper(ev.value); break;
-                        case BTN_SELECT: select(ev.value); break;
-                        case BTN_START: start(ev.value); break;
-                        case BTN_MODE: home(ev.value); break;
-                        case ABS_Z: leftTrigger(ev.value); break;
-                        case ABS_RZ: rightTrigger(ev.value); break;
-                        case ABS_HAT0X: arrowsRorL(ev.value); break;
-                        case ABS_HAT0Y: arrowsUorD(ev.value); break;
-                        case BTN_THUMBL: leftJoystickPress(ev.value); break;
-                        case BTN_THUMBR: rightJoystickPress(ev.value); break;
-                    }
+                    // switch (ev.code) {
+                    //     case ABS_X: leftJoystickX(ev.value); break;
+                    //     case ABS_Y: leftJoystickY(ev.value); break;
+                    //     case ABS_RX: rightJoystickX(ev.value); break;
+                    //     case ABS_RY: rightJoystickY(ev.value); break;
+                    //     case BTN_EAST: A(ev.value); break;
+                    //     case BTN_SOUTH: B(ev.value); break;
+                    //     case BTN_WEST: X(ev.value); break;
+                    //     case BTN_NORTH: Y(ev.value); break;
+                    //     case BTN_TL: leftBumper(ev.value); break;
+                    //     case BTN_TR: rightBumper(ev.value); break;
+                    //     case BTN_SELECT: select(ev.value); break;
+                    //     case BTN_START: start(ev.value); break;
+                    //     case BTN_MODE: home(ev.value); break;
+                    //     case ABS_Z: leftTrigger(ev.value); break;
+                    //     case ABS_RZ: rightTrigger(ev.value); break;
+                    //     case ABS_HAT0X: arrowsRorL(ev.value); break;
+                    //     case ABS_HAT0Y: arrowsUorD(ev.value); break;
+                    //     case BTN_THUMBL: leftJoystickPress(ev.value); break;
+                    //     case BTN_THUMBR: rightJoystickPress(ev.value); break;
+                    // }
                     // publish move command and update oldx, oldz
                     if (state == Mode::wheels) {
                         // Publish motion, update x and z old using tuple
@@ -144,21 +150,21 @@ void ProController::readInputs() {
                         armOutMsg += armOutVal;
                         publishArmMessage(armOutMsg);
                     }
-                }
+                
             }
         }
     } while (rc == 1 || rc == 0 || rc == -EAGAIN);
 }
 
 // Prints out a controller event using ROS_INFO
-void ProController::printControllerDebug(int type, int code, int value) {
-    auto codeout = libevdev_event_code_get_name(type, code);
-    auto typeout = libevdev_event_type_get_name(type);
-    ROS_DEBUG("Event: Type: %s Code: %s Value: %d\n", typeout, codeout, value);
+void AllController::printControllerDebug(int type, int code, int value) {
+   // auto codeout = libevdev_event_code_get_name(type, code);
+    //auto typeout = libevdev_event_type_get_name(type);
+   // ROS_DEBUG("Event: Type: %s Code: %s Value: %d\n", typeout, codeout, value);
 }
 
 // Prints a status message detailing the current control mode
-void ProController::printState() {
+void AllController::printState() {
     if (state == Mode::wheels) {
         ROS_INFO("Current mode: controlling wheels");
     } else if (state == Mode::arm_joint_space) {
@@ -174,7 +180,7 @@ void ProController::printState() {
 
 // If x and z are new commands, this function uses the global pubmove to publish
 // a movement message and return the new or old xz to update readInputs()
-tuple<double, double> ProController::publishMoveXZ(double x_new,
+tuple<double, double> AllController::publishMoveXZ(double x_new,
                                                    double z_new,
                                                    double x_old,
                                                    double z_old) {
@@ -190,19 +196,19 @@ tuple<double, double> ProController::publishMoveXZ(double x_new,
 }
 
 // If controller recieves new commands and is in an arm mode, send message to arm
-void ProController::publishArmMessage(std::string outMsg) {
+void AllController::publishArmMessage(std::string outMsg) {
     std_msgs::String outMsgWrapper;
     outMsg += '\n';
     outMsgWrapper.data = outMsg;
     pubarm.publish(outMsgWrapper);
 }
 
-bool ProController::inDeadzone(int value) {
+bool AllController::inDeadzone(int value) {
     return state == Mode::wheels ? value > 108 && value < 148 :  value > 88 && value < 168 ;
 }
 
 // Updates z, which is then published by publish___XZ in readInputs()
-void ProController::leftJoystickX(int value) {
+void AllController::leftJoystickX(int value) {
 
     if (inDeadzone(value)) {
         if(state == Mode::wheels) {
@@ -219,7 +225,7 @@ void ProController::leftJoystickX(int value) {
 }
 
 // Updates x, which is then published by publish___XZ in readInputs()
-void ProController::leftJoystickY(int value) {
+void AllController::leftJoystickY(int value) {
     if (inDeadzone(value)) {
         if(state == Mode::wheels) {
             z = 0;
@@ -245,7 +251,7 @@ void ProController::leftJoystickY(int value) {
 }
 
 // Currently doing nothing
-void ProController::rightJoystickX(int value) {
+void AllController::rightJoystickX(int value) {
     if (inDeadzone(value)) {
         // do nothing
     } else {
@@ -253,7 +259,7 @@ void ProController::rightJoystickX(int value) {
     }
 }
 
-void ProController::rightJoystickY(int value) {
+void AllController::rightJoystickY(int value) {
 
     if (inDeadzone(value)) {
         if(state != Mode::wheels)
@@ -281,7 +287,7 @@ void ProController::rightJoystickY(int value) {
     }
 }
 
-void ProController::A(int value) {
+void AllController::A(int value) {
     if (value == 1) {
         ROS_INFO("A button pressed");
      armOutVal = buttonA;
@@ -291,7 +297,7 @@ void ProController::A(int value) {
     }
 }
 
-void ProController::B(int value) {
+void AllController::B(int value) {
     if (value == 1) {
         ROS_INFO("B button pressed");
      armOutVal = buttonB;
@@ -301,7 +307,7 @@ void ProController::B(int value) {
     }
 }
 
-void ProController::X(int value) {
+void AllController::X(int value) {
     if (value == 1) {
         ROS_INFO("X button pressed");
         armOutVal = buttonX;
@@ -311,7 +317,7 @@ void ProController::X(int value) {
     }
 }
 
-void ProController::Y(int value) {
+void AllController::Y(int value) {
     if (value == 1) {
         ROS_INFO("Y button pressed");
         armOutVal = buttonY;
@@ -321,7 +327,7 @@ void ProController::Y(int value) {
     }
 }
 
-void ProController::leftBumper(int value) {
+void AllController::leftBumper(int value) {
     if (value == 1) {
         ROS_INFO("Left bumper pressed");
         armOutVal = bumperL;
@@ -331,7 +337,7 @@ void ProController::leftBumper(int value) {
     }
 }
 
-void ProController::rightBumper(int value) {
+void AllController::rightBumper(int value) {
     if (value == 1) {
         ROS_INFO("Right bumper pressed");
         armOutVal = bumperR;
@@ -341,7 +347,7 @@ void ProController::rightBumper(int value) {
     }
 }
 
-void ProController::select(int value) {
+void AllController::select(int value) {
     if (value == 1) {
         ROS_INFO("Select button pressed");
     } else if (value == 0) {
@@ -350,7 +356,7 @@ void ProController::select(int value) {
     }
 }
 
-void ProController::start(int value) {
+void AllController::start(int value) {
     if (value == 1) {
         ROS_INFO("Start button pressed");
     } else if (value == 0) {
@@ -360,7 +366,7 @@ void ProController::start(int value) {
 }
 
 // Currently switches between wheels and arm mode
-void ProController::home(int value) {
+void AllController::home(int value) {
     if (!debug) {
         if (value == 1) {
             ROS_INFO("Home button pressed");
@@ -378,7 +384,7 @@ void ProController::home(int value) {
     }
 }
 
-void ProController::leftTrigger(int value) {
+void AllController::leftTrigger(int value) {
     if (value == 255) {
         ROS_INFO("Left trigger pressed");
         armOutVal = triggerL;
@@ -388,7 +394,7 @@ void ProController::leftTrigger(int value) {
     }
 }
 
-void ProController::rightTrigger(int value) {
+void AllController::rightTrigger(int value) {
     if (value == 255) {
         ROS_INFO("Right trigger pressed");
         armOutVal = triggerR;
@@ -398,7 +404,7 @@ void ProController::rightTrigger(int value) {
     }
 }
 
-void ProController::arrowsRorL(int value) {
+void AllController::arrowsRorL(int value) {
     if (value == 1) {
         ROS_INFO("Right button pressed");
         armOutVal = arrowR;
@@ -411,7 +417,7 @@ void ProController::arrowsRorL(int value) {
     }
 }
 
-void ProController::arrowsUorD(int value) {
+void AllController::arrowsUorD(int value) {
     if (value == 1) {
         ROS_INFO("Up button pressed");
         armOutVal = arrowU;
@@ -433,7 +439,7 @@ void ProController::arrowsUorD(int value) {
 }
 
 // Currently doing nothing
-void ProController::leftJoystickPress(int value) {
+void AllController::leftJoystickPress(int value) {
     if (value == 1) {
         ROS_INFO("Left Joystick pressed");
     } else if (value == 0) {
@@ -442,7 +448,7 @@ void ProController::leftJoystickPress(int value) {
 }
 
 // Currently doing nothing
-void ProController::rightJoystickPress(int value) {
+void AllController::rightJoystickPress(int value) {
     if (value == 1) {
         ROS_INFO("Right Joystick pressed");
         armOutVal = rightJSPress;
