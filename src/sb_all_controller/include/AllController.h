@@ -30,7 +30,7 @@ class AllController {
   private:
     void setup();
     void processInputs();
-    void readJoyInputs(const sensor_msgs::Joy::ConstPtr&);
+    void readJoyInputs(sensor_msgs::Joy msg);
     bool inDeadzone(int value);
     void leftJoystickX(int value);      // ABS_X
     void leftJoystickY(int value);      // ABS_Y

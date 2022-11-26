@@ -44,8 +44,9 @@ AllController::AllController(int argc, char** argv, string node_name) {
     processInputs();
 }
 
-void AllController::readJoyInputs(const sensor_msgs::Joy::ConstPtr&){
-
+void AllController::readJoyInputs(sensor_msgs::Joy msg){
+ROS_INFO("read %d", msg.buttons[2]);
+ROS_INFO("readinain");
 
 }
 
