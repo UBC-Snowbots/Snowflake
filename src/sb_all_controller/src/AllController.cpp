@@ -8,6 +8,8 @@
 
 #include "../include/AllController.h"
 
+int32_t buttons[11];
+_Float32 axes[8];
 // Read the master documentation if there's any issues with this package
 AllController::AllController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
@@ -30,7 +32,7 @@ AllController::AllController(int argc, char** argv, string node_name) {
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
     pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 1);
-    joyinput = private_nh.subscribe(joyTopic, 1, &AllController::readJoyInputs, this);
+    joyinput = private_nh.subscribe(joyTopic, 10, &AllController::readJoyInputs, this);
     // pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
 
     true_message.data = true;
@@ -44,9 +46,27 @@ AllController::AllController(int argc, char** argv, string node_name) {
     processInputs();
 }
 
-void AllController::readJoyInputs(sensor_msgs::Joy msg){
-ROS_INFO("read %d", msg.buttons[2]);
-ROS_INFO("readinain");
+void AllController::readJoyInputs(const sensor_msgs::Joy::ConstPtr& msg){
+// int32_t A = msg->buttons[0];
+// int32_t B = msg->buttons[1];
+// int32_t X = msg->buttons[2];
+// int32_t Y = msg->buttons[2];
+// ROS_INFO("reacieved msg");
+// ROS_INFO("A is %i", msg->buttons[0]);
+// ROS_INFO("B is %i", msg->buttons[1]);
+// ROS_INFO("X is %i", msg->buttons[2]);
+// ROS_INFO("Y is %i", msg->buttons[3]);
+// ROS_INFO("HOME is %f", msg->axes[0]);
+for (int i = 0; i < 11; i ++ ){
+buttons[i] = msg->buttons[i];
+ROS_INFO("Buttons Recorded: %i", i);
+}
+for (int i = 0; i < 8; i++){
+axes[i] = msg->axes[i];
+ROS_INFO("Axes Recorded: %i", i);
+
+}
+
 
 }
 
@@ -93,7 +113,7 @@ void AllController::processInputs() {
     double x_old = 0;
     double z_old = 0;
     int rc;
-    do {
+    
         if (rc == 0) {
             // EV_SYN types are useless, ABS and KEY are useful (see .h file for
             // details)
@@ -154,7 +174,7 @@ void AllController::processInputs() {
                 
             }
         }
-    } while (rc == 1 || rc == 0 || rc == -EAGAIN);
+
 }
 
 // Prints out a controller event using ROS_INFO
