@@ -146,7 +146,7 @@ add_executable(arm_hardware_driver src/arm_hardware_driver.cpp src/armHardwareDr
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(sample_package_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(arm_hardware_driver ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(sample_package_node
