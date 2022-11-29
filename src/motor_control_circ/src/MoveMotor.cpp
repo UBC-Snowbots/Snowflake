@@ -37,6 +37,8 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
             ROS_ERROR(
             "Error at set hub (%d) for port %d: %s", errorCode, i, errorString);
             return;
+        }else{
+            ROS_INFO("hub attached succsesfully at %d", i);
         }
         ret = Phidget_openWaitForAttachment((PhidgetHandle) motors[i], 5000);
         if (ret != EPHIDGET_OK) {
