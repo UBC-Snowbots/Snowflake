@@ -10,6 +10,8 @@
 
 int32_t buttons[11];
 _Float32 axes[8];
+bool proccessing;
+bool switchMode;
 // Read the master documentation if there's any issues with this package
 AllController::AllController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
@@ -57,17 +59,21 @@ void AllController::readJoyInputs(const sensor_msgs::Joy::ConstPtr& msg){
 // ROS_INFO("X is %i", msg->buttons[2]);
 // ROS_INFO("Y is %i", msg->buttons[3]);
 // ROS_INFO("HOME is %f", msg->axes[0]);
+if(!proccessing){
 for (int i = 0; i < 11; i ++ ){
 buttons[i] = msg->buttons[i];
-ROS_INFO("Buttons Recorded: %i", i);
+//ROS_INFO("Buttons Recorded: %i", i);
 }
 for (int i = 0; i < 8; i++){
-axes[i] = msg->axes[i];
-ROS_INFO("Axes Recorded: %i", i);
+axes[i] = msg->axes[i] * 128;
+//ROS_INFO("Axes Recorded: %i", i);
 
 }
+  proccessing = true;
+  printState();
+    processInputs();
 
-
+}
 }
 
   void AllController::setup() {
@@ -128,16 +134,36 @@ void AllController::processInputs() {
                     armOutMsg = "";
                     armOutVal = "";
                     // handle all controller inputs using API functions
-                    // switch (ev.code) {
-                    //     case ABS_X: leftJoystickX(ev.value); break;
-                    //     case ABS_Y: leftJoystickY(ev.value); break;
-                    //     case ABS_RX: rightJoystickX(ev.value); break;
-                    //     case ABS_RY: rightJoystickY(ev.value); break;
-                    //     case BTN_EAST: A(ev.value); break;
-                    //     case BTN_SOUTH: B(ev.value); break;
-                    //     case BTN_WEST: X(ev.value); break;
-                    //     case BTN_NORTH: Y(ev.value); break;
-                    //     case BTN_TL: leftBumper(ev.value); break;
+                    if(!buttons[8]){
+                    leftJoystickX(axes[0]);
+                    leftJoystickY(axes[1]); 
+                    rightJoystickY(axes[3]); 
+                    rightJoystickY(axes[4]);
+                    A(buttons[0]);
+                    B(buttons[1]);
+                    X(buttons[2]);
+                    Y(buttons[3]);
+                    leftBumper(buttons[4]);
+                    rightBumper(buttons[5]);
+                    select(buttons[6]); //or back on an xbox360 controlller
+                    start(buttons[7]);
+                    switchMode = false;
+                    }else{
+                    home(buttons[8]);
+                    switchMode = true;
+
+                    }
+                   
+                    //  switch (ev.code) {
+                    //      case ABS_X: leftJoystickX(ev.value); break;
+                    //      case ABS_Y: leftJoystickY(ev.value); break;
+                    //      case ABS_RX: rightJoystickX(ev.value); break;
+                    //      case ABS_RY: rightJoystickY(ev.value); break;
+                    //      case BTN_EAST: A(ev.value); break;
+                    //      case BTN_SOUTH: B(ev.value); break;
+                    //      case BTN_WEST: X(ev.value); break;
+                    //      case BTN_NORTH: Y(ev.value); break;
+                    //      case BTN_TL: leftBumper(ev.value); break;
                     //     case BTN_TR: rightBumper(ev.value); break;
                     //     case BTN_SELECT: select(ev.value); break;
                     //     case BTN_START: start(ev.value); break;
@@ -174,6 +200,7 @@ void AllController::processInputs() {
                 
             }
         }
+        proccessing = false;
 
 }
 
@@ -389,9 +416,10 @@ void AllController::start(int value) {
 // Currently switches between wheels and arm mode
 void AllController::home(int value) {
     if (!debug) {
-        if (value == 1) {
-            ROS_INFO("Home button pressed");
-        } else if (value == 0) {
+        if(!switchMode){
+        if (value == 0) {
+            //ROS_INFO("Home button pressed");
+        } else if (value == 1) {
             state = static_cast<Mode>((state + 1) % (Mode::num_modes));
             if (state == Mode::wheels || state == Mode::arm_joint_space) {
                 pubmode.publish(false_message);
@@ -402,6 +430,7 @@ void AllController::home(int value) {
             }
             printState();
         }
+        }   
     }
 }
 
