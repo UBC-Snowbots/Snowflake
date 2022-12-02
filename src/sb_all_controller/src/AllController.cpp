@@ -8,8 +8,11 @@
 
 #include "../include/AllController.h"
 
-int32_t buttons[11];
+int32_t button[11];
+int32_t Tbutton[11];
+
 _Float32 axes[8];
+_Float32 Taxes[8];
 bool proccessing;
 bool switchMode;
 // Read the master documentation if there's any issues with this package
@@ -61,16 +64,25 @@ void AllController::readJoyInputs(const sensor_msgs::Joy::ConstPtr& msg){
 // ROS_INFO("HOME is %f", msg->axes[0]);
 if(!proccessing){
 for (int i = 0; i < 11; i ++ ){
-buttons[i] = msg->buttons[i];
+    if(button[i] == msg->buttons[i]){
+        Tbutton[i] = button[i];
+    }
+button[i] = msg->buttons[i];
+
 //ROS_INFO("Buttons Recorded: %i", i);
+    
 }
 for (int i = 0; i < 8; i++){
+    if(axes[i] * 128 >= msg->axes[i] - 20 || axes[i] * 128 <= msg->axes[i] + 20 ){
+        Taxes[i] = axes[i];
+    }
 axes[i] = msg->axes[i] * 128;
+
 //ROS_INFO("Axes Recorded: %i", i);
 
 }
   proccessing = true;
-  printState();
+  //printState();
     processInputs();
 
 }
@@ -134,25 +146,77 @@ void AllController::processInputs() {
                     armOutMsg = "";
                     armOutVal = "";
                     // handle all controller inputs using API functions
-                    if(!buttons[8]){
-                    leftJoystickX(axes[0]);
-                    leftJoystickY(axes[1]); 
-                    rightJoystickY(axes[3]); 
-                    rightJoystickY(axes[4]);
-                    A(buttons[0]);
-                    B(buttons[1]);
-                    X(buttons[2]);
-                    Y(buttons[3]);
-                    leftBumper(buttons[4]);
-                    rightBumper(buttons[5]);
-                    select(buttons[6]); //or back on an xbox360 controlller
-                    start(buttons[7]);
-                    switchMode = false;
-                    }else{
-                    home(buttons[8]);
-                    switchMode = true;
-
-                    }
+                   
+                        for(int i = 0; i < 9; i++){
+                       if (Tbutton[i] != button[i]){
+                        switch (i)
+                        {
+                        case 0:
+                            A(button[0]);
+                            break;
+                        case 1:
+                            B(button[1]);
+                            break;
+                        case 2:
+                            X(button[2]);
+                            break;
+                        case 3:
+                            Y(button[3]);
+                            break;
+                        case 4:
+                            leftBumper(button[4]);
+                            break;  
+                        case 5:
+                            rightBumper(button[5]);
+                            break;   
+                        case 6:
+                            select(button[6]); //or back on an xbox360 controlller
+                            break;   
+                        case 7:
+                             start(button[7]);  home(button[8]);
+                            break;      
+                         case 8:
+                             home(button[8]);
+                            break;                     
+                        default:
+                            break;
+                        }
+                       }
+                        }
+                        for(int i = 0; i < 5; i++){
+                       if (Taxes[i] != axes[i]){
+                        switch (i)
+                        {
+                        case 0:
+                            leftJoystickX(axes[0]);
+                            break;
+                        case 1:
+                            leftJoystickY(axes[1]); 
+                            break;
+                        case 2:
+                            rightJoystickY(axes[3]); 
+                            break;
+                        case 3:
+                            rightJoystickY(axes[4]);
+                            break;
+                    // paddles here too
+                        default:
+                            break;
+                        }
+                       }
+                        }
+                    
+                    
+                    
+                    
+                 
+                    
+                    
+                    
+                    
+                    
+                   
+                   
                    
                     //  switch (ev.code) {
                     //      case ABS_X: leftJoystickX(ev.value); break;
@@ -195,7 +259,7 @@ void AllController::processInputs() {
                     else { // Drilling mode for arm 
                         armOutMsg += drillMode;
                         armOutMsg += armOutVal;
-                        publishArmMessage(armOutMsg);
+                        publishArmMessage(armOutMsg);                    
                     }
                 
             }
@@ -416,7 +480,7 @@ void AllController::start(int value) {
 // Currently switches between wheels and arm mode
 void AllController::home(int value) {
     if (!debug) {
-        if(!switchMode){
+       
         if (value == 0) {
             //ROS_INFO("Home button pressed");
         } else if (value == 1) {
@@ -430,7 +494,7 @@ void AllController::home(int value) {
             }
             printState();
         }
-        }   
+         
     }
 }
 
