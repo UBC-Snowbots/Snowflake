@@ -8,7 +8,8 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 #include <AccelStepper.h>
 #include <HX711.h>
 #include <Encoder.h>
-
+//for if no arm is connected, simulation only needed
+#define simOnly 1
 // general parameters
 #define NUM_AXES 6
 #define NUM_AXES_EX_WRIST 4
@@ -829,12 +830,15 @@ void zeroRunFlags() { // when user changes axis to control on switch, slow curre
 //****// ARM CALIBRATION FUNCTIONS//****//
 
 void homeArm() { // main function for full arm homing
+if (!simOnly){
   initializeWristHomingMotion();
   homeWrist();
   initializeHomingMotion();
   homeBase();
   initializeMotion();
   zeroEncoders();
+}
+
   J1Flag = true;
 
   for(int i=0; i<NUM_AXES; i++)
