@@ -30,6 +30,7 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 ros::NodeHandle nh;
 std_msgs::Int16 beat;
 sb_msgs::ArmPosition INangles;
+int beatTEMP = millis();
 ros::Publisher heart("/heartbeat", &beat);
 
 
@@ -185,6 +186,7 @@ void setup() { // setup function to initialize pins and provide initial homing t
 nh.initNode();
 nh.advertise(heart);
 
+
   //Serial.begin(57600);
 
 
@@ -232,11 +234,18 @@ nh.advertise(heart);
   // waits for user to press "home" button before rest of functions are available
 //delay(2000);
 //Serial.println("diagnosticing");
-waitForHome();
+//waitForHome();
+  nh.spinOnce();
+
 }
 
 void loop()
 {
+  if(millis() - beatTEMP > 1000){
+    beat.data += 1;
+    heart.publish(&beat);
+    beatTEMP = millis();
+  }
 
   //recieveCommand();
 
