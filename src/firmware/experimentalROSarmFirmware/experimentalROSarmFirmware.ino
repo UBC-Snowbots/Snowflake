@@ -185,8 +185,6 @@ float IKaccs[] = {0.3, 0.3, 0.3, 0.3, 0.3, 0.3};
 void setup() { // setup function to initialize pins and provide initial homing to the arm
 nh.initNode();
 nh.advertise(heart);
-
-
   //Serial.begin(57600);
 
 
