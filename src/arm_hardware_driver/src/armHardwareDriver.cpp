@@ -24,9 +24,9 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 
     // Get Params
     SB_getParam(
-    private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM0");
+    private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM1");
     // Open the given serial port
-    teensy.Open(port);
+    teensy.Open(port); 
     teensy.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
     teensy.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
 

@@ -540,9 +540,15 @@ void depositSample()
 
 void sendCurrentPosition() 
 {
-  String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
+  String outMsg;
+  if (!simOnly){
+ outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
                 + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
-    Serial.print(outMsg);
+  }else{
+ outMsg = String("JP") + String("A") + String(steppers[0].currentPosition()) + String("B") + String(steppers[1].currentPosition()) + String("C") + String(curEncSteps[2])
+                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
+  }
+Serial.print(outMsg);
 }
 
 // converts cartesian angles to joint space stepper current positions
