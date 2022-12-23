@@ -1,0 +1,34 @@
+controller_list:
+  - name: /controllers/position
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - j1
+      - j2
+      - j3
+      - j4
+      - j5
+      - j6
+  - name: arm_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - j1
+      - j2
+      - j3
+      - j4
+      - j5
+      - j6
+  - name: velarm
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: True
+    joints:
+      - j1
+      - j2
+      - j3
+      - j4
+      - j5
+      - j6
