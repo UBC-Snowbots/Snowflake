@@ -115,28 +115,28 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
         axisRelease(J3);
     } else if (action == rightJSRel) {
         axisRelease(J2);
-    } else if (action == buttonA) {
-        jointSpaceMove(wrist, up);
-    } else if (action == buttonB) {
-        jointSpaceMove(wrist, left);
-    } else if (action == buttonX) {
-        jointSpaceMove(wrist, right);
     } else if (action == buttonY) {
-        jointSpaceMove(wrist, down);
+        axisMove(J6, left);
+    } else if (action == buttonA) {
+        axisMove(J6, right);
+    } else if (action == buttonB) {
+        axisMove(J5, down);
+    } else if (action == buttonX) {
+        axisMove(J5, up);
     } else if (action == triggerL) {
         axisMove(J1, left);
     } else if (action == triggerR) {
         axisMove(J1, right);
     } else if ((action == triggerLRel) || (action == triggerRRel)) {
         axisRelease(J1);
-    }  else if (action == buttonARel) {
-        releaseAxis(wrist, up);
+    } else if (action == buttonARel) {
+        axisRelease(J6);
     } else if (action == buttonBRel) {
-        releaseAxis(wrist, left);
+        axisRelease(J5);
     } else if (action == buttonXRel) {
-        releaseAxis(wrist, right);
+        axisRelease(J5);
     } else if (action == buttonYRel) {
-        releaseAxis(wrist, down);
+        axisRelease(J6);
     } else if(action == bumperL) {
         axisMove(J4, left);
     } else if(action == bumperR) {
@@ -190,18 +190,9 @@ void ArmHardwareDriver::drill_motion(std::string inMsg) {
     // case rightJSD: moveDrillDown(); break;
 }
 
-void ArmHardwareDriver::jointSpaceMove(const char joystick, const char dir) {
-    std::string outMsg = "JM";
-    outMsg += "M";
-    outMsg += joystick;
-    outMsg += dir;
-    outMsg += "\n";
-    sendMsg(outMsg);
-}
-
 void ArmHardwareDriver::axisMove(const char axis, const char dir)
 {
-    std::string outMsg = "JMT";
+    std::string outMsg = "JMM";
     outMsg += axis;
     outMsg += dir;
     outMsg += "\n";
@@ -210,33 +201,8 @@ void ArmHardwareDriver::axisMove(const char axis, const char dir)
 
 void ArmHardwareDriver::axisRelease(const char axis)
 {
-    std::string outMsg = "JMW";
+    std::string outMsg = "JMR";
     outMsg += axis;
-    outMsg += "\n";
-    sendMsg(outMsg);
-}
-
-void ArmHardwareDriver::changeSpeed(const char dir) {
-    //std::string outMsg = "JM";
-    //outMsg             = "S";
-    //outMsg += dir;
-    //outMsg += "\n";
-    //sendMsg(outMsg);
-}
-
-void ArmHardwareDriver::changeAxis(const char joystick) {
-    std::string outMsg = "JM";
-    outMsg += "A";
-    outMsg += joystick;
-    outMsg += "\n";
-    sendMsg(outMsg);
-}
-
-void ArmHardwareDriver::releaseAxis(const char joystick, const char dir) {
-    std::string outMsg = "JM";
-    outMsg += "R";
-    outMsg += joystick;
-    outMsg += dir;
     outMsg += "\n";
     sendMsg(outMsg);
 }
@@ -298,7 +264,6 @@ void ArmHardwareDriver::homeEE() {
 
 void ArmHardwareDriver::armPositionCallBack(
 const sb_msgs::ArmPosition::ConstPtr& commanded_msg) {
-    // TODO: ihsan fill std::vector<double> type with sb_msgs values
     armCmd.assign(commanded_msg->positions.begin(),
                   commanded_msg->positions.end());
     jointPosToEncSteps(armCmd, encCmd);
@@ -349,53 +314,35 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 // Libserial Implementation
 
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
-    // Send everything in outMsg through serial port
-	/*
-    if(serialOpen)
-    {
-    */
-        // close serial port to other processes
-        serialOpen = false;
-        dataInTransit = true;
-        teensy.Write(outMsg);
-    // }
+    serialOpen = false;
+    dataInTransit = true;
+    teensy.Write(outMsg);
     ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg() {
-    // fill inMsg string with whatever comes through serial port until \n
-	/*
-    if(dataInTransit)
-    {
-	    */
-        std::stringstream buffer;
-        char next_char;
-        do {
-            teensy.WriteByte(next_char);
-	    // ROS_INFO("next_char: %c", next_char);
-            buffer << next_char;
-        } while (next_char != 'Z');
-        std::string inMsg = buffer.str();
+    std::stringstream buffer;
+    char next_char;
+    do {
+        teensy >> next_char;
+    // ROS_INFO("next_char: %c", next_char);
+        buffer << next_char;
+    } while (next_char != 'Z');
+    std::string inMsg = buffer.str();
 
-        // check if joint state is available
-        if (inMsg.substr(0, 2) == "JP") {
-            updateEncoderSteps(inMsg);
-            encStepsToJointPos(encPos, armPos);
-            // updateHWInterface();
-        // check if end effector force feedback is available
-        } else if (inMsg.substr(0, 2) == "EE")
-            ROS_INFO("%s", inMsg.c_str());
-        // check if homing is completed
-        else if(inMsg.substr(0, 2) == "HC")
-        {
-            ROS_INFO("ARM CALIBRATION COMPLETE, NOW ACCEPTING CONTROLLER COMMANDS!");
-        }
-        // open serial port to other processes
-        serialOpen = true;
-        dataInTransit = false;  
-	/*
+    // check if joint state is available
+    if (inMsg.substr(0, 2) == "JP") {
+        updateEncoderSteps(inMsg);
+        encStepsToJointPos(encPos, armPos);
+        // updateHWInterface();
+    // check if end effector force feedback is available
+    } else if (inMsg.substr(0, 2) == "EE")
+        ROS_INFO("%s", inMsg.c_str());
+    // check if homing is completed
+    else if(inMsg.substr(0, 2) == "HC")
+    {
+        ROS_INFO("ARM CALIBRATION COMPLETE, NOW ACCEPTING CONTROLLER COMMANDS!");
     }
-    */
 }
 
 void ArmHardwareDriver::updateHWInterface() {

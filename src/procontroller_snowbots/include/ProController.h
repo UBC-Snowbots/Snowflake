@@ -92,10 +92,7 @@ class ProController {
     const char rightJSPressRel = '8';
     const char homeVal = '4';
     const char homeValEE = '6';
-    const char J1 = '1';
-    const char J2 = '2';
-    const char J3 = '3';
-    const char J4 = '4';
+
     // arm modes
     const char jointMode = '1';
     const char IKMode = '2';

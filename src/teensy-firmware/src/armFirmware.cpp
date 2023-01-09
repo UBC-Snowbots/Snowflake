@@ -1,126 +1,64 @@
 /*
-Created By: Tate Kolton, Rowan Zawadzki
+Created By: Tate Kolton, Rowan Zawadzki, Graeme Dockrill
 Created On: December 21, 2021
-Updated: April 27, 2022
+Updated On: December 11, 2022
 Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 */
- 
-#include <AccelStepper.h>
 
-// general parameters
-#define NUM_AXES 6
-#define NUM_AXES_EX_WRIST 4
-#define NUM_AXES_EFF 8
-#define NUM_PARAMS 7
-#define ON 0
-#define OFF 1
-#define SW_ON 0
-#define SW_OFF 1
-#define FWD 1
-#define REV 0
+// header file with all constants defined and libraries included
+#include "armFirmware.h"
 
-int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
-
-static const char release = 'R';
-static const char move = 'M';
-static const char change = 'A';
-static const char speed = 'S';
-static const char right = 'R';
-static const char left = 'L';
-static const char up = 'U';
-static const char down = 'D';
-static const char wrist = 'W';
-static const char garbage = 'G';
-static const char faster = 'U';
-static const char slower = 'D';
-
-int stepPins[8] =   {11, 9, 5, 7, 1, 3, 1, 3};
-int dirPins[8] =    {10, 8, 4, 6, 0, 2, 0, 2};
-
-// limit switch pins
-int limPins[6] = {23, 22, 20, 21, 18, 19};
-
-// pulses per revolution for motors
-long ppr[6] = {400, 400, 400, 400, 400, 400};
-
-// Gear Reduction Ratios
-float red[6] = {30.0, 161.0, 44.8, 100, 57.34, 57.34};
-
-// Encoder pulses per revolution
-long pprEnc = 512;
-
-// Motor speeds and accelerations
-int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200};
-int maxAccel[8] = {900, 3000, 4000, 3000, 5000, 5000, 5000, 5000};
-int homeSpeed[8] = {500, 1200, 600, 400, 2000, 2000, 2000, 2000}; // {500, 1500, 700, 1200, 1200, 1200, 1200, 1200};
-int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500, 1500, 1500}; //{500, 2000, 1000, 1500, 1500, 1500, 1500, 1500};
-
-// Range of motion (degrees) for each axis
-int maxAngles[6] = {180, 70, 180, 120, 140, 100};
-
-const unsigned long readInterval = 10;
-unsigned long currentTime;
-unsigned long previousTime = 0;
-
-// stepper motor objects for AccelStepper library
-AccelStepper steppers[8];
-
-// variable declarations
-long max_steps[] = {red[0]*maxAngles[0]/360.0*ppr[0], red[1]*maxAngles[1]/360.0*ppr[1], red[2]*maxAngles[2]/360.0*ppr[2], red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
-int axisDir[8] = {1, -1, 1, -1, 1, 1, -1, 1}; 
-int currentAxis = 1;
-int runFlags[] = {0, 0, 0, 0, 0, 0};
-int i;
-bool initFlag = false;
-
-// variables for homing / arm calibration
-long homePosConst = -99000;
-long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst, axisDir[6]*homePosConst, axisDir[7]*homePosConst};
-long homeCompAngles[] = {axisDir[0]*90, axisDir[1]*5, axisDir[2]*93, axisDir[3]*12, axisDir[4]*102, axisDir[5]*102, axisDir[6]*80, axisDir[7]*80};
-long homeCompConst[] = {2000, 2000, 1000, 500, 500, 500, 500, 500};
-long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5], axisDir[6]*homeCompConst[6], axisDir[7]*homeCompConst[7]};
-long homeCompSteps[] = {homeCompAngles[0]*red[0]*ppr[0]/360.0, homeCompAngles[1]*red[1]*ppr[1]/360.0, homeCompAngles[2]*red[2]*ppr[2]/360.0, homeCompAngles[3]*red[3]*ppr[3]/360.0, homeCompAngles[4]*red[4]*ppr[4]/360.0, homeCompAngles[5]*red[5]*ppr[5]/360.0, homeCompAngles[6]*red[4]*ppr[4]/360.0, homeCompAngles[7]*red[5]*ppr[5]/360.0};
-char value;
-
-// values for changing speed
-const int maxSpeedIndex = 2;
-int speedVals[maxSpeedIndex+1][NUM_AXES_EFF] = {{600, 900, 1500, 1250, 1050, 1050, 1050, 1050}, {900, 1200, 2000, 1665, 1460, 1460, 1460, 1460}, {1200, 1800, 3000, 2500, 2200, 2200, 2200, 2200}};
-int speedIndex = maxSpeedIndex;
-
-
-
-void setup() { // setup function to initialize pins and provide initial homing to the arm
+// setup function to initialize pins and provide initial homing to the arm.
+void setup() {
 
   Serial.begin(9600);
 
-  // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
-  for(i = 0; i<NUM_AXES_EFF; i++) {
-    pinMode(dirPins[i], OUTPUT);
-    pinMode(stepPins[i], OUTPUT);
-    pinMode(limPins[i], INPUT_PULLUP);
-    steppers[i] = AccelStepper(1, stepPins[i], dirPins[i]);
-    steppers[i].setMinPulseWidth(200);
+  for(int i=0; i<NUM_AXES; i++) {
+    ENC_STEPS_PER_DEG[i] = ppr[i]*red[i]*(ENC_MULT[i]/360.0);
+
+    min_steps[i] = -homeCompSteps[i];
+    max_steps[i] = max_steps[i]-homeCompSteps[i];
   }
-  // waits for user to press "home" button before rest of functions are available
-  waitForHome();
+
+min_steps[0] = -max_steps[0];
+  
+  // initializes end effector motor
+  pinMode(EEstepPin, OUTPUT);
+  pinMode(EEdirPin, OUTPUT);
+  endEff.setMinPulseWidth(200);
+  endEff.setMaxSpeed(speedEE);
+  endEff.setAcceleration(accEE);
+  endEff.setCurrentPosition(1000);
+
+  // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
+  for(i = 0; i<NUM_AXES; i++) {
+      pinMode(dirPins[i], OUTPUT);
+      pinMode(stepPins[i], OUTPUT);
+      pinMode(limPins[i], INPUT_PULLUP);
+      steppers[i] = AccelStepper(1, stepPins[i], dirPins[i]);
+      steppers[i].setMinPulseWidth(200);
+    }
+    
+// waits for user to press "home" button before rest of functions are available
+waitForHome();
 }
 
+// main program loop
 void loop()
 {
-  currentTime = millis();
+  // receives command from serial and executes accoringly
+  recieveCommand();
 
-  if((currentTime - previousTime) > readInterval) {
-    recieveCommand();
-    previousTime = currentTime;
-  }
-
-runSteppers();
+  // run steppers to target position
+    runSteppers();
 }
 
 void recieveCommand()
 {
   String inData = "";
-  char recieved = garbage;
+  char recieved = '\0';
+
+  // if a message is present, copy it to inData
   if(Serial.available()>0)
   {
     do {
@@ -129,8 +67,10 @@ void recieveCommand()
     } while(recieved != '\n');
   }
 
+  // parse the received data
   if(recieved == '\n')
   {
+
     parseMessage(inData);
   }
 }
@@ -139,6 +79,7 @@ void parseMessage(String inMsg)
 {
   String function = inMsg.substring(0, 2);
   
+  // choose which function to run
   if(function == "MT")
   {
     cartesianCommands(inMsg);
@@ -159,9 +100,32 @@ void parseMessage(String inMsg)
     drillCommands(inMsg);
   }
 
+  else if(function == "FB")
+  {
+    sendFeedback(inMsg);
+  }
+
   else if(function == "HM")
   {
     homeArm();
+  }
+}
+
+void sendMessage(char outChar)
+{
+  String outMsg = String(outChar);
+  Serial.print(outMsg);
+}
+
+void sendFeedback(String inMsg)
+{
+  char function = inMsg[2];
+
+  // if in joint mode, send feedback over serial
+  if(function == joint)
+  {
+    readEncPos(curEncSteps);
+    sendCurrentPosition();
   }
 }
 
@@ -169,6 +133,13 @@ void parseMessage(String inMsg)
 
 void cartesianCommands(String inMsg)
 {
+
+  if(jointFlag) 
+  {
+    IKFlag = true;
+    jointFlag = false;
+    setCartesianSpeed();
+  }
   // read current joint positions
   readEncPos(curEncSteps);
 
@@ -191,20 +162,24 @@ void cartesianCommands(String inMsg)
 
   // update target joint positions
   readEncPos(curEncSteps);
-  for (int i = 0; i < NUM_AXES; i++)
-  { 
-    int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
-    if (abs(diffEncSteps) > 2)
-    {
-    int diffMotSteps = diffEncSteps / ENC_MULT[i];
-    if (diffMotSteps < MOTOR_STEPS_PER_REV[i])
-    {
-      // for the last rev of motor, introduce artificial decceleration
-      // to help prevent overshoot
-      diffMotSteps = diffMotSteps / 2;  
-    }
-    steppers[i].move(diffMotSteps);
-    }
+  cmdArm();
+}
+
+void setCartesianSpeed()
+{
+  float JOINT_MAX_SPEED[NUM_AXES];
+  float MOTOR_MAX_SPEED[NUM_AXES];
+  float JOINT_MAX_ACCEL[NUM_AXES];
+  float MOTOR_MAX_ACCEL[NUM_AXES];
+
+  for(int i=0; i<NUM_AXES; i++)
+  {
+    JOINT_MAX_SPEED[i] = IKspeeds[i]*(180.0/3.14159);
+    JOINT_MAX_ACCEL[i] = IKaccs[i]*(180.0/3.14159);
+    MOTOR_MAX_SPEED[i] = JOINT_MAX_SPEED[i] * ENC_STEPS_PER_DEG[i] / ENC_MULT[i];
+    MOTOR_MAX_ACCEL[i] = JOINT_MAX_ACCEL[i] * ENC_STEPS_PER_DEG[i] / ENC_MULT[i];
+    steppers[i].setAcceleration(MOTOR_MAX_ACCEL[i]);
+    steppers[i].setMaxSpeed(MOTOR_MAX_SPEED[i]);
   }
 }
 
@@ -214,200 +189,224 @@ void jointCommands(String inMsg)
   char function = inMsg[2];
   char detail1 = inMsg[3];
 
-  switch(function) 
+  if(!jointFlag) // dont worry for now
   {
-    case release: releaseEvent(detail1, inMsg[4]); break;
-    case speed: changeSpeed(detail1); break;
-    case axis: changeAxis(detail1); break;
-    case move: jointMovement(detail1, inMsg[4]); break;
+    IKFlag = false;
+    jointFlag = true;
+    setJointSpeed();
+  }
+
+if(function == move)
+  moveArm(detail1, inMsg[4]);
+
+else if(function == release)
+  relArm(detail1);
+}
+
+void moveArm(char axis, char dir) // Change name to moveArm
+{
+   int axisNum = String(axis).toInt(); // String to int for math
+    
+   if((dir == left) || (dir == up))
+   {
+      moveAxis((axisNum-1), FWD);
+   }
+   else if((dir == right) || (dir == down))
+   {
+      moveAxis((axisNum-1), REV); 
+   }
+}
+
+void relArm(char axis)
+{
+  int axisNum = String(axis).toInt(); // String to int for math
+  steppers[axisNum-1].stop();
+  runFlags[axis] = 0;
+}
+
+void moveAxis(int axis, int dir)
+{
+ if((axis == 0) || (axis == 1)) { // switching direction if axis 1 or 2 (arm moves in intuitive dir)
+  dir = !dir;
+ }
+ 
+ if(dir == FWD && runFlags[axis] != 1) { // sets stepper to move to max steps and sets run flag so doesn't keep executing
+  steppers[axis].moveTo(max_steps[axis]);
+  runFlags[axis] = 1;
+  }
+else if (dir == REV && runFlags[axis] != -1) { // sets stepper to move to min steps and sets run flag so doesn't keep executing
+  steppers[axis].moveTo(min_steps[axis]);
+  runFlags[axis] = -1;
   }
 }
 
 void endEffectorCommands(String inMsg)
 {
-  // fill with end effector commands depending on substring
+  char data = inMsg[2];
+
+  //opening code
+  if (data == open) { //check if open button pressed and if force is less than max
+    endEff.moveTo(openPos*MOTOR_DIR_EE); //continue to move to open position
+  }
+
+  //closing code
+  else if (data == close) { //check if open button pressed and if force is less than max
+    endEff.moveTo(closePos*MOTOR_DIR_EE); //continue to move to closed position
+  }
+
+  else if (data == release) { //else check if release button pressed
+    endEff.stop(); // stop when above condition reached
+  }
+
+  else if (data == homeValEE)
+  {
+    if(resetEE)
+    {
+      endEff.setCurrentPosition(1000);
+      resetEE = false;
+    }
+
+    else
+    {
+      endEff.setCurrentPosition(0);
+      resetEE = true;
+    }
+  }
 }
 
-void drillMotion(String inMsg)
+void getEEForce()
 {
-  // fill with calls to drill functions depending on substring
+  if(scale.wait_ready_timeout(1))
+  {
+    float force = scale.get_units()/1000*9.81;
+    forcePct = force*100.0/maxForce;
+  }
+}
+
+void sendEEForce()
+{
+  String force_value = String(forcePct);
+  String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" Z");
+  Serial.print(force_message);
+}
+
+void drillCommands(String inMsg)
+{
+  char function = inMsg[2];
+
+  if(function == manual)
+    manualDrill(inMsg[3]);
+  else if(function == drillRelease)
+    stopDrill();
+  else if(function == prepare)
+    spinDrill();
+  else if(function == collect)
+    stopDrill();
+  else if(function == deposit)
+    depositSample();
+}
+
+void manualDrill(char dir)
+{
+  if(dir == left)
+  {
+    endEff.move(99000);
+  }
+
+  else
+  {
+    endEff.move(-99000);
+  }
+}
+
+void stopDrill()
+{
+  endEff.stop();
+}
+
+void spinDrill()
+{
+  endEff.move(99000);
+}
+
+void collectSample()
+{
+
+}
+
+void depositSample()
+{
+
 }
 
 void sendCurrentPosition() 
 {
   String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
-                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("\n");
+                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
     Serial.print(outMsg);
 }
 
-// Sets movement target positions when in joint space mode
-void jointMovement(char joystick, char dir)
+// converts cartesian angles to joint space stepper current positions
+void setJointSpeed()
 {
-  if(joystick == wrist)
-  {
-    switch(dir)
-    {
-      case up: runWrist(FWD, 5); break;
-      case down: runWrist(REV, 5); break;
-      case left: runWrist(FWD, 6); break;
-      case right: runWrist(REV, 6); break;
-    }
+  for(i = 0; i<NUM_AXES; i++) {
+  steppers[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
+  steppers[i].setAcceleration(maxAccel[i]);
   }
-
-  else if(joystick == left)
-  {
-    switch(dir)
-    {
-      case left: runAxes(FWD, currentAxis); break;
-      case right: runAxes(REV, currentAxis); break;
-    }
-  }
-
-  else
-  {
-    switch(dir)
-    {
-      case up: runAxes(FWD, currentAxis+1); break;
-      case down: runAxes(REV, currentAxis+1); break;
-    }
-  } 
 }
 
 //****//ENCODER RELATED FUNCTIONS//****//
 
 void readEncPos(int* encPos)
 {
-  encPos[0] = J1encPos.read() * ENC_DIR[0];
-  encPos[1] = J2encPos.read() * ENC_DIR[1];
-  encPos[2] = J3encPos.read() * ENC_DIR[2];
-  encPos[3] = J4encPos.read() * ENC_DIR[3];
-  encPos[4] = J5encPos.read() * ENC_DIR[4];
-  encPos[5] = J6encPos.read() * ENC_DIR[5];
+  encPos[0] = enc1.read()*ENC_DIR[0];
+  encPos[1] = enc2.read()*ENC_DIR[1];
+  encPos[2] = enc3.read()*ENC_DIR[2];
+  encPos[3] = enc4.read()*ENC_DIR[3];
+  encPos[4] = enc5.read()*ENC_DIR[4];
+  encPos[5] = enc6.read()*ENC_DIR[5];
 }
+
+void zeroEncoders()
+{
+  enc1.write(0);
+  enc2.write(0);
+  enc3.write(0);
+  enc4.write(0);
+  enc5.write(0);
+  enc6.write(0);
+
+  readEncPos(curEncSteps);
+}
+
+// For closed loop movement
+void cmdArm()
+{
+  for (int i = 0; i < NUM_AXES; i++)
+  { 
+    int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
+    if (abs(diffEncSteps) > 5)
+    {
+    int diffMotSteps = diffEncSteps / ENC_MULT[i];
+    if (diffMotSteps < ppr[i])
+    {
+      diffMotSteps = diffMotSteps / 2;  
+    }
+
+    steppers[i].move(diffMotSteps*axisDirIK[i]);
+    }
+  }
+}
+
 
 //****//JOINT SPACE MODE FUNCTIONS//****//
-
-// sets target position for axes in joint space mode
-void runAxes(int dir, int axis) { // assigns run flags to indicate forward / reverse motion and sets target position
-
-  if(axis == 3) {
-    dir = !dir;
-  }
-  
-  if(runFlags[axis-1] == 1 && dir == FWD) {
-  }
-
-  else if(runFlags[axis-1] == -1 && dir == REV) {
-  }
-    
-  else if(dir == FWD) {
-    steppers[axis-1].moveTo(max_steps[axis-1]*axisDir[axis-1]);
-    runFlags[axis-1] = 1;
-  }
-
-  else {
-    steppers[axis-1].moveTo(0);
-    runFlags[axis-1] = -1;
-  }
-}
-
-void runWrist(int dir, int axis) { // assigns target position for selected axis based on user input. 
-
-  if(axis == 5) { // axis 5 motion -> both wrist motors spin in opposite directions
-    if(runFlags[5] == 1 && dir == FWD) {
-    }
-
-    else if(runFlags[5] == -1 && dir == REV) {
-    }
-    
-    else if(dir == FWD) {
-      steppers[6].moveTo(axisDir[6]*max_steps[5]);
-      steppers[7].moveTo(axisDir[7]*max_steps[5]);
-      runFlags[5] = 1;
-    }
-
-    else {
-      steppers[6].moveTo(0);
-      steppers[7].moveTo(0);
-      runFlags[5] = -1;
-    } 
-  }
-
-  else if(axis == 6) { // axis 6 motion -> both wrist motors spin in same direction
-    dir = !dir;
-    if(runFlags[4] == 1 && dir == FWD) {
-    }
-
-    else if(runFlags[4] == -1 && dir == REV) {
-    }
-    
-    else if(dir == FWD) {
-      steppers[4].moveTo(axisDir[4]*max_steps[4]);
-      steppers[5].moveTo(axisDir[5]*max_steps[4]);
-      runFlags[4] = 1;
-    }
-
-    else {
-      steppers[4].moveTo(0);
-      steppers[5].moveTo(0);
-      runFlags[4] = -1;
-    }
-  } 
-}
-
-void changeAxis(int dir) { // when user hits specified button, axis targets change
-
-    if((dir == up) && (currentAxis == 1))
-    {
-        currentAxis = 3;
-        zeroRunFlags();
-    }
-
-    else if((dir == down) && (currentAxis == 3))
-    {
-        currentAxis = 1;
-        zeroRunFlags();
-    }
-}
-
-void releaseEvent(char joystick, char dir) { // when user releases a joystick serial sends a character
-
-  if(joystick == wrist)
-  {
-    if ((dir == up) || (dir == down))
-    {
-      steppers[6].stop();
-      steppers[7].stop();
-      runFlags[5] = 0;
-    }
-
-    else
-    {
-      steppers[4].stop();
-      steppers[5].stop();
-      runFlags[4] = 0; 
-    }
-  }
-
-  else if(joystick == left)
-  {
-    steppers[currentAxis-1].stop();
-    runFlags[currentAxis-1].stop();
-  }
-
-  else 
-  {
-    steppers[currentAxis].stop();
-    runFlags[currentAxis].stop();
-  }
-}
 
 void changeSpeed(char speedVal) { // changes speed of all axes based on user input
   
   if(speedVal == faster){
     if(speedIndex < maxSpeedIndex) {
       speedIndex++;
-      for(i=0;i<NUM_AXES_EFF;i++) {
+      for(i=0;i<NUM_AXES;i++) {
         steppers[i].setMaxSpeed(speedVals[speedIndex][i]);
       }
     }
@@ -416,45 +415,43 @@ void changeSpeed(char speedVal) { // changes speed of all axes based on user inp
   else if(speedVal == slower) {
     if(speedIndex > 0) {
       speedIndex--;
-      for(i=0;i<NUM_AXES_EFF;i++) {
+      for(i=0;i<NUM_AXES;i++) {
         steppers[i].setMaxSpeed(speedVals[speedIndex][i]);
       }
     }
   }
 }
 
-void zeroRunFlags() { // when user changes axis to control on switch, slow current moving axes to a stop and reset run flags (all motors stagnant)
-
-  for(i = 0; i<NUM_AXES_EX_WRIST; i++) {
-    steppers[i].stop();
-  }
-
-  for(i=0; i<NUM_AXES_EX_WRIST; i++) {
-    runFlags[i] = 0;
-  }
-}
 
 //****// ARM CALIBRATION FUNCTIONS//****//
 
 void homeArm() { // main function for full arm homing
-  initializeWristHomingMotion();
-  homeWrist();
   initializeHomingMotion();
-  homeBase();
+  homeAxes();
   initializeMotion();
-  sendCurrentPosition();
+  zeroEncoders();
+  J1Flag = true;
+
+  // clear serial port in case of garbage values
+  while(Serial.available() !=0)
+  {
+    Serial.read();
+  }
+
+  // notify hardware driver that homing has completed
+  Serial.print("HCZ");
 }
 
-void homeBase() { // homes axes 1-4
-  
-  bool stopFlags[4] = {false, false, false, false};
-  bool finishFlags[4] = {false, false, false, false};
+// Runs through and checks if each axis has reached its limit switch, then runs it a couple steps awayfrom switch for 0 position
+void homeAxes() { // homes arm axes   
+  bool stopFlags[6] = {false, false, false, false, false, false};
+  bool finishFlags[6] = {false, false, false, false, false, false};
   bool completeFlag = false;
   int count = 0;
   
   while(!completeFlag) {
 
-    for(i = 0; i < NUM_AXES_EX_WRIST; i++) {
+    for(i = 0; i < NUM_AXES; i++) {
 
       if(!finishFlags[i]) {
 
@@ -481,156 +478,110 @@ void homeBase() { // homes axes 1-4
         }
       }
     }
-    if(count == NUM_AXES_EX_WRIST) {
-      completeFlag = true;
-    }
-  }
-  initializeMotion();
-}
-
-void homeWrist() { // homes axes 5-6
-
-  bool stopFlags[2] = {false, false};
-  bool calibFlags[2] = {false, false};
-  bool completeFlag = false;
-
-  while(!completeFlag) {
-
-    if(!digitalRead(limPins[5]) && !stopFlags[0]) {
-      steppers[6].run();
-      steppers[7].run();
-    }
-
-    else if(!stopFlags[0]) {
-      steppers[6].setCurrentPosition(-homeComp[6]);
-      steppers[7].setCurrentPosition(-homeComp[7]);
-      steppers[6].stop();
-      steppers[7].stop();
-      steppers[6].setMaxSpeed(maxSpeed[6]);
-      steppers[7].setMaxSpeed(maxSpeed[7]);
-      steppers[6].setAcceleration(maxAccel[6]);
-      steppers[7].setAcceleration(maxAccel[7]);
-      steppers[6].moveTo(homeCompSteps[6]);
-      steppers[7].moveTo(homeCompSteps[7]);
-      stopFlags[0] = true;      
-    }
-
-    else if(steppers[6].distanceToGo()!= 0 && !calibFlags[0]) {
-      steppers[6].run();
-      steppers[7].run();
-    }
-
-    else if(!calibFlags[0]) {
-      calibFlags[0] = true;
-    }
-
-    else if(!digitalRead(limPins[4]) && !stopFlags[1]) {
-      steppers[4].run();
-      steppers[5].run();
-    }
-
-    else if(!stopFlags[1]) {
-      steppers[4].setCurrentPosition(-homeComp[4]);
-      steppers[5].setCurrentPosition(-homeComp[5]);
-      steppers[4].stop();
-      steppers[5].stop();
-      steppers[4].setMaxSpeed(maxSpeed[4]);
-      steppers[5].setMaxSpeed(maxSpeed[5]);
-      steppers[4].setAcceleration(maxAccel[4]);
-      steppers[5].setAcceleration(maxAccel[5]);
-      steppers[4].moveTo(homeCompSteps[4]);
-      steppers[5].moveTo(homeCompSteps[5]);
-      stopFlags[1] = true;      
-    }
-
-    else if(steppers[4].distanceToGo()!= 0 && !calibFlags[1]) {
-      steppers[4].run();
-      steppers[5].run();
-    }
-
-    else if(!calibFlags[1]) {
-      calibFlags[1] = true;
+    if(count == NUM_AXES) {
       completeFlag = true;
     }
   }
 }
 
-void initializeHomingMotion() { // sets homing speed and acceleration for axes 1-4 and sets target homing position
+void initializeHomingMotion() { // sets homing speed and acceleration and sets target homing position
 
-  for(i = 0; i<NUM_AXES_EX_WRIST; i++) {
-
-    steppers[i].setMaxSpeed(homeSpeed[i]);
-    steppers[i].setAcceleration(homeAccel[i]);
-    steppers[i].setCurrentPosition(0);
-    steppers[i].move(homePos[i]);
-  }
-}
-
-void initializeWristHomingMotion() { // sets homing speed and acceleration for axes 5-6 and sets target homing position
-
-  for(i = 4; i<NUM_AXES_EFF; i++) {
+  for(i = 0; i<NUM_AXES; i++) {
 
     steppers[i].setMaxSpeed(homeSpeed[i]);
     steppers[i].setAcceleration(homeAccel[i]);
     steppers[i].setCurrentPosition(0);
-    steppers[i].move(homePos[i]);
+
+    if(i !=0)
+    {
+      steppers[i].move(homePos[i]);
+    }
+
+    else if(J1Flag == true)
+    {
+      if((steppers[0].currentPosition()/axisDir[0] < 0) && (abs(steppers[0].currentPosition()/axisDir[0]) > (homeCompSteps[0] + homeComp[0])/axisDir[0]))
+      {
+        steppers[0].move(-homePos[i]);
+      }
+      else
+      {
+        steppers[0].move(homePos[i]);
+      }
+    }
+    else
+    {
+      steppers[0].move(homePos[i]);
+    }
   }
 }
+
 
 void initializeMotion() { // sets main program speeds for each axis
 
-  for(i = 0; i<NUM_AXES_EFF; i++) {
+  for(i = 0; i<NUM_AXES; i++) {
     steppers[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
     steppers[i].setAcceleration(maxAccel[i]);
-  }
-}
-
-void zeroAxes() { // sets current position of all axes to 0
-
-  for(i = 0; i<NUM_AXES_EFF; i++) {
     steppers[i].setCurrentPosition(0);
   }
 }
 
-void runSteppers() { // runs all stepper motors (if no target position has been assigned, stepper will not move)
+
+void runSteppers() {
     
-  for(i = 0; i<NUM_AXES_EFF; i++) {
+  for(i = 0; i<NUM_AXES; i++) {
     steppers[i].run();
   }
+
+  endEff.run();
 }
 
-void waitForHome() { // stops arm motion until user homes arm after firmware is flashed
+void waitForHome()
+{
+  String inData;
+  char recieved = '\0';
 
-  String inData = "";
-  char recieved;
-  bool initFlag = false;
-  bool serialFlag = false;
-
-  while(!initFlag) {
-
-    if(Serial.available() > 0)
+  while(!initFlag)
+  {
+    inData = "";
+    if(Serial.available()>0)
     {
-      recieved = Serial.read();
-      inData += String(recieved)
-      if(recieved == '\n')
-      {
-        serialFlag = true;
-      }
+      do {
+        recieved = Serial.read();
+        inData += String(recieved);
+      } while(recieved != '\n');
     }
-
-    if(serialFlag)
+  
+    if(recieved == '\n')
     {
-        if(inData = "HM")
-        {
-          homeArm();
-          initFlag = true;
-        }
-
-        else
-        {
-          inData = "";
-          serialFlag = false;
-        }
+      if(inData.substring(0, 2) == "HM")
+        homeArm();
+        initFlag = true;
     }
   }
 }
+
+//void homeEE()
+//{
+//  EEforce=scale.get_units()/1000*9.81;
+//
+//  // target position for end effector in closed direction
+//  endEff.move(-99000*MOTOR_DIR_EE);
+//
+//  while(abs(EEforce) < calForce) 
+//  {
+//    if (scale.wait_ready_timeout(1)) {   
+//      EEforce=scale.get_units()/1000*9.81; //converting mass to force
+//    // close end effector
+//    }
+//    endEff.run();
+//  }
+//
+//  endEff.setCurrentPosition(-30);
+//  endEff.moveTo(openPos*MOTOR_DIR_EE);
+//  while(endEff.distanceToGo() != 0)
+//  {
+//    endEff.run();
+//  }
+//}
+
+// updated aug 22, 2022
