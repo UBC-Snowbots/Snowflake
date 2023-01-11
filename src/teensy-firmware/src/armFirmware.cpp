@@ -147,16 +147,17 @@ void runSteppers() {
 
 //****//JOINT MODE FUNCTIONS//****//
 
-// parses which commands to execute when in joint space mode
+// Parses which commands to execute when in joint space mode
 void jointCommands(String inMsg)
 {
   char function = inMsg[2];
   char detail1 = inMsg[3];
 
-  if(!jointFlag) // dont worry for now
+  if(!jointFlag) // Check if we are switching from cartesian mode
   {
     IKFlag = false;
     jointFlag = true;
+    cartesianToJoint();
     setJointSpeed();
   }
 
@@ -167,7 +168,7 @@ else if(function == release)
   relArm(detail1);
 }
 
-void moveArm(char axis, char dir) // Change name to moveArm
+void moveArm(char axis, char dir) 
 {
    int axisNum = String(axis).toInt(); // String to int for math
     
@@ -210,6 +211,15 @@ void setJointSpeed()
   for(i = 0; i<NUM_AXES; i++) {
   steppers[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
   steppers[i].setAcceleration(maxAccel[i]);
+  }
+}
+
+void cartesianToJoint() 
+{
+  readEncPos(curEncSteps);
+  for(i=0; i<NUM_AXES; i++)
+  {
+    steppers[i].setCurrentPosition(curEncSteps[i]/ENC_MULT[i]);
   }
 }
 

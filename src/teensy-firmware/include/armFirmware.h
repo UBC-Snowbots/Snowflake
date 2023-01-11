@@ -127,7 +127,7 @@ int runFlags[] = {0, 0, 0, 0, 0, 0};
 int currentAxis = 1;
 int i;
 bool initFlag = false;
-bool jointFlag = true;
+bool jointFlag = false;
 bool IKFlag = false;
 bool resetEE = false;
 bool vertFlag = false;
