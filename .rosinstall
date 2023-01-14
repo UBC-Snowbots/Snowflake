@@ -31,7 +31,7 @@
 - git:
     local-name: external_libs/joycond
     uri: https://github.com/DanielOgorchock/joycond
--git:
+- git:
     local-name: src/external_pkgs/qt_ros
     uri: https://github.com/stonier/qt_ros.git
 - git:
