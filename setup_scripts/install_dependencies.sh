@@ -63,8 +63,8 @@ echo "================================================================"
 cd $CURR_DIR
 sudo ./setup_realsense.sh
 
-#cd $CURR_DIR
-#sudo ./install_phidgets.sh
+cd $CURR_DIR
+sudo ./install_phidgets.sh
 #cd $CURR_DIR
 #sudo ./install_libsbp.sh
 cd $CURR_DIR
@@ -79,7 +79,7 @@ sudo apt-get install -y\
     
 sudo apt-get update -y
 sudo apt-get install -y libalglib-dev
-
+sudo apt-get install -y libdlib-dev
 sudo apt-get install -y libgsl-dev
 sudo apt-get install -y libserial-dev
 
