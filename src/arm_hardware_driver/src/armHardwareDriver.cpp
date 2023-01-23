@@ -314,8 +314,8 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 // Libserial Implementation
 
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
-    serialOpen = false;
-    dataInTransit = true;
+   // serialOpen = false;
+    //dataInTransit = true;
     teensy.Write(outMsg);
     ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
@@ -324,7 +324,7 @@ void ArmHardwareDriver::recieveMsg() {
     std::stringstream buffer;
     char next_char;
     do {
-        teensy >> next_char;
+        teensy.ReadByte(next_char); //WAS teensy >> next_char;
     // ROS_INFO("next_char: %c", next_char);
         buffer << next_char;
     } while (next_char != 'Z');
