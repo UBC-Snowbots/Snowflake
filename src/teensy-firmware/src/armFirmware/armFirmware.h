@@ -10,6 +10,8 @@ Description: Header file for firmware for driving a 6 axis arm via ROS on a teen
 #include <Encoder.h>
 
 // general parameters
+#define SIM 0 //firmware simulation
+
 #define NUM_AXES 6
 #define NUM_PARAMS 7
 #define ON 0
@@ -18,6 +20,8 @@ Description: Header file for firmware for driving a 6 axis arm via ROS on a teen
 #define SW_OFF 1
 #define FWD 1
 #define REV 0
+
+
 
 static const char release = 'R';
 static const char move = 'M';
