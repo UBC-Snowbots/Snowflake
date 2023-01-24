@@ -3,6 +3,7 @@ Created By: Tate Kolton, Graeme Dockrill
 Created On: December 21, 2021
 Updated On: January 10, 2023
 Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
+Major Edits on January 23, 2023 to make combatible with joy_node and direct ros integration
 */
 
 // header file with all constants defined and libraries included
