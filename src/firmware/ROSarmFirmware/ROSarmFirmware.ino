@@ -137,7 +137,7 @@ void sendCurrentPosition() {
   if (!SIM) {
 
   } else {
-    short data[6] = {1, 2, 3, 4, 5, 6};
+    float data[6] = {1.9, 2.4, 33.4, 4.87, 5.45, 6.34};
     for(int i = 0; i < NUM_AXES; i++){
    OBSangles.data = data;//steppers[i].currentPosition();
   

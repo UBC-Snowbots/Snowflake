@@ -13,7 +13,7 @@ Description: Header file for firmware for driving a 6 axis arm via ROS on a teen
 #include <std_msgs/Int16.h>
 #include <std_msgs/Float64MultiArray.h>
 //#include <sb_msgs/ArmPosition.h> //may cause errors, if this file exhists, keep spammig upload/verify until arduino finds it
-#include <std_msgs/Int16MultiArray.h>
+#include <std_msgs/Float32MultiArray.h>
 // general parameters
 #define SIM 1 //firmware simulation, disables encoders and feeds back only stepper positions, works with only a microcontroller connected.
 
@@ -32,7 +32,7 @@ ros::NodeHandle nh;
 std_msgs::Int16 beat;
 //sb_msgs::ArmPosition INangles;
 //sb_msgs::ArmPosition OBSangles;
-std_msgs::Int16MultiArray OBSangles;
+std_msgs::Float32MultiArray OBSangles;
     
     int spinTEMP = millis();
 int spinINTERVAL = 20; //base speed of ros
@@ -43,6 +43,7 @@ int posINTERVAL = 100; //ms
 
 ros::Publisher heart("/heartbeat", &beat);
 ros::Publisher observer("/observed_arm_pos", &OBSangles);
+//ros::Subscriber<typename MsgT>
 
 
 static const char release = 'R';
