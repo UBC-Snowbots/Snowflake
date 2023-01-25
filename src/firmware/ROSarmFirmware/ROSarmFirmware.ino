@@ -7,13 +7,21 @@ Major Edits on January 23, 2023 to make combatible with joy_node and direct ros 
 */
 
 // header file with all constants defined and libraries included
-#include "armFirmware.h"
+#include "ROSarmFirmware.h"
+
 
 
 // setup function to initialize pins and provide initial homing to the arm.
 void setup() {
 
-  Serial.begin(9600);
+Serial.begin(115200);
+nh.getHardware()->setBaud(115200);
+nh.initNode();
+nh.advertise(heart);
+nh.advertise(observer);
+nh.negotiateTopics();
+
+OBSangles.data_length = 6;
 
   for (int i = 0; i < NUM_AXES; i++) {
     ENC_STEPS_PER_DEG[i] = ppr[i] * red[i] * (ENC_MULT[i] / 360.0);
@@ -44,15 +52,31 @@ void setup() {
   // waits for user to press "home" button before rest of functions are available
 
   //waitForHome();
+  //nh.spinOnce();
 }
 // main program loop
 void loop() {
   // receives command from serial and executes accoringly
-  recieveCommand();
-  sendCurrentPosition();
+  //recieveCommand();
+
 
   // run steppers to target position
-  runSteppers();
+  //runSteppers();
+
+//heartbeat for ros
+  if(millis() - beatTEMP > beatINTERVAL){
+    beat.data += 1;
+    beatTEMP = millis();    //would it be better to only call millis() once and add the interval onto spinTEMP?
+    heart.publish(&beat);  
+      sendCurrentPosition();                                                             
+
+  }
+if(millis() - spinTEMP > spinINTERVAL){
+ spinTEMP = millis();     
+   nh.spinOnce();
+                    
+}
+
 }
 
 void recieveCommand() {
@@ -109,16 +133,18 @@ void sendMessage(char outChar) {
 }
 
 void sendCurrentPosition() {
-  String outMsg;
+  int posdata;
   if (!SIM) {
-    outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
-             + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
-  } else {
-    outMsg = String("JP") + String("A") + String(steppers[0].currentPosition()) + String("B") + String(steppers[1].currentPosition()) + String("C") + String(steppers[2].currentPosition())
-             + String("D") + String(steppers[3].currentPosition()) + String("E") + String(steppers[4].currentPosition()) + String("F") + String(steppers[5].currentPosition() + String("Z"));
-  }
 
-  Serial.print(outMsg);
+  } else {
+    short data[6] = {1, 2, 3, 4, 5, 6};
+    for(int i = 0; i < NUM_AXES; i++){
+   OBSangles.data = data;//steppers[i].currentPosition();
+  
+    }
+observer.publish(&OBSangles);
+ }
+
 }
 
 void sendFeedback(String inMsg) {
