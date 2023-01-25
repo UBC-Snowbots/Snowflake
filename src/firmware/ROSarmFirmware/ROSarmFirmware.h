@@ -12,8 +12,8 @@ Description: Header file for firmware for driving a 6 axis arm via ROS on a teen
 #include <ros.h>
 #include <std_msgs/Int16.h>
 #include <std_msgs/Float64MultiArray.h>
-//#include <sb_msgs/ArmPosition.h> //may cause errors, if this file exhists, keep spammig upload/verify until arduino finds it
-#include <std_msgs/Float32MultiArray.h>
+#include <sb_msgs/ArmPosition.h> //may cause errors, if this file exhists, keep spammig upload/verify until arduino finds it
+//#include <std_msgs/Float32MultiArray.h> 32 would be more efficient, if performance drops, change arm msg to float32
 // general parameters
 #define SIM 1 //firmware simulation, disables encoders and feeds back only stepper positions, works with only a microcontroller connected.
 
@@ -30,9 +30,9 @@ Description: Header file for firmware for driving a 6 axis arm via ROS on a teen
 //ros declarations
 ros::NodeHandle nh;
 std_msgs::Int16 beat;
-//sb_msgs::ArmPosition INangles;
-//sb_msgs::ArmPosition OBSangles;
-std_msgs::Float32MultiArray OBSangles;
+sb_msgs::ArmPosition CMDangles;
+sb_msgs::ArmPosition OBSangles;
+//std_msgs::Float64MultiArray OBSangles;
     
     int spinTEMP = millis();
 int spinINTERVAL = 20; //base speed of ros
@@ -42,8 +42,11 @@ int posTEMP = millis();
 int posINTERVAL = 100; //ms
 
 ros::Publisher heart("/heartbeat", &beat);
-ros::Publisher observer("/observed_arm_pos", &OBSangles);
-//ros::Subscriber<typename MsgT>
+ros::Publisher posPub("/observed_arm_pos", &OBSangles);
+ros::Subscriber<sb_msgs::ArmPosition> posSub("/cmd");
+
+
+void PosCallback(sb_msgs::ArmPosition msg);
 
 
 static const char release = 'R';

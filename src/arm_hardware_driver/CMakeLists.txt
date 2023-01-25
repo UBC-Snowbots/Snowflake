@@ -142,6 +142,7 @@ include_directories(
 ## Declare a C++ executable
 # add_executable(sample_package_node src/sample_package_node.cpp)
 add_executable(arm_hardware_driver src/arm_hardware_driver.cpp src/armHardwareDriver.cpp include/armHardwareDriver.h)
+add_executable(arm_hardware_driver_ros_direct src/ROSDIRECTarm_hardware_driver.cpp src/ROSDIRECTarmHardwareDriver.cpp include/ROSDIRECTarmHardwareDriver.h)
 
 
 ## Add cmake target dependencies of the executable
@@ -153,6 +154,7 @@ add_executable(arm_hardware_driver src/arm_hardware_driver.cpp src/armHardwareDr
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(arm_hardware_driver ${catkin_LIBRARIES} ${libserial_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(arm_hardware_driver_ros_direct ${catkin_LIBRARIES} ${libserial_LIBRARIES} ${sb_utils_LIBRARIES})
 
 #############
 ## Install ##

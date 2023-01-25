@@ -19,9 +19,11 @@ nh.getHardware()->setBaud(115200);
 nh.initNode();
 nh.advertise(heart);
 nh.advertise(observer);
+nh.subscribe(CMD)
 nh.negotiateTopics();
 
-OBSangles.data_length = 6;
+OBSangles.positions_length = 6;
+
 
   for (int i = 0; i < NUM_AXES; i++) {
     ENC_STEPS_PER_DEG[i] = ppr[i] * red[i] * (ENC_MULT[i] / 360.0);
@@ -98,40 +100,9 @@ void recieveCommand() {
   }
 }
 
-void parseMessage(String inMsg) {
-  String function = inMsg.substring(0, 2);
-
-  // choose which function to run
-  if (function == "MT") {
-    cartesianCommands(inMsg);
-  }
-
-  else if (function == "JM") {
-    jointCommands(inMsg);
-  }
-
-  else if (function == "EE") {
-    endEffectorCommands(inMsg);
-  }
-
-  else if (function == "DM") {
-    drillCommands(inMsg);
-  }
-
-  else if (function == "FB") {
-    sendFeedback(inMsg);
-  }
-
-  else if (function == "HM") {
-    homeArm();
-  }
-}
-
-void sendMessage(char outChar) {
-  String outMsg = String(outChar);
-  Serial.print(outMsg);
-}
-
+void CmdCallback(sb_msgs::ArmPosition msg){//recieve command
+CMDangles = msg;
+} 
 void sendCurrentPosition() {
   int posdata;
   if (!SIM) {
@@ -139,10 +110,10 @@ void sendCurrentPosition() {
   } else {
     float data[6] = {1.9, 2.4, 33.4, 4.87, 5.45, 6.34};
     for(int i = 0; i < NUM_AXES; i++){
-   OBSangles.data = data;//steppers[i].currentPosition();
+   OBSangles.positions = data;//steppers[i].currentPosition();
   
     }
-observer.publish(&OBSangles);
+observer.publish(&CMDangles);
  }
 
 }
