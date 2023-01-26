@@ -45,10 +45,15 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
 
+while (ros::ok())
+{
+    /* code */
+}
+
     //float feed_freq = 10.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
    // ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);
    //feedbackLoop = nh.createTimer(feedbackFreq, &ArmHardwareDriver::teensyFeedback, this);
-//ros::spin();
+ros::spin();
 }
 
 // Callback for xbox360/ps4/pro controller messages via joy_node
@@ -56,7 +61,7 @@ void ArmHardwareDriver::joyCallBack(const sensor_msgs::Joy::ConstPtr& joy_msg){
     joy.buttons = joy_msg->buttons;
     joy.axes = joy_msg->axes;
 
-    ROS_INFO("%i", joy_msg->buttons[2]);
+    ROS_INFO("controller input success");
 }
 
 
