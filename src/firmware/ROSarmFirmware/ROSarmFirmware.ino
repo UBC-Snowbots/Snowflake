@@ -9,6 +9,10 @@ Major Edits on January 23, 2023 to make combatible with joy_node and direct ros 
 // header file with all constants defined and libraries included
 #include "ROSarmFirmware.h"
 
+void PosCallback(const sb_msgs::ArmPosition& msg){
+  OBSangles.positions_length = msg.positions_length;
+OBSangles.positions = msg.positions;
+}
 
 
 // setup function to initialize pins and provide initial homing to the arm.
@@ -18,8 +22,10 @@ Serial.begin(115200);
 nh.getHardware()->setBaud(115200);
 nh.initNode();
 nh.advertise(heart);
-nh.advertise(observer);
-nh.subscribe(CMD)
+nh.advertise(posPub);
+ros::Subscriber<sb_msgs::ArmPosition> cmdSub("cmd_pos_arm", &PosCallback);
+
+nh.subscribe(cmdSub);
 nh.negotiateTopics();
 
 OBSangles.positions_length = 6;
@@ -110,10 +116,10 @@ void sendCurrentPosition() {
   } else {
     float data[6] = {1.9, 2.4, 33.4, 4.87, 5.45, 6.34};
     for(int i = 0; i < NUM_AXES; i++){
-   OBSangles.positions = data;//steppers[i].currentPosition();
+   //OBSangles.positions = data;//steppers[i].currentPosition();
   
     }
-observer.publish(&CMDangles);
+posPub.publish(&OBSangles);
  }
 
 }

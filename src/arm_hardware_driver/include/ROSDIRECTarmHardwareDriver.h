@@ -17,19 +17,20 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <vector>
+#include <sensor_msgs/Joy.h>
 
 // Snowbots Includes
 #include <sb_msgs/ArmPosition.h>
 #include <sb_utils.h>
 
 // Other
-#include <libserial/SerialPort.h>
 
 
 class ArmHardwareDriver {
   public:
     ArmHardwareDriver(ros::NodeHandle& nh);
-    void teensySerialCallback(const std_msgs::String::ConstPtr& inMsg);
+    void teensyPosCallback(const sb_msgs::ArmPosition inMsg);
+    //void obsPosCallback(const sb_);
     void parseInput(std::string inMsg);
     void joint_space_motion(std::string inMsg);
     void drill_motion(std::string inMsg);
@@ -131,18 +132,22 @@ class ArmHardwareDriver {
 
   private:
     ros::NodeHandle nh;
-    void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);
-    void teensyFeedback(const ros::TimerEvent& e);
+    sb_msgs::ArmPosition currArmPos; //current arm pos
+    sensor_msgs::Joy joy; //controller
 
-    ros::Subscriber subPro;
+    void armCMDPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);
+    void microComCallBack(const sb_msgs::ArmPosition::ConstPtr& micro_msg);
+    void joyCallBack(const sensor_msgs::Joy::ConstPtr& joy_msg);
+
+
+    //void teensyFeedback(const ros::TimerEvent& e);
+
     ros::Subscriber sub_command_pos;
-    ros::Publisher pub_observed_pos;
+    ros::Subscriber sub_obs_pos; //observed position
+    ros::Subscriber sub_joy;
+
+    //ros::Publisher pub_obs_pos;
     ros::Timer feedbackLoop;
-
-    // The SerialStream to/from the teensy
-    LibSerial::SerialPort teensy;
-
-    // The Port the teensy is connected to
-    std::string port;
+ 
 };
 #endif // ARM_HARDWARE_DRIVER_MYNODE_H

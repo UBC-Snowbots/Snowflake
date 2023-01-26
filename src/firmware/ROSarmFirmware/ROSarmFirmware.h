@@ -42,11 +42,9 @@ int posTEMP = millis();
 int posINTERVAL = 100; //ms
 
 ros::Publisher heart("/heartbeat", &beat);
-ros::Publisher posPub("/observed_arm_pos", &OBSangles);
-ros::Subscriber<sb_msgs::ArmPosition> posSub("/cmd");
+ros::Publisher posPub("/obs_arm_pos", &OBSangles);
 
 
-void PosCallback(sb_msgs::ArmPosition msg);
 
 
 static const char release = 'R';
