@@ -9,26 +9,26 @@ Major Edits on January 23, 2023 to make combatible with joy_node and direct ros 
 // header file with all constants defined and libraries included
 #include "ROSarmFirmware.h"
 
-void PosCallback(const sb_msgs::ArmPosition& msg){
+void PosCallback(const sb_msgs::ArmPosition& msg) {
   OBSangles.positions_length = msg.positions_length;
-OBSangles.positions = msg.positions;
+  OBSangles.positions = msg.positions;
 }
 
 
 // setup function to initialize pins and provide initial homing to the arm.
 void setup() {
 
-Serial.begin(115200);
-nh.getHardware()->setBaud(115200);
-nh.initNode();
-nh.advertise(heart);
-nh.advertise(posPub);
-ros::Subscriber<sb_msgs::ArmPosition> cmdSub("cmd_pos_arm", &PosCallback);
+  Serial.begin(115200);
+  nh.getHardware()->setBaud(115200);
+  nh.initNode();
+  nh.advertise(heart);
+  nh.advertise(posPub);
+  ros::Subscriber<sb_msgs::ArmPosition> cmdSub("cmd_pos_arm", &PosCallback);
 
-nh.subscribe(cmdSub);
-nh.negotiateTopics();
+  nh.subscribe(cmdSub);
+  nh.negotiateTopics();
 
-OBSangles.positions_length = 6;
+  OBSangles.positions_length = 6;
 
 
   for (int i = 0; i < NUM_AXES; i++) {
@@ -71,20 +71,17 @@ void loop() {
   // run steppers to target position
   //runSteppers();
 
-//heartbeat for ros
-  if(millis() - beatTEMP > beatINTERVAL){
+  //heartbeat for ros
+  if (millis() - beatTEMP > beatINTERVAL) {
     beat.data += 1;
-    beatTEMP = millis();    //would it be better to only call millis() once and add the interval onto spinTEMP?
-    heart.publish(&beat);  
-      sendCurrentPosition();                                                             
-
+    beatTEMP = millis();  //would it be better to only call millis() once and add the interval onto spinTEMP?
+    heart.publish(&beat);
+    sendCurrentPosition();
   }
-if(millis() - spinTEMP > spinINTERVAL){
- spinTEMP = millis();     
-   nh.spinOnce();
-                    
-}
-
+  if (millis() - spinTEMP > spinINTERVAL) {
+    spinTEMP = millis();
+    nh.spinOnce();
+  }
 }
 
 void recieveCommand() {
@@ -106,22 +103,20 @@ void recieveCommand() {
   }
 }
 
-void CmdCallback(sb_msgs::ArmPosition msg){//recieve command
-CMDangles = msg;
-} 
+void CmdCallback(sb_msgs::ArmPosition msg) {  //recieve command
+  CMDangles = msg;
+}
 void sendCurrentPosition() {
   int posdata;
   if (!SIM) {
 
   } else {
-    float data[6] = {1.9, 2.4, 33.4, 4.87, 5.45, 6.34};
-    for(int i = 0; i < NUM_AXES; i++){
-   //OBSangles.positions = data;//steppers[i].currentPosition();
-  
+    float data[6] = { 1.9, 2.4, 33.4, 4.87, 5.45, 6.34 };
+    for (int i = 0; i < NUM_AXES; i++) {
+      //OBSangles.positions = data;//steppers[i].currentPosition();
     }
-posPub.publish(&OBSangles);
- }
-
+    posPub.publish(&OBSangles);
+  }
 }
 
 void sendFeedback(String inMsg) {

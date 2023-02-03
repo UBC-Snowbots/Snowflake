@@ -21,10 +21,11 @@
 
 // Snowbots Includes
 #include <sb_msgs/ArmPosition.h>
+#include <sb_msgs/armFirmware.h>
 #include <sb_utils.h>
 
 // Other
-
+#define debug 1
 
 class ArmHardwareDriver {
   public:
@@ -59,6 +60,8 @@ class ArmHardwareDriver {
     void homeEE();
     void axisRelease(const char axis);
     void axisMove(const char axis, const char dir);
+    void newInput();
+    //void joyparse(std::int32_t buttons[], std::float_t axes[]); //maybe return a time? so we know how long since the last input
 
     // character representations of buttons for arm communication
     const char leftJSU     = 'A';
@@ -119,12 +122,14 @@ class ArmHardwareDriver {
     double encppr   = 512.0;
 
     bool homeFlag = false;
-    char mode = jointMode;
+    //char mode = jointMode
 
     // hardware interface communication variables
     std::vector<int> encPos, encCmd;
     std::vector<double> armCmd, armPos, encStepsPerDeg;
     std::vector<double> reductions{50, 161, 93.07, 44.8, 28, 14};
+
+    
 
     // timer variables
     double refresh_rate_hz = 10.0;
@@ -132,11 +137,10 @@ class ArmHardwareDriver {
 
   private:
     ros::NodeHandle nh;
-    sb_msgs::ArmPosition currArmPos; //current arm pos
-    sensor_msgs::Joy joy; //controller
+    sb_msgs::armFirmware Arm; //most recent arm information
 
     void armCMDPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);
-    void microComCallBack(const sb_msgs::ArmPosition::ConstPtr& micro_msg);
+    void microComCallBack(const sb_msgs::armFirmware::ConstPtr& micro_msg);
     void joyCallBack(const sensor_msgs::Joy::ConstPtr& joy_msg);
 
 
@@ -145,9 +149,14 @@ class ArmHardwareDriver {
     ros::Subscriber sub_command_pos;
     ros::Subscriber sub_obs_pos; //observed position
     ros::Subscriber sub_joy;
+    ros::Publisher pub_cmd;
 
-    //ros::Publisher pub_obs_pos;
-    ros::Timer feedbackLoop;
+    //user input
+    sensor_msgs::Joy joy; //controller
+    //input flags
+    //bool mode
+
+ //   ros::Timer feedbackLoop;
  
 };
 #endif // ARM_HARDWARE_DRIVER_MYNODE_H

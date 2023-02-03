@@ -13,25 +13,25 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     ros::NodeHandle private_nh("~");
 
     // Setup Subscribers
-    int queue_size = 10;
+    int queue_size_firm = 10; //firmware
     //int queue_size_joy = 5;
     int queue_size_joy = 5;
 
 
     // subPro = nh.subscribe(
     // "/cmd_arm", queue_size, &ArmHardwareDriver::teensySerialCallback, this);
-        sub_command_pos = nh.subscribe(
-    "/cmd_pos_arm", queue_size, &ArmHardwareDriver::armCMDPositionCallBack, this);
+      //  sub_command_pos = nh.subscribe(
+    //"/cmd_pos_arm", queue_size, &ArmHardwareDriver::armCMDPositionCallBack, this);
        sub_obs_pos = nh.subscribe(
-    "/obs_pos_arm", queue_size, &ArmHardwareDriver::microComCallBack, this);
+    "/obs_pos_arm", queue_size_firm, &ArmHardwareDriver::microComCallBack, this);
         sub_joy = nh.subscribe(
     "/joy", queue_size_joy, &ArmHardwareDriver::joyCallBack, this);
-    
-    // pub_observed_pos =
-    // private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
+        
+        pub_cmd =
+     private_nh.advertise<sb_msgs::armFirmware>("cmd_pos_arm", queue_size_firm );
 
     // Get Params
-    // SB_getParam(
+    //SB_getParam(
     // private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM0");
   
     encCmd.resize(num_joints_);
@@ -60,17 +60,27 @@ ros::spin();
 void ArmHardwareDriver::joyCallBack(const sensor_msgs::Joy::ConstPtr& joy_msg){
     joy.buttons = joy_msg->buttons;
     joy.axes = joy_msg->axes;
+    newInput(); //this feels weird to call another function in a callback and store the input values as global variables.
 
+if(debug){
     ROS_INFO("controller input success");
+}
 }
 
 
 
 // rosserial listener
- void ArmHardwareDriver::microComCallBack(const sb_msgs::ArmPosition::ConstPtr& micro_msg) {
-currArmPos.positions = micro_msg->positions;
+ void ArmHardwareDriver::microComCallBack(const sb_msgs::armFirmware::ConstPtr& micro_msg) {
+Arm.axes = micro_msg->axes;
+
 //     parseInput(inMsg->data);
  }
+
+void ArmHardwareDriver::newInput(){
+if(joy.buttons[3]){
+    ROS_INFO("meep meep");
+}
+}
 
 // void ArmHardwareDriver::parseInput(std::string inMsg) {
 //     mode = inMsg[0];
