@@ -153,7 +153,9 @@ sb_arm:
     - LazyPRMstar
     - SPARS
     - SPARStwo
-ef:
+  projection_evaluator: joints(j1,j2)
+  longest_valid_segment_fraction: 0.005
+manipulator:
   planner_configs:
     - AnytimePathShortening
     - SBL

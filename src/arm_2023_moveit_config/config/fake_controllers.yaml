@@ -1,6 +1,6 @@
 controller_list:
   - name: fake_sb_arm_controller
-    type: $(arg fake_execution_type)
+    type: position_controllers/JointGroupPositionControllers
     joints:
       - j1
       - j2
@@ -8,7 +8,7 @@ controller_list:
       - j4
       - j5
       - j6
-  - name: fake_ef_controller
+  - name: fake_manipulator_controller
     type: $(arg fake_execution_type)
     joints:
       []

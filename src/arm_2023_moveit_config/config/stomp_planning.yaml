@@ -37,8 +37,8 @@ stomp/sb_arm:
         publish_intermediate: True
         marker_topic: stomp_trajectory
         marker_namespace: optimized
-stomp/ef:
-  group_name: ef
+stomp/manipulator:
+  group_name: manipulator
   optimization:
     num_timesteps: 60
     num_iterations: 40

@@ -17,7 +17,7 @@
   <!-- Choose controller manager: fake, simple, or ros_control -->
   <arg name="moveit_controller_manager" default="fake" />
   <!-- Set execution mode for fake execution controllers -->
-  <arg name="fake_execution_type" default="interpolate" />
+  <arg name="fake_execution_type" default="via points" />
 
   <!-- By default, hide joint_state_publisher's GUI in 'fake' controller_manager mode -->
   <arg name="use_gui" default="false" />
