@@ -139,6 +139,7 @@ class ArmHardwareDriver {
     ros::NodeHandle nh;
     sb_msgs::armFirmware Arm; //most recent arm information
 
+
     void armCMDPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);
     void microComCallBack(const sb_msgs::armFirmware::ConstPtr& micro_msg);
     void joyCallBack(const sensor_msgs::Joy::ConstPtr& joy_msg);
@@ -150,6 +151,7 @@ class ArmHardwareDriver {
     ros::Subscriber sub_obs_pos; //observed position
     ros::Subscriber sub_joy;
     ros::Publisher pub_cmd;
+    
 
     //user input
     sensor_msgs::Joy joy; //controller

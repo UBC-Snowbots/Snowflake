@@ -11,9 +11,10 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     // Setup NodeHandles
 
     ros::NodeHandle private_nh("~");
+    ros::Rate loop_rate(10); //10 hz
 
     // Setup Subscribers
-    int queue_size_firm = 10; //firmware
+    int queue_size_firm = 5; //firmware
     //int queue_size_joy = 5;
     int queue_size_joy = 5;
 
@@ -45,21 +46,21 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
 
-while (ros::ok())
-{
-    /* code */
-}
+// while (ros::ok())
+// {
+//     /* code */
+// }
 
     //float feed_freq = 10.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
    // ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);
    //feedbackLoop = nh.createTimer(feedbackFreq, &ArmHardwareDriver::teensyFeedback, this);
-ros::spin();
+loop_rate.sleep();
+ros::spinOnce();
 }
 
 // Callback for xbox360/ps4/pro controller messages via joy_node
 void ArmHardwareDriver::joyCallBack(const sensor_msgs::Joy::ConstPtr& joy_msg){
-    joy.buttons = joy_msg->buttons;
-    joy.axes = joy_msg->axes;
+    joy = *joy_msg;
     newInput(); //this feels weird to call another function in a callback and store the input values as global variables.
 
 if(debug){
@@ -71,7 +72,7 @@ if(debug){
 
 // rosserial listener
  void ArmHardwareDriver::microComCallBack(const sb_msgs::armFirmware::ConstPtr& micro_msg) {
-Arm.axes = micro_msg->axes;
+Arm = *micro_msg;
 
 //     parseInput(inMsg->data);
  }

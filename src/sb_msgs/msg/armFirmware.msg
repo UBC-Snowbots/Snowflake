@@ -1,4 +1,4 @@
 std_msgs/Header header
 char mode
-int16 value
+int8 value
 float64[] axes

@@ -9,9 +9,8 @@ Major Edits on January 23, 2023 to make combatible with joy_node and direct ros 
 // header file with all constants defined and libraries included
 #include "ROSarmFirmware.h"
 
-void PosCallback(const sb_msgs::ArmPosition& msg) {
-  OBSangles.positions_length = msg.positions_length;
-  OBSangles.positions = msg.positions;
+void CmdCallback(const sb_msgs::ArmFirmware& msg) {
+  OBScmd = msg;
 }
 
 
@@ -23,8 +22,8 @@ void setup() {
   nh.initNode();
   nh.advertise(heart);
   nh.advertise(posPub);
-  ros::Subscriber<sb_msgs::ArmPosition> cmdSub("cmd_pos_arm", &PosCallback);
-
+  ros::Subscriber<sb_msgs::ArmPosition> cmdSub("cmd_pos_arm", &CmdCallback);
+  //ros::Rate loop_rate(10);
   nh.subscribe(cmdSub);
   nh.negotiateTopics();
 
@@ -69,7 +68,7 @@ void loop() {
 
 
   // run steppers to target position
-  //runSteppers();
+  runSteppers();
 
   //heartbeat for ros
   if (millis() - beatTEMP > beatINTERVAL) {
@@ -80,6 +79,7 @@ void loop() {
   }
   if (millis() - spinTEMP > spinINTERVAL) {
     spinTEMP = millis();
+   
     nh.spinOnce();
   }
 }
@@ -135,7 +135,7 @@ void runSteppers() {
     steppers[i].run();
   }
 
-  endEff.run();
+ // endEff.run();
 }
 
 //****//JOINT MODE FUNCTIONS//****//
@@ -259,63 +259,63 @@ void setCartesianSpeed() {
 //***// END EFFECTOR RELATED FUNCTIONS //***//
 
 void endEffectorCommands(String inMsg) {
-  char data = inMsg[2];
+  // char data = inMsg[2];
 
-  //opening code
-  if (data == open) {                       //check if open button pressed and if force is less than max
-    endEff.moveTo(openPos * MOTOR_DIR_EE);  //continue to move to open position
-  }
+  // //opening code
+  // if (data == open) {                       //check if open button pressed and if force is less than max
+  //   endEff.moveTo(openPos * MOTOR_DIR_EE);  //continue to move to open position
+  // }
 
-  //closing code
-  else if (data == close) {                  //check if open button pressed and if force is less than max
-    endEff.moveTo(closePos * MOTOR_DIR_EE);  //continue to move to closed position
-  }
+  // //closing code
+  // else if (data == close) {                  //check if open button pressed and if force is less than max
+  //   endEff.moveTo(closePos * MOTOR_DIR_EE);  //continue to move to closed position
+  // }
 
-  else if (data == release) {  //else check if release button pressed
-    endEff.stop();             // stop when above condition reached
-  }
+  // else if (data == release) {  //else check if release button pressed
+  //   endEff.stop();             // stop when above condition reached
+  // }
 
-  else if (data == homeValEE) {
-    if (resetEE) {
-      endEff.setCurrentPosition(1000);
-      resetEE = false;
-    }
+  // else if (data == homeValEE) {
+  //   if (resetEE) {
+  //     endEff.setCurrentPosition(1000);
+  //     resetEE = false;
+  //   }
 
-    else {
-      endEff.setCurrentPosition(0);
-      resetEE = true;
-    }
-  }
+  //   else {
+  //     endEff.setCurrentPosition(0);
+  //     resetEE = true;
+  //   }
+  // }
 }
 
 void getEEForce() {
-  if (scale.wait_ready_timeout(1)) {
-    float force = scale.get_units() / 1000 * 9.81;
-    forcePct = force * 100.0 / maxForce;
-  }
+  // if (scale.wait_ready_timeout(1)) {
+  //   float force = scale.get_units() / 1000 * 9.81;
+  //   forcePct = force * 100.0 / maxForce;
+  // }
 }
 
 void sendEEForce() {
-  String force_value = String(forcePct);
-  String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" Z");
-  Serial.print(force_message);
+  // String force_value = String(forcePct);
+  // String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" Z");
+  // Serial.print(force_message);
 }
 
 //***// DRILL RELATED FUNCTIONS //***//
 
 void drillCommands(String inMsg) {
-  char function = inMsg[2];
+  // char function = inMsg[2];
 
-  if (function == manual)
-    manualDrill(inMsg[3]);
-  else if (function == drillRelease)
-    stopDrill();
-  else if (function == prepare)
-    spinDrill();
-  else if (function == collect)
-    stopDrill();
-  else if (function == deposit)
-    depositSample();
+  // if (function == manual)
+  //   manualDrill(inMsg[3]);
+  // else if (function == drillRelease)
+  //   stopDrill();
+  // else if (function == prepare)
+  //   spinDrill();
+  // else if (function == collect)
+  //   stopDrill();
+  // else if (function == deposit)
+  //   depositSample();
 }
 
 void manualDrill(char dir) {

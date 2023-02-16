@@ -42,7 +42,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     }
 
     float feed_freq = 10.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
-    ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);
+    ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);// should be ros::sleep?
     feedbackLoop = nh.createTimer(feedbackFreq, &ArmHardwareDriver::teensyFeedback, this);
 
 }
