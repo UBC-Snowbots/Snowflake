@@ -47,17 +47,17 @@ int stepPins[6] =   {6, 8, 2, 10, 12, 25};
 int dirPins[6] =    {5, 7, 1, 9, 11, 24}; 
 
 // Encoder pins
-int encPinA[6] = {17, 38, 36, 40, 15, 13};
-int encPinB[6] = {16, 37, 35, 39, 14, 41};
+int encPinA[6] = {17, 38, 40, 36, 13, 15};
+int encPinB[6] = {16, 37, 39, 35, 41, 14};
 
 // limit switch pins
-int limPins[6] = {18, 19, 20, 21, 22, 23};
+int limPins[6] = {18, 19, 20, 21, 23, 22};
 
 // pulses per revolution for motors
 long ppr[6] = {400, 400, 400, 400, 400, 400};
 
 // Gear Reductions
-float red[6] = {50.0, 161.0, 44.8, 93.07, 28, 14};
+float red[6] = {50.0, 160.0, 93.07, 43.08, 19, 14};
 
 // End effector variables
 const float calibrationFactor = -111.25;
@@ -85,15 +85,15 @@ int forcePct = 0;
 // Encoder Variables
 int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
 int pprEnc = 512;
-int ENC_DIR[6] = {-1, -1, -1, -1, 1, 1};
+int ENC_DIR[6] = {-1, -1, -1, -1, -1, -1};
 const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 float ENC_STEPS_PER_DEG[NUM_AXES];
 
 // Motor speeds and accelerations
-int maxSpeed[8] = {1200, 1800, 3000, 2500, 2200, 2200};
-int maxAccel[8] = {1300, 3500, 4600, 3300, 5000, 5000};
-int homeSpeed[8] = {300, 1000, 1000, 400, 2000, 2000}; 
-int homeAccel[8] = {500, 2000, 1500, 1000, 1500, 1500}; 
+int maxSpeed[6] = {1200, 1800, 3000, 2500, 2200, 2200};
+int maxAccel[6] = {1300, 3500, 4600, 3300, 5000, 5000};
+int homeSpeed[6] = {1200, 1500, 1500, 2000, 500, 500}; 
+int homeAccel[6] = {1500, 2000, 2000, 2000, 500, 500}; 
 
 // Time variables
 const unsigned long readInterval = 10;
@@ -121,7 +121,7 @@ Encoder enc6(encPinA[5], encPinB[5]);
 
 // General Global Variable declarations
 
-int axisDir[6] = {1, -1, 1, -1, 1, 1};  
+int axisDir[6] = {1, -1, -1, 1, 1, 1};  
 int axisDirIK[6] = {-1, -1, -1, 1, -1, -1};
 int runFlags[] = {0, 0, 0, 0, 0, 0};
 int currentAxis = 1;
@@ -136,13 +136,13 @@ bool horizFlag = false;
 // Variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst};
-long homeCompAngles[] = {54, 10, 90, 10, 90, 170};
-long homeCompConst[] = {500, 2000, 1000, 500, 500, 500};
+long homeCompAngles[] = {50, 0, 0, 110, 30, 30};
+long homeCompConst[] = {500, 500, 200, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5]};
 long homeCompSteps[] = {axisDir[0]*homeCompAngles[0]*red[0]*ppr[0]/360.0, axisDir[1]*homeCompAngles[1]*red[1]*ppr[1]/360.0, axisDir[2]*homeCompAngles[2]*red[2]*ppr[2]/360.0, axisDir[3]*homeCompAngles[3]*red[3]*ppr[3]/360.0, axisDir[4]*homeCompAngles[4]*red[4]*ppr[4]/360.0, axisDir[5]*homeCompAngles[5]*red[5]*ppr[5]/360.0};
 
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {160, 160, 180, 120, 180, 340};
+int maxAngles[6] = {160, 160, 180, 180, 180, 340};
 long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
 long min_steps[NUM_AXES]; 
 char value;
