@@ -31,6 +31,8 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
         pub_cmd =
      private_nh.advertise<sb_msgs::armFirmware>("cmd_pos_arm", queue_size_firm );
 
+    pub_joint_cmd =
+        private_nh.advertise<std_msgs::String>("cmd_pos_arm", queue_size_firm );
     // Get Params
     //SB_getParam(
     // private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM0");
@@ -61,6 +63,10 @@ ros::spinOnce();
 // Callback for xbox360/ps4/pro controller messages via joy_node
 void ArmHardwareDriver::joyCallBack(const sensor_msgs::Joy::ConstPtr& joy_msg){
     joy = *joy_msg;
+   
+   joy.buttons[3];
+   
+  
     newInput(); //this feels weird to call another function in a callback and store the input values as global variables.
 
 if(debug){
@@ -247,21 +253,16 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
 //     sendMsg(outMsg);
 // }
 
-// void ArmHardwareDriver::homeArm() {
-//     std::string outMsg = "HM\n";
-//     homeFlag = false;
-//     sendMsg(outMsg);
-//     recieveMsg();
-//     homeFlag = true;
-// }
+ void ArmHardwareDriver::homeArm() {
+     pub_cmd.pub();
+ }
 
 // void ArmHardwareDriver::homeEE() {
 //     std::string outMsg = "EEH\n";
 //     sendMsg(outMsg);
 // }
 
-void ArmHardwareDriver::armCMDPositionCallBack(
-const sb_msgs::ArmPosition::ConstPtr& cmd_msg) {
+void ArmHardwareDriver::armCMDPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg) {
 
     // armCmd.assign(commanded_msg->positions.begin(),
     //               commanded_msg->positions.end());
@@ -316,6 +317,9 @@ const sb_msgs::ArmPosition::ConstPtr& cmd_msg) {
 //    // serialOpen = false;
 //     //dataInTransit = true;
 //     //teensy.Write(outMsg);
+    std_msgs::String out;
+    out.data = outMsg;
+    pub_joint_cmd.pub(out);
 //     //ROS_INFO("Sent via serial: %s", outMsg.c_str());
  }
 

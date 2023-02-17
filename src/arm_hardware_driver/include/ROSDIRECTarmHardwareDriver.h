@@ -151,6 +151,7 @@ class ArmHardwareDriver {
     ros::Subscriber sub_obs_pos; //observed position
     ros::Subscriber sub_joy;
     ros::Publisher pub_cmd;
+       ros::Publisher pub_joint_cmd;
     
 
     //user input
