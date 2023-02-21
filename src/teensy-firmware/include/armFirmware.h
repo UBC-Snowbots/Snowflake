@@ -57,7 +57,7 @@ int limPins[6] = {18, 19, 20, 21, 23, 22};
 long ppr[6] = {400, 400, 400, 400, 400, 400};
 
 // Gear Reductions
-float red[6] = {50.0, 160.0, 93.07, 43.08, 19, 14};
+float red[6] = {50.0, 160.0, 92.3077, 43.936, 57, 14};
 
 // End effector variables
 const float calibrationFactor = -111.25;
@@ -85,7 +85,6 @@ int forcePct = 0;
 // Encoder Variables
 int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
 int pprEnc = 512;
-int ENC_DIR[6] = {-1, -1, -1, -1, -1, -1};
 const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 float ENC_STEPS_PER_DEG[NUM_AXES];
 
@@ -121,8 +120,8 @@ Encoder enc6(encPinA[5], encPinB[5]);
 
 // General Global Variable declarations
 
-int axisDir[6] = {1, -1, -1, 1, 1, 1};  
-int axisDirIK[6] = {-1, -1, -1, 1, -1, -1};
+const int axisDir[6] = {1, -1, -1, 1, 1, 1};  
+const int IK_DIR[6] = {1, 1, 1, 1, 1, 1};
 int runFlags[] = {0, 0, 0, 0, 0, 0};
 int currentAxis = 1;
 int i;
@@ -142,7 +141,7 @@ long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axi
 long homeCompSteps[] = {axisDir[0]*homeCompAngles[0]*red[0]*ppr[0]/360.0, axisDir[1]*homeCompAngles[1]*red[1]*ppr[1]/360.0, axisDir[2]*homeCompAngles[2]*red[2]*ppr[2]/360.0, axisDir[3]*homeCompAngles[3]*red[3]*ppr[3]/360.0, axisDir[4]*homeCompAngles[4]*red[4]*ppr[4]/360.0, axisDir[5]*homeCompAngles[5]*red[5]*ppr[5]/360.0};
 
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {160, 160, 180, 180, 180, 340};
+int maxAngles[6] = {200, 160, 180, 180, 180, 340};
 long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
 long min_steps[NUM_AXES]; 
 char value;
@@ -164,12 +163,6 @@ void recieveCommand();
 
 // Parses the message passed to it and determines which subfunction to call for control of arm.
 void parseMessage(String inMsg);
-
-// Takes a character and prints it to the serial port.
-void sendMessage(char outChar);
-
-// If the arm is in joint mode, the encoder positions are read and sent over serial.
-void sendFeedback(String inMsg);
 
  //For closed loop control. Reads and sends current position. Sets new position based on feedback while the arm is in cartesian mode.
 void cartesianCommands(String inMsg);
@@ -195,32 +188,11 @@ void moveAxis(int axis, int dir);
 // Opens, closes, releases, or homes the end effector depending on the data in inMsg [2].
 void endEffectorCommands(String inMsg);
 
-// Measures the end effector force.
-void getEEForce();
-
-// Prints end effector force to serial.
-void sendEEForce();
-
 // Selects which drill function to execute based on inMsg[2].
 void drillCommands(String inMsg);
 
-// Manually spins drill based on user input.
-void manualDrill(char dir);
-
-// Stops the drill.
-void stopDrill();
-
-// Moves drill to max travel.
-void spinDrill();
-
-// Not yet implemented
-void collectSample();
-
-// Not yet implemented.
-void depositSample();
-
 // Prints the current encoder position for each axis to serial.
-void sendCurrentPosition();
+void sendArmFeedback();
 
 // Reads each encoder's position and stores them in encPos[].
 void readEncPos(int* encPos);
@@ -230,9 +202,6 @@ void zeroEncoders();
 
 // For closed loop movement (Inverse Kin Mode)
 void cmdArm();
-
-// changes speed of all axes based on user input.
-void changeSpeed(char speedVal);
 
 // Main function for homing the entire arm.
 void homeArm();
@@ -251,3 +220,9 @@ void runSteppers();
 
 // Waits for the user to press the home button before continuing with other functions. Reads serial port and homes the arm if "HM___" is read.
 void waitForHome();
+
+// Reads end effector gripper force
+void readGripperForce();
+
+// Move arm to GUI specified pose
+void executePose(String inMsg);

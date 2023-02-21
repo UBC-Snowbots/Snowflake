@@ -46,10 +46,10 @@ waitForHome();
 // main program loop
 void loop()
 {
-  // receives command from serial and executes accoringly
-  recieveCommand();
+    // receives command from serial and executes accoringly
+    recieveCommand();
 
-  // run steppers to target position
+    // run steppers to target position
     runSteppers();
 }
 
@@ -70,7 +70,6 @@ void recieveCommand()
   // parse the received data
   if(recieved == '\n')
   {
-
     parseMessage(inData);
   }
 }
@@ -92,48 +91,63 @@ void parseMessage(String inMsg)
 
   else if(function == "EE")
   {
-    endEffectorCommands(inMsg);
+    endEffectorCommands();
   }
 
-  else if(function == "DM")
+  else if(function == "PM")
   {
-    drillCommands(inMsg);
-  }
-
-  else if(function == "FB")
-  {
-    sendFeedback(inMsg);
+    executePose(inMsg);
   }
 
   else if(function == "HM")
   {
     homeArm();
   }
+
+  // Send arm angles and gripper force to hardware driver
+  sendArmFeedback();
 }
 
-void sendMessage(char outChar)
+void executePose(String inMsg)
 {
-  String outMsg = String(outChar);
-  Serial.print(outMsg);
-}
+  int completeCount = 0;
+  
+  int msgIdxJ1 = inMsg.indexOf('A');
+  int msgIdxJ2 = inMsg.indexOf('B');
+  int msgIdxJ3 = inMsg.indexOf('C');
+  int msgIdxJ4 = inMsg.indexOf('D');
+  int msgIdxJ5 = inMsg.indexOf('E');
+  int msgIdxJ6 = inMsg.indexOf('F');
+  cmdEncSteps[0] = inMsg.substring(msgIdxJ1 + 1, msgIdxJ2).toInt()*IK_DIR[0];
+  cmdEncSteps[1] = inMsg.substring(msgIdxJ2 + 1, msgIdxJ3).toInt()*IK_DIR[1];
+  cmdEncSteps[2] = inMsg.substring(msgIdxJ3 + 1, msgIdxJ4).toInt()*IK_DIR[2];
+  cmdEncSteps[3] = inMsg.substring(msgIdxJ4 + 1, msgIdxJ5).toInt()*IK_DIR[3];
+  cmdEncSteps[4] = inMsg.substring(msgIdxJ5 + 1, msgIdxJ6).toInt()*IK_DIR[4];
+  cmdEncSteps[5] = inMsg.substring(msgIdxJ6 + 1).toInt()*IK_DIR[5];
 
-void sendCurrentPosition() 
-{
-  String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
-                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("Z");
-    Serial.print(outMsg);
-}
-
-void sendFeedback(String inMsg)
-{
-  char function = inMsg[2];
-
-  // if in joint mode, send feedback over serial
-  if(function == joint)
+  
+  while(completeCount != NUM_AXES)
   {
     readEncPos(curEncSteps);
-    sendCurrentPosition();
+    completeCount = cmdArm();
+    runSteppers();
   }
+}
+
+void sendArmFeedback() 
+{
+    char garbage;
+    while(Serial.available() !=0)
+    {
+        garbage = Serial.read();
+    }
+
+    int gripperForce = readGripperForce();
+    readEncPos(curEncSteps);
+
+    String outMsg = String("JP") + String("A") + String(curEncSteps[0]) + String("B") + String(curEncSteps[1]) + String("C") + String(curEncSteps[2])
+                + String("D") + String(curEncSteps[3]) + String("E") + String(curEncSteps[4]) + String("F") + String(curEncSteps[5]) + String("G") + String(gripperForce) + String("Z");
+    Serial.print(outMsg);
 }
 
 void runSteppers() {
@@ -157,15 +171,14 @@ void jointCommands(String inMsg)
   {
     IKFlag = false;
     jointFlag = true;
-    cartesianToJoint();
     setJointSpeed();
   }
 
-if(function == move)
-  moveArm(detail1, inMsg[4]);
+    if(function == move)
+    moveArm(detail1, inMsg[4]);
 
-else if(function == release)
-  relArm(detail1);
+    else if(function == release)
+    relArm(detail1);
 }
 
 void moveArm(char axis, char dir) 
@@ -214,48 +227,33 @@ void setJointSpeed()
   }
 }
 
-void cartesianToJoint() 
-{
-  readEncPos(curEncSteps);
-  for(i=0; i<NUM_AXES; i++)
-  {
-    steppers[i].setCurrentPosition(curEncSteps[i]/ENC_MULT[i]);
-  }
-}
-
 //***//CARTESIAN MODE FUNCTIONS//***//
 
 void cartesianCommands(String inMsg)
 {
-
   if(jointFlag) 
   {
     IKFlag = true;
     jointFlag = false;
     setCartesianSpeed();
   }
-  // read current joint positions
-  readEncPos(curEncSteps);
-
-  // update host with joint positions
-  sendCurrentPosition();
 
   // get new position commands
+
   int msgIdxJ1 = inMsg.indexOf('A');
   int msgIdxJ2 = inMsg.indexOf('B');
   int msgIdxJ3 = inMsg.indexOf('C');
   int msgIdxJ4 = inMsg.indexOf('D');
   int msgIdxJ5 = inMsg.indexOf('E');
   int msgIdxJ6 = inMsg.indexOf('F');
-  cmdEncSteps[0] = inMsg.substring(msgIdxJ1 + 1, msgIdxJ2).toInt();
-  cmdEncSteps[1] = inMsg.substring(msgIdxJ2 + 1, msgIdxJ3).toInt();
-  cmdEncSteps[2] = inMsg.substring(msgIdxJ3 + 1, msgIdxJ4).toInt();
-  cmdEncSteps[3] = inMsg.substring(msgIdxJ4 + 1, msgIdxJ5).toInt();
-  cmdEncSteps[4] = inMsg.substring(msgIdxJ5 + 1, msgIdxJ6).toInt();
-  cmdEncSteps[5] = inMsg.substring(msgIdxJ6 + 1).toInt();
+  cmdEncSteps[0] = inMsg.substring(msgIdxJ1 + 1, msgIdxJ2).toInt()*IK_DIR[0];
+  cmdEncSteps[1] = inMsg.substring(msgIdxJ2 + 1, msgIdxJ3).toInt()*IK_DIR[1];
+  cmdEncSteps[2] = inMsg.substring(msgIdxJ3 + 1, msgIdxJ4).toInt()*IK_DIR[2];
+  cmdEncSteps[3] = inMsg.substring(msgIdxJ4 + 1, msgIdxJ5).toInt()*IK_DIR[3];
+  cmdEncSteps[4] = inMsg.substring(msgIdxJ5 + 1, msgIdxJ6).toInt()*IK_DIR[4];
+  cmdEncSteps[5] = inMsg.substring(msgIdxJ6 + 1).toInt()*IK_DIR[5];
 
-  // update target joint positions
-  readEncPos(curEncSteps);
+  readEncPos(curEncSteps); 
   cmdArm();
 }
 
@@ -277,6 +275,30 @@ void setCartesianSpeed()
   }
 }
 
+// Set target position for cartesian movements of arm
+int cmdArm()
+{
+  int count = 0;
+  
+  for (int i = 0; i < NUM_AXES; i++)
+  { 
+    int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
+    if (abs(diffEncSteps) > 10)
+    {
+        int diffMotSteps = diffEncSteps / ENC_MULT[i];
+        if (diffMotSteps < ppr[i])
+        {
+            diffMotSteps = diffMotSteps / 2;  
+        }
+        steppers[i].move(diffMotSteps);
+    }
+    else 
+    {
+        count++;
+    }
+  }
+  return count;
+}
 
  //***// END EFFECTOR RELATED FUNCTIONS //***//
 
@@ -314,102 +336,23 @@ void endEffectorCommands(String inMsg)
   }
 }
 
-void getEEForce()
+int readGripperForce() 
 {
-  if(scale.wait_ready_timeout(1))
-  {
-    float force = scale.get_units()/1000*9.81;
-    forcePct = force*100.0/maxForce;
-  }
-}
-
-void sendEEForce()
-{
-  String force_value = String(forcePct);
-  String force_message = String("EE: Gripper Force: ") + String(force_value) + String(" Z");
-  Serial.print(force_message);
-}
-
-//***// DRILL RELATED FUNCTIONS //***//
-
-void drillCommands(String inMsg)
-{
-  char function = inMsg[2];
-
-  if(function == manual)
-    manualDrill(inMsg[3]);
-  else if(function == drillRelease)
-    stopDrill();
-  else if(function == prepare)
-    spinDrill();
-  else if(function == collect)
-    stopDrill();
-  else if(function == deposit)
-    depositSample();
-}
-
-void manualDrill(char dir)
-{
-  if(dir == left)
-  {
-    endEff.move(99000);
-  }
-
-  else
-  {
-    endEff.move(-99000);
-  }
-}
-
-void stopDrill()
-{
-  endEff.stop();
-}
-
-void spinDrill()
-{
-  endEff.move(99000);
-}
-
-void collectSample()
-{
- // not currently implemented
-}
-
-void depositSample()
-{
- // not currently implemented
-}
-
-// Set target position for cartesian movements of arm
-void cmdArm()
-{
-  for (int i = 0; i < NUM_AXES; i++)
-  { 
-    int diffEncSteps = cmdEncSteps[i] - curEncSteps[i];
-    if (abs(diffEncSteps) > 5)
-    {
-    int diffMotSteps = diffEncSteps / ENC_MULT[i];
-    if (diffMotSteps < ppr[i])
-    {
-      diffMotSteps = diffMotSteps / 2;  
-    }
-
-    steppers[i].move(diffMotSteps*axisDirIK[i]);
-    }
-  }
+    int force = analogRead(forcePin);
+    int forcePct = 100*(1023-force)/1023.0
+    return forcePct;
 }
 
 //***//ENCODER RELATED FUNCTIONS//***//
 
 void readEncPos(int* encPos)
 {
-  encPos[0] = enc1.read()*ENC_DIR[0];
-  encPos[1] = enc2.read()*ENC_DIR[1];
-  encPos[2] = enc3.read()*ENC_DIR[2];
-  encPos[3] = enc4.read()*ENC_DIR[3];
-  encPos[4] = enc5.read()*ENC_DIR[4];
-  encPos[5] = enc6.read()*ENC_DIR[5];
+  encPos[0] = enc1.read()*IK_DIR[0]*-1;
+  encPos[1] = enc2.read()*IK_DIR[1]*-1;
+  encPos[2] = enc3.read()*IK_DIR[2]*-1;
+  encPos[3] = enc4.read()*IK_DIR[3]*-1;
+  encPos[4] = enc5.read()*IK_DIR[4]*-1;
+  encPos[5] = enc6.read()*IK_DIR[5]*-1;
 }
 
 void zeroEncoders()
@@ -427,19 +370,11 @@ void zeroEncoders()
 //****// ARM CALIBRATION FUNCTIONS//****//
 
 void homeArm() { // main function for full arm homing
-  initializeHomingMotion();
-  homeAxes();
-  initializeMotion();
-  zeroEncoders();
 
-  // clear serial port in case of garbage values
-  while(Serial.available() !=0)
-  {
-    Serial.read();
-  }
-
-  // notify hardware driver that homing has completed
-  Serial.print("HCZ");
+    initializeHomingMotion();
+    homeAxes();
+    initializeMotion();
+    sendArmFeedback();
 }
 
 // Runs through and checks if each axis has reached its limit switch, then runs it to specified home position
@@ -490,7 +425,6 @@ void initializeHomingMotion() { // sets homing speed and acceleration and sets t
 
     steppers[i].setMaxSpeed(homeSpeed[i]);
     steppers[i].setAcceleration(homeAccel[i]);
-    steppers[i].setCurrentPosition(0);
 
     if(i == 0) // Special case for axis 1
     {
@@ -512,14 +446,10 @@ void initializeHomingMotion() { // sets homing speed and acceleration and sets t
   }
 }
 
-
 void initializeMotion() { // sets main program speeds for each axis and zeros position
 
-  for(i = 0; i<NUM_AXES; i++) {
-    steppers[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
-    steppers[i].setAcceleration(maxAccel[i]);
-    steppers[i].setCurrentPosition(0);
-  }
+  setJointSpeed();
+  zeroEncoders();
 }
 
 void waitForHome()
@@ -546,51 +476,3 @@ void waitForHome()
     }
   }
 }
-
-
-// OLD FUNCTIONS THAT MAY BE USED IN THE FIRMWARE //
-
-//void homeEE()
-//{
-//  EEforce=scale.get_units()/1000*9.81;
-//
-//  // target position for end effector in closed direction
-//  endEff.move(-99000*MOTOR_DIR_EE);
-//
-//  while(abs(EEforce) < calForce) 
-//  {
-//    if (scale.wait_ready_timeout(1)) {   
-//      EEforce=scale.get_units()/1000*9.81; //converting mass to force
-//    // close end effector
-//    }
-//    endEff.run();
-//  }
-//
-//  endEff.setCurrentPosition(-30);
-//  endEff.moveTo(openPos*MOTOR_DIR_EE);
-//  while(endEff.distanceToGo() != 0)
-//  {
-//    endEff.run();
-//  }
-//}
-
-// void changeSpeed(char speedVal) { // changes speed of all axes based on user input
-  
-//   if(speedVal == faster){
-//     if(speedIndex < maxSpeedIndex) {
-//       speedIndex++;
-//       for(i=0;i<NUM_AXES;i++) {
-//         steppers[i].setMaxSpeed(speedVals[speedIndex][i]);
-//       }
-//     }
-//   }
-
-//   else if(speedVal == slower) {
-//     if(speedIndex > 0) {
-//       speedIndex--;
-//       for(i=0;i<NUM_AXES;i++) {
-//         steppers[i].setMaxSpeed(speedVals[speedIndex][i]);
-//       }
-//     }
-//   }
-// }
