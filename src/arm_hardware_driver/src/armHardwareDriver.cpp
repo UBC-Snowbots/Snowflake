@@ -33,8 +33,8 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM0");
     // Open the given serial port
     teensy.Open(port);
-    teensy.SetBaudRate(LibSerial::SerialStreamBuf::BAUD_9600);
-    teensy.SetCharSize(LibSerial::SerialStreamBuf::CHAR_SIZE_8);
+    teensy.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
+    teensy.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
 
     encCmd.resize(num_joints_);
     armCmd.resize(num_joints_);
@@ -186,7 +186,7 @@ const sb_msgs::ArmPosition::ConstPtr& poseAngles) {
     jointPosToEncSteps(poseCmd, encCmd);
     
     std::string outMsg = "PM";
-    for(int i=0; i < num_joints; i++) {
+    for(int i=0; i < num_joints_; i++) {
         outMsg += 'A' + i;
         outMsg += std::to_string(encCmd[i]);
     }
