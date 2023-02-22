@@ -10,15 +10,13 @@ add_definitions(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
         roscpp
         geometry_msgs
-        sensor_msgs
         )
 find_package(sb_utils REQUIRED)
 
 
 catkin_package(
         INCLUDE_DIRS include
-        CATKIN_DEPENDS roscpp geometry_msgs sensor_msgs
-
+        CATKIN_DEPENDS roscpp geometry_msgs
 )
 
 include_directories(
@@ -28,10 +26,10 @@ include_directories(
 )
 
 
-add_executable(all_controller src/all_controller.cpp
-        src/AllController.cpp include/AllController.h)
+add_executable(pro_controller src/pro_controller.cpp
+        src/ProController.cpp include/ProController.h)
 
 
-target_link_libraries(all_controller evdev)
-target_link_libraries(all_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(pro_controller evdev)
+target_link_libraries(pro_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
