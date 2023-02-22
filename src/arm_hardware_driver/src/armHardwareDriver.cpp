@@ -30,7 +30,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 
     // Get Params
         SB_getParam(
-    private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM0");
+    private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM2");
     // Open the given serial port
     teensy.Open(port);
     teensy.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
@@ -51,7 +51,8 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 
 // Callback function to relay pro controller messages to teensy MCU on arm via
 void ArmHardwareDriver::allControllerCallback(const std_msgs::String::ConstPtr& inMsg) {
-    parseInput(inMsg->data);
+    ROS_INFO("ALLCONTROLLER INPUT VALID");
+    parseInput(inMsg->data); 
 }
 
 void ArmHardwareDriver::parseInput(std::string inMsg) {
@@ -250,7 +251,7 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
-    teensy << outMsg;
+    teensy.Write(outMsg);
     ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
@@ -259,7 +260,7 @@ void ArmHardwareDriver::recieveMsg() {
     std::stringstream buffer;
     char next_char;
     do {
-        teensy >> next_char;
+        teensy.ReadByte(next_char);
         //ROS_INFO("next_char: %c", next_char);
         buffer << next_char;
     } while (next_char != 'Z');

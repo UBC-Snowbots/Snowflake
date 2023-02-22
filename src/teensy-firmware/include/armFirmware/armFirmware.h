@@ -18,6 +18,7 @@ Description: Header file for firmware for driving a 6 axis arm via ROS on a teen
 #define SW_OFF 1
 #define FWD 1
 #define REV 0
+#define forcePin 0 //TODO
 
 static const char release = 'R';
 static const char move = 'M';
@@ -201,7 +202,7 @@ void readEncPos(int* encPos);
 void zeroEncoders();
 
 // For closed loop movement (Inverse Kin Mode)
-void cmdArm();
+int cmdArm();
 
 // Main function for homing the entire arm.
 void homeArm();
@@ -222,7 +223,7 @@ void runSteppers();
 void waitForHome();
 
 // Reads end effector gripper force
-void readGripperForce();
+int readGripperForce();
 
 // Move arm to GUI specified pose
 void executePose(String inMsg);
