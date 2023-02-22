@@ -40,7 +40,7 @@ min_steps[0] = -max_steps[0];
     }
     
 // waits for user to press "home" button before rest of functions are available
-waitForHome();
+//waitForHome();
 }
 
 // main program loop

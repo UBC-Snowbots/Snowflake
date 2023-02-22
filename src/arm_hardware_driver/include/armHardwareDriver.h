@@ -10,7 +10,10 @@
 
 // STD Includes
 #include <iostream>
-#include <sstream>
+//#include <sstream>
+#include <string>
+#include <cstdio>
+#include <unistd.h>
 
 // ROS Includes
 #include <math.h>
@@ -23,8 +26,15 @@
 #include <sb_utils.h>
 
 // Other
-#include <libserial/SerialPort.h>
+#include <serial/serial.h>
 
+
+using std::string;
+using std::exception;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::vector;
 
 class ArmHardwareDriver {
   public:
@@ -58,6 +68,12 @@ class ArmHardwareDriver {
     void homeEE();
     void axisRelease(const char axis);
     void axisMove(const char axis, const char dir);
+
+    //new serial
+    unsigned long baud = 9600;
+    string port = "/dev/ttyACM0";
+
+
 
     // character representations of buttons for arm communication
     const char leftJSU     = 'A';
@@ -136,9 +152,13 @@ class ArmHardwareDriver {
     ros::Publisher pubObservedPos;
 
     // The SerialStream to/from the teensy
-    LibSerial::SerialPort teensy;
+    //LibSerial::SerialPort teensy;
+    //std::string port = "/dev/ttyACM0";
+
+    serial::Serial teensy;
+
+  
 
     // The Port the teensy is connected to
-    std::string port;
 };
 #endif // ARM_HARDWARE_DRIVER_MYNODE_H

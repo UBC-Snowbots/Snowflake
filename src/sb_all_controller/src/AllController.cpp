@@ -73,10 +73,9 @@ button[i] = msg->buttons[i];
     
 }
 for (int i = 0; i < 8; i++){
-    if(axes[i] * 128 >= msg->axes[i] - 20 || axes[i] * 128 <= msg->axes[i] + 20 ){
-        Taxes[i] = axes[i];
-    }
-axes[i] = msg->axes[i] * 128;
+        axes[i] = msg->axes[i] * 128;
+
+}
 
 //ROS_INFO("Axes Recorded: %i", i);
 
@@ -86,7 +85,7 @@ axes[i] = msg->axes[i] * 128;
     processInputs();
 
 }
-}
+
 
   void AllController::setup() {
 //     system(
@@ -139,7 +138,7 @@ void AllController::processInputs() {
                 // use rosrun procontroller_snowbots pro_controller
                 // _debug:="true"
                 if (debug) {
-                   // printControllerDebug(ev.type, ev.code, ev.value);
+                   // printControlleprintControllerDebugrDebug(ev.type, ev.code, ev.value);
                 } else {
 
                     // vehicle for arm output message
@@ -173,7 +172,7 @@ void AllController::processInputs() {
                             select(button[6]); //or back on an xbox360 controlller
                             break;   
                         case 7:
-                             start(button[7]);  home(button[8]);
+                             start(button[7]); 
                             break;      
                          case 8:
                              home(button[8]);
@@ -183,8 +182,9 @@ void AllController::processInputs() {
                         }
                        }
                         }
+                       // int axeflag = 0;
                         for(int i = 0; i < 5; i++){
-                       if (Taxes[i] != axes[i]){
+                      if (Taxes[i] > axes[i] + 0.3 || Taxes[i] < axes[i] - 0.3 ){
                         switch (i)
                         {
                         case 0:
@@ -194,7 +194,7 @@ void AllController::processInputs() {
                             leftJoystickY(axes[1]); 
                             break;
                         case 2:
-                            rightJoystickY(axes[3]); 
+                            rightJoystickX(axes[3]); 
                             break;
                         case 3:
                             rightJoystickY(axes[4]);
@@ -203,8 +203,9 @@ void AllController::processInputs() {
                         default:
                             break;
                         }
+                        Taxes[i] = axes[i];
                        }
-                        }
+                       }
                     
                     
                     
@@ -316,7 +317,12 @@ void AllController::publishArmMessage(std::string outMsg) {
 }
 
 bool AllController::inDeadzone(int value) {
-    return state == Mode::wheels ? value > 108 && value < 148 :  value > 88 && value < 168 ;
+
+    if (value > 50 || value < -50){
+        return false;
+    }
+    return true;
+
 }
 
 // Updates z, which is then published by publish___XZ in readInputs()
@@ -332,32 +338,34 @@ void AllController::leftJoystickX(int value) {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick X event with value: %d\n", value);
-        x = (value - 128) / 128.0 * X_SENSITIVITY;
+       // x = (value - 128) / 128.0 * X_SENSITIVITY;
     }
 }
 
 // Updates x, which is then published by publish___XZ in readInputs()
 void AllController::leftJoystickY(int value) {
     if (inDeadzone(value)) {
-        if(state == Mode::wheels) {
-            z = 0;
-        }
-
-        else if(state == Mode::arm_joint_space){
+        if(state != Mode::wheels)
             armOutVal = leftJSRel;
-        }
-    } else {
+    }
+    
+    else {
 
         // 128 is the center, so this normalizes the result to
-        // [-1,1]*X_SENSITIVITY
+        // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick Y event with value: %d\n", value);
-        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
-        if(z > 0) {
-            armOutVal = leftJSU;
-        }
+        //z = -(value - 128) / 128.0 * Z_SENSITIVITY;
 
-        else {
-            armOutVal = leftJSD;
+        // Right joystick is only used in Y direction in all arm modes
+        if(state != Mode::wheels) {
+
+            if(value > 0) {
+             armOutVal = leftJSU;
+            }
+
+            else {
+             armOutVal = leftJSD;
+            }
         }
     }
 }
@@ -383,12 +391,12 @@ void AllController::rightJoystickY(int value) {
         // 128 is the center, so this normalizes the result to
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Right Joystick Y event with value: %d\n", value);
-        z = -(value - 128) / 128.0 * Z_SENSITIVITY;
+        //z = -(value - 128) / 128.0 * Z_SENSITIVITY;
 
         // Right joystick is only used in Y direction in all arm modes
         if(state != Mode::wheels) {
 
-            if(z > 0) {
+            if(value > 0) {
              armOutVal = rightJSU;
             }
 

@@ -29,12 +29,14 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 
 
     // Get Params
-        SB_getParam(
-    private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM2");
+    //    SB_getParam(
+    //private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM2");
     // Open the given serial port
-    teensy.Open(port);
-    teensy.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
-    teensy.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
+
+    teensy.setBaudrate(9600);
+    teensy.setPort("/dev/ttyACM0");
+    //teensy.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
+    teensy.open();
 
     encCmd.resize(num_joints_);
     armCmd.resize(num_joints_);
@@ -51,7 +53,8 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 
 // Callback function to relay pro controller messages to teensy MCU on arm via
 void ArmHardwareDriver::allControllerCallback(const std_msgs::String::ConstPtr& inMsg) {
-    ROS_INFO("ALLCONTROLLER INPUT VALID");
+    string tmp = inMsg->data;
+    ROS_INFO("%s", tmp.c_str());
     parseInput(inMsg->data); 
 }
 
@@ -174,6 +177,8 @@ void ArmHardwareDriver::homeArm() {
     std::string outMsg = "HM\n";
     homeFlag = false;
     sendMsg(outMsg);
+    recieveMsg();
+
 }
 
 void ArmHardwareDriver::homeEE() {
@@ -251,28 +256,28 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
-    teensy.Write(outMsg);
+    teensy.write(outMsg);
     ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg() {
 
-    std::stringstream buffer;
-    char next_char;
+   // std::stringstream buffer;
+    string next_char = "";
+    string buffer = "";
     do {
-        teensy.ReadByte(next_char);
-        //ROS_INFO("next_char: %c", next_char);
-        buffer << next_char;
-    } while (next_char != 'Z');
+        next_char = teensy.read();
+       buffer += next_char;
+    } while (next_char != "Z");
 
-    ROS_INFO("ARM FEEDBACK RECIEVED");
+    ROS_INFO("buffer: %s", buffer.c_str());
 
-    std::string inMsg = buffer.str();
+    // std::string inMsg = buffer.str();
 
     // Update parameters based on feedback
-    updateEncoderSteps(inMsg);
-    encStepsToJointPos(encPos, armPos);
-    updateHWInterface();
+    //updateEncoderSteps(buffer);
+    //encStepsToJointPos(encPos, armPos);
+    //updateHWInterface();
 
 }
 
