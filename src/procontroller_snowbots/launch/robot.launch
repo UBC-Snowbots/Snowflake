@@ -1,0 +1,9 @@
+<launch>
+  <arg name="init_pose"/>
+  <arg name="model" default="$(find sb_gazebo)/robots/rover_2018.xacro"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+        args="$(arg init_pose) -unpause -urdf -model lab_robot -param robot_description" respawn="false" output="screen" />
+</launch>

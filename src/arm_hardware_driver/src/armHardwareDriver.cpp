@@ -30,13 +30,17 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 
     // Get Params
     //    SB_getParam(
-    //private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM2");
+    //private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM2");buffer: %s", buffer.c_str()
     // Open the given serial port
 
     teensy.setBaudrate(9600);
-    teensy.setPort("/dev/ttyACM0");
+    teensy.setPort("/dev/ttyACM8");
+    
     //teensy.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
     teensy.open();
+    teensy.setDTR(false);
+    teensy.setRTS(false);
+
 
     encCmd.resize(num_joints_);
     armCmd.resize(num_joints_);
@@ -49,13 +53,14 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     for (int i = 0; i < num_joints_; i++) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
+    
 }
 
 // Callback function to relay pro controller messages to teensy MCU on arm via
 void ArmHardwareDriver::allControllerCallback(const std_msgs::String::ConstPtr& inMsg) {
-    string tmp = inMsg->data;
-    ROS_INFO("%s", tmp.c_str());
-    parseInput(inMsg->data); 
+    std::string tmp = inMsg->data;
+    //ROS_INFO("%s", tmp.c_str());
+    parseInput(tmp); 
 }
 
 void ArmHardwareDriver::parseInput(std::string inMsg) {
@@ -74,57 +79,81 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
 
     if(action == homeVal) {
         homeArm();
+        recieveMsg();
     } else if(action == leftJSU) {
         axisMove(J3,up);
+        recieveMsg();
     } else if (action == leftJSD) {
         axisMove(J3, down);
+        recieveMsg();
     } else if (action == rightJSU) {
         axisMove(J2, up);
+        recieveMsg();
     } else if (action == rightJSD) {
         axisMove(J2, down);
+        recieveMsg();
     } else if (action == leftJSRel) {
         axisRelease(J3);
+        recieveMsg();
     } else if (action == rightJSRel) {
         axisRelease(J2);
+        recieveMsg();
     } else if (action == buttonY) {
         axisMove(J6, left);
+        recieveMsg();
     } else if (action == buttonA) {
         axisMove(J6, right);
+        recieveMsg();
     } else if (action == buttonB) {
         axisMove(J5, down);
+        recieveMsg();
     } else if (action == buttonX) {
         axisMove(J5, up);
+        recieveMsg();
     } else if (action == triggerL) {
         axisMove(J1, left);
+        recieveMsg();
     } else if (action == triggerR) {
         axisMove(J1, right);
+        recieveMsg();
     } else if ((action == triggerLRel) || (action == triggerRRel)) {
         axisRelease(J1);
+        recieveMsg();
     } else if (action == buttonARel) {
         axisRelease(J6);
+        recieveMsg();
     } else if (action == buttonBRel) {
         axisRelease(J5);
+        recieveMsg();
     } else if (action == buttonXRel) {
         axisRelease(J5);
+        recieveMsg();
     } else if (action == buttonYRel) {
         axisRelease(J6);
+        recieveMsg();
     } else if(action == bumperL) {
         axisMove(J4, left);
+        recieveMsg();
     } else if(action == bumperR) {
         axisMove(J4, right); 
+        recieveMsg();
     } else if((action == bumperLRel) || (action == bumperRRel)) {
         axisRelease(J4);
+        recieveMsg();
     } else if (action == arrowL) {
         endEffector(open);
+        recieveMsg();
     } else if (action == arrowR) {
         endEffector(close);
+        recieveMsg();
     } else if (action == arrowRLRel) {
         endEffectorRel();
+        recieveMsg();
     } else if(action == homeValEE) {
         homeEE();
+        recieveMsg();
+        
     }
-
-    recieveMsg();
 }
 
 void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
@@ -175,9 +204,7 @@ void ArmHardwareDriver::endEffectorRel() {
 
 void ArmHardwareDriver::homeArm() {
     std::string outMsg = "HM\n";
-    homeFlag = false;
     sendMsg(outMsg);
-    recieveMsg();
 
 }
 
@@ -256,6 +283,8 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
+    //ROS_INFO("attempting send");
+    //teensy.flush();
     teensy.write(outMsg);
     ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
@@ -263,21 +292,26 @@ void ArmHardwareDriver::sendMsg(std::string outMsg) {
 void ArmHardwareDriver::recieveMsg() {
 
    // std::stringstream buffer;
-    string next_char = "";
-    string buffer = "";
+    std::string next_char = "";
+    std::string buffer = "";
+    int timeoutCounter = 0;
     do {
+        timeoutCounter ++;
         next_char = teensy.read();
        buffer += next_char;
+       if(timeoutCounter > 50){
+        ROS_INFO("timed out");
+        next_char = "Z";
+       }
     } while (next_char != "Z");
 
-    ROS_INFO("buffer: %s", buffer.c_str());
+     ROS_INFO("buffer: %s", buffer.c_str());
 
-    // std::string inMsg = buffer.str();
 
-    // Update parameters based on feedback
-    //updateEncoderSteps(buffer);
-    //encStepsToJointPos(encPos, armPos);
-    //updateHWInterface();
+    // // Update parameters based on feedback
+    // updateEncoderSteps(buffer);
+    // encStepsToJointPos(encPos, armPos);
+    // updateHWInterface();
 
 }
 

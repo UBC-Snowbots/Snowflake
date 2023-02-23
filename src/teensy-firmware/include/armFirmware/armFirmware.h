@@ -90,8 +90,8 @@ const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 float ENC_STEPS_PER_DEG[NUM_AXES];
 
 // Motor speeds and accelerations
-int maxSpeed[6] = {1200, 1800, 3000, 2500, 2200, 2200};
-int maxAccel[6] = {1300, 3500, 4600, 3300, 5000, 5000};
+int maxSpeed[6] = {800, 1800, 2000, 2000, 2200, 2200};
+int maxAccel[6] = {2000, 3000, 3000, 3300, 5000, 5000};
 int homeSpeed[6] = {1200, 1500, 1500, 2000, 500, 500}; 
 int homeAccel[6] = {1500, 2000, 2000, 2000, 500, 500}; 
 
@@ -121,7 +121,7 @@ Encoder enc6(encPinA[5], encPinB[5]);
 
 // General Global Variable declarations
 
-const int axisDir[6] = {1, -1, -1, 1, 1, 1};  
+const int axisDir[6] = {1, -1, -1, 1, 1, -1};  
 const int IK_DIR[6] = {1, 1, 1, 1, 1, 1};
 int runFlags[] = {0, 0, 0, 0, 0, 0};
 int currentAxis = 1;
@@ -136,8 +136,8 @@ bool horizFlag = false;
 // Variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst};
-long homeCompAngles[] = {50, 0, 0, 110, 30, 30};
-long homeCompConst[] = {500, 500, 200, 500, 500, 500};
+long homeCompAngles[] = {50, 0, 0, 110, 30, 90};
+long homeCompConst[] = {500, 1000, 1000, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5]};
 long homeCompSteps[] = {axisDir[0]*homeCompAngles[0]*red[0]*ppr[0]/360.0, axisDir[1]*homeCompAngles[1]*red[1]*ppr[1]/360.0, axisDir[2]*homeCompAngles[2]*red[2]*ppr[2]/360.0, axisDir[3]*homeCompAngles[3]*red[3]*ppr[3]/360.0, axisDir[4]*homeCompAngles[4]*red[4]*ppr[4]/360.0, axisDir[5]*homeCompAngles[5]*red[5]*ppr[5]/360.0};
 
