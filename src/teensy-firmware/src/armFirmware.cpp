@@ -37,6 +37,7 @@ void setup() {
     pinMode(limPins[i], INPUT_PULLUP);
     steppers[i] = AccelStepper(1, stepPins[i], dirPins[i]);
     steppers[i].setMinPulseWidth(200);
+    steppers[i].setCurrentPosition(0);
   }
 
   // waits for user to press "home" button before rest of functions are available
@@ -123,6 +124,7 @@ void executePose(String inMsg) {
 }
 
 void sendArmFeedback() {
+
   char garbage;
   while (Serial.available() > 0) {
     garbage = Serial.read();
@@ -179,11 +181,11 @@ void moveArm(char axis, char dir) {
 void relArm(char axis) {
   int axisNum = String(axis).toInt();  // String to int for math
   steppers[axisNum - 1].stop();
-  runFlags[axis] = 0;
+  runFlags[axisNum - 1] = 0;
 }
 
 void moveAxis(int axis, int dir) {
-  if ((axis == 0) || (axis == 1)) {  // switching direction if axis 1 or 2 (arm moves in intuitive dir)
+  if ((axis == 0) || (axis == 1) || (axis = 2)) {  // switching direction if axis 1 or 2 (arm moves in intuitive dir)
     dir = !dir;
   }
 
@@ -405,8 +407,7 @@ void initializeMotion() {  // sets main program speeds for each axis and zeros p
   setJointSpeed();
   zeroEncoders();
 
-  for(int i=0; i<NUM_AXES; i++) 
-  {
+  for (int i = 0; i < NUM_AXES; i++) {
     steppers[i].setCurrentPosition(0);
   }
 }
