@@ -34,7 +34,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     // Open the given serial port
 
     teensy.setBaudrate(9600);
-    teensy.setPort("/dev/ttyACM8");
+    teensy.setPort("/dev/ttyACM9");
     
     //teensy.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
     teensy.open();

@@ -95,7 +95,7 @@ void AllController::readJoyInputs(const sensor_msgs::Joy::ConstPtr& msg){
 
   void AllController::setup() {
      system(
-     "gnome-terminal --tab -- bash -c 'rosrun joy joy_node _deadzone:=0.1 _autorepeat_rate:=25 _coalesce_interval:=0.04'");
+     "gnome-terminal --tab -- bash -c 'rosrun joy joy_node _deadzone:=0.1 _autorepeat_rate:=20 _coalesce_interval:=0.05'");
 
      ROS_INFO(
      "ALLCONTROLLER INITIATED, CURRENTLY PARSING FOR PROCONTROLLER");
@@ -158,19 +158,19 @@ void AllController::processInputs() {
                         }
                        // int axeflag = 0;
                         for(int i = 0; i < 5; i++){
-                      if ( Taxes[i] != axes[i]) {
+                      if ( Taxes[i] != axes[i] || inDeadzone(axes[i])) {
                         armOutMsg = "";
                         armOutVal = "";
                         switch (i)
                         {
                         case 0:
-                            leftJoystickX(axes[i]);
+                          //  leftJoystickX(axes[i]);
                             break;
                         case 1:
                             leftJoystickY(axes[i]); 
                             break;
                         case 2:
-                            rightJoystickX(axes[i]); 
+                         //   rightJoystickX(axes[i]); 
                             break;
                         case 3:
                             rightJoystickY(axes[i]);
@@ -283,7 +283,7 @@ void AllController::processInputs() {
                 
             
         
-        proccessing = false;
+       // proccessing = false;
 
 }
 
