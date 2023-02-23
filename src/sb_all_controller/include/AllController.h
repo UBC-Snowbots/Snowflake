@@ -6,6 +6,7 @@
 
 #ifndef ALLCONTROLLER_SNOWBOTS_CONTROLLER_H
 #define ALLCONTROLLER_SNOWBOTS_CONTROLLER_H
+#define NUM_BUTTONS 12
 
 #include <cstdio>
 #include <cstdlib>
@@ -27,7 +28,7 @@ class AllController {
   public:
     AllController(int argc, char** argv, std::string node_name);
 
-  private:
+  private: //TODO: make vel relative to analog values
     void setup();
     void processInputs();
     void readJoyInputs(const sensor_msgs::Joy::ConstPtr& msg);
@@ -47,6 +48,8 @@ class AllController {
     void home(int value);               // BTN_MODE
     void leftTrigger(int value);        // ABS_Z
     void rightTrigger(int value);       // ABS_RZ
+    void leftPaddle(int value);        // Same as trigger, but discreet not analog
+    void rightPaddle(int value);       // ABS_RZ
     void arrowsRorL(int value);         // ABS_HAT0X
     void arrowsUorD(int value);         // ABS_HAT0Y
     void leftJoystickPress(int value);  // BTN_THUMBL
@@ -55,6 +58,8 @@ class AllController {
     void publishArmMessage(std::string outMsg);
     void printState();
     void printControllerDebug(int type, int code, int value);
+    void publishCmds();
+
     // see documentation to changes sensitivities at runtime
     double X_SENSITIVITY = 1.0;
     double Z_SENSITIVITY = 1.0;

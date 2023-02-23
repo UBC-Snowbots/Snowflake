@@ -8,8 +8,8 @@
 
 #include "../include/AllController.h"
 
-int32_t button[11];
-int32_t Tbutton[11];
+int32_t button[NUM_BUTTONS];
+int32_t Tbutton[NUM_BUTTONS];
 
 _Float32 axes[8];
 _Float32 Taxes[8];
@@ -62,150 +62,188 @@ void AllController::readJoyInputs(const sensor_msgs::Joy::ConstPtr& msg){
 // ROS_INFO("X is %i", msg->buttons[2]);
 // ROS_INFO("Y is %i", msg->buttons[3]);
 // ROS_INFO("HOME is %f", msg->axes[0]);
-if(!proccessing){
-for (int i = 0; i < 11; i ++ ){
-    if(button[i] == msg->buttons[i]){
-        Tbutton[i] = button[i];
-    }
-button[i] = msg->buttons[i];
+//if(!proccessing){
+    for (int i = 0; i < NUM_BUTTONS; i ++ ){
+        if(button[i] == msg->buttons[i]){
+            Tbutton[i] = button[i];
+        }
+    button[i] = msg->buttons[i];
 
 //ROS_INFO("Buttons Recorded: %i", i);
     
-}
-for (int i = 0; i < 8; i++){
-        axes[i] = msg->axes[i] * 128;
+    }
+    for (int i = 0; i < 8; i++){
+        if(axes[i] == msg->axes[i]){
+          Taxes[i] = axes[i];
 
-}
+     }
+     axes[i] = msg->axes[i] * 128;
+
+
+    }
 
 //ROS_INFO("Axes Recorded: %i", i);
 
-}
-  proccessing = true;
+//}
+//proccessing = true;
   //printState();
-    processInputs();
+  processInputs();
+
 
 }
 
 
   void AllController::setup() {
-//     system(
-//     "gnome-terminal --tab -- bash -c 'cd src/sb_AllController/src; sudo "
-//     "./procon_driver; read;'");
-//     ROS_INFO(
-//     "Press enter after you've calibrated the Controller in the other "
-//     "terminal...\n ");
-//     ROS_INFO(
-//     "If calibration is done properly, X and Y buttons should correctly print "
-//     "out when pressed");
-//     int c  = getchar();
-//     int rc = 0;
-// #//check the first 50 event inputs to find the controller.
-//     for (auto i = 0; i < 50; i++) {
-//         string inttostring = to_string(i);
-//         string EVTEST_PATH = "/dev/input/event";
-//         string pathstring  = EVTEST_PATH + inttostring;
-//         const char* path   = (pathstring).c_str();
-//         int fd             = open(path, O_RDONLY | O_NONBLOCK);
-//         rc                 = libevdev_new_from_fd(fd, &dev);
-//         if (rc >= 0) {
-//             ROS_INFO("Succesfully set up %s with path \"%s\n",
-//                      libevdev_get_name(dev),
-//                      path);
-//             if (debug) {
-//                 ROS_DEBUG("Input device ID: bus %#x vendor %#x product %#x\n",
-//                           libevdev_get_id_bustype(dev),
-//                           libevdev_get_id_vendor(dev),
-//                           libevdev_get_id_product(dev));
-//             }
-//             break;
-//         }
-//     }
-//     if (rc < 0) {
-//         ROS_INFO_COND(stderr, "Failed to init libevdev (%s)\n", strerror(-rc));
-//         exit(1);
-//     }
+     system(
+     "gnome-terminal --tab -- bash -c 'rosrun joy joy_node _deadzone:=0.1 _autorepeat_rate:=25 _coalesce_interval:=0.04'");
+
+     ROS_INFO(
+     "ALLCONTROLLER INITIATED, CURRENTLY PARSING FOR PROCONTROLLER");
 }
 
 void AllController::processInputs() {
-    double x_old = 0;
-    double z_old = 0;
-    int rc;
-    
-        if (rc == 0) {
-            // EV_SYN types are useless, ABS and KEY are useful (see .h file for
-            // details)
-            
-                // use rosrun procontroller_snowbots pro_controller
-                // _debug:="true"
-                if (debug) {
-                   // printControlleprintControllerDebugrDebug(ev.type, ev.code, ev.value);
-                } else {
-
+                        
+//i think deals with a lot more floats than needed
                     // vehicle for arm output message
-                    armOutMsg = "";
-                    armOutVal = "";
+                    
                     // handle all controller inputs using API functions
-                   
-                        for(int i = 0; i < 9; i++){
+                          for(int i = 0; i < 12; i++){
                        if (Tbutton[i] != button[i]){
+                        armOutMsg = "";
+                        armOutVal = "";
                         switch (i)
                         {
                         case 0:
-                            A(button[0]);
+                            B(button[i]);
                             break;
                         case 1:
-                            B(button[1]);
+                            A(button[i]);
                             break;
                         case 2:
-                            X(button[2]);
+                            X(button[i]);
                             break;
                         case 3:
-                            Y(button[3]);
+                            Y(button[i]);
                             break;
                         case 4:
-                            leftBumper(button[4]);
+                            select(button[i]);
                             break;  
                         case 5:
-                            rightBumper(button[5]);
+                            leftBumper(button[i]);
                             break;   
                         case 6:
-                            select(button[6]); //or back on an xbox360 controlller
+                            rightBumper(button[i]); 
                             break;   
                         case 7:
-                             start(button[7]); 
-                            break;      
-                         case 8:
-                             home(button[8]);
+                            leftPaddle(button[i]); 
+                            break;
+                        case 8:
+                            rightPaddle(button[i]); 
+                            break;
+                         case 9:
+                             select(button[i]); 
+                            break;
+                         case 10:
+                             start(button[i]); 
+                            break;     
+                         case 11:
+                             home(button[i]); 
                             break;                     
                         default:
                             break;
                         }
+                        publishCmds();
+
                        }
                         }
                        // int axeflag = 0;
                         for(int i = 0; i < 5; i++){
-                      if (Taxes[i] > axes[i] + 0.3 || Taxes[i] < axes[i] - 0.3 ){
+                      if ( Taxes[i] != axes[i]) {
+                        armOutMsg = "";
+                        armOutVal = "";
                         switch (i)
                         {
                         case 0:
-                            leftJoystickX(axes[0]);
+                            leftJoystickX(axes[i]);
                             break;
                         case 1:
-                            leftJoystickY(axes[1]); 
+                            leftJoystickY(axes[i]); 
                             break;
                         case 2:
-                            rightJoystickX(axes[3]); 
+                            rightJoystickX(axes[i]); 
                             break;
                         case 3:
-                            rightJoystickY(axes[4]);
+                            rightJoystickY(axes[i]);
                             break;
-                    // paddles here too
+                    // triggers here too
                         default:
                             break;
                         }
-                        Taxes[i] = axes[i];
+                        publishCmds();
+
                        }
-                       }
+                      }
+                    //for XBOX | TODO: quick controller change parameter
+                    //     for(int i = 0; i < 9; i++){
+                    //    if (Tbutton[i] != button[i]){
+                    //     switch (i)
+                    //     {
+                    //     case 0:
+                    //         A(button[0]);
+                    //         break;
+                    //     case 1:
+                    //         B(button[1]);
+                    //         break;
+                    //     case 2:
+                    //         X(button[2]);
+                    //         break;
+                    //     case 3:
+                    //         Y(button[3]);
+                    //         break;
+                    //     case 4:
+                    //         leftBumper(button[4]);
+                    //         break;  
+                    //     case 5:
+                    //         rightBumper(button[5]);
+                    //         break;   
+                    //     case 6:
+                    //         select(button[6]); //or back on an xbox360 controlller
+                    //         break;   
+                    //     case 7:
+                    //          start(button[7]); 
+                    //         break;      
+                    //      case 8:
+                    //          home(button[8]);
+                    //         break;                     
+                    //     default:
+                    //         break;
+                    //     }
+                    //    }
+                    //     }
+                    //    // int axeflag = 0;
+                    //     for(int i = 0; i < 5; i++){
+                    //   if (Taxes[i] > axes[i] + 0.3 || Taxes[i] < axes[i] - 0.3 ){
+                    //     switch (i)
+                    //     {
+                    //     case 0:
+                    //         leftJoystickX(axes[0]);
+                    //         break;
+                    //     case 1:
+                    //         leftJoystickY(axes[1]); 
+                    //         break;
+                    //     case 2:
+                    //         rightJoystickX(axes[3]); 
+                    //         break;
+                    //     case 3:
+                    //         rightJoystickY(axes[4]);
+                    //         break;
+                    // // paddles here too
+                    //     default:
+                    //         break;
+                    //     }
+                    //     Taxes[i] = axes[i];
+                    //    }
+                    //    }
                     
                     
                     
@@ -241,7 +279,18 @@ void AllController::processInputs() {
                     //     case BTN_THUMBR: rightJoystickPress(ev.value); break;
                     // }
                     // publish move command and update oldx, oldz
-                    if (state == Mode::wheels) {
+                  
+                
+            
+        
+        proccessing = false;
+
+}
+
+void AllController::publishCmds(){
+    double x_old = 0;
+    double z_old = 0;
+  if (state == Mode::wheels) {
                         // Publish motion, update x and z old using tuple
                         tie(x_old, z_old) = publishMoveXZ(x, z, x_old, z_old);
                     }
@@ -258,16 +307,16 @@ void AllController::processInputs() {
                     }
 
                     else { // Drilling mode for arm 
-                        armOutMsg += drillMode;
-                        armOutMsg += armOutVal;
-                        publishArmMessage(armOutMsg);                    
+                        // armOutMsg += drillMode;
+                        // armOutMsg += armOutVal;
+                        // publishArmMessage(armOutMsg);     
+                        ROS_INFO("error");               
                     }
-                
-            }
-        }
-        proccessing = false;
+ROS_INFO("Attempted Publish");
 
 }
+
+
 
 // Prints out a controller event using ROS_INFO
 void AllController::printControllerDebug(int type, int code, int value) {
@@ -345,8 +394,9 @@ void AllController::leftJoystickX(int value) {
 // Updates x, which is then published by publish___XZ in readInputs()
 void AllController::leftJoystickY(int value) {
     if (inDeadzone(value)) {
-        if(state != Mode::wheels)
+        if(state != Mode::wheels){
             armOutVal = leftJSRel;
+        }
     }
     
     else {
@@ -414,6 +464,24 @@ void AllController::A(int value) {
     } else if (value == 0) {
         ROS_INFO("A button released");
      armOutVal = buttonARel;
+    }
+}
+void AllController::leftPaddle(int value) {
+    if (value == 1) {
+        ROS_INFO("Left paddle/trigger button pressed");
+     armOutVal = triggerL;
+    } else if (value == 0) {
+        ROS_INFO("Left paddle/trigger  button released");
+     armOutVal = triggerLRel;
+    }
+}
+void AllController::rightPaddle(int value) {
+    if (value == 1) {
+        ROS_INFO("Right paddle/trigger  button pressed");
+     armOutVal = triggerR;
+    } else if (value == 0) {
+        ROS_INFO("Right paddle/trigger  button released");
+     armOutVal = triggerRRel;
     }
 }
 
@@ -487,10 +555,10 @@ void AllController::start(int value) {
 
 // Currently switches between wheels and arm mode
 void AllController::home(int value) {
-    if (!debug) {
+   // if (!debug) {
        
         if (value == 0) {
-            //ROS_INFO("Home button pressed");
+            ROS_INFO("Home button pressed");
         } else if (value == 1) {
             state = static_cast<Mode>((state + 1) % (Mode::num_modes));
             if (state == Mode::wheels || state == Mode::arm_joint_space) {
@@ -503,7 +571,7 @@ void AllController::home(int value) {
             printState();
         }
          
-    }
+   // }
 }
 
 void AllController::leftTrigger(int value) {
