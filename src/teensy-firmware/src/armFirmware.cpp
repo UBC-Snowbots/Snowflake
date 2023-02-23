@@ -41,11 +41,12 @@ void setup() {
   }
 
   // waits for user to press "home" button before rest of functions are available
-  //waitForHome();
+  // waitForHome();
 }
 
 // main program loop
 void loop() {
+
   // receives command from serial and executes accoringly
   recieveCommand();
 
@@ -152,7 +153,8 @@ void runSteppers() {
 // Parses which commands to execute when in joint space mode
 void jointCommands(String inMsg) {
   char function = inMsg[2];
-  char detail1 = inMsg[3];
+  char axis = inMsg[3];
+  char dir = inMsg[4];
 
   if (!jointFlag)  // Check if we are switching from cartesian mode
   {
@@ -162,10 +164,10 @@ void jointCommands(String inMsg) {
   }
 
   if (function == move)
-    moveArm(detail1, inMsg[4]);
+    moveArm(axis, dir);
 
   else if (function == release)
-    relArm(detail1);
+    relArm(axis);
 }
 
 void moveArm(char axis, char dir) {
@@ -181,27 +183,25 @@ void moveArm(char axis, char dir) {
 void relArm(char axis) {
   int axisNum = String(axis).toInt();  // String to int for math
   steppers[axisNum - 1].stop();
-  runFlags[axisNum - 1] = 0;
 }
 
 void moveAxis(int axis, int dir) {
-  if ((axis == 0) || (axis == 1) || (axis = 2)) {  // switching direction if axis 1 or 2 (arm moves in intuitive dir)
+  if ((axis == 0) || (axis == 1)) {  // switching direction if axis 1 or 2 (arm moves in intuitive dir)
     dir = !dir;
   }
 
-  if (dir == FWD && runFlags[axis] != 1) {  // sets stepper to move to max steps and sets run flag so doesn't keep executing
+  if (dir == FWD) {  // sets stepper to move to max steps and sets run flag so doesn't keep executing
     steppers[axis].moveTo(max_steps[axis]);
-    runFlags[axis] = 1;
-  } else if (dir == REV && runFlags[axis] != -1) {  // sets stepper to move to min steps and sets run flag so doesn't keep executing
+
+  } else if (dir == REV) {  // sets stepper to move to min steps and sets run flag so doesn't keep executing
     steppers[axis].moveTo(min_steps[axis]);
-    runFlags[axis] = -1;
   }
 }
 
 // sets Joint Mode speeds after switching out of cartesian mode
 void setJointSpeed() {
   for (i = 0; i < NUM_AXES; i++) {
-    steppers[i].setMaxSpeed(speedVals[maxSpeedIndex][i]);
+    steppers[i].setMaxSpeed(maxSpeed[i]);
     steppers[i].setAcceleration(maxAccel[i]);
   }
 }

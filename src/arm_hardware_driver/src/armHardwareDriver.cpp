@@ -13,7 +13,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     ros::NodeHandle private_nh("~");
 
     // Setup Subscribers
-    int queue_size = 10;
+    int queue_size = 11;
 
     subPro = nh.subscribe( 
         "/cmd_arm", queue_size, &ArmHardwareDriver::allControllerCallback, this);
@@ -284,34 +284,32 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
     //ROS_INFO("attempting send");
-    //teensy.flush();
     teensy.write(outMsg);
     ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg() {
 
-   // std::stringstream buffer;
     std::string next_char = "";
     std::string buffer = "";
     int timeoutCounter = 0;
     do {
         timeoutCounter ++;
         next_char = teensy.read();
-       buffer += next_char;
-       if(timeoutCounter > 50){
-        ROS_INFO("timed out");
-        next_char = "Z";
-       }
+        buffer += next_char;
+    //    if(timeoutCounter > 50){
+    //     ROS_INFO("timed out");
+    //     next_char = "Z";
+    //    }
     } while (next_char != "Z");
 
      ROS_INFO("buffer: %s", buffer.c_str());
 
 
     // // Update parameters based on feedback
-    // updateEncoderSteps(buffer);
-    // encStepsToJointPos(encPos, armPos);
-    // updateHWInterface();
+    updateEncoderSteps(buffer);
+    encStepsToJointPos(encPos, armPos);
+    updateHWInterface();
 
 }
 

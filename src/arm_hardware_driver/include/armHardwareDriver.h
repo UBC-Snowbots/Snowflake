@@ -10,7 +10,6 @@
 
 // STD Includes
 #include <iostream>
-//#include <sstream>
 #include <string>
 #include <cstdio>
 #include <unistd.h>
@@ -42,14 +41,8 @@ class ArmHardwareDriver {
     void allControllerCallback(const std_msgs::String::ConstPtr& inMsg);
     void parseInput(std::string inMsg);
     void joint_space_motion(std::string inMsg);
-    void drill_motion(std::string inMsg);
     void endEffector(const char dir);
     void endEffectorRel();
-    void prepareDrilling();
-    void collectSample();
-    void depositSample();
-    void manualDrill(const char dir);
-    void releaseDrill();
     void homeArm();
     void cartesian_motion(std::string inMsg);
     void cartesian_moveit_move(std::vector<double>& pos_commands,
@@ -63,8 +56,6 @@ class ArmHardwareDriver {
     void recieveMsg();
     void requestArmPosition();
     void updateHWInterface();
-    void requestEEFeedback();
-    void requestJPFeedback();
     void homeEE();
     void axisRelease(const char axis);
     void axisMove(const char axis, const char dir);
@@ -114,10 +105,10 @@ class ArmHardwareDriver {
     const char J4 = '4';
     const char J5 = '5';
     const char J6 = '6';
+
     // arm modes
     const char jointMode = '1';
     const char IKMode    = '2';
-    const char drillMode = '3';
 
     // joystick direction characters
     const char left    = 'L';
@@ -151,14 +142,6 @@ class ArmHardwareDriver {
     ros::Subscriber subCmdPos;
     ros::Publisher pubObservedPos;
 
-    // The SerialStream to/from the teensy
-    //LibSerial::SerialPort teensy;
-    //std::string port = "/dev/ttyACM0";
-
     serial::Serial teensy;
-
-  
-
-    // The Port the teensy is connected to
 };
 #endif // ARM_HARDWARE_DRIVER_MYNODE_H

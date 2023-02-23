@@ -6,40 +6,25 @@ Description: Header file for firmware for driving a 6 axis arm via ROS on a teen
 */
 
 #include <AccelStepper.h>
-#include <HX711.h>
 #include <Encoder.h>
 
 // general parameters
 #define NUM_AXES 6
-#define NUM_PARAMS 7
 #define ON 0
 #define OFF 1
 #define SW_ON 0
 #define SW_OFF 1
 #define FWD 1
 #define REV 0
-#define forcePin 0 //TODO
 
 static const char release = 'R';
 static const char move = 'M';
-static const char change = 'A';
-static const char speed = 'S';
 static const char right = 'R';
 static const char left = 'L';
 static const char up = 'U';
 static const char down = 'D';
-static const char wrist = 'W';
-static const char garbage = 'G';
-static const char faster = 'U';
-static const char slower = 'D';
-static const char prepare = 'P';
-static const char collect = 'C';
-static const char deposit = 'D';
-static const char manual = 'M';
-static const char drillRelease = 'X';
 static const char open = 'O';
 static const char close = 'C';
-static const char joint = 'J';
 static const char EEval = 'E';
 static const char homeValEE = 'H';
 
@@ -61,55 +46,31 @@ long ppr[6] = {400, 400, 400, 400, 400, 400};
 float red[6] = {50.0, 160.0, 92.3077, 43.936, 57, 14};
 
 // End effector variables
-const float calibrationFactor = -111.25;
-float force;
-HX711 scale;
-const int dataPin = 34;
-const int clkPin = 33;
-int calPos = 0;
-int closePos = 0;
-int openPos = 500; 
-int EEstepPin = 4;
-int EEdirPin = 3;
-int speedEE = 100;
-int accEE = 500;
-int speedDrill = 3000;
-int accDrill = 1000;
+const int closePos = 0;
+const int openPos = 500; 
+const int EEstepPin = 4;
+const int EEdirPin = 3;
+const int speedEE = 500;
+const int accEE = 500;
 const int MOTOR_DIR_EE = 1;
-const int openButton = 5;
-const int closeButton = 4;
-const float calForce = 0.3;
-const float maxForce = 10.0;
-float EEforce;
-int forcePct = 0;
+const int forcePin = 12;
+
 
 // Encoder Variables
 int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
-int pprEnc = 512;
+const int pprEnc = 512;
 const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 float ENC_STEPS_PER_DEG[NUM_AXES];
 
 // Motor speeds and accelerations
-int maxSpeed[6] = {800, 1800, 2000, 2000, 2200, 2200};
-int maxAccel[6] = {2000, 3000, 3000, 3300, 5000, 5000};
-int homeSpeed[6] = {1200, 1500, 1500, 2000, 500, 500}; 
-int homeAccel[6] = {1500, 2000, 2000, 2000, 500, 500}; 
-
-// Time variables
-const unsigned long readInterval = 10;
-unsigned long currentTime;
-unsigned long currentTimeJP;
-unsigned long currentTimeEE;
-unsigned long previousTime = 0;
-unsigned long previousTimeEE = 0;
-const unsigned long timeIntervalEE = 500;
-const unsigned long timeIntervalJP = 250;
-unsigned long previousTimeJP = 0;
+const int maxSpeed[6] = {1000, 1800, 2000, 2000, 3000, 2000};
+const int maxAccel[6] = {2000, 3000, 3000, 3300, 4000, 3000};
+const int homeSpeed[6] = {1500, 2000, 2000, 2500, 1500, 1000}; 
+const int homeAccel[6] = {1500, 2000, 2000, 2500, 1500, 1000}; 
 
 // Stepper motor objects for AccelStepper library
 AccelStepper steppers[6];
 AccelStepper endEff(1, EEstepPin, EEdirPin);
-AccelStepper steppersIK[6];
 
 // Encoder objects for Encoder library
 Encoder enc1(encPinA[0], encPinB[0]);
@@ -120,37 +81,27 @@ Encoder enc5(encPinA[4], encPinB[4]);
 Encoder enc6(encPinA[5], encPinB[5]);
 
 // General Global Variable declarations
-
-const int axisDir[6] = {1, -1, -1, 1, 1, -1};  
+const int axisDir[6] = {1, -1, -1, 1, -1, -1};  
 const int IK_DIR[6] = {1, 1, 1, 1, 1, 1};
-int runFlags[] = {0, 0, 0, 0, 0, 0};
-int currentAxis = 1;
 int i;
 bool initFlag = false;
 bool jointFlag = false; 
 bool IKFlag = false;
 bool resetEE = false;
-bool vertFlag = false;
-bool horizFlag = false;
 
 // Variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst};
-long homeCompAngles[] = {50, 0, 0, 110, 30, 90};
+long homeCompAngles[] = {50, 0, 0, 100, 30, 90};
 long homeCompConst[] = {500, 1000, 1000, 500, 500, 500};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5]};
 long homeCompSteps[] = {axisDir[0]*homeCompAngles[0]*red[0]*ppr[0]/360.0, axisDir[1]*homeCompAngles[1]*red[1]*ppr[1]/360.0, axisDir[2]*homeCompAngles[2]*red[2]*ppr[2]/360.0, axisDir[3]*homeCompAngles[3]*red[3]*ppr[3]/360.0, axisDir[4]*homeCompAngles[4]*red[4]*ppr[4]/360.0, axisDir[5]*homeCompAngles[5]*red[5]*ppr[5]/360.0};
 
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {200, 160, 180, 180, 140, 340};
+int maxAngles[6] = {200, 100, 180, 180, 120, 340};
 long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
 long min_steps[NUM_AXES]; 
 char value;
-
-// Values for changing speed
-const int maxSpeedIndex = 2;
-int speedVals[maxSpeedIndex+1][NUM_AXES] = {{600, 900, 1500, 1250, 1050, 1050}, {900, 1200, 2000, 1665, 1460, 1460}, {900, 1600, 2500, 2200, 2000, 2000}};
-int speedIndex = maxSpeedIndex;
 
 // Cartesian mode speed settings
 float IKspeeds[] = {0.2, 0.2, 0.2, 0.2, 0.2, 0.2};
