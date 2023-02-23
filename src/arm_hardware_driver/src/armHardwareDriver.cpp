@@ -25,18 +25,9 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 
     pubObservedPos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
 
-    
-
-
-    // Get Params
-    //    SB_getParam(
-    //private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM2");buffer: %s", buffer.c_str()
-    // Open the given serial port
 
     teensy.setBaudrate(9600);
     teensy.setPort("/dev/ttyACM9");
-    
-    //teensy.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
     teensy.open();
     teensy.setDTR(false);
     teensy.setRTS(false);

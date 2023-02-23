@@ -43,7 +43,7 @@ int limPins[6] = {18, 19, 20, 21, 23, 22};
 long ppr[6] = {400, 400, 400, 400, 400, 400};
 
 // Gear Reductions
-float red[6] = {50.0, 160.0, 92.3077, 43.936, 57, 14};
+float red[6] = {50.0, 160.0, 92.3077, 43.936, 57.0, 14.0};
 
 // End effector variables
 const int closePos = 0;
@@ -98,8 +98,8 @@ long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axi
 long homeCompSteps[] = {axisDir[0]*homeCompAngles[0]*red[0]*ppr[0]/360.0, axisDir[1]*homeCompAngles[1]*red[1]*ppr[1]/360.0, axisDir[2]*homeCompAngles[2]*red[2]*ppr[2]/360.0, axisDir[3]*homeCompAngles[3]*red[3]*ppr[3]/360.0, axisDir[4]*homeCompAngles[4]*red[4]*ppr[4]/360.0, axisDir[5]*homeCompAngles[5]*red[5]*ppr[5]/360.0};
 
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {200, 100, 180, 180, 120, 340};
-long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], red[4]*maxAngles[4]/360.0*ppr[4], red[5]*maxAngles[5]/360.0*ppr[5]};
+int maxAngles[6] = {200, 100, 180, 180, 120, 320};
+long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], axisDir[4]*red[4]*maxAngles[4]/360.0*ppr[4], axisDir[5]*red[5]*maxAngles[5]/360.0*ppr[5]};
 long min_steps[NUM_AXES]; 
 char value;
 
