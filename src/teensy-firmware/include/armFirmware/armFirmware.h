@@ -92,13 +92,13 @@ bool resetEE = false;
 // Variables for homing / arm calibration
 long homePosConst = -99000;
 long homePos[] = {axisDir[0]*homePosConst, axisDir[1]*homePosConst, axisDir[2]*homePosConst, axisDir[3]*homePosConst, axisDir[4]*homePosConst, axisDir[5]*homePosConst};
-long homeCompAngles[] = {50, 0, 0, 100, 30, 90};
-long homeCompConst[] = {500, 1000, 1000, 500, 500, 500};
+long homeCompAngles[] = {50, 0, 0, 100, 100, 90};
+long homeCompConst[] = {500, 1000, 1000, 500, 500, 200};
 long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axisDir[2]*homeCompConst[2], axisDir[3]*homeCompConst[3], axisDir[4]*homeCompConst[4], axisDir[5]*homeCompConst[5]};
 long homeCompSteps[] = {axisDir[0]*homeCompAngles[0]*red[0]*ppr[0]/360.0, axisDir[1]*homeCompAngles[1]*red[1]*ppr[1]/360.0, axisDir[2]*homeCompAngles[2]*red[2]*ppr[2]/360.0, axisDir[3]*homeCompAngles[3]*red[3]*ppr[3]/360.0, axisDir[4]*homeCompAngles[4]*red[4]*ppr[4]/360.0, axisDir[5]*homeCompAngles[5]*red[5]*ppr[5]/360.0};
 
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {200, 100, 180, 180, 120, 320};
+int maxAngles[6] = {200, 100, 180, 180, 180, 290};
 long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], axisDir[4]*red[4]*maxAngles[4]/360.0*ppr[4], axisDir[5]*red[5]*maxAngles[5]/360.0*ppr[5]};
 long min_steps[NUM_AXES]; 
 char value;

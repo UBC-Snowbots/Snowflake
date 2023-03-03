@@ -37,7 +37,7 @@ AllController::AllController(int argc, char** argv, string node_name) {
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 1);
     pubarm  = private_nh.advertise<std_msgs::String>(armPublisher, 1);
     pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 1);
-    joyinput = private_nh.subscribe(joyTopic, 10, &AllController::readJoyInputs, this);
+    joyinput = private_nh.subscribe(joyTopic, 55, &AllController::readJoyInputs, this);
     // pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
 
     true_message.data = true;
@@ -95,7 +95,7 @@ void AllController::readJoyInputs(const sensor_msgs::Joy::ConstPtr& msg){
 
   void AllController::setup() {
      system(
-     "gnome-terminal --tab -- bash -c 'rosrun joy joy_node _deadzone:=0.1 _autorepeat_rate:=20 _coalesce_interval:=0.05'");
+     "gnome-terminal --tab -- bash -c 'rosrun joy joy_node _deadzone:=0.1 _autorepeat_rate:=40 _coalesce_interval:=0.025'");
 
      ROS_INFO(
      "ALLCONTROLLER INITIATED, CURRENTLY PARSING FOR PROCONTROLLER");
