@@ -33,8 +33,8 @@ int stepPins[6] =   {6, 8, 2, 10, 12, 25};
 int dirPins[6] =    {5, 7, 1, 9, 11, 24}; 
 
 // Encoder pins
-int encPinA[6] = {17, 38, 40, 36, 13, 15};
-int encPinB[6] = {16, 37, 39, 35, 41, 14};
+int encPinA[6] = {17, 38, 40, 36, 13, 14};
+int encPinB[6] = {16, 37, 39, 35, 41, 15};
 
 // limit switch pins
 int limPins[6] = {18, 19, 20, 21, 23, 22};
