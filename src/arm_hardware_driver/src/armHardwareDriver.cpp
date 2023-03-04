@@ -13,7 +13,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     ros::NodeHandle private_nh("~");
 
     // Setup Subscribers
-    int queue_size = 11;
+    int queue_size = 55;
 
     subPro = nh.subscribe( 
         "/cmd_arm", queue_size, &ArmHardwareDriver::allControllerCallback, this);
@@ -26,8 +26,8 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     pubObservedPos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
 
 
-    teensy.setBaudrate(9600);
-    teensy.setPort("/dev/ttyACM9");
+    teensy.setBaudrate(115200);
+    teensy.setPort("/dev/ttyACM1");
     teensy.open();
     teensy.setDTR(false);
     teensy.setRTS(false);
