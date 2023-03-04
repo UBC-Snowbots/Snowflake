@@ -10,7 +10,9 @@
 
 // STD Includes
 #include <iostream>
-#include <sstream>
+#include <string>
+#include <cstdio>
+#include <unistd.h>
 
 // ROS Includes
 #include <math.h>
@@ -23,27 +25,24 @@
 #include <sb_utils.h>
 
 // Other
-#include <libserial/SerialPort.h>
+#include <serial/serial.h>
 
+
+using std::string;
+using std::exception;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::vector;
 
 class ArmHardwareDriver {
   public:
     ArmHardwareDriver(ros::NodeHandle& nh);
-    void teensySerialCallback(const std_msgs::String::ConstPtr& inMsg);
+    void allControllerCallback(const std_msgs::String::ConstPtr& inMsg);
     void parseInput(std::string inMsg);
     void joint_space_motion(std::string inMsg);
-    void drill_motion(std::string inMsg);
-    void jointSpaceMove(const char joystick, const char dir);
-    void changeSpeed(const char dir);
-    void changeAxis(const char joystick);
-    void releaseAxis(const char joystick, const char dir);
     void endEffector(const char dir);
     void endEffectorRel();
-    void prepareDrilling();
-    void collectSample();
-    void depositSample();
-    void manualDrill(const char dir);
-    void releaseDrill();
     void homeArm();
     void cartesian_motion(std::string inMsg);
     void cartesian_moveit_move(std::vector<double>& pos_commands,
@@ -57,11 +56,15 @@ class ArmHardwareDriver {
     void recieveMsg();
     void requestArmPosition();
     void updateHWInterface();
-    void requestEEFeedback();
-    void requestJPFeedback();
     void homeEE();
     void axisRelease(const char axis);
     void axisMove(const char axis, const char dir);
+
+    //new serial
+    unsigned long baud = 9600;
+    string port = "/dev/ttyACM0";
+
+
 
     // character representations of buttons for arm communication
     const char leftJSU     = 'A';
@@ -102,10 +105,10 @@ class ArmHardwareDriver {
     const char J4 = '4';
     const char J5 = '5';
     const char J6 = '6';
+
     // arm modes
     const char jointMode = '1';
     const char IKMode    = '2';
-    const char drillMode = '3';
 
     // joystick direction characters
     const char left    = 'L';
@@ -121,34 +124,24 @@ class ArmHardwareDriver {
     double ppr      = 400.0;
     double encppr   = 512.0;
 
-    bool serialOpen = true;
-    bool dataInTransit = false;
     bool homeFlag = false;
     char mode = jointMode;
 
     // hardware interface communication variables
     std::vector<int> encPos, encCmd;
-    std::vector<double> armCmd, armPos, encStepsPerDeg;
-    std::vector<double> reductions{50, 161, 93.07, 44.8, 57.34, 57.34};
-
-    // timer variables
-    double refresh_rate_hz = 10.0;
-    ros::Timer arm_pos_timer;
+    std::vector<double> armCmd, armPos, poseCmd, encStepsPerDeg;
+    std::vector<double> reductions{50.0, 160.0, 92.3077, 43.936, 57, 14};
 
   private:
     ros::NodeHandle nh;
     void armPositionCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg);
-    void teensyFeedback(const ros::TimerEvent& e);
+    void poseSelectCallback(const sb_msgs::ArmPosition::ConstPtr& poseAngles);
 
     ros::Subscriber subPro;
-    ros::Subscriber sub_command_pos;
-    ros::Publisher pub_observed_pos;
-    ros::Timer feedbackLoop;
+    ros::Subscriber subPose;
+    ros::Subscriber subCmdPos;
+    ros::Publisher pubObservedPos;
 
-    // The SerialStream to/from the teensy
-    LibSerial::SerialPort teensy;
-
-    // The Port the teensy is connected to
-    std::string port;
+    serial::Serial teensy;
 };
 #endif // ARM_HARDWARE_DRIVER_MYNODE_H

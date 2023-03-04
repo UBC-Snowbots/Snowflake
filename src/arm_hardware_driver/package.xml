@@ -44,12 +44,14 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>sb_utils</build_depend>
   <build_depend>sb_msgs</build_depend>
-  <build_depend>libserial_dev</build_depend>
-  <run_depend>roscpp</run_depend>
+  <build_depend>serial</build_depend>
+  <!--<build_depend>libserial-dev</build_depend>-->
+  <run_depend>serial</run_depend>
+  <run_depend>roscpp</run_depend>-->
   <run_depend>std_msgs</run_depend>
   <run_depend>sb_utils</run_depend>
   <run_depend>sb_msgs</run_depend>
-  <run_depend>libserial_dev</run_depend>
+ <!-- <run_depend>libserial-dev</run_depend>-->
 
 
   <!-- The export tag contains other, unspecified, tags -->

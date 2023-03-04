@@ -130,7 +130,11 @@ void ProController::readInputs() {
                     else if (state == Mode::arm_joint_space) { // Joint space control of the arm
                         armOutMsg += jointMode;
                         armOutMsg += armOutVal;
+
+                        if(armOutVal != "")
+                        {
                         publishArmMessage(armOutMsg);
+                        }
                     }
 
                     else if (state == Mode::arm_cartesian) { // Inverse Kinematics mode i.e. cartesian motion

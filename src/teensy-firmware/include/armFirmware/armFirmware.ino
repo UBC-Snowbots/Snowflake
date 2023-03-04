@@ -11,7 +11,7 @@ Description: Main firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 // setup function to initialize pins and provide initial homing to the arm.
 void setup() {
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   for (int i = 0; i < NUM_AXES; i++) {
     ENC_STEPS_PER_DEG[i] = ppr[i] * red[i] * (ENC_MULT[i] / 360.0);

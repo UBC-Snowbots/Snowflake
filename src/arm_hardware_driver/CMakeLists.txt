@@ -17,9 +17,11 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   sb_utils
   sb_msgs
-)
-find_library(libserial_LIBRARIES libserial.so.0)
+  serial
+  )
 
+#set(serial_SRCS src/serial.cc include/serial/serial.h include/serial/v8stdint.h src/)
+#find_library(libserial_LIBRARIES libserial.so.0)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -111,8 +113,8 @@ find_library(libserial_LIBRARIES libserial.so.0)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
     INCLUDE_DIRS include
-#  LIBRARIES sample_package
-#  CATKIN_DEPENDS roscpp std_msgs
+ LIBRARIES serial
+  CATKIN_DEPENDS roscpp std_msgs serial
 #  DEPENDS system_lib
 )
 
@@ -130,9 +132,9 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(sample_package
-#   src/${PROJECT_NAME}/sample_package.cpp
-# )
+ #  add_library(serial
+ #  src/${PROJECT_NAME}/sample_package.cpp
+ #)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -146,13 +148,13 @@ add_executable(arm_hardware_driver src/arm_hardware_driver.cpp src/armHardwareDr
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(sample_package_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(arm_hardware_driver ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(sample_package_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(arm_hardware_driver ${catkin_LIBRARIES} ${libserial_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(arm_hardware_driver ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
 #############
 ## Install ##

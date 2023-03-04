@@ -4,17 +4,19 @@
  * Description: Simple header file for switch controller-->ROS Twist message cpp
  */
 
-#ifndef PROCONTROLLER_SNOWBOTS_CONTROLLER_H
-#define PROCONTROLLER_SNOWBOTS_CONTROLLER_H
+#ifndef ALLCONTROLLER_SNOWBOTS_CONTROLLER_H
+#define ALLCONTROLLER_SNOWBOTS_CONTROLLER_H
+#define NUM_BUTTONS 12
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Joy.h>
 #include <std_msgs/String.h>
 #include <std_msgs/Bool.h>
 #include <iostream>
-#include <libevdev-1.0/libevdev/libevdev.h>
+//#include <libevdev-1.0/libevdev/libevdev.h>
 #include <ros/ros.h>
 #include <sys/fcntl.h>
 #include <tuple>
@@ -22,13 +24,14 @@
 
 using namespace std;
 
-class ProController {
+class AllController {
   public:
-    ProController(int argc, char** argv, std::string node_name);
+    AllController(int argc, char** argv, std::string node_name);
 
-  private:
+  private: //TODO: make vel relative to analog values
     void setup();
-    void readInputs();
+    void processInputs();
+    void readJoyInputs(const sensor_msgs::Joy::ConstPtr& msg);
     bool inDeadzone(int value);
     void leftJoystickX(int value);      // ABS_X
     void leftJoystickY(int value);      // ABS_Y
@@ -45,6 +48,8 @@ class ProController {
     void home(int value);               // BTN_MODE
     void leftTrigger(int value);        // ABS_Z
     void rightTrigger(int value);       // ABS_RZ
+    void leftPaddle(int value);        // Same as trigger, but discreet not analog
+    void rightPaddle(int value);       // ABS_RZ
     void arrowsRorL(int value);         // ABS_HAT0X
     void arrowsUorD(int value);         // ABS_HAT0Y
     void leftJoystickPress(int value);  // BTN_THUMBL
@@ -53,6 +58,8 @@ class ProController {
     void publishArmMessage(std::string outMsg);
     void printState();
     void printControllerDebug(int type, int code, int value);
+    void publishCmds();
+
     // see documentation to changes sensitivities at runtime
     double X_SENSITIVITY = 1.0;
     double Z_SENSITIVITY = 1.0;
@@ -92,7 +99,10 @@ class ProController {
     const char rightJSPressRel = '8';
     const char homeVal = '4';
     const char homeValEE = '6';
-
+    const char J1 = '1';
+    const char J2 = '2';
+    const char J3 = '3';
+    const char J4 = '4';
     // arm modes
     const char jointMode = '1';
     const char IKMode = '2';
@@ -106,6 +116,7 @@ class ProController {
     ros::Publisher pubarm;
     ros::Publisher pubmode;
     ros::Publisher pubmovegrp;
+    ros::Subscriber joyinput;
 
     std_msgs::Bool true_message;
     std_msgs::Bool false_message;
@@ -115,4 +126,4 @@ class ProController {
 
 };
 
-#endif // PROCONTROLLER_SNOWBOTS_CONTROLLER_H
+#endif // ALLCONTROLLER_SNOWBOTS_CONTROLLER_H
