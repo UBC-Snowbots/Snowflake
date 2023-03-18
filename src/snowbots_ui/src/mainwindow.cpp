@@ -15,6 +15,7 @@
 #include "QPixmap"
 #include "QProcess"
 
+
 MainWindow::MainWindow(QWidget* parent)
   :
 
@@ -46,9 +47,19 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::twist_values() {
-    ui->left_lcd->display(twist_message_left.linear.x);
-    ui->right_lcd->display(twist_message_right.linear.x);
-    ui->angular_lcd->display(twist_message_controller.angular.z);
-    ui->linear_lcd->display(twist_message_controller.linear.x);
-    ros_f->twist_subscriber();
+    ui->mode_lcd->setText("Hello World"); // replace hellow world with message for mode
+    ui->nuc_temp_lcd->display(twist_message_right.linear.x); // message req for updating nuc temp
+    ui->rover_temp_lcd->display(twist_message_controller.angular.z); // message req for updating rover temp
+    ui->elec_box_temp_lcd->display(twist_message_controller.linear.x); // message req for updating elec box temp
+    ui->end_effector_force_feedback_lcd->display(twist_message_controller.linear.x); // message req for updating end effector force feeback as % of grip
+    ui->end_effector_pos_feedback_lcd->display(twist_message_controller.linear.x); // message req for updating end effector position feedback
+    ros_f->twist_subscriber(); // message req for updating elec box temp
 }
+// TODOS: 
+// Current Mode - status - done
+// end effector position feedback (hopefully) - ui ok
+// end effector force feedback as % of grip - ui ok
+// nuc temperature - done
+// rover ambient temp - done
+// elec box temp - done
+// stored arm poses (button) - added in the ui, but still need to figure out for ros integration

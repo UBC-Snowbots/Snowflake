@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>746</width>
+    <width>846</width>
     <height>688</height>
    </rect>
   </property>
@@ -17,9 +17,9 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>170</x>
       <y>30</y>
-      <width>491</width>
+      <width>461</width>
       <height>131</height>
      </rect>
     </property>
@@ -36,14 +36,14 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>190</y>
-      <width>621</width>
-      <height>131</height>
+      <x>10</x>
+      <y>170</y>
+      <width>401</width>
+      <height>212</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
+     <item row="0" column="1">
       <layout class="QGridLayout" name="gridLayout" rowminimumheight="0">
        <item row="0" column="0">
         <widget class="QLabel" name="label">
@@ -54,15 +54,15 @@
           </size>
          </property>
          <property name="text">
-          <string>Left</string>
+          <string>Current mode: </string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLCDNumber" name="left_lcd">
+        <widget class="QLabel" name="mode_lcd">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -73,10 +73,10 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="1">
-      <layout class="QGridLayout" name="gridLayout_2" rowminimumheight="0">
-       <item row="0" column="2">
-        <widget class="QLCDNumber" name="right_lcd">
+     <item row="1" column="1">
+      <layout class="QGridLayout" name="gridLayout_2" rowminimumheight="0,0">
+       <item row="1" column="1">
+        <widget class="QLCDNumber" name="nuc_temp_lcd">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -91,7 +91,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="1" column="0">
         <widget class="QLabel" name="label_3">
          <property name="maximumSize">
           <size>
@@ -100,7 +100,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Right</string>
+          <string>Nuc temp</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -114,14 +114,14 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>350</y>
+      <x>10</x>
+      <y>410</y>
       <width>408</width>
-      <height>214</height>
+      <height>221</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="minimumSize">
         <size>
@@ -136,14 +136,14 @@
         </size>
        </property>
        <property name="text">
-        <string>Linear Velocity</string>
+        <string>Rover ambient temperature</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="1" column="0" rowspan="2">
+     <item row="3" column="0" rowspan="2">
       <widget class="QLabel" name="label_4">
        <property name="minimumSize">
         <size>
@@ -158,7 +158,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Angular Velocity</string>
+        <string>Elec box temperature</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -166,7 +166,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLCDNumber" name="linear_lcd">
+      <widget class="QLCDNumber" name="rover_temp_lcd">
        <property name="minimumSize">
         <size>
          <width>200</width>
@@ -181,8 +181,8 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" rowspan="2">
-      <widget class="QLCDNumber" name="angular_lcd">
+     <item row="3" column="1" rowspan="2">
+      <widget class="QLCDNumber" name="elec_box_temp_lcd">
        <property name="minimumSize">
         <size>
          <width>200</width>
@@ -199,13 +199,192 @@
      </item>
     </layout>
    </widget>
+   <widget class="QWidget" name="layoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>170</y>
+      <width>411</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_6">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>End effector force </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" rowspan="2">
+      <widget class="QLabel" name="label_9">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>End effector position</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLCDNumber" name="end_effector_force_feedback_lcd">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" rowspan="2">
+      <widget class="QLCDNumber" name="end_effector__pos_feedback_lcd">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>100</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="Pos1_button">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>450</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pos 1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Pos2_button">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>450</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pos 2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Pos3_button">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>510</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pos 4</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Pos4_button">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>510</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pos 3</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Pos5_button">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>570</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pos 6</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Pos6_button">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>570</y>
+      <width>131</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pos 5</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>410</y>
+      <width>161</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stored Arm Positions</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>746</width>
+     <width>846</width>
      <height>22</height>
     </rect>
    </property>
