@@ -13,22 +13,25 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     ros::NodeHandle private_nh("~");
 
     // Setup Subscribers
-    int queue_size = 10;
+    int queue_size = 55;
 
-    subPro = nh.subscribe(
-    "/cmd_arm", queue_size, &ArmHardwareDriver::teensySerialCallback, this);
-    sub_command_pos = nh.subscribe(
-    "/cmd_pos_arm", queue_size, &ArmHardwareDriver::armPositionCallBack, this);
-    pub_observed_pos =
-    private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
+    subPro = nh.subscribe( 
+        "/cmd_arm", queue_size, &ArmHardwareDriver::allControllerCallback, this);
 
-    // Get Params
-    SB_getParam(
-    private_nh, "/hardware_driver/port", port, (std::string) "/dev/ttyACM0");
-    // Open the given serial port
-    teensy.Open(port);
-    teensy.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
-    teensy.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
+    subCmdPos = nh.subscribe(
+        "/cmd_pos_arm", queue_size, &ArmHardwareDriver::armPositionCallBack, this);
+
+    subPose = private_nh.subscribe("/cmd_pose", 1, &ArmHardwareDriver::poseSelectCallback, this);
+
+    pubObservedPos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
+
+
+    teensy.setBaudrate(115200);
+    teensy.setPort("/dev/ttyACM1");
+    teensy.open();
+    teensy.setDTR(false);
+    teensy.setRTS(false);
+
 
     encCmd.resize(num_joints_);
     armCmd.resize(num_joints_);
@@ -36,10 +39,12 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     armPos.resize(num_joints_);
     encPos.resize(num_joints_);
     armCmd.resize(num_joints_);
+    poseCmd.resize(num_joints_);
 
     for (int i = 0; i < num_joints_; i++) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
+<<<<<<< HEAD
 
     float feed_freq = 10.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
     ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);// should be ros::sleep?
@@ -76,13 +81,16 @@ void ArmHardwareDriver::requestJPFeedback()
     std::string outMsg = "FBJ\n";
     sendMsg(outMsg);
     recieveMsg();
+=======
+    
+>>>>>>> AllController
 }
 
 // Callback function to relay pro controller messages to teensy MCU on arm via
-// rosserial
-void ArmHardwareDriver::teensySerialCallback(
-const std_msgs::String::ConstPtr& inMsg) {
-    parseInput(inMsg->data);
+void ArmHardwareDriver::allControllerCallback(const std_msgs::String::ConstPtr& inMsg) {
+    std::string tmp = inMsg->data;
+    //ROS_INFO("%s", tmp.c_str());
+    parseInput(tmp); 
 }
 
 void ArmHardwareDriver::parseInput(std::string inMsg) {
@@ -92,9 +100,7 @@ void ArmHardwareDriver::parseInput(std::string inMsg) {
         joint_space_motion(inMsg);
     } else if (mode == IKMode) {
         cartesian_motion(inMsg);
-    } else if (mode == drillMode) {
-        drill_motion(inMsg);
-    }
+    } 
 }
 
 // Sends joint space motion related commands to teensy
@@ -103,54 +109,80 @@ void ArmHardwareDriver::joint_space_motion(std::string inMsg) {
 
     if(action == homeVal) {
         homeArm();
+        recieveMsg();
     } else if(action == leftJSU) {
         axisMove(J3,up);
+        recieveMsg();
     } else if (action == leftJSD) {
         axisMove(J3, down);
+        recieveMsg();
     } else if (action == rightJSU) {
         axisMove(J2, up);
+        recieveMsg();
     } else if (action == rightJSD) {
         axisMove(J2, down);
+        recieveMsg();
     } else if (action == leftJSRel) {
         axisRelease(J3);
+        recieveMsg();
     } else if (action == rightJSRel) {
         axisRelease(J2);
+        recieveMsg();
     } else if (action == buttonY) {
         axisMove(J6, left);
+        recieveMsg();
     } else if (action == buttonA) {
         axisMove(J6, right);
+        recieveMsg();
     } else if (action == buttonB) {
         axisMove(J5, down);
+        recieveMsg();
     } else if (action == buttonX) {
         axisMove(J5, up);
+        recieveMsg();
     } else if (action == triggerL) {
         axisMove(J1, left);
+        recieveMsg();
     } else if (action == triggerR) {
         axisMove(J1, right);
+        recieveMsg();
     } else if ((action == triggerLRel) || (action == triggerRRel)) {
         axisRelease(J1);
+        recieveMsg();
     } else if (action == buttonARel) {
         axisRelease(J6);
+        recieveMsg();
     } else if (action == buttonBRel) {
         axisRelease(J5);
+        recieveMsg();
     } else if (action == buttonXRel) {
         axisRelease(J5);
+        recieveMsg();
     } else if (action == buttonYRel) {
         axisRelease(J6);
+        recieveMsg();
     } else if(action == bumperL) {
         axisMove(J4, left);
+        recieveMsg();
     } else if(action == bumperR) {
         axisMove(J4, right); 
+        recieveMsg();
     } else if((action == bumperLRel) || (action == bumperRRel)) {
         axisRelease(J4);
+        recieveMsg();
     } else if (action == arrowL) {
         endEffector(open);
+        recieveMsg();
     } else if (action == arrowR) {
         endEffector(close);
+        recieveMsg();
     } else if (action == arrowRLRel) {
         endEffectorRel();
+        recieveMsg();
     } else if(action == homeValEE) {
         homeEE();
+        recieveMsg();
+        
     }
 }
 
@@ -166,28 +198,8 @@ void ArmHardwareDriver::cartesian_motion(std::string inMsg) {
     } else if(action == homeValEE) {
         homeEE();
     }
-}
 
-// Sends drilling mode related commands to teensy
-void ArmHardwareDriver::drill_motion(std::string inMsg) {
-    char action = inMsg.at(1);
-
-    if (action == buttonARel) {
-        prepareDrilling();
-    } else if (action == buttonBRel) {
-        collectSample();
-    } else if (action == buttonX) {
-        depositSample();
-    } else if (action == triggerL) {
-        manualDrill(left);
-    } else if (action == triggerR) {
-        manualDrill(right);
-    } else if ((action == triggerLRel) || (action == triggerRRel)) {
-        releaseDrill();
-    }
-    // below two lines to be implemented once cartesian mode is sorted
-    // case rightJSU: moveDrillUp(); break;
-    // case rightJSD: moveDrillDown(); break;
+    recieveMsg();
 }
 
 void ArmHardwareDriver::axisMove(const char axis, const char dir)
@@ -220,41 +232,10 @@ void ArmHardwareDriver::endEffectorRel() {
     sendMsg(outMsg);
 }
 
-// Drilling Mode Hardware Driver Functions
-void ArmHardwareDriver::prepareDrilling() {
-    std::string outMsg = "DMP\n";
-    sendMsg(outMsg);
-}
-
-void ArmHardwareDriver::collectSample() {
-    std::string outMsg = "DMC\n";
-    sendMsg(outMsg);
-}
-
-void ArmHardwareDriver::depositSample() {
-    std::string outMsg = "DMD\n";
-    sendMsg(outMsg);
-}
-
-void ArmHardwareDriver::manualDrill(const char dir) {
-    std::string outMsg = "DMM";
-    outMsg += dir;
-    outMsg += "\n";
-    sendMsg(outMsg);
-}
-
-void ArmHardwareDriver::releaseDrill() {
-    std::string outMsg = "DMMX";
-    outMsg += "\n";
-    sendMsg(outMsg);
-}
-
 void ArmHardwareDriver::homeArm() {
     std::string outMsg = "HM\n";
-    homeFlag = false;
     sendMsg(outMsg);
-    recieveMsg();
-    homeFlag = true;
+
 }
 
 void ArmHardwareDriver::homeEE() {
@@ -262,8 +243,25 @@ void ArmHardwareDriver::homeEE() {
     sendMsg(outMsg);
 }
 
+void ArmHardwareDriver::poseSelectCallback(
+const sb_msgs::ArmPosition::ConstPtr& poseAngles) {
+    poseCmd.assign(poseAngles->positions.begin(), poseAngles->positions.end());
+    jointPosToEncSteps(poseCmd, encCmd);
+    
+    std::string outMsg = "PM";
+    for(int i=0; i < num_joints_; i++) {
+        outMsg += 'A' + i;
+        outMsg += std::to_string(encCmd[i]);
+    }
+
+    outMsg += "/n";
+    sendMsg(outMsg);
+    recieveMsg();
+}
+
 void ArmHardwareDriver::armPositionCallBack(
 const sb_msgs::ArmPosition::ConstPtr& commanded_msg) {
+    
     armCmd.assign(commanded_msg->positions.begin(),
                   commanded_msg->positions.end());
     jointPosToEncSteps(armCmd, encCmd);
@@ -314,40 +312,59 @@ void ArmHardwareDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
 // Libserial Implementation
 
 void ArmHardwareDriver::sendMsg(std::string outMsg) {
-   // serialOpen = false;
-    //dataInTransit = true;
-    teensy.Write(outMsg);
+    // Send everything in outMsg through serial port
+    //ROS_INFO("attempting send");
+    teensy.write(outMsg);
     ROS_INFO("Sent via serial: %s", outMsg.c_str());
 }
 
 void ArmHardwareDriver::recieveMsg() {
-    std::stringstream buffer;
-    char next_char;
-    do {
-        teensy.ReadByte(next_char); //WAS teensy >> next_char;
-    // ROS_INFO("next_char: %c", next_char);
-        buffer << next_char;
-    } while (next_char != 'Z');
-    std::string inMsg = buffer.str();
 
-    // check if joint state is available
-    if (inMsg.substr(0, 2) == "JP") {
-        updateEncoderSteps(inMsg);
-        encStepsToJointPos(encPos, armPos);
-        // updateHWInterface();
-    // check if end effector force feedback is available
-    } else if (inMsg.substr(0, 2) == "EE")
-        ROS_INFO("%s", inMsg.c_str());
-    // check if homing is completed
-    else if(inMsg.substr(0, 2) == "HC")
-    {
-        ROS_INFO("ARM CALIBRATION COMPLETE, NOW ACCEPTING CONTROLLER COMMANDS!");
-    }
+    std::string next_char = "";
+    std::string buffer = "";
+    int timeoutCounter = 0;
+    do {
+    //     teensy.ReadByte(next_char); //WAS teensy >> next_char;
+    // // ROS_INFO("next_char: %c", next_char);
+    //     buffer << next_char;
+    // } while (next_char != 'Z');
+    // std::string inMsg = buffer.str();
+
+    // // check if joint state is available
+    // if (inMsg.substr(0, 2) == "JP") {
+    //     updateEncoderSteps(inMsg);
+    //     encStepsToJointPos(encPos, armPos);
+    //     // updateHWInterface();
+    // // check if end effector force feedback is available
+    // } else if (inMsg.substr(0, 2) == "EE")
+    //     ROS_INFO("%s", inMsg.c_str());
+    // // check if homing is completed
+    // else if(inMsg.substr(0, 2) == "HC")
+    // {
+    //     ROS_INFO("ARM CALIBRATION COMPLETE, NOW ACCEPTING CONTROLLER COMMANDS!");
+    // }
+        timeoutCounter ++;
+        next_char = teensy.read();
+        buffer += next_char;
+    //    if(timeoutCounter > 50){
+    //     ROS_INFO("timed out");
+    //     next_char = "Z";
+    //    }
+    } while (next_char != "Z");
+
+     ROS_INFO("buffer: %s", buffer.c_str());
+
+
+    // // Update parameters based on feedback
+    updateEncoderSteps(buffer);
+    encStepsToJointPos(encPos, armPos);
+    updateHWInterface();
+
 }
 
 void ArmHardwareDriver::updateHWInterface() {
-    // TODO: Ihsan fill in correct message implementation
     sb_msgs::ArmPosition outMsg;
     outMsg.positions.assign(armPos.begin(), armPos.end());
-    pub_observed_pos.publish(outMsg);
+    pubObservedPos.publish(outMsg);
 }
+
