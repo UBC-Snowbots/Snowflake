@@ -1,0 +1,49 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/sb/Snowflake/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/sb/Snowflake/src/arm_hardware_driver/include/**",
+        "/home/sb/Snowflake/src/arm_hardware_interface/include/**",
+        "/home/sb/Snowflake/src/drivers/include/**",
+        "/home/sb/Snowflake/src/marker_qr_detection/include/**",
+        "/home/sb/Snowflake/src/motor_control_circ/include/**",
+        "/home/sb/Documents/python_test/ros_tut/catkin_ws/src/my_robot_controller/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_accelerometer/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_analog_inputs/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_analog_outputs/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_api/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_digital_inputs/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_digital_outputs/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_gyroscope/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_high_speed_encoder/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_magnetometer/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_motors/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_spatial/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/phidgets_drivers/phidgets_temperature/include/**",
+        "/home/sb/Snowflake/src/procontroller_snowbots/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/realsense-ros/realsense2_camera/include/**",
+        "/home/sb/Snowflake/src/sample_package/include/**",
+        "/home/sb/Snowflake/src/sb_all_controller/include/**",
+        "/home/sb/Snowflake/src/sb_geom/include/**",
+        "/home/sb/Snowflake/src/sb_utils/include/**",
+        "/home/sb/Snowflake/src/sb_vision/include/**",
+        "/home/sb/Snowflake/src/external_pkgs/sicktoolbox/include/**",
+        "/home/sb/Snowflake/src/snowbots_ui/include/**",
+        "/home/sb/Snowflake/src/wheel_integration_package/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
