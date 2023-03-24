@@ -63,3 +63,5 @@ void MainWindow::twist_values() {
 // rover ambient temp - done
 // elec box temp - done
 // stored arm poses (button) - added in the ui, but still need to figure out for ros integration
+
+//TODO: ros inegration: get texts/numbres and send messages 
