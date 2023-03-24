@@ -1,6 +1,6 @@
 arm_position_controller:
-  type: position_controllers/JointGroupPositionControllers
-  joints:
+  type: effort_controllers/JointGroupPositionController
+    joints:
     - j1
     - j2
     - j3

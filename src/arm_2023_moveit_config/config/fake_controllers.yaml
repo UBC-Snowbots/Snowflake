@@ -1,6 +1,6 @@
 controller_list:
-  - name: fake_sb_arm_controller
-    type: position_controllers/JointGroupPositionControllers
+  - name: fake_arm_controller
+    type: $(arg fake_execution_type)
     joints:
       - j1
       - j2
@@ -13,5 +13,5 @@ controller_list:
     joints:
       []
 initial:  # Define initial robot poses per group
-  - group: sb_arm
+  - group: arm
     pose: home
