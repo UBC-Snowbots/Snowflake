@@ -1,41 +1,23 @@
-- git:
-    local-name: src/external_pkgs/nmea_navsat_driver
-    uri: https://github.com/UBC-Snowbots/nmea_navsat_driver.git
-    version: noetic-snowbots-mods
-- git:
-    local-name: src/external_pkgs/realsense-ros
-    uri: https://github.com/IntelRealSense/realsense-ros.git
-- git:
-    local-name: external_libs/librealsense
-    uri: https://github.com/IntelRealsense/librealsense.git
-- git:
-    local-name: src/external_pkgs/ros_arduino_bridge
-    uri: https://github.com/UBC-Snowbots/ros_arduino_bridge.git
-    version: noetic-snowbots-mods
-- git:
-    local-name: src/external_pkgs/sicktoolbox
-    uri: https://github.com/UBC-Snowbots/sicktoolbox.git
-- git:
-    local-name: src/external_pkgs/sicktoolbox_wrapper
-    uri: https://github.com/ros-drivers/sicktoolbox_wrapper.git
-- git:
-    local-name: src/external_pkgs/zed-ros-wrapper
-    uri: https://github.com/UBC-Snowbots/zed-ros-wrapper.git
-- git: 
-    local-name: src/mapping_urc/multi_resolution_graph
-    uri: 'https://github.com/garethellis0/multi_resolution_graph.git'
-    version: 0.0.3
-- git:
-    local-name: external_libs/dkms-hid-nintendo
-    uri: 'https://github.com/nicman23/dkms-hid-nintendo'
-- git:
-    local-name: external_libs/joycond
-    uri: https://github.com/DanielOgorchock/joycond
-- git:
-    local-name: src/external_pkgs/qt_ros
-    uri: https://github.com/stonier/qt_ros.git
-- git:
-    local-name: src/external_pkgs/phidgets_drivers
-    uri: https://github.com/ros-drivers/phidgets_drivers
-    version: noetic
 
+# IT IS UNLIKELY YOU WANT TO EDIT THIS FILE BY HAND,
+# UNLESS FOR REMOVING ENTRIES.
+# IF YOU WANT TO CHANGE THE ROS ENVIRONMENT VARIABLES
+# USE THE rosinstall TOOL INSTEAD.
+# IF YOU CHANGE IT, USE rosinstall FOR THE CHANGES TO TAKE EFFECT
+- git: {local-name: src/external_pkgs/nmea_navsat_driver, uri: 'https://github.com/UBC-Snowbots/nmea_navsat_driver.git',
+    version: noetic-snowbots-mods}
+- git: {local-name: src/external_pkgs/realsense-ros, uri: 'https://github.com/IntelRealSense/realsense-ros.git'}
+- git: {local-name: external_libs/librealsense, uri: 'https://github.com/IntelRealsense/librealsense.git'}
+- git: {local-name: src/external_pkgs/ros_arduino_bridge, uri: 'https://github.com/UBC-Snowbots/ros_arduino_bridge.git',
+    version: noetic-snowbots-mods}
+- git: {local-name: src/external_pkgs/sicktoolbox, uri: 'https://github.com/UBC-Snowbots/sicktoolbox.git'}
+- git: {local-name: src/external_pkgs/sicktoolbox_wrapper, uri: 'https://github.com/ros-drivers/sicktoolbox_wrapper.git'}
+- git: {local-name: src/external_pkgs/zed-ros-wrapper, uri: 'https://github.com/UBC-Snowbots/zed-ros-wrapper.git'}
+- git: {local-name: src/mapping_urc/multi_resolution_graph, uri: 'https://github.com/garethellis0/multi_resolution_graph.git',
+    version: 0.0.3}
+- git: {local-name: external_libs/dkms-hid-nintendo, uri: 'https://github.com/nicman23/dkms-hid-nintendo'}
+- git: {local-name: external_libs/joycond, uri: 'https://github.com/DanielOgorchock/joycond'}
+- git: {local-name: src/external_pkgs/qt_ros, uri: 'https://github.com/stonier/qt_ros.git'}
+- git: {local-name: src/external_pkgs/phidgets_drivers, uri: 'https://github.com/ros-drivers/phidgets_drivers',
+    version: noetic}
+- git: {local-name: src/external_pkgs/serial, uri: 'https://github.com/wjwwood/serial.git'}

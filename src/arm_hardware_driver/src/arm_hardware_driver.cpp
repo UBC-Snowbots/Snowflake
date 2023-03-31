@@ -21,6 +21,7 @@ int main(int argc, char** argv) {
     ArmHardwareDriver teensyComm(nh);
 
     // Start up ros. This will continue to run until the node is killed
+
     ros::MultiThreadedSpinner spinner(0);
     spinner.spin(&ros_queue);
 
