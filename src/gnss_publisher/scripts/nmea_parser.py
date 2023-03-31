@@ -6,37 +6,37 @@ import serial
 import pynmea2
 from sensor_msgs.msg import NavSatFix
 
-def nmea_reader():
-    rospy.init_node('nmea_reader', anonymous=True)
-    nmea_pub = rospy.Publisher('nmea_data', NavSatFix, queue_size=10)
-
-    serial_port = rospy.get_param('~serial_port', '/dev/ttyUSB0')
-    baud_rate = rospy.get_param('~baud_rate', 38400)
+                
+   
 
 
-    try:
-        with serial.Serial(serial_port, baud_rate, timeout=1) as ser:
-            while not rospy.is_shutdown():
-                data = ser.readline().decode('ascii', errors='replace')
-                if data.startswith('$'):
-                    try:
-                        msg = pynmea2.parse(data)
-                        rospy.loginfo(msg)
-                        if isinstance(msg, pynmea2.types.talker.GGA):
-                            print(msg.latitude)
-                            navsat_msg = NavSatFix()
-                            navsat_msg.latitude = msg.latitude
-                            navsat_msg.longitude = msg.longitude
+print("hi")
+rospy.init_node('nmea_reader')
+rospy.loginfo("hi")
+nmea_pub = rospy.Publisher('nmea_data', NavSatFix, queue_size=10)
 
-                            nmea_pub.publish(navsat_msg)
-                        
-                    except pynmea2.ParseError as e:
-                        rospy.logwarn("NMEA parsing error: %s", e)
-    except serial.SerialException as e:
-        rospy.logerr("Serial error: %s", e)
+serial_port = '/dev/ttyACM0'
+baud_rate = 38400
+rate = rospy.Rate(10)
 
-if __name__ == 'main':
-    try:
-        nmea_reader()
-    except rospy.ROSInterruptException:
-        pass
+with serial.Serial(serial_port, baud_rate, timeout=1) as ser:
+    while True:
+        try:
+            line = ser.readline().decode('ascii', errors='replace')
+            if line.startswith('$GP') or line.startswith('$GN'):
+                try:
+                    msg = pynmea2.parse(line)
+                    
+                    if isinstance(msg, pynmea2.types.talker.GGA):
+                        #print(msg.latitude)
+                        navsat_msg = NavSatFix()
+                        navsat_msg.latitude = msg.latitude
+                        navsat_msg.longitude = msg.longitude
+
+                        nmea_pub.publish(navsat_msg)
+                except pynmea2.ParseError as e:
+                    print(f"Parse error: {e}") # Leep or change
+
+        except KeyboardInterrupt:
+            print("hi")
+            pass
