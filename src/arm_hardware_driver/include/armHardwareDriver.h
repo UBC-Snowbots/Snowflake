@@ -62,7 +62,7 @@ class ArmHardwareDriver {
 
     //new serial
     unsigned long baud = 9600;
-    string port = "/dev/ttyACM0";
+    string port = "/dev/ttyUSB0 Serial";
 
 
 

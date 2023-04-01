@@ -27,7 +27,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
 
 
     teensy.setBaudrate(115200);
-    teensy.setPort("/dev/ttyACM1");
+    teensy.setPort("/dev/ttyACM0");
     teensy.open();
     teensy.setDTR(false);
     teensy.setRTS(false);
@@ -44,46 +44,7 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     for (int i = 0; i < num_joints_; i++) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
-<<<<<<< HEAD
-
-    float feed_freq = 10.131; // not exactly 5 to ensure that this doesn't regularly interfere with HW interface callback
-    ros::Duration feedbackFreq = ros::Duration(1.0/feed_freq);// should be ros::sleep?
-    feedbackLoop = nh.createTimer(feedbackFreq, &ArmHardwareDriver::teensyFeedback, this);
-
-}
-
-//Timer initiated event to request joint feedback 
-void ArmHardwareDriver::teensyFeedback(const ros::TimerEvent& e)
-{
-
-    //ROS_INFO("timer working");
-    /*
-    if(homeFlag)
-    {
-    */
-        //requestEEFeedback();
-        //if(mode == jointMode)
-        //{
-            //requestJPFeedback();
-        //}
-    // }
-}
-
-void ArmHardwareDriver::requestEEFeedback()
-{
-    std::string outMsg = "FBE\n";
-    sendMsg(outMsg);
-    recieveMsg();
-}
-
-void ArmHardwareDriver::requestJPFeedback()
-{
-    std::string outMsg = "FBJ\n";
-    sendMsg(outMsg);
-    recieveMsg();
-=======
     
->>>>>>> AllController
 }
 
 // Callback function to relay pro controller messages to teensy MCU on arm via

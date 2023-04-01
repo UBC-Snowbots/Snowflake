@@ -66,16 +66,16 @@ void DetectMarker::subscriberCallBack(const sensor_msgs::Image::ConstPtr& msg) {
 std::vector<int> DetectMarker::fetchMarkerIds(const cv::Mat& image) {
     std::vector<int> markerIds;
     std::vector<std::vector<cv::Point2f>> markerCorners;
-    cv::aruco::detectMarkers(
-    image, dictionary, markerCorners, markerIds, parameters);
+    cv::aruco::detectMarkers(image, dictionary, markerCorners, markerIds, parameters);
+
     if (draw_markers) {
         cv::Mat outputImage;
         image.copyTo(outputImage);
         cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
-        bounder.publish(
-        cv_bridge::CvImage(std_msgs::Header(), "bgr8", outputImage)
+        bounder.publish(cv_bridge::CvImage(std_msgs::Header(), "bgr8", outputImage)
         .toImageMsg());
-        ROS_INFO("attempted draw");
+
+        ROS_INFO("attempted draw, corner 0 is at %d", markerCorners[0][0]);
     }
     return markerIds;
 }

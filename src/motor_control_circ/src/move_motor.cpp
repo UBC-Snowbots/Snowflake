@@ -12,7 +12,8 @@ int main(int argc, char** argv) {
 
     MoveMotor controller(argc, argv, node_name);
 
-    ros::spin();
+    ros::spinOnce();
+
     controller.close();
     return 0;
 }
