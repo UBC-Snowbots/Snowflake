@@ -32,3 +32,10 @@ src/external_pkgs/
 src/mapping_urc/multi_resolution_graph
 /.project
 phidgetlog.log
+
+# arm firmware ignores
+
+src/firmware/arm_firmware/SerialCom1/.vs/
+src/firmware/arm_firmware/SerialCom1/SerialCom/bin
+src/firmware/arm_firmware/SerialCom1/SerialCom/obj
+src/firmware/arm_firmware/SerialCom1/SerialCom/Form1.resx
